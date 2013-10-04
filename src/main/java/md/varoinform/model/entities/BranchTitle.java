@@ -13,13 +13,21 @@ import javax.persistence.*;
 public class BranchTitle extends Title{
     private Branch branch;
 
+    public BranchTitle() {
+    }
+
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "branch_id")
     public Branch getBranch() {
         return branch;
     }
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    @Override
+    public String toString() {
+        return getTitle();
     }
 }

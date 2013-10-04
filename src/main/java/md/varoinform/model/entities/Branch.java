@@ -17,7 +17,8 @@ import java.util.List;
 public class Branch {
     private Long id;
     private Branch parent;
-    private List<Branch> children = new ArrayList<Branch>();
+    private List<Branch> children = new ArrayList<>();
+    private List<BranchTitle> titles = new ArrayList<>();
 
     public Branch() {
     }
@@ -62,7 +63,17 @@ public class Branch {
                 '}';
     }
 
-    public String name() {
-        return toString();
+    @OneToMany
+    @JoinColumn(name = "branch_id")
+    public List<BranchTitle> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<BranchTitle> titles) {
+        this.titles = titles;
+    }
+
+    public String getTitle(Language lang){
+        return null;
     }
 }

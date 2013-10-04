@@ -63,6 +63,6 @@ public class BranchTest extends TestEntitiesBase{
     @Test
     public void testGetName() throws Exception {
         Branch b  = getBranch(2L);
-        String name = b.name();
+//        String name = b.name();
     }
 }
