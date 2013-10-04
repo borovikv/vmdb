@@ -10,6 +10,7 @@ import javax.persistence.*;
  * Date: 10/4/13
  * Time: 9:34 AM
  */
+@MappedSuperclass
 public class Title {
     private Long id;
     private Language language;
@@ -28,7 +29,7 @@ public class Title {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "language_id")
     public Language getLanguage() {
         return language;
     }
