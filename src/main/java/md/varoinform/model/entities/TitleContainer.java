@@ -1,5 +1,7 @@
 package md.varoinform.model.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,20 @@ import java.util.List;
  */
 @MappedSuperclass
 public class TitleContainer {
+    protected Long id;
     private List<BranchTitle> titles = new ArrayList<>();
+
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "id")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @OneToMany
     @JoinColumn(name = "branch_id")
@@ -35,4 +50,5 @@ public class TitleContainer {
         }
         return null;
     }
+
 }

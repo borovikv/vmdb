@@ -1,7 +1,5 @@
 package md.varoinform.model.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +13,10 @@ import java.util.List;
 @Entity
 @Table(name = "DB_branch")
 public class Branch extends TitleContainer {
-    private Long id;
     private Branch parent;
     private List<Branch> children = new ArrayList<>();
 
     public Branch() {
-    }
-
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "id")
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @ManyToOne(cascade = CascadeType.ALL)
