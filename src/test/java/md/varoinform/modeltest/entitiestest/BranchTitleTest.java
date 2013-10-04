@@ -6,8 +6,6 @@ import md.varoinform.model.entities.Language;
 import org.hibernate.criterion.Restrictions;
 import org.junit.*;
 import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +40,7 @@ public class BranchTitleTest extends TestEntitiesBase {
 
     @Test
     public void testTitle(){
+        @SuppressWarnings("unchecked")
         List<BranchTitle> titles = session.createCriteria(BranchTitle.class).list();
         for (BranchTitle title : titles) {
             System.out.println(title + " + branch = " + title.getBranch());
@@ -59,6 +58,7 @@ public class BranchTitleTest extends TestEntitiesBase {
     }
 
     private Branch getBranch(long id) {
+        @SuppressWarnings("unchecked")
         List<Branch> branches = session.createCriteria(Branch.class).add(Restrictions.eq("id", id)).list();
         assertTrue(branches.size() > 0);
         Branch branch = branches.get(0);
@@ -66,8 +66,10 @@ public class BranchTitleTest extends TestEntitiesBase {
         return branch;
     }
 
+
     @Test
     public void testGetTitle(){
+        @SuppressWarnings("unchecked")
         List<Language> languages = session.createCriteria(Language.class).list();
         assertFalse(languages.isEmpty());
         Branch b = getBranch(1L);
@@ -75,7 +77,7 @@ public class BranchTitleTest extends TestEntitiesBase {
         Language rus = null;
         for (Language language : languages) {
             System.out.println(b.getTitle(language));
-            if (language.getTitle() == "rus"){
+            if (language.getTitle().equals("rus")){
                 rus = language;
             }
         }
