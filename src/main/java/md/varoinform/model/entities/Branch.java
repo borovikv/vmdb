@@ -14,11 +14,10 @@ import java.util.List;
  */
 @Entity
 @Table(name = "DB_branch")
-public class Branch {
+public class Branch extends TitleContainer {
     private Long id;
     private Branch parent;
     private List<Branch> children = new ArrayList<>();
-    private List<BranchTitle> titles = new ArrayList<>();
 
     public Branch() {
     }
@@ -63,17 +62,4 @@ public class Branch {
                 '}';
     }
 
-    @OneToMany
-    @JoinColumn(name = "branch_id")
-    public List<BranchTitle> getTitles() {
-        return titles;
-    }
-
-    public void setTitles(List<BranchTitle> titles) {
-        this.titles = titles;
-    }
-
-    public String getTitle(Language lang){
-        return null;
-    }
 }

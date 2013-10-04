@@ -19,6 +19,10 @@ public class Language {
     public Language() {
     }
 
+    public Language(String title) {
+        this.title = title;
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -43,5 +47,19 @@ public class Language {
     @Override
     public String toString() {
         return title;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (!(obj instanceof Language)) && ((Language)obj).id.equals(id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        long id = this.id;
+        int c = (int)(id^(id >>> 32));
+        result = 31 * result + c;
+        return  result;
     }
 }

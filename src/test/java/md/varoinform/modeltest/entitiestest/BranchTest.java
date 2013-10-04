@@ -59,10 +59,4 @@ public class BranchTest extends TestEntitiesBase{
         return (Branch)session.createCriteria(Branch.class).add(Restrictions.eq("id", id)).list().get(0);
     }
 
-    @Ignore
-    @Test
-    public void testGetName() throws Exception {
-        Branch b  = getBranch(2L);
-//        String name = b.name();
-    }
 }
