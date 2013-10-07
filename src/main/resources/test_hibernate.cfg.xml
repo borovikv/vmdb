@@ -19,6 +19,8 @@
         <mapping class="md.varoinform.model.entities.Language" />
         <mapping class="md.varoinform.model.entities.Branch" />
         <mapping class="md.varoinform.model.entities.BranchTitle" />
+        <mapping class="md.varoinform.model.entities.BusinessEntityType" />
+        <mapping class="md.varoinform.model.entities.BusinessEntityTypeTitle" />
 
     </session-factory>
 </hibernate-configuration>
