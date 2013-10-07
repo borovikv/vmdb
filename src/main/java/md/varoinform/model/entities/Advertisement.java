@@ -3,6 +3,7 @@ package md.varoinform.model.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class Advertisement {
     private Long id;
     private Enterprise enterprise;
     private String imagePath;
-    private List<AdvertisementText> texts;
+    private List<AdvertisementText> texts = new ArrayList<>();
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -59,5 +60,17 @@ public class Advertisement {
 
     public void setTexts(List<AdvertisementText> texts) {
         this.texts = texts;
+    }
+
+    public String getText(Language lang){
+        for (AdvertisementText text : texts) {
+            if (text.getLanguage().equals(lang)){
+                return  text.getText();
+            }
+        }
+        if (texts.size() > 0){
+            return texts.get(0).getText();
+        }
+        return null;
     }
 }
