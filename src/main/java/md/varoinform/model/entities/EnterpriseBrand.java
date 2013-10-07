@@ -14,8 +14,8 @@ import javax.persistence.*;
 @Table(name = "DB_enterprise_brand")
 public class EnterpriseBrand {
     private Long id;
-    private Enterprise enterprise;
-    private Brand brand;
+    private Long enterpriseID;
+    private Long brandId;
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -29,23 +29,21 @@ public class EnterpriseBrand {
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "enterprise_id")
-    public Enterprise getEnterprise() {
-        return enterprise;
+    @Column(name = "enterprise_id")
+    public Long getEnterpriseID() {
+        return enterpriseID;
     }
 
-    public void setEnterprise(Enterprise enterprise) {
-        this.enterprise = enterprise;
+    public void setEnterpriseID(Long enterpriseID) {
+        this.enterpriseID = enterpriseID;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
-    public Brand getBrand() {
-        return brand;
+    @Column(name = "brand_id")
+    public Long getBrandId() {
+        return brandId;
     }
 
-    public void setBrand(Brand brand) {
-        this.brand = brand;
+    public void setBrandId(Long brandId) {
+        this.brandId = brandId;
     }
 }
