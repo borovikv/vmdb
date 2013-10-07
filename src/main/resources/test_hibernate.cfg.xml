@@ -22,6 +22,13 @@
         <mapping class="md.varoinform.model.entities.BusinessEntityType" />
         <mapping class="md.varoinform.model.entities.BusinessEntityTypeTitle" />
         <mapping class="md.varoinform.model.entities.Brand" />
+        <mapping class="md.varoinform.model.entities.ContactEmail" />
+        <mapping class="md.varoinform.model.entities.ContactPhone" />
+        <mapping class="md.varoinform.model.entities.ContactUrl" />
+        <!--<mapping class="md.varoinform.model.entities.Enterprise" />-->
+        <mapping class="md.varoinform.model.entities.EnterpriseBrand" />
+        <mapping class="md.varoinform.model.entities.EnterpriseTitle" />
+
 
     </session-factory>
 </hibernate-configuration>
