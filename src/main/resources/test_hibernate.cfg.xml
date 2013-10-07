@@ -16,20 +16,43 @@
         <property name="hibernate.connection.autocommit">false</property>
         <property name="current_session_context_class">thread</property>
 
+        <mapping class="md.varoinform.model.entities.Advertisement" />
+        <mapping class="md.varoinform.model.entities.AdvertisementText" />
         <mapping class="md.varoinform.model.entities.Branch" />
         <mapping class="md.varoinform.model.entities.BranchTitle" />
         <mapping class="md.varoinform.model.entities.Brand" />
         <mapping class="md.varoinform.model.entities.BusinessEntityType" />
         <mapping class="md.varoinform.model.entities.BusinessEntityTypeTitle" />
+        <mapping class="md.varoinform.model.entities.Contact" />
         <mapping class="md.varoinform.model.entities.ContactEmail" />
+        <mapping class="md.varoinform.model.entities.ContactPerson" />
+        <mapping class="md.varoinform.model.entities.ContactPersonPhone" />
         <mapping class="md.varoinform.model.entities.ContactPhone" />
         <mapping class="md.varoinform.model.entities.ContactUrl" />
+        <mapping class="md.varoinform.model.entities.Email" />
         <mapping class="md.varoinform.model.entities.Enterprise" />
         <mapping class="md.varoinform.model.entities.EnterpriseBrand" />
         <mapping class="md.varoinform.model.entities.EnterpriseTitle" />
+        <mapping class="md.varoinform.model.entities.Good" />
+        <mapping class="md.varoinform.model.entities.GoodTitle" />
+        <mapping class="md.varoinform.model.entities.GProduce" />
         <mapping class="md.varoinform.model.entities.Language" />
+        <mapping class="md.varoinform.model.entities.Person" />
+        <mapping class="md.varoinform.model.entities.PersonTitle" />
+        <mapping class="md.varoinform.model.entities.Phone" />
+        <mapping class="md.varoinform.model.entities.Position" />
+        <mapping class="md.varoinform.model.entities.PositionTitle" />
+        <mapping class="md.varoinform.model.entities.Region" />
+        <mapping class="md.varoinform.model.entities.RegionTitle" />
+        <mapping class="md.varoinform.model.entities.Sector" />
+        <mapping class="md.varoinform.model.entities.SectorTitle" />
         <mapping class="md.varoinform.model.entities.Street" />
         <mapping class="md.varoinform.model.entities.StreetTitle" />
+        <mapping class="md.varoinform.model.entities.TopAdministrativeUnit" />
+        <mapping class="md.varoinform.model.entities.TopAdministrativeUnitTitle" />
+        <mapping class="md.varoinform.model.entities.Town" />
+        <mapping class="md.varoinform.model.entities.TownTitle" />
+        <mapping class="md.varoinform.model.entities.Url" />
 
 
     </session-factory>
