@@ -8,7 +8,16 @@ import javax.persistence.*;
  * Date: 10/7/13
  * Time: 11:12 AM
  */
-//ToDo: create Enterprise
+/*
+* ToDo: create Enterprise
+* ToDo: getBranch
+* ToDo: getAdvertisements
+* ToDo: getPersons
+* ToDo: getContacts
+* ToDo: goods
+* ToDo: filterBy url email street etc.
+* ToDo: brands
+* */
 @Entity
 @Table(name = "DB_enterprise")
 public class Enterprise extends TitleContainer{
