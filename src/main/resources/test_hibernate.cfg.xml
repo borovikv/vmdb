@@ -28,6 +28,8 @@
         <mapping class="md.varoinform.model.entities.EnterpriseBrand" />
         <mapping class="md.varoinform.model.entities.EnterpriseTitle" />
         <mapping class="md.varoinform.model.entities.Language" />
+        <mapping class="md.varoinform.model.entities.Street" />
+        <mapping class="md.varoinform.model.entities.StreetTitle" />
 
 
     </session-factory>
