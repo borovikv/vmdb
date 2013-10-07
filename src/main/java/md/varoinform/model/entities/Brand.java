@@ -10,6 +10,8 @@ import javax.persistence.*;
  * Date: 10/7/13
  * Time: 11:05 AM
  */
+@Entity
+@Table(name = "DB_brand")
 public class Brand {
     private Long id;
     private String title;
