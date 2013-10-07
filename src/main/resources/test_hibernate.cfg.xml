@@ -16,18 +16,18 @@
         <property name="hibernate.connection.autocommit">false</property>
         <property name="current_session_context_class">thread</property>
 
-        <mapping class="md.varoinform.model.entities.Language" />
         <mapping class="md.varoinform.model.entities.Branch" />
         <mapping class="md.varoinform.model.entities.BranchTitle" />
+        <mapping class="md.varoinform.model.entities.Brand" />
         <mapping class="md.varoinform.model.entities.BusinessEntityType" />
         <mapping class="md.varoinform.model.entities.BusinessEntityTypeTitle" />
-        <mapping class="md.varoinform.model.entities.Brand" />
         <mapping class="md.varoinform.model.entities.ContactEmail" />
         <mapping class="md.varoinform.model.entities.ContactPhone" />
         <mapping class="md.varoinform.model.entities.ContactUrl" />
-        <!--<mapping class="md.varoinform.model.entities.Enterprise" />-->
+        <mapping class="md.varoinform.model.entities.Enterprise" />
         <mapping class="md.varoinform.model.entities.EnterpriseBrand" />
         <mapping class="md.varoinform.model.entities.EnterpriseTitle" />
+        <mapping class="md.varoinform.model.entities.Language" />
 
 
     </session-factory>
