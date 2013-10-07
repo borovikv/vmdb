@@ -11,5 +11,5 @@ import javax.persistence.*;
 //ToDo:create Contact
 @Entity
 @Table(name = "DB_contact")
-public class Contact extends TitleContainer{
+public class Contact {
 }
