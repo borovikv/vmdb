@@ -21,6 +21,7 @@
         <mapping class="md.varoinform.model.entities.BranchTitle" />
         <mapping class="md.varoinform.model.entities.BusinessEntityType" />
         <mapping class="md.varoinform.model.entities.BusinessEntityTypeTitle" />
+        <mapping class="md.varoinform.model.entities.Brand" />
 
     </session-factory>
 </hibernate-configuration>
