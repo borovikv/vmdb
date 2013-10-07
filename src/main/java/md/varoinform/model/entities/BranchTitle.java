@@ -26,8 +26,4 @@ public class BranchTitle extends Title{
         this.branch = branch;
     }
 
-    @Override
-    public String toString() {
-        return getTitle();
-    }
 }
