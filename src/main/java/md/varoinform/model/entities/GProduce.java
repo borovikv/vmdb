@@ -59,4 +59,8 @@ public class GProduce {
     public void setProduce(Boolean produce) {
         isProduce = produce;
     }
+
+    public Branch branch(){
+        return good.getBranch();
+    }
 }
