@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "Advertisement")
+@Table(name = "DB_advertisement")
 public class Advertisement {
     private Long id;
     private Enterprise enterprise;

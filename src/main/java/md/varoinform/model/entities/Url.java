@@ -12,7 +12,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "Url")
+@Table(name = "DB_url")
 public class Url {
     private Long id;
     private String url;

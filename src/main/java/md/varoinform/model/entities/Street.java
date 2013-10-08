@@ -9,6 +9,6 @@ import javax.persistence.*;
  * Time: 12:34 PM
  */
 @Entity
-@Table(name = "DB_Street")
+@Table(name = "DB_street")
 public class Street extends TitleContainer {
 }

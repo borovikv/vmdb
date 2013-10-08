@@ -12,7 +12,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "ContactPersonPhone")
+@Table(name = "DB_ contactperson_phone")
 public class ContactPersonPhone {
     private Long id;
     private Long contactPersonID;

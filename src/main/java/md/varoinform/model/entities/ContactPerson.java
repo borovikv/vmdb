@@ -3,6 +3,8 @@ package md.varoinform.model.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,12 +14,13 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "ContactPerson")
+@Table(name = "DB_contactperson")
 public class ContactPerson {
     private Long id;
     private Enterprise enterprise;
     private Person person;
     private Position position;
+    private List<Phone> phones = new ArrayList<>();
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -59,5 +62,15 @@ public class ContactPerson {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    @OneToMany
+    @JoinTable(name = "DB_ contactperson_phone", joinColumns = @JoinColumn(name = "contactperson_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    public List<Phone> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
     }
 }

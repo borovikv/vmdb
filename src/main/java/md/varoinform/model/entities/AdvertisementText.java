@@ -12,7 +12,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "AdvertisementText")
+@Table(name = "DB_advertisementtext")
 public class AdvertisementText {
     private Long id;
     private Advertisement advertisement;
