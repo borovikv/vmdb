@@ -4,7 +4,7 @@ import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.Branch;
 import md.varoinform.model.entities.BranchTitle;
 import md.varoinform.model.entities.Language;
-import org.hibernate.Transaction;
+import md.varoinform.modeltest.TestHibernateBase;
 import org.hibernate.criterion.Restrictions;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -16,7 +16,7 @@ import java.util.List;
  * Date: 10/4/13
  * Time: 10:47 AM
  */
-public class BranchTitleTest extends TestEntitiesBase {
+public class BranchTitleTest extends TestHibernateBase {
     private TransactionDaoHibernateImpl<Branch, Long> daoBranch;
     private TransactionDaoHibernateImpl<Language, Long> daoLanguage;
     private TransactionDaoHibernateImpl<BranchTitle, Long> daoBranchTitle;

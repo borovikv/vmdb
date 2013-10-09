@@ -5,6 +5,7 @@ import md.varoinform.model.entities.Branch;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.GProduce;
 import md.varoinform.model.entities.Good;
+import md.varoinform.modeltest.TestHibernateBase;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -18,7 +19,7 @@ import java.util.List;
  * Date: 10/8/13
  * Time: 10:55 AM
  */
-public class EnterpriseTest extends TestEntitiesBase {
+public class EnterpriseTest extends TestHibernateBase {
     private Date check;
     private Date create;
     private Date change;

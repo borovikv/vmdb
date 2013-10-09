@@ -2,6 +2,7 @@ package md.varoinform.modeltest.entitiestest;
 
 import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.*;
+import md.varoinform.modeltest.TestHibernateBase;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -12,7 +13,7 @@ import java.util.*;
  * Date: 10/8/13
  * Time: 3:41 PM
  */
-public class ContactTest extends TestEntitiesBase {
+public class ContactTest extends TestHibernateBase {
     private List<Email> emails = new ArrayList<>();
     private List<Phone> phones = new ArrayList<>();
     private List<Url> urls = new ArrayList<>();

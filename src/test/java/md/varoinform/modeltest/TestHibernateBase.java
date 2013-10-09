@@ -1,4 +1,4 @@
-package md.varoinform.modeltest.entitiestest;
+package md.varoinform.modeltest;
 
 import md.varoinform.model.util.HibernateSessionFactory;
 import org.hibernate.HibernateException;
@@ -14,7 +14,7 @@ import java.io.File;
  * Date: 10/3/13
  * Time: 1:36 PM
  */
-public class TestEntitiesBase {
+public class TestHibernateBase {
     protected static Session session;
 
     @Before

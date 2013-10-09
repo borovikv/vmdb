@@ -2,8 +2,7 @@ package md.varoinform.modeltest.entitiestest;
 
 import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.Branch;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
+import md.varoinform.modeltest.TestHibernateBase;
 import org.junit.*;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import static org.junit.Assert.*;
  * Date: 10/2/13
  * Time: 5:01 PM
  */
-public class BranchTest extends TestEntitiesBase{
+public class BranchTest extends TestHibernateBase {
     private TransactionDaoHibernateImpl<Branch, Long> dao;
 
     public BranchTest() {
