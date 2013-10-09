@@ -1,5 +1,6 @@
 package md.varoinform.modeltest.entitiestest;
 
+import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.Branch;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.GProduce;
@@ -18,15 +19,38 @@ import java.util.List;
  * Time: 10:55 AM
  */
 public class EnterpriseTest extends TestEntitiesBase {
-    Date check;
-    Date create;
-    Date change;
-    @Before
-    public void before(){
+    private Date check;
+    private Date create;
+    private Date change;
+    private TransactionDaoHibernateImpl<Enterprise, Long> enterpriseDao;
+    private TransactionDaoHibernateImpl<Branch, Long> branchDao;
+    private TransactionDaoHibernateImpl<Good, Long> goodDao;
+    private TransactionDaoHibernateImpl<GProduce, Long> gproduceDao;
+
+    public EnterpriseTest() {
+        enterpriseDao = new TransactionDaoHibernateImpl<Enterprise, Long>(Enterprise.class);
+        branchDao = new TransactionDaoHibernateImpl<Branch, Long>(Branch.class);
+        goodDao = new TransactionDaoHibernateImpl<Good, Long>(Good.class);
+        gproduceDao = new TransactionDaoHibernateImpl<GProduce, Long>(GProduce.class);
         check = getDate(-1);
         create = getDate(-2);
         change = getDate(-3);
+    }
 
+    private Date getDate(int inc) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, inc);
+        return calendar.getTime();
+    }
+
+    @Before
+    public void before(){
+        Enterprise enterprise = createEnterprise();
+        createGoodForBranchAndEnterprise(enterprise);
+        createGoodForBranchAndEnterprise(enterprise);
+    }
+
+    private Enterprise createEnterprise() {
         Enterprise enterprise = new Enterprise();
 
         enterprise.setCheckDate(check);
@@ -37,35 +61,40 @@ public class EnterpriseTest extends TestEntitiesBase {
         enterprise.setLogo("logo");
         enterprise.setYpUrl("yp.md");
         enterprise.setWorkplaces(40);
+        enterpriseDao.create(enterprise);
+        return enterprise;
+    }
 
+    private void createGoodForBranchAndEnterprise(Enterprise enterprise) {
+        Branch branch = createBranch();
+        Good good = crateGood(branch);
+        createGProduce(enterprise, good);
+    }
+
+    private Branch createBranch() {
         Branch branch = new Branch();
+        branchDao.create(branch);
+        return branch;
+    }
+
+    private Good crateGood(Branch branch) {
         Good good = new Good();
         good.setBranch(branch);
+        goodDao.create(good);
+        return good;
+    }
+
+    private GProduce createGProduce(Enterprise enterprise, Good good) {
         GProduce gProduce = new GProduce();
         gProduce.setGood(good);
         gProduce.setEnterprise(enterprise);
-
-        Branch branch1 = new Branch();
-        Good good1 = new Good();
-        good1.setBranch(branch1);
-        GProduce gProduce1 = new GProduce();
-        gProduce1.setGood(good);
-        gProduce1.setEnterprise(enterprise);
-
-        session.beginTransaction();
-        session.save(enterprise);
-        session.save(branch);
-        session.save(branch1);
-        session.save(good);
-        session.save(good1);
-        session.save(gProduce);
-        session.save(gProduce1);
-        session.getTransaction().commit();
+        gproduceDao.create(gProduce);
+        return gProduce;
     }
 
     @Test
     public void testDate(){
-        Enterprise e = getEnterprise();
+        Enterprise e = enterpriseDao.read(1L);
         Date check = e.getCheckDate();
         Date create = e.getCreation();
         Date change = e.getLastChange();
@@ -78,7 +107,7 @@ public class EnterpriseTest extends TestEntitiesBase {
 
     @Test
     public void testBranch(){
-        Enterprise e = getEnterprise();
+        Enterprise e = enterpriseDao.read(1L);;
         session.refresh(e);
         List<Branch> bs = e.branches();
         System.out.println(bs);
@@ -87,21 +116,11 @@ public class EnterpriseTest extends TestEntitiesBase {
 
     @Test
     public void testGoods(){
-        Enterprise e = getEnterprise();
+        Enterprise e = enterpriseDao.read(1L);
         session.refresh(e);
         List<GProduce> goods = e.getGoods();
         System.out.println(goods);
         assertEquals(goods.size(), 2);
     }
-    private Enterprise getEnterprise() {
-        List<Enterprise> enterprises = session.createCriteria(Enterprise.class).list();
-        assertFalse(enterprises.isEmpty());
-        return enterprises.get(0);
-    }
 
-    private Date getDate(int inc) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, inc);
-        return calendar.getTime();
-    }
 }

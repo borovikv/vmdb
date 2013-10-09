@@ -1,5 +1,6 @@
 package md.varoinform.modeltest.entitiestest;
 
+import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.*;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -12,77 +13,92 @@ import java.util.*;
  * Time: 3:41 PM
  */
 public class ContactTest extends TestEntitiesBase {
-    List<Email> emailList = new ArrayList<>();
-    List<Phone> phones = new ArrayList<>();
-    List<Url> urls = new ArrayList<>();
+    private List<Email> emails = new ArrayList<>();
+    private List<Phone> phones = new ArrayList<>();
+    private List<Url> urls = new ArrayList<>();
+    private TransactionDaoHibernateImpl<Contact, Long> contactDao;
+    private TransactionDaoHibernateImpl<Url, Long> urlDao;
+    private TransactionDaoHibernateImpl<Phone, Long> phoneDao;
+    private TransactionDaoHibernateImpl<Email, Long> emailDao;
+
+    public ContactTest() {
+        contactDao = new TransactionDaoHibernateImpl<Contact, Long>(Contact.class);
+        urlDao = new TransactionDaoHibernateImpl<Url, Long>(Url.class);
+        phoneDao = new TransactionDaoHibernateImpl<Phone, Long>(Phone.class);
+        emailDao = new TransactionDaoHibernateImpl<Email, Long>(Email.class);
+    }
 
     @Before
     public void before(){
-        for (int i = 0; i < 3; i++) {
-            Email e = new Email();
-            e.setEmail("email_"+i);
-            emailList.add(e);
-            session.beginTransaction();
-            session.save(e);
-            session.getTransaction().commit();
-        }
+        emails = createEmails();
+        phones = createPhones();
+        urls = createUrls();
+        createContact(emails, urls, phones);
+    }
 
-        for (int i = 0; i < 3; i++) {
-            Phone p = new Phone();
-            p.setPhone("phone_"+i);
-            phones.add(p);
-            session.beginTransaction();
-            session.save(p);
-            session.getTransaction().commit();
-        }
+    private void createContact(List<Email> emails, List<Url> urls, List<Phone> phones) {
+        Contact c = new Contact();
+        c.setEmails(emails);
+        c.setUrls(urls);
+        c.setPhones(phones);
+        contactDao.create(c);
+    }
 
+    private List<Url> createUrls() {
+        List<Url> urls = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Url u = new Url();
             u.setUrl("url_"+i);
             urls.add(u);
-            session.beginTransaction();
-            session.save(u);
-            session.getTransaction().commit();
+            urlDao.create(u);
         }
+        return urls;
+    }
 
-        Contact c = new Contact();
-        c.setEmails(emailList);
-        c.setUrls(urls);
-        c.setPhones(phones);
+    private List<Phone> createPhones() {
+        List<Phone> phones = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Phone p = new Phone();
+            p.setPhone("phone_"+i);
+            phones.add(p);
+            phoneDao.create(p);
+        }
+        return phones;
+    }
 
-        session.beginTransaction();
-        session.save(c);
-        session.getTransaction().commit();
+    private List<Email> createEmails() {
+        List<Email> emails = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Email e = new Email();
+            e.setEmail("email_"+i);
+            emails.add(e);
+            emailDao.create(e);
+        }
+        return emails;
     }
 
     @Test
     public void testEmail()  {
-        Contact c = getContact();
+        Contact c = contactDao.read(1L);
         System.out.println(c.getEmails());
-        assertArrayEquals(c.getEmails().toArray(), emailList.toArray());
+        assertArrayEquals(c.getEmails().toArray(), emails.toArray());
     }
 
     @Test
     public void testPhone() {
-        Contact c = getContact();
+        Contact c = contactDao.read(1L);
         System.out.println(c.getPhones());
         assertArrayEquals(c.getPhones().toArray(), phones.toArray());
     }
 
     @Test
     public void testUrl(){
-        Contact c = getContact();
+        Contact c = contactDao.read(1L);;
         System.out.println(c.getUrls());
         assertArrayEquals(c.getUrls().toArray(), urls.toArray());
     }
 
-    private Contact getContact() {
-        List<Contact> cs = session.createCriteria(Contact.class).list();
-        assertFalse(cs.isEmpty());
-        Contact c = cs.get(0);
-        session.refresh(c);
-        return c;  //To change body of created methods use File | Settings | File Templates.
-    }
+
 
 
 }
