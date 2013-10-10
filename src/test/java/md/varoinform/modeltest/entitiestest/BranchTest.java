@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  * Time: 5:01 PM
  */
 public class BranchTest extends TestHibernateBase {
-    private TransactionDaoHibernateImpl<Branch, Long> dao;
+    private final TransactionDaoHibernateImpl<Branch, Long> dao;
 
     public BranchTest() {
         this.dao = getDao();
@@ -36,7 +36,7 @@ public class BranchTest extends TestHibernateBase {
     }
 
     private TransactionDaoHibernateImpl<Branch, Long> getDao() {
-        return new TransactionDaoHibernateImpl<Branch, Long>(Branch.class);
+        return new TransactionDaoHibernateImpl<>(Branch.class);
     }
 
     @Test

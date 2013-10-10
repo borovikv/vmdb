@@ -27,7 +27,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
     private List<GProduce> goods = new ArrayList<>();
-    private List<Branch> branches = new ArrayList<>();
+    private final List<Branch> branches = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "business_entity_id")

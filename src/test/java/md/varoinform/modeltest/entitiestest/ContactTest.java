@@ -17,16 +17,16 @@ public class ContactTest extends TestHibernateBase {
     private List<Email> emails = new ArrayList<>();
     private List<Phone> phones = new ArrayList<>();
     private List<Url> urls = new ArrayList<>();
-    private TransactionDaoHibernateImpl<Contact, Long> contactDao;
-    private TransactionDaoHibernateImpl<Url, Long> urlDao;
-    private TransactionDaoHibernateImpl<Phone, Long> phoneDao;
-    private TransactionDaoHibernateImpl<Email, Long> emailDao;
+    private final TransactionDaoHibernateImpl<Contact, Long> contactDao;
+    private final TransactionDaoHibernateImpl<Url, Long> urlDao;
+    private final TransactionDaoHibernateImpl<Phone, Long> phoneDao;
+    private final TransactionDaoHibernateImpl<Email, Long> emailDao;
 
     public ContactTest() {
-        contactDao = new TransactionDaoHibernateImpl<Contact, Long>(Contact.class);
-        urlDao = new TransactionDaoHibernateImpl<Url, Long>(Url.class);
-        phoneDao = new TransactionDaoHibernateImpl<Phone, Long>(Phone.class);
-        emailDao = new TransactionDaoHibernateImpl<Email, Long>(Email.class);
+        contactDao = new TransactionDaoHibernateImpl<>(Contact.class);
+        urlDao = new TransactionDaoHibernateImpl<>(Url.class);
+        phoneDao = new TransactionDaoHibernateImpl<>(Phone.class);
+        emailDao = new TransactionDaoHibernateImpl<>(Email.class);
     }
 
     @Before
@@ -94,7 +94,7 @@ public class ContactTest extends TestHibernateBase {
 
     @Test
     public void testUrl(){
-        Contact c = contactDao.read(1L);;
+        Contact c = contactDao.read(1L);
         System.out.println(c.getUrls());
         assertArrayEquals(c.getUrls().toArray(), urls.toArray());
     }

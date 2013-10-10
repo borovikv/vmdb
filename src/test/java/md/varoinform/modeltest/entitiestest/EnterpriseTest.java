@@ -20,19 +20,19 @@ import java.util.List;
  * Time: 10:55 AM
  */
 public class EnterpriseTest extends TestHibernateBase {
-    private Date check;
-    private Date create;
-    private Date change;
-    private TransactionDaoHibernateImpl<Enterprise, Long> enterpriseDao;
-    private TransactionDaoHibernateImpl<Branch, Long> branchDao;
-    private TransactionDaoHibernateImpl<Good, Long> goodDao;
-    private TransactionDaoHibernateImpl<GProduce, Long> gproduceDao;
+    private final Date check;
+    private final Date create;
+    private final Date change;
+    private final TransactionDaoHibernateImpl<Enterprise, Long> enterpriseDao;
+    private final TransactionDaoHibernateImpl<Branch, Long> branchDao;
+    private final TransactionDaoHibernateImpl<Good, Long> goodDao;
+    private final TransactionDaoHibernateImpl<GProduce, Long> gproduceDao;
 
     public EnterpriseTest() {
-        enterpriseDao = new TransactionDaoHibernateImpl<Enterprise, Long>(Enterprise.class);
-        branchDao = new TransactionDaoHibernateImpl<Branch, Long>(Branch.class);
-        goodDao = new TransactionDaoHibernateImpl<Good, Long>(Good.class);
-        gproduceDao = new TransactionDaoHibernateImpl<GProduce, Long>(GProduce.class);
+        enterpriseDao = new TransactionDaoHibernateImpl<>(Enterprise.class);
+        branchDao = new TransactionDaoHibernateImpl<>(Branch.class);
+        goodDao = new TransactionDaoHibernateImpl<>(Good.class);
+        gproduceDao = new TransactionDaoHibernateImpl<>(GProduce.class);
         check = getDate(-1);
         create = getDate(-2);
         change = getDate(-3);
@@ -85,12 +85,11 @@ public class EnterpriseTest extends TestHibernateBase {
         return good;
     }
 
-    private GProduce createGProduce(Enterprise enterprise, Good good) {
+    private void createGProduce(Enterprise enterprise, Good good) {
         GProduce gProduce = new GProduce();
         gProduce.setGood(good);
         gProduce.setEnterprise(enterprise);
         gproduceDao.create(gProduce);
-        return gProduce;
     }
 
     @Test
@@ -108,7 +107,7 @@ public class EnterpriseTest extends TestHibernateBase {
 
     @Test
     public void testBranch(){
-        Enterprise e = enterpriseDao.read(1L);;
+        Enterprise e = enterpriseDao.read(1L);
         session.refresh(e);
         List<Branch> bs = e.branches();
         System.out.println(bs);

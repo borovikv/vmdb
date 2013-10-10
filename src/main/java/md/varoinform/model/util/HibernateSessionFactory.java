@@ -17,7 +17,6 @@ import java.io.File;
 public class HibernateSessionFactory {
 
     private static SessionFactory sessionFactory;
-    private static ServiceRegistry serviceRegistry;
     private static Configuration configuration;
     private static Session session;
 
@@ -26,7 +25,7 @@ public class HibernateSessionFactory {
     private static SessionFactory buildSessionFactory(Configuration configuration) {
         HibernateSessionFactory.configuration = configuration;
         try {
-            serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
+            ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
             sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             return sessionFactory;
         }

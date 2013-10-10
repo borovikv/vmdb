@@ -17,13 +17,13 @@ import java.util.List;
  * Time: 10:47 AM
  */
 public class BranchTitleTest extends TestHibernateBase {
-    private TransactionDaoHibernateImpl<Branch, Long> daoBranch;
-    private TransactionDaoHibernateImpl<Language, Long> daoLanguage;
-    private TransactionDaoHibernateImpl<BranchTitle, Long> daoBranchTitle;
+    private final TransactionDaoHibernateImpl<Branch, Long> daoBranch;
+    private final TransactionDaoHibernateImpl<Language, Long> daoLanguage;
+    private final TransactionDaoHibernateImpl<BranchTitle, Long> daoBranchTitle;
     public BranchTitleTest() {
-        daoBranch = new TransactionDaoHibernateImpl<Branch, Long>(Branch.class);
-        daoLanguage = new TransactionDaoHibernateImpl<Language, Long>(Language.class);
-        daoBranchTitle = new TransactionDaoHibernateImpl<BranchTitle, Long>(BranchTitle.class);
+        daoBranch = new TransactionDaoHibernateImpl<>(Branch.class);
+        daoLanguage = new TransactionDaoHibernateImpl<>(Language.class);
+        daoBranchTitle = new TransactionDaoHibernateImpl<>(BranchTitle.class);
     }
 
     @Before

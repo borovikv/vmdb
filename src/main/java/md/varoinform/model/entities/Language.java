@@ -51,7 +51,7 @@ public class Language {
 
     @Override
     public boolean equals(Object obj) {
-        return (!(obj instanceof Language)) && ((Language)obj).id.equals(id);
+        return ((obj instanceof Language)) && ((Language)obj).id.equals(id);
     }
 
     @Override
