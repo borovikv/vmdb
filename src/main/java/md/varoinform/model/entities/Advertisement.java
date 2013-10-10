@@ -21,6 +21,14 @@ public class Advertisement {
     private String imagePath;
     private List<AdvertisementText> texts = new ArrayList<>();
 
+    public Advertisement() {
+    }
+
+    public Advertisement(Enterprise enterprise, String imagePath) {
+        setEnterprise(enterprise);
+        setImagePath(imagePath);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

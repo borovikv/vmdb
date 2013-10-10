@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -11,8 +12,15 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_good")
-public class Good extends TitleContainer {
+public class Good extends TitleContainer<GoodTitle> {
     private Branch branch;
+
+    public Good() {
+    }
+
+    public Good(Branch branch) {
+        setBranch(branch);
+    }
 
     @ManyToOne
     @JoinColumn(name = "branch_id")

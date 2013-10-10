@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class BusinessEntityTypeTitle extends Title {
     private BusinessEntityType businessEntityType;
 
+    public BusinessEntityTypeTitle() {
+    }
+
+    public BusinessEntityTypeTitle(Language language, String title, BusinessEntityType businessEntityType) {
+        super(language, title);
+        setBusinessEntityType(businessEntityType);
+    }
+
     @ManyToOne
     @JoinColumn(name = "business_entity_id")
     public BusinessEntityType getBusinessEntityType() {

@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class GoodTitle extends Title {
     private Good good;
 
+    public GoodTitle() {
+    }
+
+    public GoodTitle(Language language, String title, Good good) {
+        super(language, title);
+        setGood(good);
+    }
+
     @ManyToOne
     @JoinColumn(name = "good_id")
     public Good getGood() {

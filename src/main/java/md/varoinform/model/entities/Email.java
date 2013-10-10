@@ -17,6 +17,13 @@ public class Email {
     private Long id;
     private String email;
 
+    public Email() {
+    }
+
+    public Email(String email) {
+        setEmail(email);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

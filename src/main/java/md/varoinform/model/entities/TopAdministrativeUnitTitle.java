@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class TopAdministrativeUnitTitle extends Title {
     private TopAdministrativeUnit topadministrativeunit;
 
+    public TopAdministrativeUnitTitle() {
+    }
+
+    public TopAdministrativeUnitTitle(Language language, String title, TopAdministrativeUnit topadministrativeunit) {
+        super(language, title);
+        setTopAdministrativeUnit(topadministrativeunit);
+    }
+
     @ManyToOne
     @JoinColumn(name = "topadministrativeunit_id")
     public TopAdministrativeUnit getTopAdministrativeUnit() {

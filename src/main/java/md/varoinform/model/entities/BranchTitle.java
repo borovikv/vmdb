@@ -16,6 +16,11 @@ public class BranchTitle extends Title{
     public BranchTitle() {
     }
 
+    public BranchTitle(Language language, String title, Branch branch) {
+        super(language, title);
+        setBranch(branch);
+    }
+
     @ManyToOne
     @JoinColumn(name = "branch_id")
     public Branch getBranch() {

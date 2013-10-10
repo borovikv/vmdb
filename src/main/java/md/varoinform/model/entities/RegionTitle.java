@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class RegionTitle extends Title {
     private Region region;
 
+    public RegionTitle() {
+    }
+
+    public RegionTitle(Language language, String title, Region region) {
+        super(language, title);
+        setRegion(region);
+    }
+
     @ManyToOne
     @JoinColumn(name = "region_id")
     public Region getRegion() {

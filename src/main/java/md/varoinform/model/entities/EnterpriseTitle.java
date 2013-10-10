@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class EnterpriseTitle extends Title {
     private Enterprise enterprise;
 
+    public EnterpriseTitle() {
+    }
+
+    public EnterpriseTitle(Language language, String title, Enterprise enterprise) {
+        super(language, title);
+        setEnterprise(enterprise);
+    }
+
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
     public Enterprise getEnterprise() {

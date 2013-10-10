@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "DB_enterprise")
-public class Enterprise extends TitleContainer{
+public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private BusinessEntityType businessEntityType;
     private Date creation;
     private Boolean foreingCapital;

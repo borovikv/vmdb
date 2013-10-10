@@ -16,6 +16,13 @@ public class Brand {
     private Long id;
     private String title;
 
+    public Brand() {
+    }
+
+    public Brand(String title) {
+        setTitle(title);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

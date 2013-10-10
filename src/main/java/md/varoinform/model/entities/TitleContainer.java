@@ -13,9 +13,9 @@ import java.util.List;
  * Time: 2:32 PM
  */
 @MappedSuperclass
-public class TitleContainer {
+public class TitleContainer<T extends Title> {
     protected Long id;
-    private List<BranchTitle> titles = new ArrayList<>();
+    private List<T> titles = new ArrayList<>();
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -31,16 +31,16 @@ public class TitleContainer {
 
     @OneToMany
     @JoinColumn(name = "branch_id")
-    public List<BranchTitle> getTitles() {
+    public List<T> getTitles() {
         return titles;
     }
 
-    public void setTitles(List<BranchTitle> titles) {
+    public void setTitles(List<T> titles) {
         this.titles = titles;
     }
 
     public String getTitle(Language lang){
-        for (BranchTitle title : titles) {
+        for (T title : titles) {
             if (title.getLanguage().equals(lang)){
                 return title.getTitle();
             }

@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +11,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_street")
-public class Street extends TitleContainer {
+public class Street extends TitleContainer<StreetTitle> {
+    public Street() {}
+    public Street(List<StreetTitle> titles) {
+        setTitles(titles);
+    }
 }

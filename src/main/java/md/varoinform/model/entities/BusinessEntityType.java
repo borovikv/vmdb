@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +11,5 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_businessentitytype")
-public class BusinessEntityType extends TitleContainer {
+public class BusinessEntityType extends TitleContainer<BusinessEntityTypeTitle> {
 }

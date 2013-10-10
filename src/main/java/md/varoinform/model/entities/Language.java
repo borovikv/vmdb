@@ -20,7 +20,7 @@ public class Language {
     }
 
     public Language(String title) {
-        this.title = title;
+        setTitle(title);
     }
 
     @Id

@@ -17,6 +17,13 @@ public class Phone {
     private Long id;
     private String phone;
 
+    public Phone() {
+    }
+
+    public Phone(String phone) {
+        setPhone(phone);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

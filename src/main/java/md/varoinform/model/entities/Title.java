@@ -16,6 +16,14 @@ public class Title {
     private Language language;
     private String title;
 
+    public Title() {
+    }
+
+    public Title(Language language, String title) {
+        setLanguage(language);
+        setTitle(title);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

@@ -17,6 +17,13 @@ public class Url {
     private Long id;
     private String url;
 
+    public Url() {
+    }
+
+    public Url(String url) {
+        setUrl(url);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

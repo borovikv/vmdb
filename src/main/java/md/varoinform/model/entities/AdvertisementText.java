@@ -19,6 +19,15 @@ public class AdvertisementText {
     private Language language;
     private String text;
 
+    public AdvertisementText() {
+    }
+
+    public AdvertisementText(Advertisement advertisement, Language language, String text) {
+        setAdvertisement(advertisement);
+        setLanguage(language);
+        setText(text);
+    }
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

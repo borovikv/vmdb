@@ -12,11 +12,15 @@ import java.util.List;
  */
 @Entity
 @Table(name = "DB_branch")
-public class Branch extends TitleContainer {
+public class Branch extends TitleContainer<BranchTitle> {
     private Branch parent;
     private List<Branch> children = new ArrayList<>();
 
     public Branch() {
+    }
+
+    public Branch(Branch parent) {
+        setParent(parent);
     }
 
     @ManyToOne(cascade = CascadeType.ALL)

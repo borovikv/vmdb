@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class SectorTitle extends Title {
     private Sector sector;
 
+    public SectorTitle() {
+    }
+
+    public SectorTitle(Language language, String title, Sector sector) {
+        super(language, title);
+        setSector(sector);
+    }
+
     @ManyToOne
     @JoinColumn(name = "sector_id")
     public Sector getSector() {

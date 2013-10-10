@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class PositionTitle extends Title {
     private Position position;
 
+    public PositionTitle() {
+    }
+
+    public PositionTitle(Language language, String title, Position position) {
+        super(language, title);
+        setPosition(position);
+    }
+
     @ManyToOne
     @JoinColumn(name = "position_id")
     public Position getPosition() {

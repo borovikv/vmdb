@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class StreetTitle extends Title {
     private Street street;
 
+    public StreetTitle() {
+    }
+
+    public StreetTitle(Language language, String title, Street street) {
+        super(language, title);
+        setStreet(street);
+    }
+
     @ManyToOne
     @JoinColumn(name = "street_id")
     public Street getStreet() {

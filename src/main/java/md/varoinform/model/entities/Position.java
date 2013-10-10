@@ -2,6 +2,7 @@ package md.varoinform.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,5 +12,5 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "DB_position")
-public class Position extends TitleContainer {
+public class Position extends TitleContainer<PositionTitle> {
 }

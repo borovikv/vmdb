@@ -13,6 +13,14 @@ import javax.persistence.*;
 public class TownTitle extends Title {
     private Town town;
 
+    public TownTitle() {
+    }
+
+    public TownTitle(Language language, String title, Town town) {
+        super(language, title);
+        setTown(town);
+    }
+
     @ManyToOne
     @JoinColumn(name = "town_id")
     public Town getTown() {

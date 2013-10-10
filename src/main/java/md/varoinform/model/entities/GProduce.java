@@ -17,7 +17,16 @@ public class GProduce {
     private Long id;
     private Enterprise enterprise;
     private Good good;
-    private Boolean isProduce;
+    private Boolean produce;
+
+    public GProduce() {
+    }
+
+    public GProduce(Enterprise enterprise, Good good, Boolean produce) {
+        setEnterprise(enterprise);
+        setGood(good);
+        setProduce(produce);
+    }
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -53,11 +62,11 @@ public class GProduce {
 
     @Column(name = "is_produce")
     public Boolean getProduce() {
-        return isProduce;
+        return produce;
     }
 
     public void setProduce(Boolean produce) {
-        isProduce = produce;
+        this.produce = produce;
     }
 
     public Branch branch(){
