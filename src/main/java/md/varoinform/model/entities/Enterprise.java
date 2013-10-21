@@ -158,4 +158,25 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
         }
         return branches;
     }
+
+    @Override
+    public String toString() {
+        return "Enterprise{" +
+                "title =" + getTitles() +
+                ", businessEntityType=" + businessEntityType +
+                ", creation=" + creation +
+                ", foreingCapital=" + foreingCapital +
+                ", workplaces=" + workplaces +
+                ", logo='" + logo + '\'' +
+                ", ypUrl='" + ypUrl + '\'' +
+                ", checkDate=" + checkDate +
+                ", lastChange=" + lastChange +
+                ", contacts=" + contacts +
+                ", advertisements=" + advertisements +
+                ", contactPersons=" + contactPersons +
+                ", brands=" + brands +
+                ", goods=" + goods +
+                ", branches=" + branches +
+                '}';
+    }
 }
