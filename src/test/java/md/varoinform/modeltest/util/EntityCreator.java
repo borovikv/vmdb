@@ -7,7 +7,6 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -164,7 +163,7 @@ public class EntityCreator {
         createContact(e2, towns.get(0), streets.get(0), "1", phones2);
         result.add(e2);
 
-        Enterprise e3 = createEnterprise(allBrands.subList(3, 4), allGoods.subList(3,4), "house&Co");
+        Enterprise e3 = createEnterprise(allBrands.subList(3, 4), allGoods.subList(3, 4), "house&Co");
         String[] phones3 = {"333111", "333222"};
         createContact(e3, towns.get(0), streets.get(2), "1", phones3);
         result.add(e3);
@@ -188,8 +187,9 @@ public class EntityCreator {
     }
 
     private static <T> T get(Class<T> type, String property, Object value){
-        TransactionDaoHibernateImpl<T, Long> dao = new TransactionDaoHibernateImpl<T, Long>(type);
+        TransactionDaoHibernateImpl<T, Long> dao = new TransactionDaoHibernateImpl<>(type);
         Session session = dao.getSession();
+        @SuppressWarnings("unchecked")
         List<T> list = session.createCriteria(type).add(Restrictions.eq(property, value)).list();
         if (!list.isEmpty()){
             return list.get(0);
