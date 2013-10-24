@@ -10,25 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_topadministrativeunittitle")
-public class TopAdministrativeUnitTitle extends Title {
-    private TopAdministrativeUnit topadministrativeunit;
-
+public class TopAdministrativeUnitTitle extends Title<TopAdministrativeUnit> {
     public TopAdministrativeUnitTitle() {
     }
 
     public TopAdministrativeUnitTitle(Language language, String title, TopAdministrativeUnit topadministrativeunit) {
-        super(language, title);
-        setTopAdministrativeUnit(topadministrativeunit);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "topadministrativeunit_id")
-    public TopAdministrativeUnit getTopAdministrativeUnit() {
-        return topadministrativeunit;
-    }
-
-    public void setTopAdministrativeUnit(TopAdministrativeUnit topadministrativeunit) {
-        this.topadministrativeunit = topadministrativeunit;
+        super(language, title, topadministrativeunit);
     }
 }
 

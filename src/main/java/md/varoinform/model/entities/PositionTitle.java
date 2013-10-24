@@ -10,25 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_positiontitle")
-public class PositionTitle extends Title {
-    private Position position;
-
+public class PositionTitle extends Title<Position> {
     public PositionTitle() {
     }
 
     public PositionTitle(Language language, String title, Position position) {
-        super(language, title);
-        setPosition(position);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "position_id")
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
+        super(language, title, position);
     }
 }
 

@@ -20,6 +20,7 @@ public class BranchTitleTest extends TestHibernateBase {
     private final TransactionDaoHibernateImpl<Branch, Long> daoBranch;
     private final TransactionDaoHibernateImpl<Language, Long> daoLanguage;
     private final TransactionDaoHibernateImpl<BranchTitle, Long> daoBranchTitle;
+
     public BranchTitleTest() {
         daoBranch = new TransactionDaoHibernateImpl<>(Branch.class);
         daoLanguage = new TransactionDaoHibernateImpl<>(Language.class);
@@ -38,7 +39,7 @@ public class BranchTitleTest extends TestHibernateBase {
         for (int i = 0; i < 3; i++) {
             BranchTitle title = new BranchTitle();
             title.setTitle("test-" + i);
-            title.setBranch(b);
+            title.setContainer(b);
             title.setLanguage(languages[i]);
             daoBranchTitle.create(title);
         }
@@ -54,7 +55,7 @@ public class BranchTitleTest extends TestHibernateBase {
     public void testTitle(){
         List<BranchTitle> titles = daoBranchTitle.getAll();
         for (BranchTitle title : titles) {
-            System.out.println(title + " + branch = " + title.getBranch());
+            System.out.println(title + " + branch = " + title.getContainer());
         }
         assertTrue(titles.size() == 3);
     }
@@ -83,5 +84,12 @@ public class BranchTitleTest extends TestHibernateBase {
 
         Branch b = getBranch();
         assertEquals(b.getTitle(rus), "test-0");
+    }
+
+    @Test
+    public void testGetContainer(){
+        BranchTitle branchTitle = daoBranchTitle.read(1L);
+        Branch branch = daoBranch.read(1L);
+        assertEquals(branch.getId(), branchTitle.getContainer().getId());
     }
 }

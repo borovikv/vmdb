@@ -10,25 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_branchtitle")
-public class BranchTitle extends Title{
-    private Branch branch;
-
+public class BranchTitle extends Title<Branch>{
     public BranchTitle() {
     }
 
     public BranchTitle(Language language, String title, Branch branch) {
-        super(language, title);
-        setBranch(branch);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "branch_id")
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+        super(language, title, branch);
     }
 
 }

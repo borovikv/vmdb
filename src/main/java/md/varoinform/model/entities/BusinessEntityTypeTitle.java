@@ -10,24 +10,11 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_businessentitytype")
-public class BusinessEntityTypeTitle extends Title {
-    private BusinessEntityType businessEntityType;
-
+public class BusinessEntityTypeTitle extends Title<BusinessEntityType> {
     public BusinessEntityTypeTitle() {
     }
 
     public BusinessEntityTypeTitle(Language language, String title, BusinessEntityType businessEntityType) {
-        super(language, title);
-        setBusinessEntityType(businessEntityType);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "business_entity_id")
-    public BusinessEntityType getBusinessEntityType() {
-        return businessEntityType;
-    }
-
-    public void setBusinessEntityType(BusinessEntityType businessEntityType) {
-        this.businessEntityType = businessEntityType;
+        super(language, title, businessEntityType);
     }
 }

@@ -10,25 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_sectortitle")
-public class SectorTitle extends Title {
-    private Sector sector;
-
+public class SectorTitle extends Title<Sector> {
     public SectorTitle() {
     }
 
     public SectorTitle(Language language, String title, Sector sector) {
-        super(language, title);
-        setSector(sector);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "sector_id")
-    public Sector getSector() {
-        return sector;
-    }
-
-    public void setSector(Sector sector) {
-        this.sector = sector;
+        super(language, title, sector);
     }
 }
 

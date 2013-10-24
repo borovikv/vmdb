@@ -30,7 +30,7 @@ public class TitleContainer<T extends Title> {
     }
 
     @OneToMany
-    @JoinColumn(name = "parentid_id")
+    @JoinColumn(name = "container_id")
     public List<T> getTitles() {
         return titles;
     }

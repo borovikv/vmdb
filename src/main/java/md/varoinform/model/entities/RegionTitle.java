@@ -10,25 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_regiontitle")
-public class RegionTitle extends Title {
-    private Region region;
-
+public class RegionTitle extends Title<Region> {
     public RegionTitle() {
     }
 
     public RegionTitle(Language language, String title, Region region) {
-        super(language, title);
-        setRegion(region);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "region_id")
-    public Region getRegion() {
-        return region;
-    }
-
-    public void setRegion(Region region) {
-        this.region = region;
+        super(language, title, region);
     }
 }
 

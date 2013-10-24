@@ -1,10 +1,15 @@
 package md.varoinform.modeltest.searchengine;
 
+import md.varoinform.model.entities.Brand;
+import md.varoinform.model.entities.Contact;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.modeltest.TestHibernateBase;
 import md.varoinform.modeltest.util.EntityCreator;
 import org.junit.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -30,5 +35,22 @@ public class SearchTest extends TestHibernateBase {
     @Test
     public void testIsCreated(){
         assertEquals(enterprises.size(), 3);
+        Enterprise varo = enterprises.get(0);
+        assertEquals(varo.getTitles().get(0).getTitle(), "Varo");
+        List<String> brandTitles = new ArrayList<>();
+        for (Brand brand : varo.getBrands()) {
+            brandTitles.add(brand.getTitle());
+        }
+        Collections.sort(brandTitles);
+        assertEquals(brandTitles.get(1), "techno-design");
+        assertEquals(brandTitles.get(0), "Varo");
+        System.out.println(varo.branches());
+    }
+
+    @Test
+    public void testContact(){
+        Contact c = (Contact)session.createCriteria(Contact.class).list().get(0);
+        System.out.println("*******************************************************************************************");
+        System.out.println(c);
     }
 }

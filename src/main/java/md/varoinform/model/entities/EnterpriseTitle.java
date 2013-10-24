@@ -10,24 +10,11 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_enterprisetitle")
-public class EnterpriseTitle extends Title {
-    private Enterprise enterprise;
-
+public class EnterpriseTitle extends Title<Enterprise> {
     public EnterpriseTitle() {
     }
 
     public EnterpriseTitle(Language language, String title, Enterprise enterprise) {
-        super(language, title);
-        setEnterprise(enterprise);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "enterprise_id")
-    public Enterprise getEnterprise() {
-        return enterprise;
-    }
-
-    public void setEnterprise(Enterprise enterprise) {
-        this.enterprise = enterprise;
+        super(language, title, enterprise);
     }
 }

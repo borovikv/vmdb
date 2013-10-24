@@ -10,25 +10,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "DB_persontitle")
-public class PersonTitle extends Title {
-    private Person person;
-
+public class PersonTitle extends Title<Person> {
     public PersonTitle() {
     }
 
     public PersonTitle(Language language, String title, Person person) {
-        super(language, title);
-        setPerson(person);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "person_id")
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
+        super(language, title, person);
     }
 }
 

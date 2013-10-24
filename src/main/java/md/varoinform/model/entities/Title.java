@@ -11,17 +11,19 @@ import javax.persistence.*;
  * Time: 9:34 AM
  */
 @MappedSuperclass
-public class Title {
+public class Title<T extends TitleContainer> {
     private Long id;
     private Language language;
     private String title;
+    private T container;
 
     public Title() {
     }
 
-    public Title(Language language, String title) {
+    public Title(Language language, String title, T container) {
         setLanguage(language);
         setTitle(title);
+        setContainer(container);
     }
 
     @Id
@@ -53,6 +55,16 @@ public class Title {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "container_id")
+    public T getContainer() {
+        return container;
+    }
+
+    public void setContainer(T container) {
+        this.container = container;
     }
 
     @Override
