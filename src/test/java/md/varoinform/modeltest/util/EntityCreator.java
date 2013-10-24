@@ -19,7 +19,7 @@ public class EntityCreator {
     }
 
 
-    public List<Branch> createBranches(){
+    public static List<Branch> createBranches(){
         String [] rusBranchTitle = {"регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "Дом и быт"};
         String [] engBranchTitle = {"Advertisement", "design", "printing", "furniture and wood", "House and family life"};
         List<Branch> branches = new ArrayList<>();
@@ -35,7 +35,7 @@ public class EntityCreator {
         return branches;
     }
 
-    public List<Brand> createBrands(){
+    public static List<Brand> createBrands(){
         String[] titles = {"Varo", "techno-design", "Adobe", "Ariel",  "Woodland"};
         List<Brand> brands = new ArrayList<>();
         for (String title : titles) {
@@ -48,7 +48,7 @@ public class EntityCreator {
 
 
 
-    public void createContact(Enterprise enterprise, Town town, Street street, String house, String[] phones){
+    public static void createContact(Enterprise enterprise, Town town, Street street, String house, String[] phones){
         List<Phone> phoneList = createPhones(phones);
         Contact c = new Contact();
         c.setEnterprise(enterprise);
@@ -59,7 +59,7 @@ public class EntityCreator {
         save(Contact.class, c);
     }
 
-    public List<Street> createStreets(){
+    public static List<Street> createStreets(){
         String[] rusTitles = {"Г.Тудор", "Шт.чел Маре", "Еминеску"};
         String[] engTitles = {"G.Tudor", "St.cel Mare", "Eminescu"};
         List<Street> result = new ArrayList<>();
@@ -74,7 +74,7 @@ public class EntityCreator {
         }
         return result;
     }
-    public List<Town> createTowns(){
+    public static List<Town> createTowns(){
         String[] rusTitles = {"кишинев"};
         String[] engTitles = {"chisinau"};
         List<Town> result = new ArrayList<>();
@@ -90,7 +90,7 @@ public class EntityCreator {
         return result;
 
     }
-    public List<Phone> createPhones(String... phones){
+    public static List<Phone> createPhones(String... phones){
         List<Phone> result = new ArrayList<>();
         for (String phone : phones) {
             Phone p = new Phone(phone);
@@ -100,7 +100,7 @@ public class EntityCreator {
         return result;
     }
 
-    public List<Good> createGood(){
+    public static List<Good> createGood(){
         String[] rusTitles = {"плакаты", "макеты", "печать", "гвозди", "утюги"};
         String[] engTitles = {"posters", "models", "print", "nails", "irons"};
         // "регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "Дом и быт"
@@ -121,7 +121,7 @@ public class EntityCreator {
         return result;
     }
 
-    public Enterprise createEnterprise(List<Brand> brands, List<Good> goods, String... titles){
+    public static Enterprise createEnterprise(List<Brand> brands, List<Good> goods, String... titles){
         Enterprise e = new Enterprise();
         e.setBrands(brands);
         save(Enterprise.class, e);
@@ -137,7 +137,7 @@ public class EntityCreator {
         return e;
     }
 
-    public List<Enterprise> createEnterprises(){
+    public static List<Enterprise> createEnterprises(){
         // кишинев
         List<Town> towns = createTowns();
 
@@ -158,7 +158,7 @@ public class EntityCreator {
         createContact(e1, towns.get(0), streets.get(1), "2", phones1);
         result.add(e1);
 
-        Enterprise e2 = createEnterprise(allBrands.subList(1,3), allGoods.subList(1,2), "Polygraph");
+        Enterprise e2 = createEnterprise(allBrands.subList(1,3), allGoods.subList(1,2), "Polygraph", "Полиграф");
         String[] phones2 = {"222111"};
         createContact(e2, towns.get(0), streets.get(0), "1", phones2);
         result.add(e2);
@@ -172,7 +172,7 @@ public class EntityCreator {
     }
 
 
-    private Language getLanguage(String title) {
+    private static Language getLanguage(String title) {
         Language l = get(Language.class, "title", title);
         if (l == null){
             l = new Language(title);
