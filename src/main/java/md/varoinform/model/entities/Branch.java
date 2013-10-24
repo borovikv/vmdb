@@ -48,6 +48,7 @@ public class Branch extends TitleContainer<BranchTitle> {
         return "Branch{" +
                 "id=" + id +
                 ", parent=" + parent +
+                ", titles=" + getTitles() +
                 '}';
     }
 
