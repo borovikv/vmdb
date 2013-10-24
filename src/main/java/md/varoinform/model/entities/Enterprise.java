@@ -132,8 +132,8 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
         this.contactPersons = contactPersons;
     }
 
-    @OneToMany
-    @JoinTable(name = "DB_enterprise_brand", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @ManyToMany
+    @JoinTable(name = "DB_enterprise_brand", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
     public List<Brand> getBrands() {
         return brands;
     }

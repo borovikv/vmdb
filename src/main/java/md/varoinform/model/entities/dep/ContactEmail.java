@@ -1,4 +1,4 @@
-package md.varoinform.model.entities;
+package md.varoinform.model.entities.dep;
 
 import org.hibernate.annotations.GenericGenerator;
 

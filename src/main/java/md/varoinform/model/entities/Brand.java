@@ -43,4 +43,12 @@ public class Brand {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public String toString() {
+        return "Brand{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }
