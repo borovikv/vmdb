@@ -152,7 +152,7 @@ public class EntityCreator {
 
         List<Enterprise> result = new ArrayList<>();
 
-        Enterprise e1 = createEnterprise(allBrands.subList(0,1), allGoods.subList(0,3), "Varo");
+        Enterprise e1 = createEnterprise(allBrands.subList(0,2), allGoods.subList(0,3), "Varo");
         String[] phones1 = {"111111", "111222"};
         createContact(e1, towns.get(0), streets.get(0), "1", phones1);
         createContact(e1, towns.get(0), streets.get(1), "2", phones1);
