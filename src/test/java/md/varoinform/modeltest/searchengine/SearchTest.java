@@ -59,22 +59,44 @@ public class SearchTest extends TestHibernateBase {
     @Test
     public void testSearchByName(){
         //["Varo"], ["Polygraph", "Полиграф"], ["house&Polygraph"]
+        testQuery("Varo", "Varo");
+        testQuery("Polygraph", "Polygraph", "house&Polygraph");
+        testQuery("house&Polygraph", "house&Polygraph");
+    }
 
+    private void testQuery(String query, String... names) {
         SearchEngine searchEngine = new SearchEngine();
+        List<Enterprise> searchResult = searchEngine.search(query);
+        assertNotEquals(searchResult.size(), 0);
+        assertArrayEquals(searchResult.toArray(), getEnterprisesByName(names));
+    }
 
-        String query1 = "Varo";
-        List<Enterprise> searchResult = searchEngine.search(query1);
-        assertEquals(searchResult.size(), 1);
-        Object[] enterprise = { getEnterpriseByName("Varo") };
-        assertArrayEquals(searchResult.toArray(), enterprise);
-        searchResult = null;
-
-
+    private Object[] getEnterprisesByName(String... names) {
+        Object[] result = new Object[names.length];
+        for (int i = 0; i < names.length; i++) {
+            result[i] = getEnterpriseByName(names[i]);
+        }
+        return result;
     }
 
     private Enterprise getEnterpriseByName(String name) {
         return null;
     }
+
+    @Test
+    public void testSearchByGood(){
+        testQuery("плакаты и макеты", "Varo", "Polygraph");
+        testQuery("утюг", "house&Polygraph");
+    }
+
+    @Test
+    public void testMultipleTypeQuery(){
+        testQuery("techno-design плакаты", "Varo");
+        testQuery("techno-design утюги");
+        testQuery("макеты Г.Тудор", "Varo", "Polygraph");
+        testQuery("плакаты Г.Тудор", "Varo");
+    }
+
 
 
 }
