@@ -163,7 +163,7 @@ public class EntityCreator {
         createContact(e2, towns.get(0), streets.get(0), "1", phones2);
         result.add(e2);
 
-        Enterprise e3 = createEnterprise(allBrands.subList(3, 4), allGoods.subList(3, 4), "house&Co");
+        Enterprise e3 = createEnterprise(allBrands.subList(3, 4), allGoods.subList(3, 4), "house&Polygraph");
         String[] phones3 = {"333111", "333222"};
         createContact(e3, towns.get(0), streets.get(2), "1", phones3);
         result.add(e3);
