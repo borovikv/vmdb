@@ -2,9 +2,11 @@ package md.varoinform.modeltest.searchengine;
 
 import md.varoinform.model.entities.Brand;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.EnterpriseTitle;
 import md.varoinform.model.search.SearchEngine;
 import md.varoinform.modeltest.TestHibernateBase;
 import md.varoinform.modeltest.util.EntityCreator;
+import org.hibernate.criterion.Restrictions;
 import org.junit.*;
 
 import java.util.ArrayList;
@@ -80,7 +82,10 @@ public class SearchTest extends TestHibernateBase {
     }
 
     private Enterprise getEnterpriseByName(String name) {
-        return null;
+        List results = session.createCriteria(EnterpriseTitle.class).add(Restrictions.eq("title", name)).list();
+        assertFalse(results.isEmpty());
+        EnterpriseTitle title = (EnterpriseTitle)results.get(0);
+        return title.getContainer();
     }
 
     @Test
