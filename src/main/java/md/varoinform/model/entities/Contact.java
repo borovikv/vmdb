@@ -170,4 +170,22 @@ public class Contact {
     public void setUrls(List<Url> urls) {
         this.urls = urls;
     }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "id=" + id +
+                ", postalCode='" + postalCode + '\'' +
+                ", houseNumber='" + houseNumber + '\'' +
+                ", officeNumber='" + officeNumber + '\'' +
+                ", street=" + street +
+                ", sector=" + sector +
+                ", town=" + town +
+                ", region=" + region +
+                ", topAdministrativeUnit=" + topAdministrativeUnit +
+                ", emails=" + emails +
+                ", phones=" + phones +
+                ", urls=" + urls +
+                '}';
+    }
 }
