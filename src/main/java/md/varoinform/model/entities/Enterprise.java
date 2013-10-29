@@ -1,6 +1,8 @@
 package md.varoinform.model.entities;
 
+import org.apache.solr.analysis.*;
 import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Parameter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +17,22 @@ import java.util.List;
  */
 @Entity
 @Indexed
+@AnalyzerDef(name = "customanalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = StopFilterFactory.class, params = {@Parameter(name = "ignoreCase", value = "true"),
+                        @Parameter(name = "words", value = "word.txt")}),
+                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+                        @Parameter(name = "language", value = "Russian"),
+                }),
+                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+                        @Parameter(name = "language", value = "English")
+                }),
+                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+                        @Parameter(name = "language", value = "Romanian")
+                })
+        })
 @Table(name = "DB_enterprise")
 public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private BusinessEntityType businessEntityType;

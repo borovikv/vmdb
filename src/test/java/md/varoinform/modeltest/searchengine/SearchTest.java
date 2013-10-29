@@ -136,4 +136,10 @@ public class SearchTest extends TestHibernateBase {
         testQuery("гвоздь", "house&Polygraph");
     }
 
+    @Test
+    public void testEngSearch(){
+        testQuery("posters and models", 2, "Varo", "Polygraph");
+        testQuery("nail", "house&Polygraph");
+    }
+
 }

@@ -1,7 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 
@@ -51,6 +51,7 @@ public class Title<T extends TitleContainer> {
 
     @Column(name = "title")
     @Field
+    @Analyzer(definition = "customanalyzer")
     public String getTitle() {
         return title;
     }

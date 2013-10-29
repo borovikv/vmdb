@@ -19,12 +19,12 @@ import java.util.List;
  */
 public class SearchEngine {
     public SearchEngine(Session session) {
-        /*FullTextSession fullTextSession = Search.getFullTextSession(session);
+        FullTextSession fullTextSession = Search.getFullTextSession(session);
         try {
             fullTextSession.createIndexer().startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }     */
+        }
     }
 
     public List<Enterprise> search(String q) {

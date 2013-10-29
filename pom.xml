@@ -51,6 +51,7 @@
           <artifactId>hibernate-search</artifactId>
           <version>4.4.0.Final</version>
       </dependency>
+
       <dependency>
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
