@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
  * Date: 10/8/13
  * Time: 10:54 AM
  */
-
 @Entity
 @Table(name = "DB_contact")
 public class Contact {
@@ -54,6 +54,7 @@ public class Contact {
     }
 
     @Column(name = "postal_code")
+    @Field
     public String getPostalCode() {
         return postalCode;
     }
@@ -63,6 +64,7 @@ public class Contact {
     }
 
     @Column(name = "house_number")
+    @Field
     public String getHouseNumber() {
         return houseNumber;
     }
@@ -72,6 +74,7 @@ public class Contact {
     }
 
     @Column(name = "office_number")
+    @Field
     public String getOfficeNumber() {
         return officeNumber;
     }
@@ -82,6 +85,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "street_id")
+    @IndexedEmbedded
     public Street getStreet() {
         return street;
     }
@@ -92,6 +96,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "sector_id")
+    @IndexedEmbedded
     public Sector getSector() {
         return sector;
     }
@@ -102,6 +107,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "town_id")
+    @IndexedEmbedded
     public Town getTown() {
         return town;
     }
@@ -112,6 +118,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "region_id")
+    @IndexedEmbedded
     public Region getRegion() {
         return region;
     }
@@ -122,6 +129,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "top_administrative_unit_id")
+    @IndexedEmbedded
     public TopAdministrativeUnit getTopAdministrativeUnit() {
         return topAdministrativeUnit;
     }
@@ -132,6 +140,7 @@ public class Contact {
 
     @OneToMany
     @JoinTable(name = "DB_contact_email", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @IndexedEmbedded
     public List<Email> getEmails() {
         return emails;
     }
@@ -142,6 +151,7 @@ public class Contact {
 
     @OneToMany
     @JoinTable(name = "DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @IndexedEmbedded
     public List<Phone> getPhones() {
         return phones;
     }
@@ -152,6 +162,7 @@ public class Contact {
 
     @OneToMany
     @JoinTable(name = "DB_contact_url", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @IndexedEmbedded
     public List<Url> getUrls() {
         return urls;
     }

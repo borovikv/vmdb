@@ -1,6 +1,8 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 
@@ -36,6 +38,7 @@ public class Brand {
     }
 
     @Column(name = "title")
+    @Field
     public String getTitle() {
         return title;
     }

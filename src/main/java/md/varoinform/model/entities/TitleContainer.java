@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class TitleContainer<T extends Title> {
 
     @OneToMany
     @JoinColumn(name = "container_id")
+    @IndexedEmbedded
     public List<T> getTitles() {
         return titles;
     }
@@ -51,4 +53,8 @@ public class TitleContainer<T extends Title> {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "titles=" + titles;
+    }
 }

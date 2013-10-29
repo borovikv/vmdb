@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 
@@ -52,6 +53,7 @@ public class GProduce {
 
     @ManyToOne
     @JoinColumn(name = "good_id")
+    @IndexedEmbedded
     public Good getGood() {
         return good;
     }
@@ -71,5 +73,13 @@ public class GProduce {
 
     public Branch branch(){
         return good.getBranch();
+    }
+
+    @Override
+    public String toString() {
+        return "GProduce{" +
+                "good=" + good +
+                ", produce=" + produce +
+                '}';
     }
 }

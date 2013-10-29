@@ -1,6 +1,8 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 
@@ -10,7 +12,6 @@ import javax.persistence.*;
  * Date: 10/7/13
  * Time: 2:02 PM
  */
-
 @Entity
 @Table(name = "DB_email")
 public class Email {
@@ -37,6 +38,7 @@ public class Email {
     }
 
     @Column(name = "email")
+    @Field
     public String getEmail() {
         return email;
     }

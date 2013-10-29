@@ -103,6 +103,7 @@ public class EntityCreator {
     public static List<Good> createGood(){
         String[] rusTitles = {"плакаты", "макеты", "печать", "гвозди", "утюги"};
         String[] engTitles = {"posters", "models", "print", "nails", "irons"};
+
         // "регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "Дом и быт"
         List<Branch> branches = createBranches();
         List<Good> result = new ArrayList<>();

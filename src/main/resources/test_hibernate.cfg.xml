@@ -11,11 +11,15 @@
         <property name="connection.password">password</property>
         <property name="connection.pool_size">10</property>
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
-        <!--<property name="show_sql">false</property>-->
-        <property name="show_sql">true</property>
+        <property name="show_sql">false</property>
+        <!--<property name="show_sql">true</property>-->
         <property name="hbm2ddl.auto">create</property>
         <property name="hibernate.connection.autocommit">false</property>
         <property name="current_session_context_class">thread</property>
+
+        <property name="hibernate.search.default.directory_provider">filesystem</property>
+        <property name="hibernate.search.default.indexBase">database/DB/indexes</property>
+
 
         <mapping class="md.varoinform.model.entities.Advertisement" />
         <mapping class="md.varoinform.model.entities.AdvertisementText" />
@@ -25,14 +29,9 @@
         <mapping class="md.varoinform.model.entities.BusinessEntityType" />
         <mapping class="md.varoinform.model.entities.BusinessEntityTypeTitle" />
         <mapping class="md.varoinform.model.entities.Contact" />
-        <!--<mapping class="md.varoinform.model.entities.dep.ContactEmail" />-->
         <mapping class="md.varoinform.model.entities.ContactPerson" />
-        <!--<mapping class="md.varoinform.model.entities.dep.ContactPersonPhone" />-->
-        <!--<mapping class="md.varoinform.model.entities.dep.ContactPhone" />-->
-        <!--<mapping class="md.varoinform.model.entities.dep.ContactUrl" />-->
         <mapping class="md.varoinform.model.entities.Email" />
         <mapping class="md.varoinform.model.entities.Enterprise" />
-        <!--<mapping class="md.varoinform.model.entities.EnterpriseBrand" />-->
         <mapping class="md.varoinform.model.entities.EnterpriseTitle" />
         <mapping class="md.varoinform.model.entities.Good" />
         <mapping class="md.varoinform.model.entities.GoodTitle" />

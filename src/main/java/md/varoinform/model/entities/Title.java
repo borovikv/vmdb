@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 
@@ -49,6 +50,7 @@ public class Title<T extends TitleContainer> {
     }
 
     @Column(name = "title")
+    @Field
     public String getTitle() {
         return title;
     }

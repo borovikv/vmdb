@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 
@@ -37,6 +38,7 @@ public class Phone {
     }
 
     @Column(name = "phone")
+    @Field
     public String getPhone() {
         return phone;
     }

@@ -1,5 +1,7 @@
 package md.varoinform.model.entities;
 
+import org.hibernate.search.annotations.Indexed;
+
 import javax.persistence.*;
 
 /**

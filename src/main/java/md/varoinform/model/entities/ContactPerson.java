@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.List;
  * Date: 10/7/13
  * Time: 4:34 PM
  */
-
 @Entity
 @Table(name = "DB_contactperson")
 public class ContactPerson {
@@ -46,6 +46,7 @@ public class ContactPerson {
 
     @ManyToOne
     @JoinColumn(name = "person_id")
+    @IndexedEmbedded
     public Person getPerson() {
         return person;
     }
@@ -66,6 +67,7 @@ public class ContactPerson {
 
     @OneToMany
     @JoinTable(name = "DB_ contactperson_phone", joinColumns = @JoinColumn(name = "contactperson_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @IndexedEmbedded
     public List<Phone> getPhones() {
         return phones;
     }

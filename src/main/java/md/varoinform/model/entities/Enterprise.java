@@ -1,5 +1,7 @@
 package md.varoinform.model.entities;
 
+import org.hibernate.search.annotations.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.List;
  * Time: 11:12 AM
  */
 @Entity
+@Indexed
 @Table(name = "DB_enterprise")
 public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private BusinessEntityType businessEntityType;
@@ -31,6 +34,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
 
     @ManyToOne
     @JoinColumn(name = "business_entity_id")
+    @IndexedEmbedded
     public BusinessEntityType getBusinessEntityType() {
         return businessEntityType;
     }
@@ -104,6 +108,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "enterprise_id")
+    @IndexedEmbedded
     public List<Contact> getContacts() {
         return contacts;
     }
@@ -124,6 +129,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "enterprise_id")
+    @IndexedEmbedded
     public List<ContactPerson> getContactPersons() {
         return contactPersons;
     }
@@ -134,6 +140,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
 
     @ManyToMany
     @JoinTable(name = "DB_enterprise_brand", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
+    @IndexedEmbedded
     public List<Brand> getBrands() {
         return brands;
     }
@@ -144,6 +151,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "enterprise_id")
+    @IndexedEmbedded
     public List<GProduce> getGoods() {
         return goods;
     }
