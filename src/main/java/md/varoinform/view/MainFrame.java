@@ -13,7 +13,7 @@ public class MainFrame extends JFrame{
     public MainFrame() throws HeadlessException {
         setTitle("Varo-Inform");
         setExtendedState(MAXIMIZED_BOTH);
-        setMinimumSize(new Dimension(300, 300));
+        setMinimumSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
         try {
             /*for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
