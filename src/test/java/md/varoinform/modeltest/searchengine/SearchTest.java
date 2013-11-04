@@ -77,13 +77,16 @@ public class SearchTest extends TestHibernateBase {
     @Before
     public void createEnterprises(){
         enterprises = EntityCreator.createEnterprises();
+        for (int i = 0; i < 10000; i++) {
+            EntityCreator.createEnterprises();
+        }
         refresh(enterprises);
     }
 
     private void refresh(List<Enterprise> enterprises) {
         for (Enterprise enterprise : enterprises) {
             session.refresh(enterprise);
-            System.out.println(enterprise);
+            //System.out.println(enterprise);
         }
     }
 

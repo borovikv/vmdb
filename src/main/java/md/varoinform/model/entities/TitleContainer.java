@@ -30,7 +30,7 @@ public class TitleContainer<T extends Title> {
         this.id = id;
     }
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "container_id")
     @IndexedEmbedded
     public List<T> getTitles() {
@@ -41,7 +41,7 @@ public class TitleContainer<T extends Title> {
         this.titles = titles;
     }
 
-    public String getTitle(Language lang){
+    public String title(Language lang){
         for (T title : titles) {
             if (title.getLanguage().equals(lang)){
                 return title.getTitle();

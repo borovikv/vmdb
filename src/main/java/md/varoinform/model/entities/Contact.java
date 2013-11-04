@@ -173,8 +173,7 @@ public class Contact {
 
     @Override
     public String toString() {
-        return "Contact{" +
-                "id=" + id +
+        return   //"id=" + id +
                 ", postalCode='" + postalCode + '\'' +
                 ", houseNumber='" + houseNumber + '\'' +
                 ", officeNumber='" + officeNumber + '\'' +
@@ -185,7 +184,7 @@ public class Contact {
                 ", topAdministrativeUnit=" + topAdministrativeUnit +
                 ", emails=" + emails +
                 ", phones=" + phones +
-                ", urls=" + urls +
-                '}';
+                ", urls=" + urls
+                ;
     }
 }

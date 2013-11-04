@@ -1,6 +1,7 @@
 package md.varoinform.view;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,8 +12,20 @@ import javax.swing.*;
 public class StatusBar extends JPanel{
     public StatusBar() {
         setBorder(BorderFactory.createEtchedBorder());
+        setLayout(new BorderLayout());
         JLabel outputLabel = new JLabel();
         outputLabel.setText("result: 0");
-        add(outputLabel);
+        add(outputLabel, BorderLayout.WEST);
+        addComboBox();
+    }
+
+    private void addComboBox() {
+        String[] items = {
+                "ru",
+                "en",
+                "ro"
+        };
+        JComboBox comboBox = new JComboBox(items);
+        add(comboBox, BorderLayout.EAST);
     }
 }

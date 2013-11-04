@@ -48,7 +48,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
     private List<GProduce> goods = new ArrayList<>();
-    private final List<Branch> branches = new ArrayList<>();
+    private List<Branch> branches;
 
     @ManyToOne
     @JoinColumn(name = "business_entity_id")
@@ -179,8 +179,11 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     }
 
     public List<Branch> branches() {
-        for (GProduce good : goods) {
-            branches.add(good.branch());
+        if (branches == null){
+            branches = new ArrayList<>();
+            for (GProduce good : goods) {
+                branches.add(good.branch());
+            }
         }
         return branches;
     }

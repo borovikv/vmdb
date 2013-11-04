@@ -83,7 +83,7 @@ public class BranchTitleTest extends TestHibernateBase {
         Language rus = languages.get(0);
 
         Branch b = getBranch();
-        assertEquals(b.getTitle(rus), "test-0");
+        assertEquals(b.title(rus), "test-0");
     }
 
     @Test

@@ -11,7 +11,11 @@ import java.awt.*;
  */
 public class MainFrame extends JFrame{
     public MainFrame() throws HeadlessException {
-        setTitle("Varo-Inform");
+        setTitle("Varo-Inform Database");
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        ImageIcon image = ImageHelper.getImageIcon("/icons/V.png");
+        setIconImage(image.getImage());
+
         setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
@@ -30,6 +34,7 @@ public class MainFrame extends JFrame{
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
         Toolbar toolbar = new Toolbar();
         mainPanel.add(toolbar, BorderLayout.NORTH);

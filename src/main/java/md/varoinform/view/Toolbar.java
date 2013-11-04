@@ -15,7 +15,11 @@ public class Toolbar extends JToolBar{
     public Toolbar() {
         //setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setFloatable(false);
-        //setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
+
+        addButton("/icons/home.png");
+        addSeparator();
+        addButton("/icons/arrow_left2.png");
+        addButton("/icons/arrow_right2.png");
         addSeparator();
         SearchPanel searchPanel = new SearchPanel();
         add(searchPanel, BorderLayout.CENTER);
@@ -32,7 +36,6 @@ public class Toolbar extends JToolBar{
         addButton("/icons/mail.png");
         addSeparator(dimension);
         addButton("/icons/settings.png");
-        addSeparator();
     }
 
     private void addComboBox() {
