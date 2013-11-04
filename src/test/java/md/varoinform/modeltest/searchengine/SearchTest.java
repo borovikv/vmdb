@@ -77,9 +77,7 @@ public class SearchTest extends TestHibernateBase {
     @Before
     public void createEnterprises(){
         enterprises = EntityCreator.createEnterprises();
-        for (int i = 0; i < 10000; i++) {
-            EntityCreator.createEnterprises();
-        }
+
         refresh(enterprises);
     }
 

@@ -5,7 +5,9 @@ import java.awt.*;
 import java.io.Serializable;
 
 public class ButtonHelper implements Serializable {
-    public ButtonHelper() {
+    private static final int width = 36;
+    private static final int height = 36;
+    private ButtonHelper() {
     }
 
     public  static JButton createButton(String filename, int width, int height) {
@@ -17,6 +19,16 @@ public class ButtonHelper implements Serializable {
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         //button.setBorderPainted(false);
+        return button;
+    }
+
+    public static JButton createButton(String filename){
+        return ButtonHelper.createButton(filename, width, height);
+    }
+
+    public static JButton createButton(String filename, boolean enable){
+        JButton button = createButton(filename);
+        button.setEnabled(enable);
         return button;
     }
 

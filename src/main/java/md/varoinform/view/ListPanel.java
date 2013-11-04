@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.Demonstrator;
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.EnterpriseCellRender;
@@ -25,7 +26,7 @@ import java.util.*;
  * Date: 10/30/13
  * Time: 10:33 AM
  */
-public class ListPanel extends JPanel{
+public class ListPanel extends JPanel implements Demonstrator {
     private JList list;
     private JEditorPane editorPane;
     private static String templatesPath = File.separator + "templates" + File.separator;
@@ -38,8 +39,6 @@ public class ListPanel extends JPanel{
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 new JScrollPane(list), new JScrollPane(editorPane));
         add(splitPane);
-
-        showAll();
     }
 
 
@@ -90,17 +89,7 @@ public class ListPanel extends JPanel{
         return list;
     }
 
-
-    private void showAll(){
-        GenericDaoHibernateImpl<Enterprise, Long> eDao = new GenericDaoHibernateImpl<Enterprise, Long>(Enterprise.class);
-        java.util.List<Enterprise> enterprises = eDao.getAll();
-        showResults(enterprises);
-        System.out.println("******************************************************************************************");
-        System.out.println(enterprises.size());
-        System.out.println("******************************************************************************************");
-    }
-
-
+    @Override
     public void showResults(List<Enterprise> enterprises){
         DefaultListModel model = new DefaultListModel();
         for (Enterprise enterprise : enterprises) {
@@ -110,7 +99,8 @@ public class ListPanel extends JPanel{
     }
 
 
-    public List getSelected(){
+    @Override
+    public List<Enterprise> getSelected(){
         return list.getSelectedValuesList();
     }
 

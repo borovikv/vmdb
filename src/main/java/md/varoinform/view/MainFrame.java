@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.SearchProxy;
 import md.varoinform.util.ImageHelper;
 
 import javax.swing.*;
@@ -38,16 +39,19 @@ public class MainFrame extends JFrame{
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
-        Toolbar toolbar = new Toolbar();
-        mainPanel.add(toolbar, BorderLayout.NORTH);
 
         NavigationPanel navigationPanel = new NavigationPanel();
         ListPanel listPanel = new ListPanel();
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPanel, listPanel);
         splitPane.setContinuousLayout(true);
-        mainPanel.add(splitPane, BorderLayout.CENTER);
+
+        Toolbar toolbar = new Toolbar();
+        toolbar.setSearchProxy(new SearchProxy(listPanel));
 
         StatusBar statusBar = new StatusBar();
+
+        mainPanel.add(toolbar, BorderLayout.NORTH);
+        mainPanel.add(splitPane, BorderLayout.CENTER);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);

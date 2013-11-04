@@ -18,14 +18,25 @@ import java.util.List;
  * Time: 2:44 PM
  */
 public class SearchEngine {
+
+    public SearchEngine() {
+        Session session = HibernateSessionFactory.getSession();
+        initializeFullTextSession(session);
+    }
+
     public SearchEngine(Session session) {
+        initializeFullTextSession(session);
+    }
+
+    private void initializeFullTextSession(Session session) {
         FullTextSession fullTextSession = Search.getFullTextSession(session);
         try {
             fullTextSession.createIndexer().startAndWait();
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
+
 
     public List<Enterprise> search(String q) {
         FullTextSession fullTextSession = Search.getFullTextSession(HibernateSessionFactory.getSession());
