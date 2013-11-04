@@ -16,7 +16,6 @@ public class RenderTemplate {
     private String template;
     public RenderTemplate(String fileName) {
         URL url = getClass().getResource(fileName);
-        System.out.println(url + fileName);
         template = downloadPage(url);
     }
 

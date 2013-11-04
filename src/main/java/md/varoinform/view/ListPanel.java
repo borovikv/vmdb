@@ -1,9 +1,7 @@
 package md.varoinform.view;
 
 import md.varoinform.controller.Demonstrator;
-import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.util.EnterpriseCellRender;
 import md.varoinform.util.RenderTemplate;
 
 import javax.swing.*;
@@ -30,6 +28,7 @@ public class ListPanel extends JPanel implements Demonstrator {
     private JList list;
     private JEditorPane editorPane;
     private static String templatesPath = File.separator + "templates" + File.separator;
+
 
     public ListPanel() {
         setLayout(new BorderLayout());
@@ -104,6 +103,11 @@ public class ListPanel extends JPanel implements Demonstrator {
         return list.getSelectedValuesList();
     }
 
+    @Override
+    public void clear() {
+        DefaultListModel model = (DefaultListModel) list.getModel();
+        model.clear();
+    }
 
     private static class SelectionListener implements ListSelectionListener {
 

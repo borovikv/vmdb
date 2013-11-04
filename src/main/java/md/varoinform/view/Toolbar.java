@@ -1,6 +1,10 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.Demonstrator;
+import md.varoinform.controller.HistoryProxy;
 import md.varoinform.controller.Proxy;
+import md.varoinform.controller.SearchProxy;
+import md.varoinform.util.AbstractProxyListener;
 import md.varoinform.util.ButtonHelper;
 
 import javax.swing.*;
@@ -24,13 +28,15 @@ public class Toolbar extends JToolBar{
     private JButton settingsButton;
     private JTextField textField;
     private JComboBox comboBox;
+    private HistoryProxy historyProxy;
+    private SearchProxy searchProxy;
 
     private String[] items = {
             "by relevant",
             "by name"
     };
 
-    public Toolbar() {
+    public Toolbar(Demonstrator demonstrator) {
         //setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         setFloatable(false);
@@ -51,10 +57,22 @@ public class Toolbar extends JToolBar{
         comboBox = new JComboBox(items);
         comboBox.setEnabled(false);
 
+        historyProxy = new HistoryProxy(demonstrator);
+        searchProxy = new SearchProxy(demonstrator, historyProxy);
+
         createToolbar();
+
+        setHistoryProxy(historyProxy);
+        setSearchProxy(searchProxy);
     }
 
-    public void setHistoryProxy(Proxy proxy){
+    public void setHistoryProxy(Proxy<String> proxy){
+        homeButton.addActionListener(new HistoryAction(proxy, "home"));
+        backButton.addActionListener(new HistoryAction(proxy, "back"));
+        forwardButton.addActionListener(new HistoryAction(proxy, "forward"));
+        homeButton.setEnabled(true);
+        //backButton.setEnabled(true);
+        //forwardButton.setEnabled(true);
 
     }
 
@@ -84,16 +102,30 @@ public class Toolbar extends JToolBar{
     }
 
 
-    private static class SearchAction implements ActionListener {
-        Proxy<String> proxy;
-
+    private class SearchAction extends AbstractProxyListener<String> {
         public SearchAction(Proxy<String> proxy) {
-            this.proxy = proxy;
+            super(proxy);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             proxy.perform(e.getActionCommand());
+            backButton.setEnabled(true);
+        }
+    }
+
+    private class HistoryAction extends AbstractProxyListener<String> {
+        String command;
+        public HistoryAction(Proxy<String> proxy, String command) {
+            super(proxy);
+            this.command = command;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            proxy.perform(command);
+            forwardButton.setEnabled(((HistoryProxy)proxy).hasForward());
+            backButton.setEnabled(((HistoryProxy)proxy).hasBack());
         }
     }
 }

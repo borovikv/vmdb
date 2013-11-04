@@ -1,6 +1,7 @@
-package md.varoinform.util;
+package md.varoinform.view;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.util.RenderTemplate;
 import md.varoinform.view.EnterpriseView;
 
 import javax.swing.*;

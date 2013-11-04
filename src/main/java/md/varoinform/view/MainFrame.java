@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.HistoryProxy;
 import md.varoinform.controller.SearchProxy;
 import md.varoinform.util.ImageHelper;
 
@@ -45,8 +46,7 @@ public class MainFrame extends JFrame{
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPanel, listPanel);
         splitPane.setContinuousLayout(true);
 
-        Toolbar toolbar = new Toolbar();
-        toolbar.setSearchProxy(new SearchProxy(listPanel));
+        Toolbar toolbar = new Toolbar(listPanel);
 
         StatusBar statusBar = new StatusBar();
 
