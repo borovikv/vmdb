@@ -1,8 +1,8 @@
 package md.varoinform.view;
 
+import md.varoinform.util.ImageHelper;
+
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 
 /**

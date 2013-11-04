@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.util;
 
 import javax.swing.*;
 import java.awt.*;

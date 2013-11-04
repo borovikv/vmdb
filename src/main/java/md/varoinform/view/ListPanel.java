@@ -2,6 +2,8 @@ package md.varoinform.view;
 
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.util.EnterpriseCellRender;
+import md.varoinform.util.RenderTemplate;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

@@ -1,5 +1,7 @@
 package md.varoinform.view;
 
+import md.varoinform.util.ImageHelper;
+
 import javax.swing.*;
 import java.awt.*;
 
