@@ -5,6 +5,7 @@ import md.varoinform.controller.SearchProxy;
 import md.varoinform.util.ImageHelper;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 
 /**
@@ -23,18 +24,7 @@ public class MainFrame extends JFrame{
         setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
-        try {
-            /*for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                System.out.println(info.getName());
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    //break;
-                }
-            }*/
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception exc) {
-            System.err.println("Error loading L&F: " + exc);
-        }
+
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());

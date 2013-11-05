@@ -20,11 +20,16 @@ public class EntityCreator {
 
 
     public static List<Branch> createBranches(){
-        String [] rusBranchTitle = {"регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "Дом и быт"};
+        Branch root = new Branch();
+        save(Branch.class, root);
+        String [] rusBranchTitle = {"регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "дом и быт"};
         String [] engBranchTitle = {"Advertisement", "design", "printing", "furniture and wood", "House and family life"};
         List<Branch> branches = new ArrayList<>();
         for (int i = 0; i < rusBranchTitle.length && i < engBranchTitle.length; i++) {
             Branch b = new Branch();
+            b.setParent(root);
+            if (i%2 == 0)
+                root = b;
             save(Branch.class, b);
             BranchTitle btr = new BranchTitle(getLanguage("rus"), rusBranchTitle[i], b);
             BranchTitle bte = new BranchTitle(getLanguage("eng"), engBranchTitle[i], b);
