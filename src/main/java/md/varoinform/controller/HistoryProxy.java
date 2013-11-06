@@ -3,6 +3,7 @@ package md.varoinform.controller;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.view.ListPanel;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +15,17 @@ import java.util.List;
  */
 public class HistoryProxy implements Proxy<String> {
     private Demonstrator demonstrator;
+    private JButton home;
+    private final JButton back;
+    private final JButton forward;
     private int currentIndex = -1;
     private List<List<Enterprise>> historyPull = new ArrayList<>();
 
-    public HistoryProxy(Demonstrator demonstrator) {
+    public HistoryProxy(Demonstrator demonstrator, JButton home, JButton back, JButton forward) {
         this.demonstrator = demonstrator;
+        this.home = home;
+        this.back = back;
+        this.forward = forward;
     }
 
     @Override
@@ -46,11 +53,14 @@ public class HistoryProxy implements Proxy<String> {
     }
 
     private void back(){
-        System.out.println(hasBack());
         if (hasBack()){
             currentIndex--;
             List<Enterprise> enterprises = historyPull.get(currentIndex);
             demonstrator.showResults(enterprises);
+            forward.setEnabled(true);
+        }
+        if (!hasBack()){
+            back.setEnabled(false);
         }
     }
 
@@ -59,6 +69,10 @@ public class HistoryProxy implements Proxy<String> {
             currentIndex++;
             List<Enterprise> enterprises = historyPull.get(currentIndex);
             demonstrator.showResults(enterprises);
+            back.setEnabled(true);
+        }
+        if (!hasForward()){
+            forward.setEnabled(false);
         }
     }
 
@@ -79,6 +93,8 @@ public class HistoryProxy implements Proxy<String> {
             historyPull.add(enterprises);
         }
         currentIndex++;
+        back.setEnabled(true);
+        forward.setEnabled(false);
     }
 
     public void clear(){

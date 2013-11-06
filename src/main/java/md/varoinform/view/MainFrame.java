@@ -20,33 +20,25 @@ public class MainFrame extends JFrame{
         JFrame.setDefaultLookAndFeelDecorated(true);
         ImageIcon image = ImageHelper.getImageIcon("/icons/V.png");
         setIconImage(image.getImage());
-
         setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
 
+        ListPanel listPanel = new ListPanel();
+        Toolbar toolbar = new Toolbar(listPanel);
+        NavigationPanel navigationPanel = new NavigationPanel(listPanel);
+        navigationPanel.setHistoryProxy(toolbar.getHistoryProxy());
+        StatusBar statusBar = new StatusBar();
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-
-
-        NavigationPanel navigationPanel = new NavigationPanel();
-        ListPanel listPanel = new ListPanel();
+        mainPanel.add(toolbar, BorderLayout.NORTH);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPanel, listPanel);
         splitPane.setContinuousLayout(true);
-
-        Toolbar toolbar = new Toolbar(listPanel);
-
-        StatusBar statusBar = new StatusBar();
-
-        mainPanel.add(toolbar, BorderLayout.NORTH);
         mainPanel.add(splitPane, BorderLayout.CENTER);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
-
-
-
     }
 }

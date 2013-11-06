@@ -28,6 +28,11 @@ public class Toolbar extends JToolBar{
     private JButton settingsButton;
     private JTextField textField;
     private JComboBox comboBox;
+
+    public HistoryProxy getHistoryProxy() {
+        return historyProxy;
+    }
+
     private HistoryProxy historyProxy;
     private SearchProxy searchProxy;
 
@@ -57,7 +62,7 @@ public class Toolbar extends JToolBar{
         comboBox = new JComboBox(items);
         comboBox.setEnabled(false);
 
-        historyProxy = new HistoryProxy(demonstrator);
+        historyProxy = new HistoryProxy(demonstrator, homeButton, backButton, forwardButton);
         searchProxy = new SearchProxy(demonstrator, historyProxy);
 
         createToolbar();
@@ -71,9 +76,6 @@ public class Toolbar extends JToolBar{
         backButton.addActionListener(new HistoryAction(proxy, "back"));
         forwardButton.addActionListener(new HistoryAction(proxy, "forward"));
         homeButton.setEnabled(true);
-        //backButton.setEnabled(true);
-        //forwardButton.setEnabled(true);
-
     }
 
     public void setSearchProxy(Proxy<String> proxy){
@@ -110,7 +112,6 @@ public class Toolbar extends JToolBar{
         @Override
         public void actionPerformed(ActionEvent e) {
             proxy.perform(e.getActionCommand());
-            backButton.setEnabled(true);
         }
     }
 
@@ -124,8 +125,6 @@ public class Toolbar extends JToolBar{
         @Override
         public void actionPerformed(ActionEvent e) {
             proxy.perform(command);
-            forwardButton.setEnabled(((HistoryProxy)proxy).hasForward());
-            backButton.setEnabled(((HistoryProxy)proxy).hasBack());
         }
     }
 }

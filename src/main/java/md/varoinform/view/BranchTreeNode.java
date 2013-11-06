@@ -4,7 +4,9 @@ import md.varoinform.model.entities.Branch;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,11 +15,9 @@ import java.util.Collections;
  * Time: 5:08 PM
  */
 public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparable {
-    /*public BranchTreeNode(String name) {
-        super(name);
-    }
-    */
-    Branch branch;
+    private Branch branch;
+    private List<Long> allChildren;
+
     public BranchTreeNode(Object userObject) {
         super(userObject);
         this.branch = (Branch)userObject;
@@ -40,5 +40,22 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
 
     public Branch getBranch() {
         return branch;
+    }
+    public List<Long> getAllChildren(){
+        if (allChildren == null){
+            allChildren = getAllChildren(branch, null);
+        }
+        return allChildren;
+    }
+
+    private List<Long> getAllChildren(Branch branch, List<Long> result) {
+        if ( result == null ) {
+            result = new ArrayList<Long>();
+        }
+        result.add(branch.getId());
+        for (Branch child : branch.getChildren()) {
+            getAllChildren(child, result);
+        }
+        return result;
     }
 }
