@@ -10,10 +10,12 @@ import java.awt.*;
  * Time: 11:18 AM
  */
 public class StatusBar extends JPanel{
+    private JLabel outputLabel;
+
     public StatusBar() {
         setBorder(BorderFactory.createEtchedBorder());
         setLayout(new BorderLayout());
-        JLabel outputLabel = new JLabel();
+        outputLabel = new JLabel();
         outputLabel.setText("result: 0");
         add(outputLabel, BorderLayout.WEST);
         addComboBox();
@@ -27,5 +29,9 @@ public class StatusBar extends JPanel{
         };
         JComboBox comboBox = new JComboBox(items);
         add(comboBox, BorderLayout.EAST);
+    }
+
+    public void setResult(int resultCount){
+        outputLabel.setText("result: " + resultCount);
     }
 }

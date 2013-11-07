@@ -88,10 +88,18 @@ public class NavigationPanel extends JPanel implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         ObservableEvent event = (ObservableEvent)arg;
-        if ( event.getType() == ObservableEvent.HISTORY_MOVE && event.getValue() instanceof TreePath ) {
+        int eventType = event.getType();
+        Object eventValue = event.getValue();
+
+        if ( eventType == ObservableEvent.HISTORY_MOVE && eventValue instanceof TreePath ) {
             historyChanged = true;
-            tree.setSelectionPath((TreePath)event.getValue());
+            tree.setSelectionPath((TreePath) eventValue);
             historyChanged = false;
+        }
+
+        if ( eventType == ObservableEvent.SEARCH_EVENT
+                || eventType == ObservableEvent.HISTORY_MOVE && ( eventValue instanceof String || eventValue == null ) ){
+            tree.clearSelection();
         }
     }
 }

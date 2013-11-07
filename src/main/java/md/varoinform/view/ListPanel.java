@@ -28,6 +28,7 @@ public class ListPanel extends JPanel implements Demonstrator {
     private JList list;
     private JEditorPane editorPane;
     private static String templatesPath = File.separator + "templates" + File.separator;
+    private StatusBar statusBar;
 
 
     public ListPanel() {
@@ -95,6 +96,9 @@ public class ListPanel extends JPanel implements Demonstrator {
             model.addElement(enterprise);
         }
         list.setModel(model);
+        if ( statusBar != null ){
+            statusBar.setResult(enterprises.size());
+        }
     }
 
 
@@ -107,6 +111,10 @@ public class ListPanel extends JPanel implements Demonstrator {
     public void clear() {
         DefaultListModel model = (DefaultListModel) list.getModel();
         model.clear();
+    }
+
+    public void addStatusBar(StatusBar statusBar) {
+        this.statusBar = statusBar;
     }
 
     private static class SelectionListener implements ListSelectionListener {

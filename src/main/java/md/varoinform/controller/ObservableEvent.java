@@ -14,6 +14,7 @@ public class ObservableEvent {
     public final static int HISTORY_MOVE = 1;
     public final static int BACK_SET_ENABLE = 2;
     public final static int FORWARD_SET_ENABLE = 3;
+    public final static int SEARCH_EVENT = 4;
 
 
     public ObservableEvent(String message) {

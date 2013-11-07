@@ -99,16 +99,19 @@ public class HistoryProxy extends Observable implements Proxy<String> {
         return currentIndex < historyPull.size() - 1;
     }
 
-    public void append(Object enterprises){
-        System.out.println("======================================================================================Append");
+    public void append(Object value){
         boolean isEndOfPull = historyPull.isEmpty() || currentIndex == historyPull.size() -1;
         if (isEndOfPull){
-            historyPull.add(enterprises);
+            historyPull.add(value);
         } else {
             historyPull = historyPull.subList(0, currentIndex+1);
-            historyPull.add(enterprises);
+            historyPull.add(value);
         }
         currentIndex++;
+        if ( value instanceof String || value == null ) {
+            setChanged();
+            notifyObservers( new ObservableEvent( ObservableEvent.SEARCH_EVENT ) );
+        }
         setChanged();
         notifyObservers(backEnableEvent);
         setChanged();

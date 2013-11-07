@@ -24,6 +24,7 @@ public class MainFrame extends JFrame{
 
         HistoryProxy historyProxy = new HistoryProxy();
         ListPanel listPanel = new ListPanel();
+
         Toolbar toolbar = new Toolbar(listPanel);
         toolbar.setHistoryProxy(historyProxy);
         historyProxy.addObserver(toolbar);
@@ -31,7 +32,9 @@ public class MainFrame extends JFrame{
         NavigationPanel navigationPanel = new NavigationPanel(listPanel);
         navigationPanel.setHistoryProxy(historyProxy);
         historyProxy.addObserver(navigationPanel);
+
         StatusBar statusBar = new StatusBar();
+        listPanel.addStatusBar(statusBar);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
