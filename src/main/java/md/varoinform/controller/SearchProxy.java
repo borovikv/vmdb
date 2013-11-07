@@ -15,21 +15,22 @@ import java.util.List;
  * Time: 11:41 AM
  */
 public class SearchProxy implements Proxy<String> {
-    private final HistoryProxy historyProxy;
     private final Demonstrator demonstrator;
 
-    public SearchProxy(Demonstrator demonstrator, HistoryProxy historyProxy) {
+    public SearchProxy(Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
-        this.historyProxy = historyProxy;
     }
 
     @Override
     public void perform(String value) {
+        if( (value == null) || (value == "") ){
+            demonstrator.clear();
+            return;
+        }
 
         SearchEngine se = new SearchEngine();
         List<Enterprise> enterprises = se.search(value);
 
         demonstrator.showResults(enterprises);
-        historyProxy.append(enterprises);
     }
 }

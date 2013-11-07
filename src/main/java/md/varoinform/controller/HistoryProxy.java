@@ -6,6 +6,8 @@ import md.varoinform.view.ListPanel;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,19 +15,22 @@ import java.util.List;
  * Date: 11/4/13
  * Time: 12:15 PM
  */
-public class HistoryProxy implements Proxy<String> {
-    private Demonstrator demonstrator;
-    private JButton home;
-    private final JButton back;
-    private final JButton forward;
+public class HistoryProxy extends Observable implements Proxy<String> {
     private int currentIndex = -1;
-    private List<List<Enterprise>> historyPull = new ArrayList<>();
+    private List<Object> historyPull = new ArrayList<>();
+    private ObservableEvent homeEvent;
+    private ObservableEvent backDisableEvent;
+    private ObservableEvent backEnableEvent;
+    private ObservableEvent forwardDisableEvent;
+    private ObservableEvent forwardEnableEvent;
 
-    public HistoryProxy(Demonstrator demonstrator, JButton home, JButton back, JButton forward) {
-        this.demonstrator = demonstrator;
-        this.home = home;
-        this.back = back;
-        this.forward = forward;
+    public HistoryProxy() {
+        homeEvent = new ObservableEvent(ObservableEvent.HISTORY_MOVE, null);
+        backEnableEvent = new ObservableEvent(ObservableEvent.BACK_SET_ENABLE, true);
+        backDisableEvent = new ObservableEvent(ObservableEvent.BACK_SET_ENABLE, false);
+        forwardEnableEvent = new ObservableEvent(ObservableEvent.FORWARD_SET_ENABLE, true);
+        forwardDisableEvent = new ObservableEvent(ObservableEvent.FORWARD_SET_ENABLE, false);
+
     }
 
     @Override
@@ -47,32 +52,42 @@ public class HistoryProxy implements Proxy<String> {
     }
 
     private void home(){
-        demonstrator.clear();
-        append(new ArrayList<Enterprise>());
+        setChanged();
+        notifyObservers(homeEvent);
+        append(null);
 
     }
 
     private void back(){
         if (hasBack()){
             currentIndex--;
-            List<Enterprise> enterprises = historyPull.get(currentIndex);
-            demonstrator.showResults(enterprises);
-            forward.setEnabled(true);
+            Object prev = historyPull.get(currentIndex);
+
+            setChanged();
+            notifyObservers(new ObservableEvent(ObservableEvent.HISTORY_MOVE, prev));
+            setChanged();
+            notifyObservers(forwardEnableEvent);
         }
         if (!hasBack()){
-            back.setEnabled(false);
+            setChanged();
+            notifyObservers(backDisableEvent);
         }
+
     }
 
     private void forward(){
         if (hasForward()){
             currentIndex++;
-            List<Enterprise> enterprises = historyPull.get(currentIndex);
-            demonstrator.showResults(enterprises);
-            back.setEnabled(true);
+            Object next = historyPull.get(currentIndex);
+
+            setChanged();
+            notifyObservers(new ObservableEvent(ObservableEvent.HISTORY_MOVE, next));
+            setChanged();
+            notifyObservers(backEnableEvent);
         }
         if (!hasForward()){
-            forward.setEnabled(false);
+            setChanged();
+            notifyObservers(forwardDisableEvent);
         }
     }
 
@@ -84,7 +99,8 @@ public class HistoryProxy implements Proxy<String> {
         return currentIndex < historyPull.size() - 1;
     }
 
-    public void append(List<Enterprise> enterprises){
+    public void append(Object enterprises){
+        System.out.println("======================================================================================Append");
         boolean isEndOfPull = historyPull.isEmpty() || currentIndex == historyPull.size() -1;
         if (isEndOfPull){
             historyPull.add(enterprises);
@@ -93,11 +109,13 @@ public class HistoryProxy implements Proxy<String> {
             historyPull.add(enterprises);
         }
         currentIndex++;
-        back.setEnabled(true);
-        forward.setEnabled(false);
+        setChanged();
+        notifyObservers(backEnableEvent);
+        setChanged();
+        notifyObservers(forwardDisableEvent);
     }
 
-    public void clear(){
+    public void clearHistory(){
         historyPull.clear();
         currentIndex = 0;
     }

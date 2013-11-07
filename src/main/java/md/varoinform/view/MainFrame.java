@@ -24,10 +24,14 @@ public class MainFrame extends JFrame{
         setMinimumSize(new Dimension(400, 300));
         setLocationRelativeTo(null);
 
+        HistoryProxy historyProxy = new HistoryProxy();
         ListPanel listPanel = new ListPanel();
         Toolbar toolbar = new Toolbar(listPanel);
+        toolbar.setHistoryProxy(historyProxy);
+        historyProxy.addObserver(toolbar);
+
         NavigationPanel navigationPanel = new NavigationPanel(listPanel);
-        navigationPanel.setHistoryProxy(toolbar.getHistoryProxy());
+        navigationPanel.setHistoryProxy(historyProxy);
         StatusBar statusBar = new StatusBar();
 
         JPanel mainPanel = new JPanel();

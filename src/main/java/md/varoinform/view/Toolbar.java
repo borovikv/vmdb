@@ -1,16 +1,14 @@
 package md.varoinform.view;
 
-import md.varoinform.controller.Demonstrator;
-import md.varoinform.controller.HistoryProxy;
-import md.varoinform.controller.Proxy;
-import md.varoinform.controller.SearchProxy;
+import md.varoinform.controller.*;
 import md.varoinform.util.AbstractProxyListener;
 import md.varoinform.util.ButtonHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,7 +16,7 @@ import java.awt.event.ActionListener;
  * Date: 10/30/13
  * Time: 10:45 AM
  */
-public class Toolbar extends JToolBar{
+public class Toolbar extends JToolBar implements Observer {
     private JButton homeButton;
     private JButton backButton;
     private JButton forwardButton;
@@ -29,12 +27,8 @@ public class Toolbar extends JToolBar{
     private JTextField textField;
     private JComboBox comboBox;
 
-    public HistoryProxy getHistoryProxy() {
-        return historyProxy;
-    }
-
-    private HistoryProxy historyProxy;
     private SearchProxy searchProxy;
+    private HistoryProxy historyProxy;
 
     private String[] items = {
             "by relevant",
@@ -62,16 +56,14 @@ public class Toolbar extends JToolBar{
         comboBox = new JComboBox(items);
         comboBox.setEnabled(false);
 
-        historyProxy = new HistoryProxy(demonstrator, homeButton, backButton, forwardButton);
-        searchProxy = new SearchProxy(demonstrator, historyProxy);
-
         createToolbar();
 
-        setHistoryProxy(historyProxy);
+        searchProxy = new SearchProxy(demonstrator);
         setSearchProxy(searchProxy);
     }
 
     public void setHistoryProxy(Proxy<String> proxy){
+        historyProxy = (HistoryProxy)proxy;
         homeButton.addActionListener(new HistoryAction(proxy, "home"));
         backButton.addActionListener(new HistoryAction(proxy, "back"));
         forwardButton.addActionListener(new HistoryAction(proxy, "forward"));
@@ -103,6 +95,29 @@ public class Toolbar extends JToolBar{
         add(settingsButton);
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        ObservableEvent event = (ObservableEvent) arg;
+
+        switch (event.getType()){
+
+            case ObservableEvent.HISTORY_MOVE:
+                String value = (String) event.getValue();
+                textField.setText(value);
+                searchProxy.perform(value);
+                break;
+
+            case ObservableEvent.BACK_SET_ENABLE:
+                backButton.setEnabled((boolean)event.getValue());
+                break;
+
+            case ObservableEvent.FORWARD_SET_ENABLE:
+                forwardButton.setEnabled((boolean)event.getValue());
+                break;
+        }
+
+    }
+
 
     private class SearchAction extends AbstractProxyListener<String> {
         public SearchAction(Proxy<String> proxy) {
@@ -111,7 +126,9 @@ public class Toolbar extends JToolBar{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            proxy.perform(e.getActionCommand());
+            String value = e.getActionCommand();
+            proxy.perform(value);
+            historyProxy.append(value);
         }
     }
 
