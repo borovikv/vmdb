@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Branch;
 
 import javax.swing.*;
@@ -38,7 +39,7 @@ public class BranchCellRenderer extends DefaultTreeCellRenderer{
         panel.setBackground(background);
         String title = "";
         try {
-            title = branch.getTitles().get(0).getTitle();
+            title = branch.title(LanguageProxy.getInstance().getCurrentLanguage());
         } catch (Exception e){}
 
         JLabel label = new JLabel(title);

@@ -1,7 +1,11 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.LanguageProxy;
+import md.varoinform.model.entities.Language;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,8 +15,12 @@ import java.awt.*;
  */
 public class StatusBar extends JPanel{
     private JLabel outputLabel;
+    private LanguageProxy languageProxy;
+    private JComboBox comboBox;
 
-    public StatusBar() {
+    public StatusBar( LanguageProxy proxy ) {
+        languageProxy = proxy;
+
         setBorder(BorderFactory.createEtchedBorder());
         setLayout(new BorderLayout());
         outputLabel = new JLabel();
@@ -22,16 +30,18 @@ public class StatusBar extends JPanel{
     }
 
     private void addComboBox() {
-        String[] items = {
-                "ru",
-                "en",
-                "ro"
-        };
-        JComboBox comboBox = new JComboBox(items);
+        comboBox = new JComboBox(languageProxy.getLanguages().toArray());
+        comboBox.addActionListener( new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                languageProxy.setCurrentLanguage((Language)comboBox.getSelectedItem());
+            }
+        });
         add(comboBox, BorderLayout.EAST);
     }
 
     public void setResult(int resultCount){
         outputLabel.setText("result: " + resultCount);
     }
+
 }

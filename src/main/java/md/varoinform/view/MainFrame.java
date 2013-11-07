@@ -1,6 +1,7 @@
 package md.varoinform.view;
 
 import md.varoinform.controller.HistoryProxy;
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.util.ImageHelper;
 
 import javax.swing.*;
@@ -32,9 +33,11 @@ public class MainFrame extends JFrame{
         NavigationPanel navigationPanel = new NavigationPanel(listPanel);
         navigationPanel.setHistoryProxy(historyProxy);
         historyProxy.addObserver(navigationPanel);
+        LanguageProxy.getInstance().addObserver(navigationPanel);
 
-        StatusBar statusBar = new StatusBar();
+        StatusBar statusBar = new StatusBar(LanguageProxy.getInstance());
         listPanel.addStatusBar(statusBar);
+
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());

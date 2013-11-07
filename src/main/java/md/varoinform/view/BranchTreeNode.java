@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Branch;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -35,7 +36,7 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
     }
 
     public String getTitle(){
-        return this.branch.getTitles().get(0).getTitle();
+        return this.branch.title(LanguageProxy.getInstance().getCurrentLanguage());
     }
 
     public Branch getBranch() {

@@ -101,5 +101,9 @@ public class NavigationPanel extends JPanel implements Observer {
                 || eventType == ObservableEvent.HISTORY_MOVE && ( eventValue instanceof String || eventValue == null ) ){
             tree.clearSelection();
         }
+
+        if ( eventType == ObservableEvent.LANGUAGE_CHANGED ){
+            tree.updateUI();
+        }
     }
 }
