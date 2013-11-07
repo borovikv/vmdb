@@ -1,11 +1,9 @@
 package md.varoinform.view;
 
 import md.varoinform.controller.HistoryProxy;
-import md.varoinform.controller.SearchProxy;
 import md.varoinform.util.ImageHelper;
 
 import javax.swing.*;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 
 /**
@@ -32,6 +30,7 @@ public class MainFrame extends JFrame{
 
         NavigationPanel navigationPanel = new NavigationPanel(listPanel);
         navigationPanel.setHistoryProxy(historyProxy);
+        historyProxy.addObserver(navigationPanel);
         StatusBar statusBar = new StatusBar();
 
         JPanel mainPanel = new JPanel();

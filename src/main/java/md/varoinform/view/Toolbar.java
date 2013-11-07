@@ -25,7 +25,7 @@ public class Toolbar extends JToolBar implements Observer {
     private JButton mailButton;
     private JButton settingsButton;
     private JTextField textField;
-    private JComboBox comboBox;
+    private JComboBox<String> comboBox;
 
     private SearchProxy searchProxy;
     private HistoryProxy historyProxy;
@@ -53,7 +53,7 @@ public class Toolbar extends JToolBar implements Observer {
         textField.setPreferredSize(new Dimension(0, 36));
         textField.setEnabled(false);
 
-        comboBox = new JComboBox(items);
+        comboBox = new JComboBox<>(items);
         comboBox.setEnabled(false);
 
         createToolbar();
@@ -102,9 +102,11 @@ public class Toolbar extends JToolBar implements Observer {
         switch (event.getType()){
 
             case ObservableEvent.HISTORY_MOVE:
-                String value = (String) event.getValue();
-                textField.setText(value);
-                searchProxy.perform(value);
+                if ( event.getValue() instanceof String || event.getValue() == null ){
+                    String value = (String) event.getValue();
+                    textField.setText(value);
+                    searchProxy.perform(value);
+                }
                 break;
 
             case ObservableEvent.BACK_SET_ENABLE:

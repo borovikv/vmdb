@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.controller.Demonstrator;
 import md.varoinform.controller.HistoryProxy;
+import md.varoinform.controller.ObservableEvent;
 import md.varoinform.model.dao.BranchDao;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Branch;
@@ -11,10 +12,9 @@ import md.varoinform.util.ImageHelper;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,16 +22,16 @@ import java.util.List;
  * Date: 10/30/13
  * Time: 10:33 AM
  */
-public class NavigationPanel extends JPanel{
+public class NavigationPanel extends JPanel implements Observer {
     private Demonstrator demonstrator;
     private HistoryProxy historyProxy;
+    private JTree tree;
+    private boolean historyChanged = false;
 
     public NavigationPanel(Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
         setLayout(new BorderLayout());
         addTabbedPanel();
-
-
     }
 
     private void addTabbedPanel() {
@@ -43,7 +43,7 @@ public class NavigationPanel extends JPanel{
 
     private JScrollPane createBranchTree() {
         BranchTreeNode root = createRoot();
-        JTree tree = new JTree(root);
+        tree = new JTree(root);
         tree.setCellRenderer(new BranchCellRenderer());
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
@@ -54,10 +54,13 @@ public class NavigationPanel extends JPanel{
                 JTree tree = (JTree)e.getSource();
                 BranchTreeNode node = (BranchTreeNode)tree.getLastSelectedPathComponent();
                 if (node == null) return;
+
                 List<Long> allChildren = node.getAllChildren();
                 List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
                 demonstrator.showResults(enterprises);
-                historyProxy.append(enterprises);
+                if ( !historyChanged ){
+                    historyProxy.append(tree.getSelectionPath());
+                }
             }
         });
         return new JScrollPane(tree);
@@ -80,5 +83,15 @@ public class NavigationPanel extends JPanel{
 
     public void setHistoryProxy(HistoryProxy historyProxy) {
         this.historyProxy = historyProxy;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ObservableEvent event = (ObservableEvent)arg;
+        if ( event.getType() == ObservableEvent.HISTORY_MOVE && event.getValue() instanceof TreePath ) {
+            historyChanged = true;
+            tree.setSelectionPath((TreePath)event.getValue());
+            historyChanged = false;
+        }
     }
 }
