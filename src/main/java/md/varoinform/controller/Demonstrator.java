@@ -13,5 +13,6 @@ import java.util.List;
 public interface Demonstrator {
     public void showResults(List<Enterprise> enterprises);
     public List<Enterprise> getSelected();
+    public List<Enterprise> getALL();
     public void clear();
 }

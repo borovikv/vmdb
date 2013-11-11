@@ -1,14 +1,19 @@
 package md.varoinform.view;
 
 import md.varoinform.controller.*;
+import md.varoinform.controller.enterprisecomparators.DefaultComparator;
+import md.varoinform.controller.enterprisecomparators.TitleComparator;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.AbstractProxyListener;
 import md.varoinform.util.ButtonHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +22,7 @@ import java.util.Observer;
  * Time: 10:45 AM
  */
 public class Toolbar extends JToolBar implements Observer {
+    private final Demonstrator demonstrator;
     private JButton homeButton;
     private JButton backButton;
     private JButton forwardButton;
@@ -25,19 +31,14 @@ public class Toolbar extends JToolBar implements Observer {
     private JButton mailButton;
     private JButton settingsButton;
     private JTextField textField;
-    private JComboBox<String> comboBox;
+    private JComboBox comboBox;
 
     private SearchProxy searchProxy;
     private HistoryProxy historyProxy;
 
-    private String[] items = {
-            "by relevant",
-            "by name"
-    };
-
     public Toolbar(Demonstrator demonstrator) {
         //setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
+        this.demonstrator = demonstrator;
         setFloatable(false);
 
         homeButton = ButtonHelper.createButton("/icons/home.png", false);
@@ -53,13 +54,19 @@ public class Toolbar extends JToolBar implements Observer {
         textField.setPreferredSize(new Dimension(0, 36));
         textField.setEnabled(false);
 
-        comboBox = new JComboBox<>(items);
+        List<Comparator<Enterprise>> comparators = new ArrayList<>();
+        comparators.add(new DefaultComparator());
+        comparators.add(new TitleComparator());
+        comboBox = new JComboBox<>(comparators.toArray());
         comboBox.setEnabled(false);
+        setSorting();
 
         createToolbar();
 
         searchProxy = new SearchProxy(demonstrator);
         setSearchProxy(searchProxy);
+
+        updateDisplay();
     }
 
     public void setHistoryProxy(Proxy<String> proxy){
@@ -73,6 +80,29 @@ public class Toolbar extends JToolBar implements Observer {
     public void setSearchProxy(Proxy<String> proxy){
         textField.addActionListener(new SearchAction(proxy));
         textField.setEnabled(true);
+    }
+
+    public void setSorting(){
+        comboBox.addItemListener( new ItemListener() {
+            private List<Enterprise> enterprises;
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if ( e.getStateChange() == ItemEvent.DESELECTED && e.getItem() instanceof DefaultComparator ){
+                    enterprises = new ArrayList<>(demonstrator.getALL());
+
+                } else if ( e.getStateChange() == ItemEvent.SELECTED && e.getItem() instanceof DefaultComparator ) {
+                    demonstrator.showResults(enterprises);
+
+                } else if ( e.getStateChange() == ItemEvent.SELECTED ) {
+                    Comparator<Enterprise> comparator = (Comparator<Enterprise>)comboBox.getSelectedItem();
+                    List<Enterprise> enterprises = demonstrator.getALL();
+                    Collections.sort(enterprises, comparator);
+                    demonstrator.showResults(enterprises);
+
+                }
+            }
+        } );
+        comboBox.setEnabled(true);
     }
 
     private void createToolbar() {
@@ -116,8 +146,26 @@ public class Toolbar extends JToolBar implements Observer {
             case ObservableEvent.FORWARD_SET_ENABLE:
                 forwardButton.setEnabled((boolean)event.getValue());
                 break;
+
+            case ObservableEvent.LANGUAGE_CHANGED:
+                comboBox.updateUI();
+                updateDisplay();
+                break;
         }
 
+    }
+
+    private void updateDisplay() {
+        Locale locale = new Locale(LanguageProxy.getInstance().getCurrentLanguage().getTitle());
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale);
+        homeButton.setToolTipText(bundle.getString("home"));
+        backButton.setToolTipText(bundle.getString("back"));
+        forwardButton.setToolTipText(bundle.getString("forward"));
+        comboBox.setToolTipText(bundle.getString("orderBy"));
+        mailButton.setToolTipText(bundle.getString("mail"));
+        exportButton.setToolTipText(bundle.getString("export"));
+        printButton.setToolTipText(bundle.getString("print"));
+        settingsButton.setToolTipText(bundle.getString("settings"));
     }
 
 

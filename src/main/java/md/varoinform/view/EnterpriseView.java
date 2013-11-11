@@ -1,6 +1,6 @@
 package md.varoinform.view;
 
-import md.varoinform.model.dao.GenericDaoHibernateImpl;
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.*;
 import md.varoinform.util.RenderTemplate;
 
@@ -15,8 +15,11 @@ import java.util.List;
 public class EnterpriseView {
 
     public static String getView(Enterprise enterprise, RenderTemplate render) {
-        String result =  "<b><a href='http://google.com'>" + enterprise.title(getCurrentLanguage()) + "</a></b> <br />" +
-                "" + getBranchName(enterprise);
+        Language currentLanguage = LanguageProxy.getInstance().getCurrentLanguage();
+
+        String result =  "<b><a href='http://google.com'>" + enterprise.title(currentLanguage) + "</a></b> <br />" +
+                "" + getBranchName(enterprise) + "<br />";
+
 
         return render.renderTemplate(result);
     }
@@ -25,14 +28,11 @@ public class EnterpriseView {
         StringBuilder branchNames = new StringBuilder();
         List<Branch> branches  = enterprise.branches();
         for (Branch branch : branches) {
-            branchNames.append(branch.title(getCurrentLanguage()));
+            branchNames.append(branch.title(LanguageProxy.getInstance().getCurrentLanguage()));
             branchNames.append("; ");
         }
         return branchNames.toString();
     }
 
-    private static Language getCurrentLanguage() {
-        Language language = new GenericDaoHibernateImpl<Language, Long>(Language.class).read(1L);
-        return language;  //To change body of created methods use File | Settings | File Templates.
-    }
+
 }

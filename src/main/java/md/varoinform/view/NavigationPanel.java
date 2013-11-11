@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.controller.Demonstrator;
 import md.varoinform.controller.HistoryProxy;
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.ObservableEvent;
 import md.varoinform.model.dao.BranchDao;
 import md.varoinform.model.dao.EnterpriseDao;
@@ -27,6 +28,7 @@ public class NavigationPanel extends JPanel implements Observer {
     private HistoryProxy historyProxy;
     private JTree tree;
     private boolean historyChanged = false;
+    private JTabbedPane tabbedPane;
 
     public NavigationPanel(Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
@@ -35,10 +37,12 @@ public class NavigationPanel extends JPanel implements Observer {
     }
 
     private void addTabbedPanel() {
-        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        tabbedPane.addTab("Иерархия", ImageHelper.getScaledImageIcon("/icons/tree.png", 24, 24), createBranchTree());
-        tabbedPane.addTab("Избранное", ImageHelper.getScaledImageIcon("/icons/star.png", 24, 24), new JPanel());
+
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+        tabbedPane.addTab("", ImageHelper.getScaledImageIcon("/icons/tree.png", 24, 24), createBranchTree());
+        tabbedPane.addTab("", ImageHelper.getScaledImageIcon("/icons/star.png", 24, 24), new JPanel());
         add(tabbedPane);
+        updateDisplay();
     }
 
     private JScrollPane createBranchTree() {
@@ -104,6 +108,15 @@ public class NavigationPanel extends JPanel implements Observer {
 
         if ( eventType == ObservableEvent.LANGUAGE_CHANGED ){
             tree.updateUI();
+            updateDisplay();
+
         }
+    }
+
+    private void updateDisplay() {
+        Locale locale = new Locale(LanguageProxy.getInstance().getCurrentLanguage().getTitle());
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale);
+        tabbedPane.setTitleAt(0, bundle.getString("treeBranch"));
+        tabbedPane.setTitleAt(1, bundle.getString("selected"));
     }
 }

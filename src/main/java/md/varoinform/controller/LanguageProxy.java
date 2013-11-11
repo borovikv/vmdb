@@ -18,7 +18,8 @@ public class LanguageProxy extends Observable {
     private static LanguageProxy instance;
 
     private LanguageProxy() {
-        languageDao = new GenericDaoHibernateImpl<Language, Long>(Language.class);
+        languageDao = new GenericDaoHibernateImpl<>(Language.class);
+        currentLanguage = getLanguages().get(0);
     }
 
     public List<Language> getLanguages(){

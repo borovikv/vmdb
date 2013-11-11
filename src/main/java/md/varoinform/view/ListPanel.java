@@ -29,6 +29,7 @@ public class ListPanel extends JPanel implements Demonstrator {
     private JEditorPane editorPane;
     private static String templatesPath = File.separator + "templates" + File.separator;
     private StatusBar statusBar;
+    private List<Enterprise> currentEnterprises;
 
 
     public ListPanel() {
@@ -91,6 +92,7 @@ public class ListPanel extends JPanel implements Demonstrator {
 
     @Override
     public void showResults(List<Enterprise> enterprises){
+        currentEnterprises = enterprises;
         DefaultListModel model = new DefaultListModel();
         for (Enterprise enterprise : enterprises) {
             model.addElement(enterprise);
@@ -105,6 +107,11 @@ public class ListPanel extends JPanel implements Demonstrator {
     @Override
     public List<Enterprise> getSelected(){
         return list.getSelectedValuesList();
+    }
+
+    @Override
+    public List<Enterprise> getALL() {
+        return currentEnterprises;
     }
 
     @Override
@@ -129,10 +136,14 @@ public class ListPanel extends JPanel implements Demonstrator {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            if (e.getValueIsAdjusting() == false) {
+            if (!e.getValueIsAdjusting()) {
                 JList source = (JList) e.getSource();
                 Enterprise enterprise = (Enterprise)source.getSelectedValue();
-                editorPane.setText(EnterpriseView.getView(enterprise, extendedViewRenderer));
+                if ( enterprise != null ) {
+                    editorPane.setText(EnterpriseView.getView(enterprise, extendedViewRenderer));
+                } else {
+                    editorPane.setText("");
+                }
             }
         }
     }
