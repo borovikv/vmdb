@@ -1,4 +1,4 @@
-package md.varoinform.controller;
+package md.varoinform.view;
 
 import md.varoinform.model.entities.Enterprise;
 

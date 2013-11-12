@@ -16,10 +16,6 @@ public class ImageHelper implements Serializable {
 
     public static ImageIcon getImageIcon(String filename) {
         ImageIcon icon = null;
-        try {
-            icon = new ImageIcon(ButtonHelper.class.getResource(filename));
-        } catch (Exception e) {
-        }
-        return icon;
+        return new ImageIcon(ImageHelper.class.getResource(filename));
     }
 }

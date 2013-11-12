@@ -4,7 +4,6 @@ import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Language;
 
 import java.util.List;
-import java.util.Observable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +11,7 @@ import java.util.Observable;
  * Date: 11/7/13
  * Time: 11:35 AM
  */
-public class LanguageProxy extends Observable {
+public class LanguageProxy {
     private Language currentLanguage;
     private final GenericDaoHibernateImpl<Language, Long> languageDao;
     private static LanguageProxy instance;
@@ -36,8 +35,6 @@ public class LanguageProxy extends Observable {
 
     public void setCurrentLanguage(Language currentLanguage) {
         this.currentLanguage = currentLanguage;
-        setChanged();
-        notifyObservers( new ObservableEvent( ObservableEvent.LANGUAGE_CHANGED ) );
     }
 
 

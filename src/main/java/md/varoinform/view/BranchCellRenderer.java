@@ -6,7 +6,7 @@ import md.varoinform.model.entities.Branch;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
-import static md.varoinform.model.dao.BranchProxy.*;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,13 +37,9 @@ public class BranchCellRenderer extends DefaultTreeCellRenderer{
     public static JPanel branchPanel(Branch branch){
         JPanel panel = new JPanel();
         panel.setBackground(background);
-        String title = "";
-        try {
-            title = branch.title(LanguageProxy.getInstance().getCurrentLanguage());
-        } catch (Exception e){}
+        String title = branch.title(LanguageProxy.getInstance().getCurrentLanguage());
 
         JLabel label = new JLabel(title);
-        //label.setForeground(foreground);
         panel.add(label);
 
         return panel;

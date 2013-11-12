@@ -1,9 +1,8 @@
-package md.varoinform.model.dao;
+package md.varoinform.modeltest.util;
 
 import md.varoinform.model.entities.Branch;
 import md.varoinform.model.util.HibernateSessionFactory;
 import org.hibernate.Query;
-import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ public class BranchProxy {
         
     }
 
+    // Select branch, branch_title
     public static List<BranchProxyView> getBranchProxyView(Long language_id, Long parent_id) {
 
         String hql = "select b, bt.title from Branch b, BranchTitle bt " +
@@ -27,8 +27,9 @@ public class BranchProxy {
         Query query = HibernateSessionFactory.getSession().createQuery(hql)
                 .setParameter("language_id", language_id);
 
+        @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-        List<BranchProxyView> branches = new ArrayList<BranchProxyView>();
+        List<BranchProxyView> branches = new ArrayList<>();
         for (Object[] o : result) {
             branches.add(new BranchProxyView(o));
         }

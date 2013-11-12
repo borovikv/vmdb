@@ -1,6 +1,5 @@
 package md.varoinform.view;
 
-import md.varoinform.controller.Demonstrator;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.RenderTemplate;
 

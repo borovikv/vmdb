@@ -1,6 +1,6 @@
 package md.varoinform.modeltest.entitiestest;
 
-import md.varoinform.model.dao.BranchProxy;
+import md.varoinform.modeltest.util.BranchProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Branch;
@@ -32,7 +32,7 @@ public class SelectTest extends TestHibernateBase {
     public void selectBranchTest(){
         Long language_id = 1L;
         Long parent_id = 1L;
-        List<BranchProxy.BranchProxyView> views = branchProxy.getBranchProxyView(language_id, parent_id);
+        List<BranchProxy.BranchProxyView> views = BranchProxy.getBranchProxyView(language_id, parent_id);
         System.out.println(views);
         assertEquals(views.size(), 1);
     }
@@ -58,7 +58,7 @@ public class SelectTest extends TestHibernateBase {
     }
 
     private void printBranches(List<Long> branchIds){
-        GenericDaoHibernateImpl<Branch, Long> branchDao = new GenericDaoHibernateImpl<Branch, Long>(Branch.class);
+        GenericDaoHibernateImpl<Branch, Long> branchDao = new GenericDaoHibernateImpl<>(Branch.class);
         System.out.println("branches==========================================================================");
         for (Long branchId : branchIds) {
             Branch branch = branchDao.read(branchId);

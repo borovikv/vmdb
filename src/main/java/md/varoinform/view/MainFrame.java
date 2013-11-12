@@ -31,7 +31,7 @@ import java.util.List;
 public class MainFrame extends JFrame{
 
     private final JTabbedPane navigationPane = new JTabbedPane(JTabbedPane.TOP);
-    private final BranchTree branchTree = new BranchTree();
+    private BranchTree branchTree = new BranchTree();
     private final LanguageProxy languageProxy = LanguageProxy.getInstance();
     private OutputLabel resultLabel = new OutputLabel();
     private JButton homeButton = new ToolbarButton("/icons/home.png");
@@ -149,6 +149,8 @@ public class MainFrame extends JFrame{
         @Override
         public void valueChanged(TreeSelectionEvent e) {
             BranchTree tree = (BranchTree) e.getSource();
+            if ( !tree.isNeedToProcess() ) return;
+
             BranchTreeNode node = (BranchTreeNode) tree.getLastSelectedPathComponent();
             if (node == null) return;
 
@@ -264,7 +266,8 @@ public class MainFrame extends JFrame{
         navigationPane.setTitleAt(0, bundle.getString("treeBranch"));
         navigationPane.setTitleAt(1, bundle.getString("selected"));
         resultLabel.setMessageText(bundle.getString("result"));
-        branchTree.updateUI();
+        //branchTree.updateUI();
+        branchTree.updateRoot();
         orderingCombo.updateUI();
     }
 
