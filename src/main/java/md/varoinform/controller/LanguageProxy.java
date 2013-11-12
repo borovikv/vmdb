@@ -30,11 +30,16 @@ public class LanguageProxy extends Observable {
         return currentLanguage;
     }
 
+    public String getCurrentLanguageTitle() {
+        return currentLanguage.getTitle();
+    }
+
     public void setCurrentLanguage(Language currentLanguage) {
         this.currentLanguage = currentLanguage;
         setChanged();
         notifyObservers( new ObservableEvent( ObservableEvent.LANGUAGE_CHANGED ) );
     }
+
 
     public static LanguageProxy getInstance(){
         if ( instance == null ) {

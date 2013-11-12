@@ -28,7 +28,6 @@ public class ListPanel extends JPanel implements Demonstrator {
     private JList list;
     private JEditorPane editorPane;
     private static String templatesPath = File.separator + "templates" + File.separator;
-    private StatusBar statusBar;
     private List<Enterprise> currentEnterprises;
 
 
@@ -84,6 +83,7 @@ public class ListPanel extends JPanel implements Demonstrator {
     private JList createList(JEditorPane editorPane) {
         JList list = new JList();
         RenderTemplate cellRenderer = new RenderTemplate(templatesPath  + "cellTemplate.html");
+        //noinspection unchecked
         list.setCellRenderer(new EnterpriseCellRender(cellRenderer));
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         list.addListSelectionListener(new SelectionListener(editorPane));
@@ -95,17 +95,18 @@ public class ListPanel extends JPanel implements Demonstrator {
         currentEnterprises = enterprises;
         DefaultListModel model = new DefaultListModel();
         for (Enterprise enterprise : enterprises) {
+            //noinspection unchecked
             model.addElement(enterprise);
         }
+        //noinspection unchecked
         list.setModel(model);
-        if ( statusBar != null ){
-            statusBar.setResult(enterprises.size());
-        }
+
     }
 
 
     @Override
     public List<Enterprise> getSelected(){
+        //noinspection unchecked
         return list.getSelectedValuesList();
     }
 
@@ -118,10 +119,6 @@ public class ListPanel extends JPanel implements Demonstrator {
     public void clear() {
         DefaultListModel model = (DefaultListModel) list.getModel();
         model.clear();
-    }
-
-    public void addStatusBar(StatusBar statusBar) {
-        this.statusBar = statusBar;
     }
 
     private static class SelectionListener implements ListSelectionListener {
