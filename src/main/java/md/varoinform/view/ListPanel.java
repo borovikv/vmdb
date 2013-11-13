@@ -1,7 +1,7 @@
 package md.varoinform.view;
 
+import md.varoinform.controller.EnterpriseView;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.util.RenderTemplate;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -81,9 +81,8 @@ public class ListPanel extends JPanel implements Demonstrator {
 
     private JList createList(JEditorPane editorPane) {
         JList list = new JList();
-        RenderTemplate cellRenderer = new RenderTemplate(templatesPath  + "cellTemplate.html");
         //noinspection unchecked
-        list.setCellRenderer(new EnterpriseCellRender(cellRenderer));
+        list.setCellRenderer(new EnterpriseCellRender());
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         list.addListSelectionListener(new SelectionListener(editorPane));
         return list;
@@ -123,11 +122,9 @@ public class ListPanel extends JPanel implements Demonstrator {
     private static class SelectionListener implements ListSelectionListener {
 
         private final JEditorPane editorPane;
-        private RenderTemplate extendedViewRenderer;
 
         public SelectionListener(JEditorPane editorPane) {
             this.editorPane = editorPane;
-            extendedViewRenderer = new RenderTemplate(templatesPath + "extendedTemplate.html");
         }
 
         @Override
@@ -136,7 +133,7 @@ public class ListPanel extends JPanel implements Demonstrator {
                 JList source = (JList) e.getSource();
                 Enterprise enterprise = (Enterprise)source.getSelectedValue();
                 if ( enterprise != null ) {
-                    editorPane.setText(EnterpriseView.getView(enterprise, extendedViewRenderer));
+                    editorPane.setText(EnterpriseView.getView(enterprise));
                 } else {
                     editorPane.setText("");
                 }

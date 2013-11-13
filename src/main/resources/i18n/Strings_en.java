@@ -22,7 +22,25 @@ public class Strings_en extends ListResourceBundle {
             {"export", "export"},
             {"mail", "email"},
             {"settings", "settings"},
-            {"result", "result"}
+            {"result", "result"},
+            {"contactPerson", "" },
+            {"entityType", "" },
+            {"creation", "" },
+            {"foreingCapital", "" },
+            {"workplaces", "" },
+            {"brands", "" },
+            {"goods", "" },
+            {"branches", "" },
+            {"checkDate", "" },
+            {"postalCode", "" },
+            {"address", "" },
+            {"phone", "" },
+            {"fax", "" },
+            {"email", "" },
+            {"urls", "" },
+            {"null", "n/a"},
+            {"true", "yes"},
+            {"false", "no"}
     };
 
     @Override

@@ -23,8 +23,24 @@ public class Strings_ru extends ListResourceBundle {
             {"mail", "отправить"},
             {"settings", "настройки"},
             {"result", "найдено"},
-            {"", ""},
-            {"", ""}
+            {"contactPerson", "контактное лицо" },
+            {"entityType", "тип" },
+            {"creation", "дата создания" },
+            {"foreingCapital", "иностранный капитал" },
+            {"workplaces", "число рабочих" },
+            {"brands", "бренды" },
+            {"goods", "товары" },
+            {"branches", "отрасли" },
+            {"checkDate", "дата проверки" },
+            {"postalCode", "почтовый код" },
+            {"address", "адресс" },
+            {"phone", "телефон" },
+            {"fax", "факс" },
+            {"email", "email" },
+            {"urls", "www" },
+            {"null", "н/д"},
+            {"true", "да"},
+            {"false", "нет"}
     };
 
     @Override
