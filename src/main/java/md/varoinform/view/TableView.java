@@ -21,13 +21,10 @@ import java.util.ResourceBundle;
 public class TableView extends JTable implements Demonstrator {
     private List<Enterprise> currentEnterprises;
     private Object[] columnNames;
-    private final TableColumnAdjuster adjuster;
 
     public TableView() {
         super();
         setRowHeight(20);
-        adjuster = new TableColumnAdjuster(this);
-        adjuster.adjustColumns();
         setColumnNames();
         setModel(new DefaultTableModel(columnNames, 0));
 
@@ -59,7 +56,6 @@ public class TableView extends JTable implements Demonstrator {
             model.addRow(new Object[]{proxy.getTitle(), cp.getAddress(), cp.getPhones(), cp.getFax(), cp.getEmail(), cp.getUrls(), proxy.getBranches()});
         }
         setModel(model);
-        //adjuster.adjustColumns();
         doLayout();
     }
 
