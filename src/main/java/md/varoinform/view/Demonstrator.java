@@ -14,5 +14,6 @@ public interface Demonstrator {
     public void showResults(List<Enterprise> enterprises);
     public List<Enterprise> getSelected();
     public List<Enterprise> getALL();
+    public Enterprise getSelectedEnterprise();
     public void clear();
 }

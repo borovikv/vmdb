@@ -46,7 +46,7 @@ public class BranchTree extends JTree {
     }
 
     public void updateRoot(){
-        updateUI();
+        needToProcess = false;
         Branch branch = getBranchFromSelected();
 
         root.removeAllChildren();
@@ -55,6 +55,8 @@ public class BranchTree extends JTree {
         defaultTreeModel.setRoot(root);
 
         scrollToBranch(branch);
+        updateUI();
+        needToProcess = true;
     }
 
     private Branch getBranchFromSelected() {
@@ -69,9 +71,7 @@ public class BranchTree extends JTree {
             TreePath treePath = getTreePathForBranch(branch);
 
             scrollPathToVisible(treePath);
-            needToProcess = false;
             setSelectionPath(treePath);
-            needToProcess = true;
         }
     }
 

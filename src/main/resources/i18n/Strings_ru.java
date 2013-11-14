@@ -40,7 +40,8 @@ public class Strings_ru extends ListResourceBundle {
             {"urls", "www" },
             {"null", "н/д"},
             {"true", "да"},
-            {"false", "нет"}
+            {"false", "нет"},
+            {"title", "название"}
     };
 
     @Override

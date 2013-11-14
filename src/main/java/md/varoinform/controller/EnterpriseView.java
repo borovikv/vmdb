@@ -40,10 +40,13 @@ public class EnterpriseView extends EntityView {
 
     public static String getCellView(Enterprise enterprise) {
         EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise);
-        String result = "<html><body><h2>" + enterpriseProxy.getTitle() + "</h2><div class='contact'>" +
+        String result = "<html><body><div class='title'>" + enterpriseProxy.getTitle() + "</h2><div class='contact'>" +
                 ContactView.getCellViewContact(enterpriseProxy.getContactProxies()) +
         "</div></body></html>";
+
         return result;
+
+        //return enterpriseProxy.getTitle() + " \n" + ContactView.getCellViewContact(enterpriseProxy.getContactProxies());
     }
 
 

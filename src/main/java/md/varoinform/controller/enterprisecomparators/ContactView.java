@@ -37,24 +37,19 @@ public class ContactView extends EntityView {
     }
 
     public static String getCellViewContact(List<ContactProxy> contactProxies){
+
         StringBuilder sb = new StringBuilder();
         String separator = "";
-        for (ContactProxy contactProxy : contactProxies) {
+        for (ContactProxy proxy : contactProxies) {
             sb.append(separator);
-            sb.append(getSmallContact(contactProxy));
-            separator = "<br />";
+            String result = proxy.getPostalCode() + " " + proxy.getAddress() + " - " + //"<br />"  +
+                    proxy.getPhones() + "\n";
+            sb.append(result);
+            separator = " \n " ;//"<br />";
         }
+
+
         return sb.toString();
     }
-
-    private static String getSmallContact(ContactProxy proxy) {
-        ResourceBundle resourceBundle = getResourceBundle();
-
-        String result = proxy.getPostalCode() + " " + proxy.getAddress() + "<br />"  +
-                proxy.getPhones();
-
-        return result;
-    }
-
 
 }

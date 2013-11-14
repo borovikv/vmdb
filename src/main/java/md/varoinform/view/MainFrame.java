@@ -83,6 +83,7 @@ public class MainFrame extends JFrame{
             forwardButton.setEnabled(true);
         }
     };
+    private final JSplitPane splitPane;
 
     private void performHistoryMove(Object obj) {
         if ( BranchTree.isTreePath(obj) ){
@@ -242,14 +243,14 @@ public class MainFrame extends JFrame{
 
         mainPanel.add(toolbar, BorderLayout.NORTH);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPane, listPanel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPane, listPanel);
         splitPane.setContinuousLayout(true);
 
         mainPanel.add(splitPane, BorderLayout.CENTER);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
-
         setContentPane(mainPanel);
         updateDisplay();
+        sizingPerform();
     }
 
     private void updateDisplay() {
@@ -266,9 +267,12 @@ public class MainFrame extends JFrame{
         navigationPane.setTitleAt(0, bundle.getString("treeBranch"));
         navigationPane.setTitleAt(1, bundle.getString("selected"));
         resultLabel.setMessageText(bundle.getString("result"));
-        //branchTree.updateUI();
         branchTree.updateRoot();
         orderingCombo.updateUI();
+        listPanel.updateDisplay();
     }
 
+    private void sizingPerform(){
+        splitPane.setDividerLocation(300);
+    }
 }
