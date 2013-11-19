@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.branchview;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Branch;
@@ -6,6 +6,7 @@ import md.varoinform.model.entities.Branch;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 
 /**
@@ -15,14 +16,21 @@ import java.awt.*;
  * Time: 3:48 PM
  */
 public class BranchCellRenderer extends DefaultTreeCellRenderer{
-    private static final Color HIGHLIGHT_COLOR = new Color(255, 255, 204);
-    private static final Color ALTERNATIVE_COLOR = new Color(238, 238, 238);
+    private static final Color HIGHLIGHT_COLOR;
+    static {
+        ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
+        HIGHLIGHT_COLOR = (Color)bundle.getObject("highlightColor");
+    }
+    private static Color background;
+
+    public BranchCellRenderer() {
+    }
+
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
                                                   boolean sel, boolean expanded, boolean leaf, int row,
                                                   boolean hasFocus) {
         background = sel ? HIGHLIGHT_COLOR: tree.getBackground();
-        //foreground = sel ? Color.WHITE : tree.getForeground();
 
         if (value instanceof BranchTreeNode){
             BranchTreeNode branchTreeNode = (BranchTreeNode) value;
@@ -45,6 +53,4 @@ public class BranchCellRenderer extends DefaultTreeCellRenderer{
         return panel;
 
     }
-    private static Color background;
-    private static Color foreground;
 }

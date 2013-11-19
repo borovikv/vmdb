@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.demonstrator;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

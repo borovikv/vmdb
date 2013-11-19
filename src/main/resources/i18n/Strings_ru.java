@@ -10,38 +10,46 @@ import java.util.ListResourceBundle;
  */
 public class Strings_ru extends ListResourceBundle {
     private static final Object[][] contents = {
-            {"treeBranch", "товары и услуги"},
+            {"treebranch", "товары и услуги"},
             {"selected", "избранное"},
             {"home", "домой"},
             {"back", "назад"},
             {"forward", "вперед"},
             {"search", "поиск"},
-            {"advancedSearch‎", "расширенный поиск"},
-            {"orderBy", "упорядочить по"},
+            {"advancedsearch‎", "расширенный поиск"},
+            {"orderby", "упорядочить по"},
             {"print", "печать"},
             {"export", "экспорт"},
             {"mail", "отправить"},
             {"settings", "настройки"},
             {"result", "найдено"},
-            {"contactPerson", "контактное лицо" },
-            {"entityType", "тип" },
+            {"contactperson", "контактное лицо" },
+            {"entitytype", "тип" },
             {"creation", "дата создания" },
-            {"foreingCapital", "иностранный капитал" },
+            {"foreingcapital", "иностранный капитал" },
             {"workplaces", "число рабочих" },
             {"brands", "бренды" },
             {"goods", "товары" },
             {"branches", "отрасли" },
-            {"checkDate", "дата проверки" },
-            {"postalCode", "почтовый код" },
+            {"checkdate", "дата проверки" },
+            {"postalcode", "почтовый код" },
             {"address", "адресс" },
-            {"phone", "телефон" },
-            {"fax", "факс" },
-            {"email", "email" },
+            {"phones", "телефон" },
+            {"faxes", "факс" },
+            {"emails", "email" },
             {"urls", "www" },
             {"null", "н/д"},
             {"true", "да"},
             {"false", "нет"},
-            {"title", "название"}
+            {"title", "название"},
+            {"creationdate", "дата создания"},
+            {"businessentitytype", "тип собственности"}
+            /*
+            foreingcapital, region, sector, workplaces, postalcode, urls, officenumber, street, goods, emails,
+             housenumber, creationdate, phones, country, contactperson, brands, title, ypurl, checkdate,
+             topadministrativeunit, address, faxes, town, businessentitytype, branches
+
+             */
     };
 
     @Override

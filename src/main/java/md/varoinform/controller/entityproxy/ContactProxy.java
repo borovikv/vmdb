@@ -1,4 +1,4 @@
-package md.varoinform.controller;
+package md.varoinform.controller.entityproxy;
 
 import md.varoinform.model.entities.*;
 

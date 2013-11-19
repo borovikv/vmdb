@@ -29,8 +29,8 @@ public class LanguageProxy {
         return currentLanguage;
     }
 
-    public String getCurrentLanguageTitle() {
-        return currentLanguage.getTitle();
+    public static String getCurrentLanguageTitle() {
+        return getInstance().getCurrentLanguage().getTitle();
     }
 
     public void setCurrentLanguage(Language currentLanguage) {

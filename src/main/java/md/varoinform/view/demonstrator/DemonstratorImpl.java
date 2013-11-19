@@ -1,7 +1,8 @@
-package md.varoinform.view;
+package md.varoinform.view.demonstrator;
 
-import md.varoinform.controller.EnterpriseView;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.util.ObservableEvent;
+import md.varoinform.util.Observer;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -15,15 +16,14 @@ import java.util.List;
  * Date: 10/30/13
  * Time: 10:33 AM
  */
-public class ListPanel extends JPanel implements Demonstrator {
+public class DemonstratorImpl extends JPanel implements Demonstrator, Observer {
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
-    //private final ListView demonstrator = new ListView();
     private final JSplitPane splitPane;
 
 
-    public ListPanel() {
+    public DemonstratorImpl() {
         setLayout(new BorderLayout());
 
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
@@ -63,7 +63,7 @@ public class ListPanel extends JPanel implements Demonstrator {
         Enterprise enterprise = getSelectedEnterprise();
         demonstrator.updateUI();
 
-        showEnterprise( enterprise );
+        showEnterprise(enterprise);
     }
 
     private void showEnterprise(Enterprise enterprise) {
@@ -72,6 +72,12 @@ public class ListPanel extends JPanel implements Demonstrator {
         } else {
             browser.setText("");
         }
+    }
+
+    @Override
+    public void update(ObservableEvent event) {
+        if ( event.getType() == ObservableEvent.STRUCTURE_CHANGED)
+            demonstrator.fireViewStructureChanged();
     }
 
     private class SelectionListener implements ListSelectionListener {

@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.branchview;
 
 import md.varoinform.model.dao.BranchDao;
 import md.varoinform.model.entities.Branch;

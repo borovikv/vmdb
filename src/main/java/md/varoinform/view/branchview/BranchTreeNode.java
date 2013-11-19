@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.branchview;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Branch;

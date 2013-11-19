@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.demonstrator;
 
 import md.varoinform.model.entities.Enterprise;
 

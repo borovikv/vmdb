@@ -10,7 +10,9 @@ import java.util.ListResourceBundle;
 public class VaroDB extends ListResourceBundle {
     private static final Object[][] contents = {
             {"highlightColor", new Color(255, 255, 204)},
-            {"alternativeColor", new Color(238, 238, 238)}
+            {"alternativeColor", new Color(238, 238, 238)},
+            {"defaultColumns", "title;address;phones;faxes;emails;urls"},
+            {"defaultViewPartPriority", "title;address;phones;faxes;emails;urls"}
 
     };
 

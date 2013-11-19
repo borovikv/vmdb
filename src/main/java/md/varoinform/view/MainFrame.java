@@ -2,13 +2,16 @@ package md.varoinform.view;
 
 import md.varoinform.controller.HistoryProxy;
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.controller.enterprisecomparators.DefaultComparator;
-import md.varoinform.controller.enterprisecomparators.TitleComparator;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.model.search.SearchEngine;
 import md.varoinform.util.ImageHelper;
+import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.view.branchview.BranchTree;
+import md.varoinform.view.branchview.BranchTreeNode;
+import md.varoinform.view.demonstrator.DemonstratorImpl;
+import md.varoinform.view.settings.SettingsDialog;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -17,9 +20,6 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.*;
 import java.util.List;
 
 /**
@@ -40,38 +40,14 @@ public class MainFrame extends JFrame{
     private JButton printButton = new ToolbarButton("/icons/print.png", false);
     private JButton exportButton = new ToolbarButton("/icons/export.png", false);
     private JButton mailButton = new ToolbarButton("/icons/mail.png", false);
-    private JButton settingsButton = new ToolbarButton("/icons/settings.png", false);
+    private JButton settingsButton = new ToolbarButton("/icons/settings.png");
     private JTextField searchField = new JTextField();
-    private JComboBox<Comparator<Enterprise>> orderingCombo;
     private JComboBox<Language> languageCombo;
     private final HistoryProxy historyProxy = new HistoryProxy();
-    private ListPanel listPanel = new ListPanel();
+    private DemonstratorImpl demonstratorImpl = new DemonstratorImpl();
     private SearchEngine searchEngine = new SearchEngine();
-    private List<Comparator<Enterprise>> comparators = new ArrayList<>();
     private boolean historyChanged = false;
-
-    // ordering
-    private final ItemListener itemListener = new ItemListener() {
-        private List<Enterprise> enterprises;
-
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.DESELECTED && e.getItem() instanceof DefaultComparator) {
-                enterprises = new ArrayList<>(listPanel.getALL());
-
-            } else if (e.getStateChange() == ItemEvent.SELECTED && e.getItem() instanceof DefaultComparator) {
-                listPanel.showResults(enterprises);
-
-            } else if (e.getStateChange() == ItemEvent.SELECTED) {
-                //noinspection unchecked
-                Comparator<Enterprise> comparator = (Comparator<Enterprise>) orderingCombo.getSelectedItem();
-                List<Enterprise> enterprises = listPanel.getALL();
-                Collections.sort(enterprises, comparator);
-                listPanel.showResults(enterprises);
-
-            }
-        }
-    };
+    private final SettingsDialog settingsDialog;
 
     // back
     private final AbstractAction backAction = new AbstractAction() {
@@ -96,7 +72,7 @@ public class MainFrame extends JFrame{
             searchText(text);
             branchTree.clearSelection();
         } else {
-            listPanel.clear();
+            demonstratorImpl.clear();
         }
     }
 
@@ -116,7 +92,7 @@ public class MainFrame extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             historyProxy.home();
-            listPanel.clear();
+            demonstratorImpl.clear();
             branchTree.clearSelection();
         }
     };
@@ -141,7 +117,7 @@ public class MainFrame extends JFrame{
         if (value == null) return;
 
         List<Enterprise> enterprises = searchEngine.search(value);
-        listPanel.showResults(enterprises);
+        demonstratorImpl.showResults(enterprises);
         resultLabel.setResultCount(enterprises.size());
     }
 
@@ -157,7 +133,7 @@ public class MainFrame extends JFrame{
 
             List<Long> allChildren = node.getAllChildren();
             List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
-            listPanel.showResults(enterprises);
+            demonstratorImpl.showResults(enterprises);
             resultLabel.setResultCount(enterprises.size());
             if (!historyChanged) {
                 TreePath selectionPath = tree.getSelectionPath();
@@ -176,8 +152,16 @@ public class MainFrame extends JFrame{
         }
     };
 
+    private AbstractAction settingsAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            settingsDialog.setVisible(true);
+        }
+    };
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
+        settingsDialog = new SettingsDialog(this);
+
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
         ImageIcon image = ImageHelper.getImageIcon("/icons/V.png");
@@ -205,12 +189,6 @@ public class MainFrame extends JFrame{
         searchField.addActionListener(searchListener);
         toolbar.add(searchField);
 
-        comparators.add(new DefaultComparator());
-        comparators.add(new TitleComparator());
-        //noinspection unchecked
-        orderingCombo = new JComboBox(comparators.toArray());
-        orderingCombo.addItemListener(itemListener);
-        toolbar.add(orderingCombo);
         toolbar.addSeparator();
 
         toolbar.add(exportButton);
@@ -219,6 +197,8 @@ public class MainFrame extends JFrame{
         toolbar.addSeparator();
         toolbar.add(printButton);
         toolbar.addSeparator();
+
+        settingsButton.addActionListener(settingsAction);
         toolbar.add(settingsButton);
 
         //--------------------------------------------------------------------------------------------------------------
@@ -243,33 +223,31 @@ public class MainFrame extends JFrame{
 
         mainPanel.add(toolbar, BorderLayout.NORTH);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPane, listPanel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPane, demonstratorImpl);
         splitPane.setContinuousLayout(true);
+        settingsDialog.addObserver(demonstratorImpl);
 
         mainPanel.add(splitPane, BorderLayout.CENTER);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
         setContentPane(mainPanel);
         updateDisplay();
         sizingPerform();
+
     }
 
     private void updateDisplay() {
-        Locale locale = new Locale(languageProxy.getCurrentLanguageTitle());
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale);
-        homeButton.setToolTipText(bundle.getString("home"));
-        backButton.setToolTipText(bundle.getString("back"));
-        forwardButton.setToolTipText(bundle.getString("forward"));
-        orderingCombo.setToolTipText(bundle.getString("orderBy"));
-        mailButton.setToolTipText(bundle.getString("mail"));
-        exportButton.setToolTipText(bundle.getString("export"));
-        printButton.setToolTipText(bundle.getString("print"));
-        settingsButton.setToolTipText(bundle.getString("settings"));
-        navigationPane.setTitleAt(0, bundle.getString("treeBranch"));
-        navigationPane.setTitleAt(1, bundle.getString("selected"));
-        resultLabel.setMessageText(bundle.getString("result"));
+        homeButton.setToolTipText(ResourceBundleHelper.getString("home"));
+        backButton.setToolTipText(ResourceBundleHelper.getString("back"));
+        forwardButton.setToolTipText(ResourceBundleHelper.getString("forward"));
+        mailButton.setToolTipText(ResourceBundleHelper.getString("mail"));
+        exportButton.setToolTipText(ResourceBundleHelper.getString("export"));
+        printButton.setToolTipText(ResourceBundleHelper.getString("print"));
+        settingsButton.setToolTipText(ResourceBundleHelper.getString("settings"));
+        navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
+        navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
+        resultLabel.setMessageText(ResourceBundleHelper.getString("result"));
         branchTree.updateRoot();
-        orderingCombo.updateUI();
-        listPanel.updateDisplay();
+        demonstratorImpl.updateDisplay();
     }
 
     private void sizingPerform(){
