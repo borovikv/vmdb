@@ -1,15 +1,22 @@
 package md.varoinform.view.dialogs;
 
 import md.varoinform.controller.LanguageProxy;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.view.demonstrator.Demonstrator;
+import md.varoinform.view.dialogs.preview.Address;
+import md.varoinform.view.dialogs.preview.PrintPreviewDialog;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.print.*;
 import java.util.List;
 
 /**
@@ -28,15 +35,16 @@ public class PrintDialog extends JDialog {
     private int amount = PRINT_SELECTED;
     private Language language;
     private final FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
+    private final HashPrintRequestAttributeSet attributes;
+    private PageFormat pageFormat;
+    private Demonstrator demonstrator;
 
-    public static void main(String[] args) {
-        PrintDialog pd = new PrintDialog();
-        pd.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        pd.setVisible(true);
-    }
-    public PrintDialog() {
+
+    public PrintDialog(Component parent, Demonstrator demonstrator) {
+        this.demonstrator = demonstrator;
         setSize(450, 500);
         setTitle(ResourceBundleHelper.getString("print", "Print"));
+        setLocationRelativeTo(parent);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 1));
@@ -77,14 +85,47 @@ public class PrintDialog extends JDialog {
         languagePanel.add(languageCombo);
         panel.add(languagePanel);
 
-
+        attributes = new HashPrintRequestAttributeSet();
         JPanel buttonPanel = new JPanel();
         JButton printButton = new JButton(ResourceBundleHelper.getString("print", "Print"));
-        JButton previewButton = new JButton(ResourceBundleHelper.getString("print-preview", "Preview"));
-        JButton settingsButton = new JButton(ResourceBundleHelper.getString("print-settings", "Advanced"));
-        buttonPanel.add(settingsButton);
-        buttonPanel.add(previewButton);
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    PrinterJob job = PrinterJob.getPrinterJob();
+                    job.setPageable(makeBook());
+                    if (job.printDialog(attributes)) {
+                        job.print(attributes);
+                    }
+                } catch (PrinterException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         buttonPanel.add(printButton);
+
+
+        JButton printPreviewButton = new JButton(ResourceBundleHelper.getString("print-preview", "Preview"));
+        buttonPanel.add(printPreviewButton);
+        printPreviewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PrintPreviewDialog dialog = new PrintPreviewDialog(makeBook());
+                dialog.setVisible(true);
+            }
+        });
+
+        JButton pageSetupButton = new JButton(ResourceBundleHelper.getString("print-settings", "Advanced"));
+        buttonPanel.add(pageSetupButton);
+        pageSetupButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PrinterJob job = PrinterJob.getPrinterJob();
+                pageFormat = job.pageDialog(attributes);
+            }
+        });
+
+
 
         add(panel, BorderLayout.CENTER);
         JScrollPane choosePane = new JScrollPane(fieldChoosePanel);
@@ -92,6 +133,32 @@ public class PrintDialog extends JDialog {
         add(choosePane, BorderLayout.EAST);
         add(buttonPanel, BorderLayout.SOUTH);
 
+    }
+
+    private Book makeBook() {
+        if (pageFormat == null){
+            PrinterJob job = PrinterJob.getPrinterJob();
+            pageFormat = job.defaultPage();
+        }
+
+        Book book = new Book();
+        List<Enterprise> enterprises = null;
+        if (amount == PRINT_ALL) {
+            enterprises = demonstrator.getALL();
+        } else if (amount == PRINT_SELECTED) {
+            enterprises = demonstrator.getSelected();
+        }
+
+        if (mode == DATA_MODE){
+
+        } else if (mode == ADDRESS_MODE){
+            Address address = new Address(enterprises);
+
+            int pageCount = address.getPageCount(pageFormat);
+            book.append(address, pageFormat, pageCount);
+        }
+
+        return book;
     }
 
     private JPanel createRadioButtonGroup(String title, JRadioButton[] buttons) {

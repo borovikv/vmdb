@@ -1,10 +1,13 @@
 package md.varoinform.view.dialogs.preview;
 
+import md.varoinform.util.ImageHelper;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Book;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +26,13 @@ public class PrintPreviewDialog extends JDialog{
     }
 
     private void layoutUI(Book book) {
-        setSize(400, 400);
+        ImageIcon image = ImageHelper.getImageIcon("/icons/V.png");
+        setIconImage(image.getImage());
+        setModal(true);
+        setDefaultLookAndFeelDecorated(true);
+        setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        setMinimumSize(new Dimension(400, 300));
+
         canvas = new PrintPreviewCanvas(book);
         add(canvas, BorderLayout.CENTER);
 

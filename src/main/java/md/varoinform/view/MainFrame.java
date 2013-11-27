@@ -11,6 +11,7 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.branchview.BranchTree;
 import md.varoinform.view.branchview.BranchTreeNode;
 import md.varoinform.view.demonstrator.DemonstratorImpl;
+import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ public class MainFrame extends JFrame{
     private JButton homeButton = new ToolbarButton("/icons/home.png");
     private JButton backButton = new ToolbarButton("/icons/arrow_left2.png", false);
     private JButton forwardButton = new ToolbarButton("/icons/arrow_right2.png", false);
-    private JButton printButton = new ToolbarButton("/icons/print.png", false);
+    private JButton printButton = new ToolbarButton("/icons/print.png");
     private JButton exportButton = new ToolbarButton("/icons/export.png", false);
     private JButton mailButton = new ToolbarButton("/icons/mail.png", false);
     private JButton settingsButton = new ToolbarButton("/icons/settings.png");
@@ -48,6 +49,7 @@ public class MainFrame extends JFrame{
     private SearchEngine searchEngine = new SearchEngine();
     private boolean historyChanged = false;
     private final SettingsDialog settingsDialog;
+    private final PrintDialog printDialog;
 
     // back
     private final AbstractAction backAction = new AbstractAction() {
@@ -152,15 +154,10 @@ public class MainFrame extends JFrame{
         }
     };
 
-    private AbstractAction settingsAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            settingsDialog.setVisible(true);
-        }
-    };
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
         settingsDialog = new SettingsDialog(this);
+        printDialog = new PrintDialog(this, demonstratorImpl);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -195,10 +192,22 @@ public class MainFrame extends JFrame{
         toolbar.addSeparator();
         toolbar.add(mailButton);
         toolbar.addSeparator();
+
+        printButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                printDialog.setVisible(true);
+            }
+        });
         toolbar.add(printButton);
         toolbar.addSeparator();
 
-        settingsButton.addActionListener(settingsAction);
+        settingsButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settingsDialog.setVisible(true);
+            }
+        });
         toolbar.add(settingsButton);
 
         //--------------------------------------------------------------------------------------------------------------

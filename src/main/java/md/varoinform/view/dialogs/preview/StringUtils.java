@@ -28,8 +28,8 @@ public class StringUtils {
      *          the max line width, in points
      * @return a non-empty list of strings
      */
-    public static List wrap(String str, FontMetrics fm, int maxWidth) {
-        List lines = splitIntoLines(str);
+    public static List<String> wrap(String str, FontMetrics fm, int maxWidth) {
+        List<String> lines = splitIntoLines(str);
         if (lines.size() == 0)
             return lines;
 
