@@ -1,4 +1,4 @@
-package md.varoinform.view.settings;
+package md.varoinform.view.dialogs;
 
 import md.varoinform.util.ResourceBundleHelper;
 
@@ -13,12 +13,11 @@ import javax.swing.*;
 public class ColumnCheckBox extends JCheckBox{
     private String name;
 
-    public ColumnCheckBox(String text, boolean isSelected) {
+    public ColumnCheckBox(String text) {
         super();
         this.name = text;
         String trText = ResourceBundleHelper.getString(text, text);
         setText(trText);
-        setSelected(isSelected);
     }
 
     public String getName() {

@@ -11,7 +11,7 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.branchview.BranchTree;
 import md.varoinform.view.branchview.BranchTreeNode;
 import md.varoinform.view.demonstrator.DemonstratorImpl;
-import md.varoinform.view.settings.SettingsDialog;
+import md.varoinform.view.dialogs.SettingsDialog;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -242,7 +242,7 @@ public class MainFrame extends JFrame{
         mailButton.setToolTipText(ResourceBundleHelper.getString("mail"));
         exportButton.setToolTipText(ResourceBundleHelper.getString("export"));
         printButton.setToolTipText(ResourceBundleHelper.getString("print"));
-        settingsButton.setToolTipText(ResourceBundleHelper.getString("settings"));
+        settingsButton.setToolTipText(ResourceBundleHelper.getString("dialogs"));
         navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
         navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
         resultLabel.setMessageText(ResourceBundleHelper.getString("result"));

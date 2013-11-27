@@ -13,6 +13,8 @@ import java.util.Comparator;
 public class TranslateComparator implements Comparator<String> {
     @Override
     public int compare(String o1, String o2) {
-        return ResourceBundleHelper.getString(o1, o1).compareToIgnoreCase(ResourceBundleHelper.getString(o2, o2));
+        String translatedO1 = ResourceBundleHelper.getString(o1, o1);
+        String translatedO2 = ResourceBundleHelper.getString(o2, o2);
+        return translatedO1.compareToIgnoreCase(translatedO2);
     }
 }
