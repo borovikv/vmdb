@@ -109,7 +109,9 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public void showResults(List<Enterprise> enterprises) {
-        if (enterprises == null) return;
+        if (enterprises == null) {
+            enterprises = new ArrayList<>();
+        }
         EnterpriseTableModel model = new EnterpriseTableModel(enterprises);
         setModel(model);
         doLayout();
