@@ -60,7 +60,8 @@ public class TableView extends JTable implements Demonstrator {
     //-----------------------------------------------------------------------------------------------------------------
     public TableView() {
         super();
-        setRowHeight(20);
+        setFillsViewportHeight(true);
+        setRowHeight(24);
         setAutoCreateRowSorter(true);
         setModel(new EnterpriseTableModel());
         setColumnModel(new EnterpriseColumnModel());
