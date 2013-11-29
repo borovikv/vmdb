@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.controller.HistoryProxy;
 import md.varoinform.controller.LanguageProxy;
+import md.varoinform.controller.MailProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
@@ -11,6 +12,7 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.branchview.BranchTree;
 import md.varoinform.view.branchview.BranchTreeNode;
 import md.varoinform.view.demonstrator.DemonstratorImpl;
+import md.varoinform.view.dialogs.ExportDialog;
 import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 
@@ -39,8 +41,8 @@ public class MainFrame extends JFrame{
     private JButton backButton = new ToolbarButton("/icons/arrow_left2.png", false);
     private JButton forwardButton = new ToolbarButton("/icons/arrow_right2.png", false);
     private JButton printButton = new ToolbarButton("/icons/print.png");
-    private JButton exportButton = new ToolbarButton("/icons/export.png", false);
-    private JButton mailButton = new ToolbarButton("/icons/mail.png", false);
+    private JButton exportButton = new ToolbarButton("/icons/export.png");
+    private JButton mailButton = new ToolbarButton("/icons/mail.png");
     private JButton settingsButton = new ToolbarButton("/icons/settings.png");
     private JTextField searchField = new JTextField();
     private JComboBox<Language> languageCombo;
@@ -50,6 +52,7 @@ public class MainFrame extends JFrame{
     private boolean historyChanged = false;
     private final SettingsDialog settingsDialog;
     private final PrintDialog printDialog;
+    private final ExportDialog exportDialog;
 
     // back
     private final AbstractAction backAction = new AbstractAction() {
@@ -158,6 +161,7 @@ public class MainFrame extends JFrame{
     public MainFrame() throws HeadlessException {
         settingsDialog = new SettingsDialog(this);
         printDialog = new PrintDialog(this, demonstratorImpl);
+        exportDialog = new ExportDialog(this, demonstratorImpl);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -189,8 +193,25 @@ public class MainFrame extends JFrame{
         toolbar.addSeparator();
 
         toolbar.add(exportButton);
+        exportButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                  exportDialog.setVisible(true);
+            }
+        });
         toolbar.addSeparator();
         toolbar.add(mailButton);
+        mailButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Enterprise> enterprises = demonstratorImpl.getSelected();
+                if (enterprises.size() == 0) {
+                    enterprises = demonstratorImpl.getALL();
+                }
+                MailProxy mailProxy = new MailProxy(enterprises);
+                mailProxy.mail();
+            }
+        });
         toolbar.addSeparator();
 
         printButton.addActionListener(new AbstractAction() {
