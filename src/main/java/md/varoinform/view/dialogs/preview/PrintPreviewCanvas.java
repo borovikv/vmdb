@@ -27,6 +27,7 @@ public class PrintPreviewCanvas extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if(book.getNumberOfPages() == 0) return;
         Graphics2D g2 = (Graphics2D) g;
         PageFormat pageFormat = book.getPageFormat(currentPage);
 

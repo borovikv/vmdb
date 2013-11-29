@@ -6,6 +6,7 @@ import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.Demonstrator;
 import md.varoinform.view.dialogs.preview.Address;
+import md.varoinform.view.dialogs.preview.Data;
 import md.varoinform.view.dialogs.preview.PrintPreviewDialog;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -28,11 +29,10 @@ import java.util.List;
 public class PrintDialog extends JDialog {
     private static final int DATA_MODE = 1;
     private static final int ADDRESS_MODE = 2;
-    private static final int PRINT_ALL = 1;
-    private static final int PRINT_SELECTED = 2;
+    private final RowsChoosePanel rowsChooser = new RowsChoosePanel("print");
+
 
     private int mode = DATA_MODE;
-    private int amount = PRINT_SELECTED;
     private Language language;
     private final FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
     private final HashPrintRequestAttributeSet attributes;
@@ -42,7 +42,9 @@ public class PrintDialog extends JDialog {
 
     public PrintDialog(Component parent, Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
+
         setSize(450, 500);
+        setModal(true);
         setTitle(ResourceBundleHelper.getString("print", "Print"));
         setLocationRelativeTo(parent);
 
@@ -58,13 +60,8 @@ public class PrintDialog extends JDialog {
         panel.add(typePanel);
 
 
-        JRadioButton allCheckBox = new JRadioButton(ResourceBundleHelper.getString("all", "All"));
-        allCheckBox.addActionListener(new PrintAmountAction(PRINT_ALL));
-        JRadioButton selectedCheckBox = new JRadioButton(ResourceBundleHelper.getString("selected-only", "Only selected"));
-        selectedCheckBox.addActionListener(new PrintAmountAction(PRINT_SELECTED));
-        selectedCheckBox.setSelected(true);
-        JPanel countPanel = createRadioButtonGroup("print", new JRadioButton[]{selectedCheckBox, allCheckBox});
-        panel.add(countPanel);
+
+        panel.add(rowsChooser);
 
 
         JPanel languagePanel = new JPanel();
@@ -129,7 +126,7 @@ public class PrintDialog extends JDialog {
 
         add(panel, BorderLayout.CENTER);
         JScrollPane choosePane = new JScrollPane(fieldChoosePanel);
-        fieldChoosePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString("fields", "Fields")));
+        choosePane.setBorder(getTitledBorder(ResourceBundleHelper.getString("fields", "Fields")));
         add(choosePane, BorderLayout.EAST);
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -142,23 +139,30 @@ public class PrintDialog extends JDialog {
         }
 
         Book book = new Book();
-        List<Enterprise> enterprises = null;
-        if (amount == PRINT_ALL) {
-            enterprises = demonstrator.getALL();
-        } else if (amount == PRINT_SELECTED) {
-            enterprises = demonstrator.getSelected();
-        }
+        List<Enterprise> enterprises = getEnterprises();
 
         if (mode == DATA_MODE){
+            Data data = new Data(enterprises, getSelectedFields(), language);
+            int pageCount = data.getPageCount((Graphics2D)getGraphics(), pageFormat);
+            book.append(data, pageFormat, pageCount);
 
         } else if (mode == ADDRESS_MODE){
-            Address address = new Address(enterprises);
-
+            Address address = new Address(enterprises, language);
             int pageCount = address.getPageCount(pageFormat);
             book.append(address, pageFormat, pageCount);
         }
 
         return book;
+    }
+
+    private List<Enterprise> getEnterprises() {
+        List<Enterprise> enterprises = null;
+        if (rowsChooser.getChoose() == RowsChoosePanel.ALL) {
+            enterprises = demonstrator.getALL();
+        } else if (rowsChooser.getChoose() == RowsChoosePanel.SELECTED) {
+            enterprises = demonstrator.getSelected();
+        }
+        return enterprises;
     }
 
     private JPanel createRadioButtonGroup(String title, JRadioButton[] buttons) {
@@ -177,6 +181,10 @@ public class PrintDialog extends JDialog {
 
     private TitledBorder getTitledBorder(String title) {
         return BorderFactory.createTitledBorder( title);
+    }
+
+    private List<String> getSelectedFields() {
+        return fieldChoosePanel.getSelectedFieldNames();
     }
 
 
@@ -198,17 +206,5 @@ public class PrintDialog extends JDialog {
         }
     }
 
-    private class PrintAmountAction extends AbstractAction {
 
-        private final int value;
-
-        private PrintAmountAction(int value) {
-            this.value = value;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            amount = this.value;
-        }
-    }
 }

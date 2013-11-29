@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Book;
-import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,9 +38,9 @@ public class PrintPreviewDialog extends JDialog{
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createEtchedBorder());
 
-        addButton(buttonPanel, "Next");
         addButton(buttonPanel, "Previous");
-        addButton(buttonPanel, "Close");
+        addButton(buttonPanel, "Next");
+        //addButton(buttonPanel, "Close");
 
         buttonPanel.add(pageLabel);
         pageLabel.setBorder(BorderFactory.createEtchedBorder());
@@ -74,6 +73,6 @@ public class PrintPreviewDialog extends JDialog{
     }
 
     private void setPage() {
-        pageLabel.setText(canvas.getPage() + 1 + " of " + book.getNumberOfPages());
+        pageLabel.setText("Page " + (canvas.getPage() + 1) + " of " + book.getNumberOfPages());
     }
 }
