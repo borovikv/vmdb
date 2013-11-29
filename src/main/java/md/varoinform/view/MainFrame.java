@@ -3,11 +3,15 @@ package md.varoinform.view;
 import md.varoinform.controller.HistoryProxy;
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.MailProxy;
+import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
+import md.varoinform.model.entities.Tag;
 import md.varoinform.model.search.SearchEngine;
 import md.varoinform.util.ImageHelper;
+import md.varoinform.util.ObservableEvent;
+import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.branchview.BranchTree;
 import md.varoinform.view.branchview.BranchTreeNode;
@@ -15,14 +19,17 @@ import md.varoinform.view.demonstrator.DemonstratorImpl;
 import md.varoinform.view.dialogs.ExportDialog;
 import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
+import md.varoinform.view.dialogs.TagDialog;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +41,7 @@ import java.util.List;
 public class MainFrame extends JFrame{
 
     private final JTabbedPane navigationPane = new JTabbedPane(JTabbedPane.TOP);
+    private final TagPanel tagPanel = new TagPanel();
     private BranchTree branchTree = new BranchTree();
     private final LanguageProxy languageProxy = LanguageProxy.getInstance();
     private OutputLabel resultLabel = new OutputLabel();
@@ -44,6 +52,7 @@ public class MainFrame extends JFrame{
     private JButton exportButton = new ToolbarButton("/icons/export.png");
     private JButton mailButton = new ToolbarButton("/icons/mail.png");
     private JButton settingsButton = new ToolbarButton("/icons/settings.png");
+    private JButton tagButton = new ToolbarButton("/icons/star.png");
     private JTextField searchField = new JTextField();
     private JComboBox<Language> languageCombo;
     private final HistoryProxy historyProxy = new HistoryProxy();
@@ -53,7 +62,33 @@ public class MainFrame extends JFrame{
     private final SettingsDialog settingsDialog;
     private final PrintDialog printDialog;
     private final ExportDialog exportDialog;
+    private TagListener tagListener = new TagListener();
 
+    private class TagListener implements Observer {
+        private boolean enableDeleting = false;
+        @Override
+        public void update(ObservableEvent event) {
+            if (!enableDeleting) return;
+
+            DAOTag daoTag = new DAOTag();
+            boolean tagDeleted = daoTag.removeTag(tagPanel.getCurrentTag(), demonstratorImpl.getSelected());
+            tagPanel.fireTagsChanged();
+            if (tagDeleted){
+                tagPanel.clearSelection();
+            }
+            Tag selectedTag = tagPanel.getSelectedTag();
+            if (selectedTag != null){
+                demonstratorImpl.showResults(new ArrayList<>(selectedTag.getEnterprises()));
+            } else {
+                demonstratorImpl.showResults(null);
+            }
+
+        }
+
+        public void enableDeleting(boolean enableDeleting) {
+            this.enableDeleting = enableDeleting;
+        }
+    }
     // back
     private final AbstractAction backAction = new AbstractAction() {
         @Override
@@ -65,6 +100,7 @@ public class MainFrame extends JFrame{
         }
     };
     private final JSplitPane splitPane;
+    private TagDialog tagDialog;
 
     private void performHistoryMove(Object obj) {
         if ( BranchTree.isTreePath(obj) ){
@@ -109,6 +145,8 @@ public class MainFrame extends JFrame{
             String value = e.getActionCommand();
             searchText(value);
             appendHistory(value);
+            branchTree.clearSelection();
+            tagPanel.clearSelection();
         }
     };
 
@@ -162,6 +200,7 @@ public class MainFrame extends JFrame{
         settingsDialog = new SettingsDialog(this);
         printDialog = new PrintDialog(this, demonstratorImpl);
         exportDialog = new ExportDialog(this, demonstratorImpl);
+        tagDialog = new TagDialog(this, demonstratorImpl, tagPanel);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -191,7 +230,14 @@ public class MainFrame extends JFrame{
         toolbar.add(searchField);
 
         toolbar.addSeparator();
-
+        toolbar.add(tagButton);
+        tagButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tagDialog.setVisible(true);
+            }
+        });
+        toolbar.addSeparator();
         toolbar.add(exportButton);
         exportButton.addActionListener(new AbstractAction() {
             @Override
@@ -233,9 +279,50 @@ public class MainFrame extends JFrame{
 
         //--------------------------------------------------------------------------------------------------------------
         branchTree.addTreeSelectionListener(treeSelectionListener);
-        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/tree.png", 24, 24), new JScrollPane(branchTree));
-        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/star.png", 24, 24), new JPanel());
+        branchTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTree tree = (JTree) e.getSource();
+                Point point = e.getPoint();
+                TreePath path = tree.getPathForLocation(point.x, point.y);
+                if (path != null){
+                    tree.clearSelection();
+                    tree.setSelectionPath(path);
+                }
+            }
+        });
+        final JScrollPane branchPane = new JScrollPane(branchTree);
+        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/tree.png", 24, 24), branchPane);
+        tagPanel.addSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                JList list = (JList) e.getSource();
+                Tag tag = (Tag) list.getSelectedValue();
+                if (tag == null) return;
+                ArrayList<Enterprise> enterprises = new ArrayList<>(tag.getEnterprises());
+                demonstratorImpl.showResults(enterprises);
+                resultLabel.setResultCount(enterprises.size());
+                tagListener.enableDeleting(true);
+                tagPanel.setCurrentTag(tag.getTitle());
+            }
+        });
+        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/star.png", 24, 24), tagPanel);
+        navigationPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tagListener.enableDeleting(false);
 
+                JTabbedPane pane = (JTabbedPane) e.getSource();
+
+                if (pane.getSelectedIndex() == pane.indexOfComponent(tagPanel)){
+                    tagPanel.updateSelection();
+                } else if (pane.getSelectedIndex() == pane.indexOfComponent(branchPane)){
+                    branchTree.updateSelection();
+                }
+            }
+        });
+
+        demonstratorImpl.addObserver(tagListener);
         //--------------------------------------------------------------------------------------------------------------
         //noinspection unchecked
         languageCombo = new JComboBox(languageProxy.getLanguages().toArray());

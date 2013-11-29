@@ -8,9 +8,11 @@ package md.varoinform.util;
  */
 public class ObservableEvent {
     public static final int STRUCTURE_CHANGED = 1;
+    public static final int DELETE = 2;
     private int type;
     private String value;
 
+    @SuppressWarnings("UnusedDeclaration")
     public ObservableEvent(int type, String value) {
         this.type = type;
         this.value = value;
@@ -24,6 +26,7 @@ public class ObservableEvent {
         return type;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setType(int type) {
         this.type = type;
     }

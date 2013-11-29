@@ -1,6 +1,7 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.util.Observable;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
 
@@ -8,7 +9,11 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,11 +21,12 @@ import java.util.List;
  * Date: 10/30/13
  * Time: 10:33 AM
  */
-public class DemonstratorImpl extends JPanel implements Demonstrator, Observer {
+public class DemonstratorImpl extends JPanel implements Demonstrator, Observer, Observable {
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
     private final JSplitPane splitPane;
+    private Set<Observer> observers = new HashSet<>();
 
 
     public DemonstratorImpl() {
@@ -29,7 +35,14 @@ public class DemonstratorImpl extends JPanel implements Demonstrator, Observer {
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
         splitPane.setResizeWeight(0.6);
         demonstrator.addListSelectionListener(new SelectionListener());
-
+        demonstrator.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE){
+                    notifyObservers(new ObservableEvent(ObservableEvent.DELETE));
+                }
+            }
+        });
         add(splitPane);
     }
 
@@ -80,6 +93,18 @@ public class DemonstratorImpl extends JPanel implements Demonstrator, Observer {
             demonstrator.fireViewStructureChanged();
     }
 
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void notifyObservers(ObservableEvent event) {
+        for (Observer observer : observers) {
+            observer.update(event);
+        }
+    }
+
     private class SelectionListener implements ListSelectionListener {
 
         @Override
@@ -91,5 +116,4 @@ public class DemonstratorImpl extends JPanel implements Demonstrator, Observer {
         }
 
     }
-
 }

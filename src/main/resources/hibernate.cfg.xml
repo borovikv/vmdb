@@ -48,6 +48,7 @@
         <mapping class="md.varoinform.model.entities.SectorTitle" />
         <mapping class="md.varoinform.model.entities.Street" />
         <mapping class="md.varoinform.model.entities.StreetTitle" />
+        <mapping class="md.varoinform.model.entities.Tag" />
         <mapping class="md.varoinform.model.entities.TopAdministrativeUnit" />
         <mapping class="md.varoinform.model.entities.TopAdministrativeUnitTitle" />
         <mapping class="md.varoinform.model.entities.Town" />
