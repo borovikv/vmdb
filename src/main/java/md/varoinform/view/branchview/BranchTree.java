@@ -99,4 +99,10 @@ public class BranchTree extends JTree {
     public boolean isNeedToProcess(){
         return needToProcess;
     }
+
+    public void updateSelection() {
+        TreePath path = getSelectionPath();
+        clearSelection();
+        setSelectionPath(path);
+    }
 }
