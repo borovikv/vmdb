@@ -19,7 +19,7 @@ public class ToolbarButton extends JButton {
         ImageIcon icon = ImageHelper.getScaledImageIcon(filename, width, height);
 
         setIcon(icon);
-        setPreferredSize(new Dimension(width+2, height+2));
+        setPreferredSize(new Dimension(width+4, height+4));
         setOpaque(false);
         setContentAreaFilled(false);
     }
