@@ -24,7 +24,6 @@ public class EnterpriseView  {
     public static String getTable(EnterpriseProxy enterpriseProxy) {
         List<String> viewParts = EnterpriseProxy.getViewPartNames();
         Collections.sort(viewParts, new ViewPartPriorityComparator());
-        System.out.println(viewParts);
 
         StringBuilder builder = new StringBuilder("<html><body><h1>");
         builder.append(enterpriseProxy.getTitle());
