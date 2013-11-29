@@ -15,6 +15,15 @@ import java.util.ResourceBundle;
  */
 public class EntityProxy {
 
+    private Language language;
+
+    public EntityProxy() {
+    }
+
+    public EntityProxy(Language language) {
+        this.language = language;
+    }
+
     protected ResourceBundle getResourceBundle() {
         return ResourceBundleHelper.getResourceBundle();
     }
@@ -31,6 +40,7 @@ public class EntityProxy {
     }
 
     private Language currentLanguage() {
+        if (language != null) return language;
         return LanguageProxy.getInstance().getCurrentLanguage();
     }
 }

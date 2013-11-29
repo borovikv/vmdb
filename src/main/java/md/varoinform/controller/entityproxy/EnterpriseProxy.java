@@ -20,7 +20,13 @@ public class EnterpriseProxy extends EntityProxy {
         }
     }
 
+
     public EnterpriseProxy(Enterprise enterprise) {
+        this.enterprise = enterprise;
+    }
+
+    public EnterpriseProxy(Enterprise enterprise, Language language) {
+        super(language);
         this.enterprise = enterprise;
     }
 
@@ -112,7 +118,9 @@ public class EnterpriseProxy extends EntityProxy {
         StringBuilder result = new StringBuilder();
         for (GProduce gProduce : enterprise.getGoods()) {
             String isProduced = getResourceBundle().getString("" + gProduce.getProduce());
-            result.append(getTitle(gProduce.getGood()) + "( " + isProduced + " ); ");
+            result.append(getTitle(gProduce.getGood()));
+            String isProd = "( " + isProduced + " ); ";
+            result.append(isProd);
         }
         return result.toString();
     }
@@ -207,9 +215,7 @@ public class EnterpriseProxy extends EntityProxy {
     public String get(String name){
         try {
             return (String)methods.get(name.toLowerCase()).invoke(this);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
