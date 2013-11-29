@@ -45,7 +45,7 @@ public class EnterpriseView  {
         return builder.toString();
     }
 
-    private static String getStringOrNA(String s){
+    public static String getStringOrNA(String s){
         return s == null || s.isEmpty() ?  ResourceBundleHelper.getString("null") : s;
     }
 
