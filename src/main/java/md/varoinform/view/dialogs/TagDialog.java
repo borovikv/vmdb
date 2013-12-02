@@ -82,5 +82,6 @@ public class TagDialog extends JDialog {
     }
 
 
-
+    public void updateDisplay() {
+    }
 }

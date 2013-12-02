@@ -187,6 +187,10 @@ public class PrintDialog extends JDialog {
         return fieldChoosePanel.getSelectedFieldNames();
     }
 
+    public void updateDisplay() {
+        fieldChoosePanel.updateDisplay();
+    }
+
 
     private class PrintModeAction extends AbstractAction {
         private final int value;

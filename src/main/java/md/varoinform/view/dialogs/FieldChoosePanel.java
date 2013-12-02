@@ -67,4 +67,10 @@ public class FieldChoosePanel extends JPanel {
             checkBox.setEnabled(enable);
         }
     }
+
+    public void updateDisplay(){
+        for (ColumnCheckBox checkBox : checkBoxes) {
+            checkBox.updateDisplay();
+        }
+    }
 }

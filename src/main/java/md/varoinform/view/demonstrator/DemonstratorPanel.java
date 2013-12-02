@@ -21,7 +21,7 @@ import java.util.Set;
  * Date: 10/30/13
  * Time: 10:33 AM
  */
-public class DemonstratorImpl extends JPanel implements Demonstrator, Observer, Observable {
+public class DemonstratorPanel extends JPanel implements Demonstrator, Observer, Observable {
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
@@ -29,7 +29,7 @@ public class DemonstratorImpl extends JPanel implements Demonstrator, Observer, 
     private Set<Observer> observers = new HashSet<>();
 
 
-    public DemonstratorImpl() {
+    public DemonstratorPanel() {
         setLayout(new BorderLayout());
 
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));

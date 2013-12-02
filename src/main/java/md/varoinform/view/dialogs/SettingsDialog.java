@@ -48,6 +48,10 @@ public class SettingsDialog extends JDialog implements Observable {
         }
     }
 
+    public void updateDisplay() {
+        fieldChoosePanel.updateDisplay();
+    }
+
 
     private class CheckBoxExecutor implements Executor{
         @Override

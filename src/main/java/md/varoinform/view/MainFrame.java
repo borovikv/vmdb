@@ -15,7 +15,7 @@ import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.branchview.BranchTree;
 import md.varoinform.view.branchview.BranchTreeNode;
-import md.varoinform.view.demonstrator.DemonstratorImpl;
+import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.ExportDialog;
 import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
@@ -27,8 +27,6 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,13 +54,15 @@ public class MainFrame extends JFrame{
     private JTextField searchField = new JTextField();
     private JComboBox<Language> languageCombo;
     private final HistoryProxy historyProxy = new HistoryProxy();
-    private DemonstratorImpl demonstratorImpl = new DemonstratorImpl();
+    private DemonstratorPanel demonstrator = new DemonstratorPanel();
     private SearchEngine searchEngine = new SearchEngine();
     private boolean historyChanged = false;
     private final SettingsDialog settingsDialog;
     private final PrintDialog printDialog;
     private final ExportDialog exportDialog;
     private TagListener tagListener = new TagListener();
+    private final JSplitPane splitPane;
+    private TagDialog tagDialog;
 
     private class TagListener implements Observer {
         private boolean enableDeleting = false;
@@ -71,16 +71,16 @@ public class MainFrame extends JFrame{
             if (!enableDeleting) return;
 
             DAOTag daoTag = new DAOTag();
-            boolean tagDeleted = daoTag.removeTag(tagPanel.getCurrentTag(), demonstratorImpl.getSelected());
+            boolean tagDeleted = daoTag.removeTag(tagPanel.getCurrentTag(), demonstrator.getSelected());
             tagPanel.fireTagsChanged();
             if (tagDeleted){
                 tagPanel.clearSelection();
             }
             Tag selectedTag = tagPanel.getSelectedTag();
             if (selectedTag != null){
-                demonstratorImpl.showResults(new ArrayList<>(selectedTag.getEnterprises()));
+                demonstrator.showResults(new ArrayList<>(selectedTag.getEnterprises()));
             } else {
-                demonstratorImpl.showResults(null);
+                demonstrator.showResults(null);
             }
 
         }
@@ -99,21 +99,19 @@ public class MainFrame extends JFrame{
             forwardButton.setEnabled(true);
         }
     };
-    private final JSplitPane splitPane;
-    private TagDialog tagDialog;
 
     private void performHistoryMove(Object obj) {
         if ( BranchTree.isTreePath(obj) ){
             historyChanged = true;
             branchTree.setSelectionPath((TreePath)obj);
             historyChanged = false;
-        } else if ( obj instanceof String ){
+        } else if (obj instanceof String) {
             String text = (String) obj;
             searchField.setText(text);
             searchText(text);
             branchTree.clearSelection();
         } else {
-            demonstratorImpl.clear();
+            demonstrator.clear();
         }
     }
 
@@ -133,7 +131,7 @@ public class MainFrame extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             historyProxy.home();
-            demonstratorImpl.clear();
+            demonstrator.clear();
             branchTree.clearSelection();
         }
     };
@@ -160,7 +158,7 @@ public class MainFrame extends JFrame{
         if (value == null) return;
 
         List<Enterprise> enterprises = searchEngine.search(value);
-        demonstratorImpl.showResults(enterprises);
+        demonstrator.showResults(enterprises);
         resultLabel.setResultCount(enterprises.size());
     }
 
@@ -176,7 +174,7 @@ public class MainFrame extends JFrame{
 
             List<Long> allChildren = node.getAllChildren();
             List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
-            demonstratorImpl.showResults(enterprises);
+            demonstrator.showResults(enterprises);
             resultLabel.setResultCount(enterprises.size());
             if (!historyChanged) {
                 TreePath selectionPath = tree.getSelectionPath();
@@ -198,9 +196,9 @@ public class MainFrame extends JFrame{
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
         settingsDialog = new SettingsDialog(this);
-        printDialog = new PrintDialog(this, demonstratorImpl);
-        exportDialog = new ExportDialog(this, demonstratorImpl);
-        tagDialog = new TagDialog(this, demonstratorImpl, tagPanel);
+        printDialog = new PrintDialog(this, demonstrator);
+        exportDialog = new ExportDialog(this, demonstrator);
+        tagDialog = new TagDialog(this, demonstrator, tagPanel);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -231,28 +229,18 @@ public class MainFrame extends JFrame{
 
         toolbar.addSeparator();
         toolbar.add(tagButton);
-        tagButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tagDialog.setVisible(true);
-            }
-        });
+        tagButton.addActionListener(new ShowDialogAction(tagDialog));
         toolbar.addSeparator();
         toolbar.add(exportButton);
-        exportButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                  exportDialog.setVisible(true);
-            }
-        });
+        exportButton.addActionListener(new ShowDialogAction(exportDialog));
         toolbar.addSeparator();
         toolbar.add(mailButton);
         mailButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Enterprise> enterprises = demonstratorImpl.getSelected();
+                List<Enterprise> enterprises = demonstrator.getSelected();
                 if (enterprises.size() == 0) {
-                    enterprises = demonstratorImpl.getALL();
+                    enterprises = demonstrator.getALL();
                 }
                 MailProxy mailProxy = new MailProxy(enterprises);
                 mailProxy.mail();
@@ -260,39 +248,18 @@ public class MainFrame extends JFrame{
         });
         toolbar.addSeparator();
 
-        printButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                printDialog.setVisible(true);
-            }
-        });
+        printButton.addActionListener(new ShowDialogAction(printDialog));
         toolbar.add(printButton);
         toolbar.addSeparator();
 
-        settingsButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                settingsDialog.setVisible(true);
-            }
-        });
+        settingsButton.addActionListener(new ShowDialogAction(settingsDialog));
         toolbar.add(settingsButton);
 
         //--------------------------------------------------------------------------------------------------------------
         branchTree.addTreeSelectionListener(treeSelectionListener);
-        branchTree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JTree tree = (JTree) e.getSource();
-                Point point = e.getPoint();
-                TreePath path = tree.getPathForLocation(point.x, point.y);
-                if (path != null){
-                    tree.clearSelection();
-                    tree.setSelectionPath(path);
-                }
-            }
-        });
         final JScrollPane branchPane = new JScrollPane(branchTree);
         navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/tree.png", 24, 24), branchPane);
+
         tagPanel.addSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -300,13 +267,14 @@ public class MainFrame extends JFrame{
                 Tag tag = (Tag) list.getSelectedValue();
                 if (tag == null) return;
                 ArrayList<Enterprise> enterprises = new ArrayList<>(tag.getEnterprises());
-                demonstratorImpl.showResults(enterprises);
+                demonstrator.showResults(enterprises);
                 resultLabel.setResultCount(enterprises.size());
                 tagListener.enableDeleting(true);
                 tagPanel.setCurrentTag(tag.getTitle());
             }
         });
         navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/star.png", 24, 24), tagPanel);
+
         navigationPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -322,7 +290,7 @@ public class MainFrame extends JFrame{
             }
         });
 
-        demonstratorImpl.addObserver(tagListener);
+        demonstrator.addObserver(tagListener);
         //--------------------------------------------------------------------------------------------------------------
         //noinspection unchecked
         languageCombo = new JComboBox(languageProxy.getLanguages().toArray());
@@ -340,9 +308,9 @@ public class MainFrame extends JFrame{
 
         mainPanel.add(toolbar, BorderLayout.NORTH);
 
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPane, demonstratorImpl);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, navigationPane, demonstrator);
         splitPane.setContinuousLayout(true);
-        settingsDialog.addObserver(demonstratorImpl);
+        settingsDialog.addObserver(demonstrator);
 
         mainPanel.add(splitPane, BorderLayout.CENTER);
         mainPanel.add(statusBar, BorderLayout.SOUTH);
@@ -359,15 +327,33 @@ public class MainFrame extends JFrame{
         mailButton.setToolTipText(ResourceBundleHelper.getString("mail"));
         exportButton.setToolTipText(ResourceBundleHelper.getString("export"));
         printButton.setToolTipText(ResourceBundleHelper.getString("print"));
+        tagButton.setToolTipText(ResourceBundleHelper.getString("tag"));
         settingsButton.setToolTipText(ResourceBundleHelper.getString("dialogs"));
         navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
         navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
         resultLabel.setMessageText(ResourceBundleHelper.getString("result"));
         branchTree.updateRoot();
-        demonstratorImpl.updateDisplay();
+        demonstrator.updateDisplay();
+        printDialog.updateDisplay();
+        exportDialog.updateDisplay();
+        settingsDialog.updateDisplay();
+        tagDialog.updateDisplay();
     }
 
     private void sizingPerform(){
         splitPane.setDividerLocation(300);
+    }
+
+    private class ShowDialogAction extends AbstractAction {
+        private JDialog dialog;
+
+        private ShowDialogAction(JDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dialog.setVisible(true);
+        }
     }
 }

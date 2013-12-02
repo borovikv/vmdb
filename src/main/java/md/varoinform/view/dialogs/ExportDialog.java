@@ -94,4 +94,7 @@ public class ExportDialog extends JDialog {
         return demonstrator.getSelected();
     }
 
+    public void updateDisplay() {
+        fieldChooser.updateDisplay();
+    }
 }

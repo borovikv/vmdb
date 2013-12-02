@@ -16,8 +16,7 @@ public class ColumnCheckBox extends JCheckBox{
     public ColumnCheckBox(String text) {
         super();
         this.name = text;
-        String trText = ResourceBundleHelper.getString(text, text);
-        setText(trText);
+        updateDisplay();
     }
 
     public String getName() {
@@ -26,5 +25,10 @@ public class ColumnCheckBox extends JCheckBox{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void updateDisplay() {
+        String trText = ResourceBundleHelper.getString(name, name);
+        setText(trText);
     }
 }

@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +28,18 @@ public class BranchTree extends JTree {
         setRootVisible(false);
         setShowsRootHandles(true);
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTree tree = (JTree) e.getSource();
+                Point point = e.getPoint();
+                TreePath path = tree.getPathForLocation(point.x, point.y);
+                if (path != null){
+                    tree.clearSelection();
+                    tree.setSelectionPath(path);
+                }
+            }
+        });
     }
 
     private BranchTreeNode createRoot() {
