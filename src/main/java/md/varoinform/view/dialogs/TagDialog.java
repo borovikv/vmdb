@@ -2,16 +2,17 @@ package md.varoinform.view.dialogs;
 
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.Tag;
+import md.varoinform.util.Observable;
+import md.varoinform.util.ObservableEvent;
+import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
-import md.varoinform.view.TagPanel;
+import md.varoinform.view.tags.TagPanel;
 import md.varoinform.view.demonstrator.Demonstrator;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,35 +21,20 @@ import java.util.List;
  * Date: 11/29/13
  * Time: 9:56 AM
  */
-public class TagDialog extends JDialog {
+public class TagDialog extends JDialog implements Observable, Observer {
+    private final TagPanel tagPanel = new TagPanel();
     private final Demonstrator demonstrator;
-    private final TagPanel tagPanel;
-    private final TagPanel observer;
+    private List<Observer> observers = new ArrayList<>();
 
 
-    public TagDialog(Component parent, Demonstrator demonstrator, TagPanel observer) {
+    public TagDialog(Component parent, Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
-        this.observer = observer;
         setLocationRelativeTo(parent);
         setModal(true);
         setTitle(ResourceBundleHelper.getString("tag_add", ""));
         setMinimumSize(new Dimension(400, 400));
 
-        JPanel panel = new JPanel(new BorderLayout());
-
-        tagPanel = new TagPanel();
-        panel.add(tagPanel, BorderLayout.CENTER);
-
-        tagPanel.addSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                @SuppressWarnings("unchecked")
-                JList<Tag> list = (JList<Tag>) e.getSource();
-                Tag selectedValue = list.getSelectedValue();
-                if (selectedValue != null)
-                    tagPanel.setText(selectedValue.getTitle());
-            }
-        });
+        addObserver(tagPanel);
 
         AbstractAction addTagAction = new AbstractAction() {
             @Override
@@ -59,29 +45,46 @@ public class TagDialog extends JDialog {
         };
         tagPanel.addOnEnterAction(addTagAction);
 
-        JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("Ok");
         okButton.addActionListener(addTagAction);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(tagPanel, BorderLayout.CENTER);
+        JPanel buttonPanel = new JPanel();
         buttonPanel.add(okButton);
-
         panel.add(buttonPanel, BorderLayout.SOUTH);
-
         add(panel);
         pack();
     }
 
     private void addTag() {
-        String tag = tagPanel.getCurrentTag();
-        List<Enterprise> enterprises = demonstrator.getSelected();
+        List<Enterprise> enterprises = new ArrayList<>(demonstrator.getSelected());
         if (enterprises.isEmpty()) return;
 
         DAOTag daoTag = new DAOTag();
-        daoTag.createTag(tag, enterprises);
-        tagPanel.fireTagsChanged();
-        observer.fireTagsChanged();
+        daoTag.createTag(tagPanel.getCurrentTagTitle(), enterprises);
+        notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
     }
 
 
+
     public void updateDisplay() {
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+         observers.add(observer);
+    }
+
+    @Override
+    public void notifyObservers(ObservableEvent event) {
+        for (Observer observer : observers) {
+            observer.update(event);
+        }
+    }
+
+    @Override
+    public void update(ObservableEvent event) {
+        tagPanel.update(event);
     }
 }

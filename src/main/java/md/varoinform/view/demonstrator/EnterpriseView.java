@@ -22,7 +22,7 @@ public class EnterpriseView  {
     }
 
     public static String getTable(EnterpriseProxy enterpriseProxy) {
-        List<String> viewParts = EnterpriseProxy.getViewPartNames();
+        List<String> viewParts = EnterpriseProxy.getFields();
         Collections.sort(viewParts, new ViewPartPriorityComparator());
 
         StringBuilder builder = new StringBuilder("<html><body><h1>");

@@ -72,19 +72,24 @@ public class ExportDialog extends JDialog {
             CSVWriter writer = new CSVWriter(new FileWriter(selectedFile), ',');
             List<String> selectedColumns = fieldChooser.getSelectedFieldNames();
             Collections.sort(selectedColumns, new ColumnPriorityComparator());
-            String[] entries = new String[selectedColumns.size()];
 
             for (Enterprise enterprise : getEnterprises()) {
-                EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
-                for (int i = 0; i < selectedColumns.size(); i++) {
-                     entries[i] = proxy.get(selectedColumns.get(i));
-                }
-                writer.writeNext(entries);
+                writeLine(writer, selectedColumns, enterprise);
             }
+
             writer.close();
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+
+    private void writeLine(CSVWriter writer, List<String> selectedColumns, Enterprise enterprise) {
+        String[] entries = new String[selectedColumns.size()];
+        EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
+        for (int i = 0; i < selectedColumns.size(); i++) {
+             entries[i] = proxy.get(selectedColumns.get(i));
+        }
+        writer.writeNext(entries);
     }
 
     private List<Enterprise> getEnterprises() {

@@ -150,7 +150,7 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public void clear() {
-        ((DefaultTableModel)getModel()).setRowCount(0);
+        setModel(new EnterpriseTableModel());
     }
 
 

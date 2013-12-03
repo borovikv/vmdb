@@ -8,7 +8,6 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,8 +61,9 @@ public class SearchEngine {
         org.hibernate.Query hibQuery =
                 fullTextSession.createFullTextQuery(query, Enterprise.class);
 
-        // execute search
-        List result = hibQuery.list();
+        // perform search
+        @SuppressWarnings("unchecked")
+        List<Enterprise> result = (List<Enterprise>)hibQuery.list();
 
         tx.commit();
         //session.close();

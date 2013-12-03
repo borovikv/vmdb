@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+@SuppressWarnings("UnusedDeclaration")
 public class EnterpriseProxy extends EntityProxy {
     private final Enterprise enterprise;
     private static Map<String, Method> methods;
@@ -222,7 +223,7 @@ public class EnterpriseProxy extends EntityProxy {
         return null;
     }
 
-    public static List<String> getViewPartNames(){
+    public static List<String> getFields(){
         return new ArrayList<>(methods.keySet());
     }
 

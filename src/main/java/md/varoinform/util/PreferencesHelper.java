@@ -15,7 +15,7 @@ public class PreferencesHelper implements Serializable {
         preferences = Preferences.userNodeForPackage(App.class);
     }
 
-    public String getPrefColumns() {
+    public String getUserFields() {
         String columns = preferences.get(this.columns, "default");
         if (columns.equals("default")) {
             ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");

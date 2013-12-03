@@ -8,6 +8,6 @@ import java.util.List;
  * Date: 11/26/13
  * Time: 11:13 AM
  */
-public interface Executor {
-    public void execute(List<String> names);
+public interface CheckBoxSelectionPerformer {
+    public void perform(List<String> names);
 }

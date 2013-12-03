@@ -41,7 +41,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
     }
 
     private List<String> getColumns() {
-        String prefColumns = preferencesHelper.getPrefColumns();
+        String prefColumns = preferencesHelper.getUserFields();
 
         List<String> result =  new ArrayList<>();
         Collections.addAll(result, prefColumns.split(";"));

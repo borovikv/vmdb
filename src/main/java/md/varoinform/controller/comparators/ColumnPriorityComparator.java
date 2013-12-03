@@ -8,7 +8,7 @@ public class ColumnPriorityComparator implements Comparator<String> {
 
     public ColumnPriorityComparator() {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
-        cols = preferencesHelper.getPrefColumns().split(";");
+        cols = preferencesHelper.getUserFields().split(";");
 
     }
 

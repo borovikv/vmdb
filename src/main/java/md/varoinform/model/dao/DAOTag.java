@@ -50,10 +50,10 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
         tag.removeAll(enterprises);
         if (tag.getEnterprises().isEmpty()){
             delete(tag);
-            return true;
+            return false;
         } else {
             create(tag);
-            return false;
+            return true;
         }
     }
 }

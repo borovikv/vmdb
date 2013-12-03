@@ -53,9 +53,9 @@ public class SettingsDialog extends JDialog implements Observable {
     }
 
 
-    private class CheckBoxExecutor implements Executor{
+    private class CheckBoxExecutor implements CheckBoxSelectionPerformer {
         @Override
-        public void execute(List<String> names) {
+        public void perform(List<String> names) {
             Collections.sort(names, new ColumnPriorityComparator());
             preferencesHelper.putPrefColumns(names);
 

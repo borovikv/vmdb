@@ -33,7 +33,7 @@ public class PrintDialog extends JDialog {
 
 
     private int mode = DATA_MODE;
-    private Language language;
+    private Language language = LanguageProxy.getInstance().getCurrentLanguage();
     private final FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
     private final HashPrintRequestAttributeSet attributes;
     private PageFormat pageFormat;
@@ -60,7 +60,6 @@ public class PrintDialog extends JDialog {
         panel.add(typePanel);
 
 
-
         panel.add(rowsChooser);
 
 
@@ -68,7 +67,6 @@ public class PrintDialog extends JDialog {
         languagePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString("language-choose", "Choose language")));
         List<Language> languages = LanguageProxy.getInstance().getLanguages();
         JComboBox<Object> languageCombo = new JComboBox<>(languages.toArray());
-        language = LanguageProxy.getInstance().getCurrentLanguage();
         languageCombo.setSelectedIndex(languages.indexOf(language));
         languageCombo.addItemListener(new ItemListener() {
             @Override
@@ -112,7 +110,7 @@ public class PrintDialog extends JDialog {
             }
         });
 
-        JButton pageSetupButton = new JButton(ResourceBundleHelper.getString("print-settings", "Advanced"));
+        JButton pageSetupButton = new JButton(ResourceBundleHelper.getString("print-settings", "Settings"));
         buttonPanel.add(pageSetupButton);
         pageSetupButton.addActionListener(new ActionListener() {
             @Override
@@ -159,9 +157,11 @@ public class PrintDialog extends JDialog {
         List<Enterprise> enterprises = null;
         if (rowsChooser.getChoose() == RowsChoosePanel.ALL) {
             enterprises = demonstrator.getALL();
+
         } else if (rowsChooser.getChoose() == RowsChoosePanel.SELECTED) {
             enterprises = demonstrator.getSelected();
         }
+
         return enterprises;
     }
 
@@ -180,7 +180,7 @@ public class PrintDialog extends JDialog {
     }
 
     private TitledBorder getTitledBorder(String title) {
-        return BorderFactory.createTitledBorder( title);
+        return BorderFactory.createTitledBorder(title);
     }
 
     private List<String> getSelectedFields() {

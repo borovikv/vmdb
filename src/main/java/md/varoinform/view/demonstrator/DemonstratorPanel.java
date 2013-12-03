@@ -25,14 +25,13 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
-    private final JSplitPane splitPane;
     private Set<Observer> observers = new HashSet<>();
 
 
     public DemonstratorPanel() {
         setLayout(new BorderLayout());
 
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
         splitPane.setResizeWeight(0.6);
         demonstrator.addListSelectionListener(new SelectionListener());
         demonstrator.addKeyListener(new KeyAdapter() {
@@ -89,6 +88,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     @Override
     public void update(ObservableEvent event) {
+        // calls from settings dialog
         if ( event.getType() == ObservableEvent.STRUCTURE_CHANGED)
             demonstrator.fireViewStructureChanged();
     }

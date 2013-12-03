@@ -1,4 +1,4 @@
-package md.varoinform.view.dialogs;
+package md.varoinform.view.tags;
 
 import javax.swing.*;
 import java.awt.*;
