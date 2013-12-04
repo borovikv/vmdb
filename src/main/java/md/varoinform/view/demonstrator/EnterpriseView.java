@@ -4,6 +4,7 @@ import md.varoinform.controller.comparators.ViewPartPriorityComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EnterpriseView  {
         return  getTable(enterpriseProxy);
     }
 
-    public static String getTable(EnterpriseProxy enterpriseProxy) {
+    private static String getTable(EnterpriseProxy enterpriseProxy) {
         List<String> viewParts = EnterpriseProxy.getFields();
         Collections.sort(viewParts, new ViewPartPriorityComparator());
 
@@ -35,17 +36,13 @@ public class EnterpriseView  {
             builder.append(label);
             builder.append("</th><td>");
 
-            String result = getStringOrNA(enterpriseProxy.get(viewPart));
+            String result = StringUtils.getStringOrNA(enterpriseProxy.get(viewPart));
             builder.append(result);
             builder.append("</td></tr>");
         }
         builder.append("</table></body></html>");
 
         return builder.toString();
-    }
-
-    public static String getStringOrNA(String s){
-        return s == null || s.isEmpty() ?  ResourceBundleHelper.getString("null") : s;
     }
 
 }

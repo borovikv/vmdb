@@ -21,28 +21,44 @@ import java.net.URL;
 public class Browser extends JEditorPane {
     public Browser() {
         setContentType("text/html");
-        HTMLEditorKit kit = new HTMLEditorKit();
-        StyleSheet s = getStyleSheet();
-        kit.setStyleSheet(s);
-        setEditorKit(kit);
+
+        StyleSheet styleSheet = getStyleSheet();
+        if (styleSheet != null){
+            HTMLEditorKit kit = new HTMLEditorKit();
+            kit.setStyleSheet(styleSheet);
+            setEditorKit(kit);
+        }
+
         setEditable(false);
+
         addHyperlinkListener(new BrowserHyperlinkListener());
     }
 
 
     private StyleSheet getStyleSheet() {
+        URL styleUrl = getStyleSheetUrl();
+        if (styleUrl == null) return null;
+
         StyleSheet s = new StyleSheet();
-        URL styleUrl = null;
-        try {
-            styleUrl = new URL("file:/home/drifter/development/idea/VaroDB/src/main/resources/style.css");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
         s.importStyleSheet(styleUrl);
         return s;
     }
 
+    private URL getStyleSheetUrl() {
+        URL styleUrl = null;
+        try {
+            //File f = new File("style.css");
+            //System.out.println(f.toURI());
+            styleUrl = new URL("file:/home/drifter/development/idea/VaroDB/src/main/resources/style.css");
+            //System.out.println(styleUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return styleUrl;
+    }
+
     private static class BrowserHyperlinkListener implements HyperlinkListener {
+
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 browse(e.getURL());
@@ -51,23 +67,15 @@ public class Browser extends JEditorPane {
 
         private void browse(URL url) {
             if(!Desktop.isDesktopSupported() || url == null) return;
-            URI uri = getUri(url);
+
             try {
+                URI uri = url.toURI();
                 Desktop.getDesktop().browse(uri);
-            } catch (IOException e) {
+            } catch (IOException|URISyntaxException e) {
                 e.printStackTrace();
             }
         }
 
-        private URI getUri(URL url){
-            URI uri = null;
-            try {
-                uri = url.toURI();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            return uri;
-        }
     }
 
 }

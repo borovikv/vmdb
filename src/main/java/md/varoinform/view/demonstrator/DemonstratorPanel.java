@@ -33,7 +33,17 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
         splitPane.setResizeWeight(0.6);
-        demonstrator.addListSelectionListener(new SelectionListener());
+
+        demonstrator.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    Enterprise enterprise = demonstrator.getSelectedEnterprise();
+                    showEnterprise(enterprise);
+                }
+            }
+        });
+
         demonstrator.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -72,10 +82,8 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
 
     public void updateDisplay(){
-        Enterprise enterprise = getSelectedEnterprise();
-        demonstrator.updateUI();
-
-        showEnterprise(enterprise);
+        demonstrator.updateDisplay();
+        showEnterprise(getSelectedEnterprise());
     }
 
     private void showEnterprise(Enterprise enterprise) {
@@ -86,9 +94,11 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         }
     }
 
+    /*
+        calls from settings dialog
+     */
     @Override
     public void update(ObservableEvent event) {
-        // calls from settings dialog
         if ( event.getType() == ObservableEvent.STRUCTURE_CHANGED)
             demonstrator.fireViewStructureChanged();
     }
@@ -105,15 +115,4 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         }
     }
 
-    private class SelectionListener implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if (!e.getValueIsAdjusting()) {
-                Enterprise enterprise = demonstrator.getSelectedEnterprise();
-                showEnterprise(enterprise);
-            }
-        }
-
-    }
 }

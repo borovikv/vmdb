@@ -11,9 +11,14 @@ import java.util.List;
  * Time: 11:44 AM
  */
 public interface Demonstrator {
+
     public void showResults(List<Enterprise> enterprises);
+
     public List<Enterprise> getSelected();
+
     public List<Enterprise> getALL();
+
     public Enterprise getSelectedEnterprise();
+
     public void clear();
 }
