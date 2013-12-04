@@ -7,6 +7,7 @@ package md.varoinform.util;
  * Time: 4:34 PM
  */
 public interface Observer {
+
     public void update(ObservableEvent event);
 
 }

@@ -6,7 +6,6 @@ import md.varoinform.util.PreferencesHelper;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,11 +40,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
     }
 
     private List<String> getColumns() {
-        String prefColumns = preferencesHelper.getUserFields();
-
-        List<String> result =  new ArrayList<>();
-        Collections.addAll(result, prefColumns.split(";"));
-        return result;
+        return preferencesHelper.getUserFields();
     }
 
 

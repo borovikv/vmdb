@@ -3,29 +3,36 @@ package md.varoinform.util;
 import md.varoinform.App;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class PreferencesHelper implements Serializable {
-    private String columns = "columns";
+    private final String columns = "columns";
     private final Preferences preferences;
+    private final String defaultDelimiter = ";";
 
     public PreferencesHelper() {
         preferences = Preferences.userNodeForPackage(App.class);
     }
 
-    public String getUserFields() {
+    public List<String> getUserFields() {
         String columns = preferences.get(this.columns, "default");
+
         if (columns.equals("default")) {
-            ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
-            columns = bundle.getString("defaultColumns");
+            columns = getDefaultColumns();
         }
-        return columns;
+
+        List<String> result =  new ArrayList<>();
+        Collections.addAll(result, columns.split(defaultDelimiter));
+        return result;
     }
 
-    public void putPrefColumns(String value) {
-        preferences.put(columns, value);
+    private String getDefaultColumns() {
+        ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
+        return bundle.getString("defaultColumns");
     }
 
     public void putPrefColumns(List<String> colNames){
@@ -39,9 +46,14 @@ public class PreferencesHelper implements Serializable {
         for (String name : names) {
             buf.append(delimiter);
             buf.append(name);
-            delimiter = ";";
+            delimiter = defaultDelimiter;
         }
 
         return buf.toString();
     }
+
+    private void putPrefColumns(String value) {
+        preferences.put(columns, value);
+    }
+
 }

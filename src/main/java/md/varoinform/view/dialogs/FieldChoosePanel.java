@@ -20,7 +20,7 @@ public class FieldChoosePanel extends JPanel {
         Collections.sort(fields, new TranslateComparator());
 
         PreferencesHelper preferencesHelper = new PreferencesHelper();
-        String userFields = preferencesHelper.getUserFields();
+        List<String> userFields = preferencesHelper.getUserFields();
 
         setLayout(new GridLayout(fields.size(), 1));
         for (String field : fields) {

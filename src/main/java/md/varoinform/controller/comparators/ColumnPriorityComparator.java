@@ -2,13 +2,14 @@ package md.varoinform.controller.comparators;
 
 import md.varoinform.util.PreferencesHelper;
 import java.util.Comparator;
+import java.util.List;
 
 public class ColumnPriorityComparator implements Comparator<String> {
-    private final String[] cols;
+    private final List<String> cols;
 
     public ColumnPriorityComparator() {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
-        cols = preferencesHelper.getUserFields().split(";");
+        cols = preferencesHelper.getUserFields();
 
     }
 
@@ -24,8 +25,8 @@ public class ColumnPriorityComparator implements Comparator<String> {
     }
 
     private int getPriority(String o) {
-        for (int i = 0; i < cols.length; i++) {
-            if (o.equalsIgnoreCase(cols[i])) {
+        for (int i = 0; i < cols.size(); i++) {
+            if (o.equalsIgnoreCase(cols.get(i))) {
                 return i + 1;
             }
         }

@@ -26,12 +26,12 @@ public class TableView extends JTable implements Demonstrator {
     //-----------------------------------------------------------------------------------------------------------------
     public TableView() {
         super();
-        setFillsViewportHeight(true);
         setRowHeight(24);
         setAutoCreateRowSorter(true);
 
         setColumnModel(new EnterpriseColumnModel());
         setModel(new EnterpriseTableModel());
+        setFillsViewportHeight(true);
 
         getTableHeader().addMouseListener(new TableMouseAdapter());
         getColumnModel().addColumnModelListener(new ColumnModelListener());

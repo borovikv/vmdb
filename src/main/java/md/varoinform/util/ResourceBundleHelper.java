@@ -14,19 +14,24 @@ public class ResourceBundleHelper implements Serializable {
     private ResourceBundleHelper() {
     }
 
-    public static ResourceBundle getResourceBundle(String language) {
+    public static ResourceBundle getResourceBundle() {
+
+        return getResourceBundle(LanguageProxy.getCurrentLanguageTitle());
+    }
+
+    private static ResourceBundle getResourceBundle(String language) {
         if (bundleMap.containsKey(language)) {
             return bundleMap.get(language);
         }
+
         Locale locale = new Locale(language);
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale);
+
         bundleMap.put(language, bundle);
+
         return bundle;
     }
 
-    public static ResourceBundle getResourceBundle() {
-       return getResourceBundle(LanguageProxy.getCurrentLanguageTitle());
-    }
 
 
     public static String getString(String language, String key, String defaultValue){

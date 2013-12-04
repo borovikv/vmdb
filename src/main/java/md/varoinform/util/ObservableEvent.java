@@ -17,6 +17,7 @@ public class ObservableEvent {
     public static final int HOME = 8;
     public static final int TAG_SELECTED = 9;
     public static final int LANGUAGE_CHANGED = 10;
+
     private int type;
     private Object value;
 
@@ -31,11 +32,6 @@ public class ObservableEvent {
 
     public int getType() {
         return type;
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void setType(int type) {
-        this.type = type;
     }
 
     public Object getValue() {
