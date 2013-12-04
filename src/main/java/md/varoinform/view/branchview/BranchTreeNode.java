@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparable {
     private Branch branch;
-    private List<Long> allChildren;
+    private List<Long> allChildrenId;
 
     public BranchTreeNode(Object userObject) {
         super(userObject);
@@ -43,21 +43,20 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
     public Branch getBranch() {
         return branch;
     }
-    public List<Long> getAllChildren(){
-        if (allChildren == null){
-            allChildren = getAllChildren(branch, null);
+
+    public List<Long> getAllChildrenId(){
+        if (allChildrenId == null){
+            allChildrenId = new ArrayList<>();
+            fillAllChildrenId(branch, allChildrenId);
         }
-        return allChildren;
+        return allChildrenId;
     }
 
-    private List<Long> getAllChildren(Branch branch, List<Long> result) {
-        if ( result == null ) {
-            result = new ArrayList<>();
-        }
+    private void fillAllChildrenId(Branch branch, List<Long> result) {
         result.add(branch.getId());
+
         for (Branch child : branch.getChildren()) {
-            getAllChildren(child, result);
+            fillAllChildrenId(child, result);
         }
-        return result;
     }
 }

@@ -59,7 +59,7 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
                 BranchTreeNode node = (BranchTreeNode) tree.getLastSelectedPathComponent();
                 if (node == null) return;
 
-                java.util.List<Long> allChildren = node.getAllChildren();
+                java.util.List<Long> allChildren = node.getAllChildrenId();
                 java.util.List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
 
                 if (!programatically) {

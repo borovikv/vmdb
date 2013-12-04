@@ -1,7 +1,6 @@
 package md.varoinform.view;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import java.util.ResourceBundle;
 
@@ -12,12 +11,13 @@ import java.util.ResourceBundle;
  * Time: 1:20 PM
  */
 public class RendererHelper {
+    private static Color background;
     protected static final Color HIGHLIGHT_COLOR;
     static {
         ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
         HIGHLIGHT_COLOR = (Color)bundle.getObject("highlightColor");
     }
-    private static Color background;
+
 
     public static JPanel getPanel(String title){
         JPanel panel = new JPanel();
@@ -37,9 +37,5 @@ public class RendererHelper {
 
     public void setBackground(boolean sel, Color defBackground) {
         background = sel ? HIGHLIGHT_COLOR: defBackground;
-    }
-
-    public static Color getBackground() {
-        return background;
     }
 }

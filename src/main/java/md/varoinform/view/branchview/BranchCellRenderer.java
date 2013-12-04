@@ -1,6 +1,5 @@
 package md.varoinform.view.branchview;
 
-import md.varoinform.controller.LanguageProxy;
 import md.varoinform.view.RendererHelper;
 
 import javax.swing.*;
@@ -17,21 +16,18 @@ import java.awt.*;
 public class BranchCellRenderer extends DefaultTreeCellRenderer {
 
 
-    private final RendererHelper rendererHelper;
-
-    public BranchCellRenderer() {
-        this.rendererHelper = new RendererHelper();
-    }
+    private final RendererHelper rendererHelper  = new RendererHelper();
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
                                                   boolean sel, boolean expanded, boolean leaf, int row,
                                                   boolean hasFocus) {
+
         rendererHelper.setBackground(sel, tree.getBackground());
 
         if (value instanceof BranchTreeNode){
             BranchTreeNode branchTreeNode = (BranchTreeNode) value;
-            String title = branchTreeNode.getBranch().title(LanguageProxy.getInstance().getCurrentLanguage());
+            String title = branchTreeNode.getTitle();
             return RendererHelper.getPanel(title);
         }
 
