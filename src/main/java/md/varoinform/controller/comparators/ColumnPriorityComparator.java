@@ -17,19 +17,18 @@ public class ColumnPriorityComparator implements Comparator<String> {
     public int compare(String o1, String o2) {
         Integer priority1 = getPriority(o1);
         Integer priority2 = getPriority(o2);
-        if (priority1 == 0 && priority2 == 0) {
-            return o1.compareToIgnoreCase(o2);
-        } else {
-            return priority1.compareTo(priority2);
-        }
+        return priority1.compareTo(priority2);
     }
 
     private int getPriority(String o) {
+
         for (int i = 0; i < cols.size(); i++) {
             if (o.equalsIgnoreCase(cols.get(i))) {
+
                 return i + 1;
             }
         }
+
         return 1000;
     }
 

@@ -37,7 +37,7 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
     }
 
     public String getTitle(){
-        return this.branch.title(LanguageProxy.getInstance().getCurrentLanguage());
+        return this.branch.title(LanguageProxy.instance.getCurrentLanguage());
     }
 
     public Branch getBranch() {

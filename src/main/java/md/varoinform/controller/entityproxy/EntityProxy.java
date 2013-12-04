@@ -41,6 +41,6 @@ public class EntityProxy {
 
     private Language currentLanguage() {
         if (language != null) return language;
-        return LanguageProxy.getInstance().getCurrentLanguage();
+        return LanguageProxy.instance.getCurrentLanguage();
     }
 }

@@ -11,8 +11,8 @@ public class VaroDB extends ListResourceBundle {
     private static final Object[][] contents = {
             {"highlightColor", new Color(255, 255, 204)},
             {"alternativeColor", new Color(238, 238, 238)},
-            {"defaultColumns", "title;address;phones;faxes;emails;urls"},
-            {"defaultViewPartPriority", "title;address;phones;faxes;emails;urls"}
+            {"columns", "title;address;phones;faxes;emails;urls"},
+            {"defaultFieldPriority", "title;address;phones;faxes;emails;urls"}
 
     };
 

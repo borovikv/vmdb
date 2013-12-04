@@ -24,23 +24,33 @@ public class MailProxy {
 
     public void mail(){
         Desktop desktop;
+
         if (Desktop.isDesktopSupported() && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)){
-            try {
-                URI uri = new URI(getMailTo());
-                desktop.mail(uri);
-            } catch (IOException | URISyntaxException e) {
-                e.printStackTrace();
-            }
+
+            mail(desktop);
+
+        }
+    }
+
+    private void mail(Desktop desktop) {
+        try {
+            URI uri = new URI( getMailTo() );
+            desktop.mail(uri);
+
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 
     private String getMailTo() {
         StringBuilder builder = new StringBuilder("mailto:vladimir@varo-inform.com, borovikv.vladimir@gmail.com");
+
         for (Enterprise enterprise : enterprises) {
             EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
             builder.append(proxy.getEmails());
             builder.append(",");
         }
+
         return builder.toString().replaceAll("\\s*", "");
     }
 }

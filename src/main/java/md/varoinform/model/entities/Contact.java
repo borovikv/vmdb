@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Contact {
     private List<Email> emails = new ArrayList<>();
     private List<Phone> phones = new ArrayList<>();
     private List<Url> urls = new ArrayList<>();
+    private List<Phone> fax = new ArrayList<>();
 
 
     @Id
@@ -152,6 +154,7 @@ public class Contact {
     @OneToMany
     @JoinTable(name = "DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
+    @Where(clause = "type=" + Phone.TEL + "or type=" + Phone.TELFAX)
     public List<Phone> getPhones() {
         return phones;
     }
@@ -159,6 +162,20 @@ public class Contact {
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
     }
+
+    @OneToMany
+    @JoinTable(name = "DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @IndexedEmbedded
+    @Where(clause = "type=" + Phone.FAX + "or type=" + Phone.TELFAX)
+    public List<Phone> getFax() {
+        return fax;
+    }
+
+    public void setFax(List<Phone> fax) {
+        this.fax = fax;
+    }
+
+
 
     @OneToMany
     @JoinTable(name = "DB_contact_url", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))

@@ -57,7 +57,7 @@ public class SettingsDialog extends JDialog implements Observable {
         @Override
         public void perform(List<String> names) {
             Collections.sort(names, new ColumnPriorityComparator());
-            preferencesHelper.putPrefColumns(names);
+            preferencesHelper.putUserFields(names);
 
             notifyObservers(new ObservableEvent(ObservableEvent.STRUCTURE_CHANGED));
         }

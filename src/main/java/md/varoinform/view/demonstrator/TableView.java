@@ -156,7 +156,7 @@ public class TableView extends JTable implements Demonstrator {
 
         private void columnOrderChanged() {
             PreferencesHelper helper = new PreferencesHelper();
-            helper.putPrefColumns(getColumns());
+            helper.putUserFields(getColumns());
 
             fireViewStructureChanged();
         }

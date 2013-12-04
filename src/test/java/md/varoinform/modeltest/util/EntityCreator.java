@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -99,6 +100,8 @@ public class EntityCreator {
         List<Phone> result = new ArrayList<>();
         for (String phone : phones) {
             Phone p = new Phone(phone);
+            Random r = new Random();
+            p.setType(new Long(r.nextInt(4)));
             save(Phone.class, p);
             result.add(p);
         }

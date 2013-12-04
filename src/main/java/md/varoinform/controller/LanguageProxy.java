@@ -11,10 +11,11 @@ import java.util.List;
  * Date: 11/7/13
  * Time: 11:35 AM
  */
-public class LanguageProxy {
+public enum  LanguageProxy {
+    instance;
+
     private Language currentLanguage;
     private final GenericDaoHibernateImpl<Language, Long> languageDao;
-    private static LanguageProxy instance;
 
     private LanguageProxy() {
         languageDao = new GenericDaoHibernateImpl<>(Language.class);
@@ -30,18 +31,10 @@ public class LanguageProxy {
     }
 
     public static String getCurrentLanguageTitle() {
-        return getInstance().getCurrentLanguage().getTitle();
+        return instance.getCurrentLanguage().getTitle();
     }
 
     public void setCurrentLanguage(Language currentLanguage) {
         this.currentLanguage = currentLanguage;
-    }
-
-
-    public static LanguageProxy getInstance(){
-        if ( instance == null ) {
-            instance = new LanguageProxy();
-        }
-        return instance;
     }
 }

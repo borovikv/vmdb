@@ -45,19 +45,15 @@ public class HistoryProxy {
 
     public void append(Object value){
         boolean isEndOfPull = historyPull.isEmpty() || currentIndex == historyPull.size() -1;
+
         if (isEndOfPull){
             historyPull.add(value);
+
         } else {
             historyPull = historyPull.subList(0, currentIndex+1);
             historyPull.add(value);
         }
+
         currentIndex++;
-
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void clearHistory(){
-        historyPull.clear();
-        currentIndex = 0;
     }
 }

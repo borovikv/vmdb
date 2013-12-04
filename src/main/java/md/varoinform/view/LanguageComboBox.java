@@ -18,7 +18,6 @@ import java.util.List;
  * Time: 3:20 PM
  */
 public class LanguageComboBox extends JComboBox<Language> implements Observable {
-    private final LanguageProxy languageProxy = LanguageProxy.getInstance();
     private List<Observer> observers = new ArrayList<>();
 
     public LanguageComboBox() {
@@ -28,14 +27,14 @@ public class LanguageComboBox extends JComboBox<Language> implements Observable 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Language newLanguage = (Language) getSelectedItem();
-                languageProxy.setCurrentLanguage(newLanguage);
+                LanguageProxy.instance.setCurrentLanguage(newLanguage);
                 notifyObservers(new ObservableEvent(ObservableEvent.LANGUAGE_CHANGED));
             }
         });
     }
 
     private Language[] getLanguages() {
-        List<Language> languageList = languageProxy.getLanguages();
+        List<Language> languageList = LanguageProxy.instance.getLanguages();
         Language[] languages = new Language[languageList.size()];
         languageList.toArray(languages);
         return languages;

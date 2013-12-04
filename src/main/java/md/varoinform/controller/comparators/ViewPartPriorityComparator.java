@@ -1,6 +1,9 @@
 package md.varoinform.controller.comparators;
 
+import md.varoinform.util.PreferencesHelper;
+
 import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -10,7 +13,7 @@ import java.util.ResourceBundle;
  * Time: 2:46 PM
  */
 public class ViewPartPriorityComparator implements Comparator<String> {
-
+    PreferencesHelper helper = new PreferencesHelper();
     @Override
     public int compare(String o1, String o2) {
         Integer priority1 = priority(o1);
@@ -19,11 +22,10 @@ public class ViewPartPriorityComparator implements Comparator<String> {
     }
 
     private Integer priority(String viewPart) {
-        ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
-        String[] defaultPriority = bundle.getString("defaultColumns").split(";");
+        List<String> defaultPriority = helper.getDefaultFields();
 
-        for (int i = 0; i < defaultPriority.length; i++) {
-            if (defaultPriority[i].equalsIgnoreCase(viewPart)) {
+        for (int i = 0; i < defaultPriority.size(); i++) {
+            if (defaultPriority.get(i).equalsIgnoreCase(viewPart)) {
                 return i;
             }
         }

@@ -33,11 +33,12 @@ public class PrintDialog extends JDialog {
 
 
     private int mode = DATA_MODE;
-    private Language language = LanguageProxy.getInstance().getCurrentLanguage();
+    private Language language = LanguageProxy.instance.getCurrentLanguage();
     private final FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
     private final HashPrintRequestAttributeSet attributes;
     private PageFormat pageFormat;
     private Demonstrator demonstrator;
+    private final JComboBox<Object> languageCombo;
 
 
     public PrintDialog(Component parent, Demonstrator demonstrator) {
@@ -45,7 +46,7 @@ public class PrintDialog extends JDialog {
 
         setSize(450, 500);
         setModal(true);
-        setTitle(ResourceBundleHelper.getString("print", "Print"));
+        updateTitle();
         setLocationRelativeTo(parent);
 
         JPanel panel = new JPanel();
@@ -65,14 +66,14 @@ public class PrintDialog extends JDialog {
 
         JPanel languagePanel = new JPanel();
         languagePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString("language-choose", "Choose language")));
-        List<Language> languages = LanguageProxy.getInstance().getLanguages();
-        JComboBox<Object> languageCombo = new JComboBox<>(languages.toArray());
+        List<Language> languages = LanguageProxy.instance.getLanguages();
+        languageCombo = new JComboBox<>(languages.toArray());
         languageCombo.setSelectedIndex(languages.indexOf(language));
         languageCombo.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED){
-                    language = (Language)e.getItem();
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    language = (Language) e.getItem();
                 }
             }
         });
@@ -128,6 +129,10 @@ public class PrintDialog extends JDialog {
         add(choosePane, BorderLayout.EAST);
         add(buttonPanel, BorderLayout.SOUTH);
 
+    }
+
+    private void updateTitle() {
+        setTitle(ResourceBundleHelper.getString("print", "Print"));
     }
 
     private Book makeBook() {
@@ -189,6 +194,10 @@ public class PrintDialog extends JDialog {
 
     public void updateDisplay() {
         fieldChoosePanel.updateDisplay();
+        language = LanguageProxy.instance.getCurrentLanguage();
+        languageCombo.setSelectedItem(language);
+        updateTitle();
+
     }
 
 

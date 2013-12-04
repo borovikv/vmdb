@@ -2,6 +2,8 @@ package md.varoinform.controller.entityproxy;
 
 import md.varoinform.model.entities.*;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
@@ -79,9 +81,14 @@ public class ContactProxy extends EntityProxy {
     }
 
     public String getPhones(){
+        List<Phone> phones = contact.getPhones();
+        return concatPhones(phones);
+    }
+
+    private String concatPhones(List<Phone> phones) {
         StringBuilder result = new StringBuilder();
         String separator = "";
-        for (Phone phone : contact.getPhones()) {
+        for (Phone phone : phones) {
             result.append(separator);
             result.append(phone.getPhone());
             separator = ", ";
@@ -119,6 +126,6 @@ public class ContactProxy extends EntityProxy {
 
 
     public String getFax() {
-        return "fax";
+       return concatPhones(contact.getFax());
     }
 }

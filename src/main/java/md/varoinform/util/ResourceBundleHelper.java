@@ -15,15 +15,23 @@ public class ResourceBundleHelper implements Serializable {
     }
 
     public static ResourceBundle getResourceBundle() {
+        return getResourceBundle(getCurrentLanguage());
+    }
 
-        return getResourceBundle(LanguageProxy.getCurrentLanguageTitle());
+    private static String getCurrentLanguage() {
+        String languageTitle = LanguageProxy.getCurrentLanguageTitle();
+        return getCurrentLanguage(languageTitle);
+    }
+
+    private static String getCurrentLanguage(String languageTitle) {
+        return languageTitle.substring(0, 2);
     }
 
     private static ResourceBundle getResourceBundle(String language) {
+        language = getCurrentLanguage(language);
         if (bundleMap.containsKey(language)) {
             return bundleMap.get(language);
         }
-
         Locale locale = new Locale(language);
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale);
 
@@ -35,6 +43,7 @@ public class ResourceBundleHelper implements Serializable {
 
 
     public static String getString(String language, String key, String defaultValue){
+        language = getCurrentLanguage(language);
         ResourceBundle bundle = getResourceBundle(language);
 
         if ( bundle.containsKey(key)){
@@ -46,7 +55,7 @@ public class ResourceBundleHelper implements Serializable {
 
 
     public static String getString(String key, String defaultValue){
-        return getString(LanguageProxy.getCurrentLanguageTitle(), key, defaultValue);
+        return getString(getCurrentLanguage(), key, defaultValue);
     }
 
 

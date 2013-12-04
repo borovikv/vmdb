@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class PreferencesHelper implements Serializable {
-    private final String columns = "columns";
+    private final String fieldKey = "columns";
     private final Preferences preferences;
     private final String defaultDelimiter = ";";
 
@@ -19,25 +19,30 @@ public class PreferencesHelper implements Serializable {
     }
 
     public List<String> getUserFields() {
-        String columns = preferences.get(this.columns, "default");
+        String columns = preferences.get(fieldKey, "default");
 
         if (columns.equals("default")) {
-            columns = getDefaultColumns();
+            return getDefaultFields();
         }
 
+        return toList(columns);
+    }
+
+    private List<String> toList(String columns) {
         List<String> result =  new ArrayList<>();
         Collections.addAll(result, columns.split(defaultDelimiter));
         return result;
     }
 
-    private String getDefaultColumns() {
+    public List<String> getDefaultFields() {
         ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
-        return bundle.getString("defaultColumns");
+        String defaultFields =  bundle.getString(fieldKey);
+        return toList(defaultFields);
     }
 
-    public void putPrefColumns(List<String> colNames){
+    public void putUserFields(List<String> colNames){
         String value = concatList(colNames);
-        putPrefColumns(value);
+        putUserFields(value);
     }
 
     private String concatList(List<String> names) {
@@ -52,8 +57,8 @@ public class PreferencesHelper implements Serializable {
         return buf.toString();
     }
 
-    private void putPrefColumns(String value) {
-        preferences.put(columns, value);
+    private void putUserFields(String value) {
+        preferences.put(fieldKey, value);
     }
 
 }

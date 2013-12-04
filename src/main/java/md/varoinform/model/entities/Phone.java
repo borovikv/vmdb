@@ -15,7 +15,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "DB_phone")
 public class Phone {
+    public static final int FAX = 1;
+    public static final int TELFAX = 2;
+    public static final int TEL = 3;
+    public static final int GSM = 4;
     private Long id;
+    private Long type;
     private String phone;
 
     public Phone() {
@@ -50,5 +55,14 @@ public class Phone {
     @Override
     public String toString() {
         return phone;
+    }
+
+    @Column(name = "type")
+    public Long getType() {
+        return type;
+    }
+
+    public void setType(Long type) {
+        this.type = type;
     }
 }
