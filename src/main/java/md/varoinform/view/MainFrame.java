@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -109,7 +110,7 @@ public class MainFrame extends JFrame implements Observer {
         toolbar.add(history.getForwardButton());
         toolbar.addSeparator();
 
-        searchField.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+        searchField.setFont((Font) ResourceBundle.getBundle("VaroDB").getObject("SANS_SERIF"));
         searchField.addActionListener(new SearchAction());
         toolbar.add(searchField);
 

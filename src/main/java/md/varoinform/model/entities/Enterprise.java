@@ -35,7 +35,6 @@ import java.util.List;
         })
 @Table(name = "DB_enterprise")
 public class Enterprise extends TitleContainer<EnterpriseTitle>{
-    private Integer idno;
     private BusinessEntityType businessEntityType;
     private Date creation;
     private Boolean foreingCapital;
@@ -51,14 +50,6 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private List<GProduce> goods = new ArrayList<>();
     private List<Branch> branches;
 
-    @Column(name = "idno")
-    public Integer getIdno() {
-        return idno;
-    }
-
-    public void setIdno(Integer idno) {
-        this.idno = idno;
-    }
 
     @ManyToOne
     @JoinColumn(name = "business_entity_id")
