@@ -12,7 +12,11 @@ public class VaroDB extends ListResourceBundle {
             {"highlightColor", new Color(255, 255, 204)},
             {"alternativeColor", new Color(238, 238, 238)},
             {"columns", "title;address;phones;faxes;emails;urls"},
-            {"defaultFieldPriority", "title;address;phones;faxes;emails;urls"}
+            {"defaultFieldPriority", "title;address;phones;faxes;emails;urls"},
+            {"SERIF", new Font(Font.SERIF, Font.PLAIN, 18)},
+            {"SANS_SERIF", new Font(Font.SANS_SERIF, Font.PLAIN, 18)},
+            {"MONOSPACED", new Font(Font.MONOSPACED, Font.PLAIN, 18)},
+            {"server_url", "http://localhost"}
 
     };
 

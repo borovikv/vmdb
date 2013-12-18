@@ -8,6 +8,7 @@ import java.util.ListResourceBundle;
  * Date: 11/11/13
  * Time: 3:56 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 public class Strings_ru extends ListResourceBundle {
     private static final Object[][] contents = {
             {"treebranch", "товары и услуги"},
@@ -43,7 +44,8 @@ public class Strings_ru extends ListResourceBundle {
             {"false", "нет"},
             {"title", "название"},
             {"creationdate", "дата создания"},
-            {"businessentitytype", "тип собственности"}
+            {"businessentitytype", "тип собственности"},
+            {"registrationCode", "код регистарции"}
             /*
             foreingcapital, region, sector, workplaces, postalcode, urls, officenumber, street, goods, emails,
              housenumber, creationdate, phones, country, contactperson, brands, title, ypurl, checkdate,

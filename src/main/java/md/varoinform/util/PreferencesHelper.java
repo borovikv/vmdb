@@ -13,6 +13,8 @@ public class PreferencesHelper implements Serializable {
     private final String fieldKey = "columns";
     private final Preferences preferences;
     private final String defaultDelimiter = ";";
+    private String passwordKey = "password";
+    private String idDbKey = "idDB";
 
     public PreferencesHelper() {
         preferences = Preferences.userNodeForPackage(App.class);
@@ -61,4 +63,31 @@ public class PreferencesHelper implements Serializable {
         preferences.put(fieldKey, value);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    public void setDBPassword(byte[] encryptedPassword) {
+        preferences.putByteArray(passwordKey, encryptedPassword);
+    }
+
+    public byte[] getDBPassword() {
+        return preferences.getByteArray(passwordKey, null);
+    }
+
+    public void removeDBPassword() {
+        remove(passwordKey);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    public void setIdDb(String idDb) {
+        preferences.put(idDbKey, idDb);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public String getIdDb(){
+        return preferences.get(idDbKey, null);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    public void remove(String key) {
+        preferences.remove(key);
+    }
 }

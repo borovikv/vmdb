@@ -1,0 +1,93 @@
+package md.varoinform.sequrity;
+
+import org.junit.After;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Vladimir Borovic
+ * Date: 12/12/13
+ * Time: 5:00 PM
+ */
+public class TestGetKey {
+
+    @Test
+    public void testEncryptDecrypt(){
+        String key = "password";
+        byte[] encryptedKey = encrypt(key);
+
+        String decryptedKey = decrypt(encryptedKey);
+        assertEquals(key, decryptedKey);
+    }
+
+    private byte[] encrypt(String aKey) {
+        Cypher cypher = new Cypher();
+        try {
+            return cypher.encrypt(aKey, new PasswordManager().createKey(cypher));
+        } catch (CryptographyException e) {
+            return null;
+        }
+    }
+
+    private String decrypt(byte[] encryptedKey) {
+        Cypher cypher = new Cypher();
+        try {
+            return cypher.decrypt(encryptedKey, new PasswordManager().createKey(cypher));
+        } catch (CryptographyException e) {
+            return null;
+        }
+    }
+
+
+    @Test
+    public void testPassGetKey() throws PasswordNotExistException, PasswordException {
+        String aKey = "secret";
+
+        PasswordManager passwordManager = new PasswordManager();
+        byte[] encryptedKey = encrypt(aKey);
+        passwordManager.setDBPassword(encryptedKey);
+
+        String key = passwordManager.getDBPassword();
+        assertEquals(key, aKey);
+    }
+
+
+    @Test(expected = PasswordNotExistException.class)
+    public void testNotExistKey() throws PasswordNotExistException, PasswordException {
+        PasswordManager passwordManager = new PasswordManager();
+        passwordManager.getDBPassword();
+    }
+
+
+    @Test(expected = PasswordException.class)
+    public void testFailKey() throws PasswordNotExistException, PasswordException {
+        PasswordManager passwordManager = new PasswordManager();
+        byte[] encryptedKey = encrypt("password");
+        passwordManager.setDBPassword(encryptedKey);
+
+        passwordManager.getDBPassword();
+
+    }
+
+    @Test
+    public void testEncrypt(){
+        String password = "secret";
+        Cypher cypher = new Cypher();
+        byte[] bytes = new byte[0];
+        try {
+            bytes = cypher.encrypt(password, new PasswordManager().createKey(cypher));
+        } catch (CryptographyException e) {
+            assertTrue(false);
+        }
+        System.out.println(StringUtils.bytesToHex(bytes));
+    }
+
+    @After
+    public void after() {
+        PasswordManager passwordManager = new PasswordManager();
+        passwordManager.removeDBPassword();
+    }
+
+}

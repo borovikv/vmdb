@@ -8,6 +8,7 @@ import java.util.ListResourceBundle;
  * Date: 11/11/13
  * Time: 4:34 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 public class Strings_en extends ListResourceBundle {
     private static final Object[][] contents = {
             {"treebranch", "goods"},
@@ -43,7 +44,8 @@ public class Strings_en extends ListResourceBundle {
             {"false", "no"},
             {"title", "title"},
             {"creationdate", "creation date"},
-            {"businessentitytype", "business entity type"}
+            {"businessentitytype", "business entity type"},
+            {"registrationCode", "registration code"}
     };
 
     @Override
