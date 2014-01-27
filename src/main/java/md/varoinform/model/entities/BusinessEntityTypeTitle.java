@@ -1,6 +1,5 @@
 package md.varoinform.model.entities;
 
-import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 
@@ -11,7 +10,7 @@ import javax.persistence.*;
  * Time: 10:54 AM
  */
 @Entity
-@Table(name = "DB_businessentitytype")
+@Table(name = "DB_businessentitytypetitle")
 public class BusinessEntityTypeTitle extends Title<BusinessEntityType> {
     public BusinessEntityTypeTitle() {
     }
