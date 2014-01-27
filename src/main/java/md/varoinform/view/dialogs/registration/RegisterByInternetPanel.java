@@ -5,26 +5,39 @@ import javax.swing.*;
 public class RegisterByInternetPanel extends CardPanel {
     public static final int INTERNET = 1;
     public static final int PHONE = 2;
+    private final String PHONE_RADIO_KEY = "phone";
+    private final String INTERNET_RADIO_KEY = "internet";
+
     FormattedTextField idDBField = new FormattedTextField(4);
-    final JRadioButton phoneButton = new JRadioButton("phone");
-    final JRadioButton internetButton = new JRadioButton("internet");
+    final JRadioButton phoneButton;
+    final JRadioButton internetButton;
 
     public RegisterByInternetPanel() {
+        super("register_by_internet");
+
         ButtonGroup buttonGroup = new ButtonGroup();
+        phoneButton = new JRadioButton();
         buttonGroup.add(phoneButton);
+
+        internetButton = new JRadioButton();
         buttonGroup.add(internetButton);
         internetButton.setSelected(true);
+
+        updateDisplay();
         setLayout(createLayout());
     }
 
-    public GroupLayout createLayout() {
+    @Override
+    protected void updateDisplay() {
+        phoneButton.setText(getText(PHONE_RADIO_KEY, PHONE_RADIO_KEY));
+        internetButton.setText(getText(INTERNET_RADIO_KEY, INTERNET_RADIO_KEY));
+    }
 
+    public GroupLayout createLayout() {
         GroupLayout layout = new GroupLayout(this);
 
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-
-
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup()
@@ -49,18 +62,13 @@ public class RegisterByInternetPanel extends CardPanel {
     }
 
     public void setDocumentListener(JButton nextButton) {
-        idDBField.getDocument().addDocumentListener(new MyDocumentListener(idDBField, nextButton));
+        // if input valid enable button
+        idDBField.addDocumentListener(new MyDocumentListener(idDBField, nextButton));
     }
 
     @Override
     public boolean isInputValid() {
         return idDBField.isValueValid();
-    }
-
-    //ToDo:create real implementation
-    @Override
-    protected void setLabelText() {
-
     }
 
     public int getRegisterType() {

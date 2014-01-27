@@ -2,7 +2,6 @@ package md.varoinform.sequrity;
 
 import md.varoinform.util.PreferencesHelper;
 
-import java.security.Key;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,29 +14,26 @@ public class PasswordManager {
 
     public String getDBPassword() throws PasswordNotExistException, PasswordException {
         Cypher cypher = new Cypher();
-        Key key = createKey(cypher);
+        byte[] key = getKey();
         String password;
 
         byte[] encryptedPassword = getEncryptedPassword();
         if (encryptedPassword == null) throw new PasswordNotExistException(PasswordNotExistException.PASSWORD_NOT_EXIST_EXCEPTION);
 
-        try {
-            password = cypher.decrypt(encryptedPassword, key);
-        } catch (CryptographyException e) {
-            throw new PasswordException(PasswordException.DECRYPTION_ERROR, e);
-        }
+        password = cypher.decrypt(encryptedPassword, key);
 
         if( !testPassword(password)) throw new PasswordException(PasswordException.VALIDATION_ERROR);
         return password;
     }
 
-    public Key createKey(Cypher cypher) {
-        byte[] idComp = MAC.instance.getMacAddress();
-        byte[] idDB = getIdDb();
-        return cypher.createKey(idComp, idDB);
+    public byte[] getKey() {
+        Cypher cypher = new Cypher() ;
+        String keyString = getIdDb() + MAC.instance.getMacAddressAsString();
+        return cypher.createKey(keyString);
     }
 
-    //ToDo:real implementation
+
+    //ToDo:real implementation testPassword (test connection to db)
     private boolean testPassword(String password) {
         return password.equals("secret");
     }
@@ -59,9 +55,7 @@ public class PasswordManager {
          preferencesHelper.removeDBPassword();
     }
 
-    //ToDo:real implementation
-    private byte[] getIdDb() {
-        String idDB = "0123456789123456";
-        return StringUtils.getBytesFromHexString(idDB);
+    private String getIdDb() {
+        return preferencesHelper.getIdDb();
     }
 }

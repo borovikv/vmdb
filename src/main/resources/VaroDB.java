@@ -16,7 +16,7 @@ public class VaroDB extends ListResourceBundle {
             {"SERIF", new Font(Font.SERIF, Font.PLAIN, 18)},
             {"SANS_SERIF", new Font(Font.SANS_SERIF, Font.PLAIN, 18)},
             {"MONOSPACED", new Font(Font.MONOSPACED, Font.PLAIN, 18)},
-            {"server_url", "http://localhost"}
+            {"server_url", "http://localhost:8000/registry/online/"}
 
     };
 

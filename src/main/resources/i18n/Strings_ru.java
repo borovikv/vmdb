@@ -35,7 +35,7 @@ public class Strings_ru extends ListResourceBundle {
             {"checkdate", "дата проверки" },
             {"postalcode", "почтовый код" },
             {"address", "адресс" },
-            {"phones", "телефон" },
+            {"phones", "телефоны" },
             {"faxes", "факс" },
             {"emails", "email" },
             {"urls", "www" },
@@ -45,13 +45,15 @@ public class Strings_ru extends ListResourceBundle {
             {"title", "название"},
             {"creationdate", "дата создания"},
             {"businessentitytype", "тип собственности"},
-            {"registrationCode", "код регистарции"}
-            /*
-            foreingcapital, region, sector, workplaces, postalcode, urls, officenumber, street, goods, emails,
-             housenumber, creationdate, phones, country, contactperson, brands, title, ypurl, checkdate,
-             topadministrativeunit, address, faxes, town, businessentitytype, branches
+            {"registrationCode", "код регистарции"},
+            {"licence", "лицензия"},
+            {"register_by_internet", "регистр по инт"},
+            {"register_by_phone", "регистр по телефону"},
+            {"phone", "телефон" },
+            {"internet", "интернет" },
+            {"i_agree", "я согласен"},
+            {"next", "далее"}
 
-             */
     };
 
     @Override

@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.registration;
 
-import md.varoinform.sequrity.MAC;
 import md.varoinform.sequrity.Registrar;
 import md.varoinform.sequrity.RegistrationException;
 import md.varoinform.util.ImageHelper;
@@ -12,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +20,7 @@ import java.util.List;
  * Date: 12/14/13
  * Time: 12:06 PM
  */
-public class RegistrationDialog extends JDialog{
+public class RegistrationDialog extends JDialog implements Observer{
 
     private final Registrar registrar = new Registrar();
     private final RegisterByInternetPanel registerByInternetPanel = new RegisterByInternetPanel();
@@ -27,8 +28,9 @@ public class RegistrationDialog extends JDialog{
     private final JPanel card = new JPanel();
     private final List<CardPanel> cards = new ArrayList<>();
     private Integer currentCard = 0;
-    private final JButton backButton = new JButton("back");
-    private final JButton nextButton = new JButton("next");
+
+    private final JButton backButton;
+    private final JButton nextButton;
 
     public RegistrationDialog() {
         setModal(true);
@@ -39,12 +41,18 @@ public class RegistrationDialog extends JDialog{
         setLocationRelativeTo(null);
         setIconImage(ImageHelper.getImageIcon("/icons/V.png").getImage());
 
+        nextButton = new JButton();
         nextButton.setEnabled(false);
         nextButton.addActionListener(new NextAction());
 
         registerByInternetPanel.setDocumentListener(nextButton);
         registerByPhonePanel.setDocumentListener(nextButton);
+
         LicencePanel licencePanel = new LicencePanel();
+        licencePanel.addObserver(licencePanel);
+        licencePanel.addObserver(registerByInternetPanel);
+        licencePanel.addObserver(registerByPhonePanel);
+        licencePanel.addObserver(this);
         licencePanel.addCheckBoxListener(new ActionListener() {
 
             @Override
@@ -54,6 +62,7 @@ public class RegistrationDialog extends JDialog{
             }
         });
 
+        backButton = new JButton();
         backButton.setVisible(false);
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -68,51 +77,17 @@ public class RegistrationDialog extends JDialog{
         add(buttonPanel, BorderLayout.SOUTH);
 
         card.setLayout(new CardLayout());
-
         cards.add(licencePanel);
         cards.add(registerByInternetPanel);
         cards.add(registerByPhonePanel);
         for (int i = 0; i < cards.size(); i++) {
             card.add(cards.get(i), "" + i);
         }
+
+        updateDisplay();
         add(card);
     }
 
-
-    private void registerByPhone() {
-        String idDB = registerByInternetPanel.getIdDB();
-        String password = registerByPhonePanel.getPassword();
-        try {
-            registrar.registerByPhone(idDB, password);
-            setVisible(false);
-        } catch (RegistrationException e) {
-            showExceptionMessage(e);
-        }
-    }
-
-    //ToDo:create real implementation
-    private String getRegistrationCode() {
-        String macAddressAsString = MAC.instance.getMacAddressAsString();
-        String idDB = registerByInternetPanel.getIdDB();
-        return macAddressAsString + ":" + idDB;
-    }
-
-    private void registerByInternet() {
-        String idDB = registerByInternetPanel.getIdDB();
-        try {
-            registrar.registerByInternet(idDB);
-            setVisible(false);
-        } catch (RegistrationException exception) {
-            showExceptionMessage(exception);
-        }
-    }
-
-    private void showExceptionMessage(RegistrationException exception) {
-        exception.printStackTrace();
-        String exceptionMessage = exception.getMessage();
-        String message = ResourceBundleHelper.getString(exceptionMessage, exceptionMessage);
-        JOptionPane.showMessageDialog(this, message);
-    }
 
     private void nextCard(){
         if (currentCard < 2){
@@ -126,6 +101,12 @@ public class RegistrationDialog extends JDialog{
         }
     }
 
+    private void move(Object name) {
+        CardLayout cl = (CardLayout)(card.getLayout());
+        cl.show(card, name.toString());
+    }
+
+
     private void previousCard(){
         if (currentCard > 0){
             currentCard -= 1;
@@ -137,9 +118,15 @@ public class RegistrationDialog extends JDialog{
         }
     }
 
-    private void move(Object name) {
-        CardLayout cl = (CardLayout)(card.getLayout());
-        cl.show(card, name.toString());
+
+    @Override
+    public void update(Observable o, Object arg) {
+        updateDisplay();
+    }
+
+    private void updateDisplay() {
+        backButton.setText(TranslateHelper.instance.getText("back", "back"));
+        nextButton.setText(TranslateHelper.instance.getText("next", "next"));
     }
 
 
@@ -156,7 +143,7 @@ public class RegistrationDialog extends JDialog{
                     break;
 
                 case 1:
-                    registerByType();
+                    chooseRegistrationType();
                     break;
 
                 case 2:
@@ -166,18 +153,54 @@ public class RegistrationDialog extends JDialog{
 
         }
 
-        private void registerByType() {
-            switch (registerByInternetPanel.getRegisterType()){
+        private void chooseRegistrationType() {
 
+            switch (registerByInternetPanel.getRegisterType()){
                 case RegisterByInternetPanel.INTERNET:
                     registerByInternet();
                     break;
 
                 case RegisterByInternetPanel.PHONE:
-                    registerByPhonePanel.setRegistrationCode(getRegistrationCode());
+                    setRegistrationCode();
                     nextCard();
                     break;
             }
         }
+
+        private void registerByInternet() {
+            String idDB = registerByInternetPanel.getIdDB();
+            try {
+                registrar.registerByInternet(idDB);
+                setVisible(false);
+            } catch (RegistrationException exception) {
+                showExceptionMessage(exception);
+            }
+        }
+
+        private void setRegistrationCode() {
+            String idDB = registerByInternetPanel.getIdDB();
+            String registrationCode = registrar.getRegistrationCode(idDB);
+            registerByPhonePanel.setRegistrationCode(registrationCode);
+        }
+
+
+        private void registerByPhone() {
+            String idDB = registerByInternetPanel.getIdDB();
+            String password = registerByPhonePanel.getPassword();
+            try {
+                registrar.registerByPhone(idDB, password);
+                setVisible(false);
+            } catch (RegistrationException e) {
+                showExceptionMessage(e);
+            }
+        }
+
+        private void showExceptionMessage(RegistrationException exception) {
+            exception.printStackTrace();
+            String exceptionMessage = exception.getMessage();
+            String message = ResourceBundleHelper.getString(exceptionMessage, exceptionMessage);
+            JOptionPane.showMessageDialog(null, message);
+        }
+
     }
 }

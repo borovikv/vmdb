@@ -2,6 +2,7 @@ package md.varoinform.view.dialogs.registration;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,22 +10,41 @@ import java.awt.*;
  * Date: 12/18/13
  * Time: 2:12 PM
  */
-public abstract class CardPanel extends JPanel {
-    protected final JTextArea label = new JTextArea("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor " +
-            "incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
-            "nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum " +
-            "dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia " +
-            "deserunt mollit anim id est laborum.");
+public abstract class CardPanel extends JPanel implements Observer {
 
-    public CardPanel() {
+    protected final JTextArea label = new JTextArea();
+    private String labelKey;
+
+
+    public CardPanel(String labelKey) {
+        this.labelKey = labelKey;
+
         label.setEditable(false);
         label.setLineWrap(true);
         label.setWrapStyleWord(true);
-        label.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        setLabelText();
+        setLabelText(labelKey);
+    }
+
+
+
+    private void setLabelText(String key){
+        String text = getText(key, "");
+        label.setText(text);
+    }
+
+    public String getText(String key, String def) {
+        return TranslateHelper.instance.getText(key, def);
     }
 
     public abstract boolean isInputValid();
-    protected abstract void setLabelText();
+
+    @Override
+    public void update(Observable o, Object arg) {
+        setLabelText(labelKey);
+        updateDisplay();
+    }
+
+    protected abstract void updateDisplay();
 }

@@ -1,7 +1,5 @@
 package md.varoinform.view.dialogs.registration;
 
-import md.varoinform.util.ResourceBundleHelper;
-
 import javax.swing.*;
 
 /**
@@ -12,18 +10,15 @@ import javax.swing.*;
  */
 
 public class RegisterByPhonePanel extends CardPanel {
-    private final JLabel registrationCodeLabel = new JLabel();
+    private final JLabel registrationTextLabel = new JLabel();
+    private final JLabel codeLabel = new JLabel();
     private FormattedTextField passwordField = new FormattedTextField(8);
+    private static final String REG_CODE_KEY =  "registrationCode";
+
 
     public RegisterByPhonePanel() {
+        super("register_by_phone");
         setLayout(createLayout());
-        setLabelText();
-    }
-
-    //ToDo:create real implementation
-    @Override
-    protected void setLabelText() {
-
     }
 
     private GroupLayout createLayout(){
@@ -33,25 +28,30 @@ public class RegisterByPhonePanel extends CardPanel {
 
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addComponent(label)
-                .addComponent(registrationCodeLabel)
+                .addGroup(layout.createSequentialGroup().addComponent(registrationTextLabel).addComponent(codeLabel))
                 .addComponent(passwordField, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(label, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(registrationCodeLabel)
+                .addGroup(layout.createParallelGroup().addComponent(registrationTextLabel).addComponent(codeLabel))
                 .addComponent(passwordField, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
         );
         return layout;
     }
 
     public void setRegistrationCode(String registrationCode) {
-        String text = ResourceBundleHelper.getString("registrationCode", "registration code") + " " + registrationCode;
-        registrationCodeLabel.setText(text);
+        updateDisplay();
+        codeLabel.setText(registrationCode);
     }
 
     public boolean isInputValid() {
         return passwordField.isValueValid();
+    }
+
+    @Override
+    protected void updateDisplay() {
+         registrationTextLabel.setText(getText(REG_CODE_KEY, "registration code"));
     }
 
     public String getPassword() {
@@ -59,6 +59,7 @@ public class RegisterByPhonePanel extends CardPanel {
     }
 
     public void setDocumentListener(JButton nextButton) {
-        passwordField.getDocument().addDocumentListener(new MyDocumentListener(passwordField, nextButton));
+        // if input valid enable button
+        passwordField.addDocumentListener(new MyDocumentListener(passwordField, nextButton));
     }
 }

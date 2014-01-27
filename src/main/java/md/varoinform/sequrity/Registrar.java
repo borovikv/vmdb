@@ -33,18 +33,10 @@ public class Registrar {
         setPassword(encryptedPassword);
     }
 
-    private void setPassword(String encryptedPassword) throws RegistrationException {
-        try {
-            passwordManager.setDBPassword(StringUtils.getBytesFromHexString(encryptedPassword));
-        } catch (PasswordException e) {
-            throw new RegistrationException(e);
-        }
-    }
-
     private String getPassword(String idDB) throws RegistrationException {
-        String idComp = MAC.instance.getMacAddressAsString();
+
         String serverUrl = ResourceBundle.getBundle("VaroDB").getString("server_url");
-        String url = serverUrl + "?idDB=" + idDB + "&idComp=" + idComp;
+        String url = serverUrl + "?code=" + getRegistrationCode(idDB);
 
         String response = request(url);
 
@@ -57,9 +49,19 @@ public class Registrar {
         return value;
     }
 
+    private void setPassword(String encryptedPassword) throws RegistrationException {
+        try {
+            byte[] bytes = StringUtils.getBytesFromHexString(encryptedPassword);
+            passwordManager.setDBPassword(bytes);
+        } catch (PasswordException e) {
+            throw new RegistrationException(e);
+        }
+    }
+
+
     private Map<String, String> parseResponse(String response) throws RegistrationException {
         Map<String, String> result = new HashMap<>();
-        String[] strings = response.split("[=:]");
+        String[] strings = response.replaceAll("[\r\n\t\\s]*", "").split("[=:]");
 
         // response must be a string with format STATUS:value
         if (strings.length != 2)  throw new RegistrationException(RegistrationException.RESPONSE_ERROR);
@@ -76,5 +78,11 @@ public class Registrar {
         } catch (IOException e) {
             throw new RegistrationException(RegistrationException.CONNECTION_ERROR, e);
         }
+    }
+
+    //ToDo: getRegistrationCode (call from register by phone) - encrypt registration code
+    public String getRegistrationCode(String idDB) {
+        String idComp = MAC.instance.getMacAddressAsString();
+        return idDB + idComp;
     }
 }

@@ -1,84 +1,74 @@
 package md.varoinform.sequrity;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
-import java.security.GeneralSecurityException;
-import java.security.Key;
+import org.apache.commons.lang.ArrayUtils;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 public class Cypher {
-    String cipherType = "AES";
+    private static final int MAX_LENGTH = 16;
 
-    public Key createKey(byte[]... keyParts) {
+
+    public byte[] createKey(String keyString){
+        return getKeyDigest(keyString);
+    }
+
+    private byte[] getKeyDigest(String keyString)  {
+        MessageDigest messageDigest;
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            for (byte[] key : keyParts) {
-                digest.update(key);
-            }
-            byte[] keyData = Arrays.copyOfRange(digest.digest(), 0, 16);
-
-            return new SecretKeySpec(keyData, cipherType);
-
+            messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+        try {
+            messageDigest.update(keyString.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return messageDigest.digest();
     }
 
-    public String decrypt(byte[] encryptedData, Key key) throws CryptographyException {
-        byte[] bytes = crypt(encryptedData, key, Cipher.DECRYPT_MODE);
-        if (bytes == null) return null;
-        return new String(bytes);
-    }
 
-    public byte[] encrypt(String data, Key key) throws CryptographyException {
+    public byte[] encrypt(String data, byte[] key) throws CryptographyException {
         byte[] bytes = StringUtils.getBytesFromString(data);
         if (bytes == null) return null;
-        return crypt(bytes, key, Cipher.ENCRYPT_MODE);
+
+        bytes = ArrayUtils.addAll(bytes, getPadding(MAX_LENGTH - bytes.length));
+
+        return xor(key, bytes);
     }
 
-    private byte[] crypt(byte[] data, Key key, int mode) throws CryptographyException {
-        try {
-            Cipher cipher = Cipher.getInstance(cipherType);
-            cipher.init(mode, key);
-            return crypt(data, cipher);
+    private byte[] getPadding(int length) {
+        SecureRandom random = new SecureRandom();
+        byte[] padding = new byte[length];
+        random.nextBytes(padding);
 
-        } catch (IOException | GeneralSecurityException e) {
-            throw new CryptographyException(e);
-        }
+        padding[padding.length - 1] = (byte) length;
+        return padding;
     }
 
-    private byte[] crypt(byte[] in, Cipher cipher) throws IOException, GeneralSecurityException {
-        int blockSize = cipher.getBlockSize();
 
-        int outputSize = cipher.getOutputSize(blockSize);
-        byte[] inBlock = new byte[blockSize];
-        byte[] outBlock = new byte[outputSize];
-        InputStream inputStream = new ByteArrayInputStream(in);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public String decrypt(byte[] encryptedData, byte[] key)  {
+        byte[] bytes = xor(key, encryptedData);
 
-        boolean more = true;
-        int inLength = 0;
-        while (more) {
-            inLength = inputStream.read(inBlock);
-            if (inLength == blockSize) {
-                int outLength = cipher.update(inBlock, 0, blockSize, outBlock);
-                out.write(outBlock, 0, outLength);
-            } else more = false;
+        int padding_length = bytes[bytes.length-1];
+        byte[] result = Arrays.copyOfRange(bytes, 0, bytes.length - padding_length);
+
+        return new String(result);
+    }
+
+
+    private byte[] xor(byte[] key, byte[] bytes) {
+        byte[] result = new byte[bytes.length];
+
+        for (int i = 0; i < bytes.length; i++) {
+            int i1 = bytes[i] & 0xff;
+            int i2 = key[i % key.length] & 0xff;
+            result[i] = (byte) (i1 ^ i2);
         }
-        if (inLength > 0) {
-            outBlock = cipher.doFinal(inBlock, 0, inLength);
-        } else {
-            outBlock = cipher.doFinal();
-        }
-        out.write(outBlock);
-        byte[] result = out.toByteArray();
-        inputStream.close();
-        out.close();
         return result;
     }
-
 }

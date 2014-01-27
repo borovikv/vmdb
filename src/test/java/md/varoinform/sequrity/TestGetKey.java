@@ -2,7 +2,6 @@ package md.varoinform.sequrity;
 
 import org.junit.After;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 /**
@@ -17,7 +16,8 @@ public class TestGetKey {
     public void testEncryptDecrypt(){
         String key = "password";
         byte[] encryptedKey = encrypt(key);
-
+        System.out.println("encrypted key = " + encryptedKey.length);
+        assertNotNull(encryptedKey);
         String decryptedKey = decrypt(encryptedKey);
         assertEquals(key, decryptedKey);
     }
@@ -25,7 +25,7 @@ public class TestGetKey {
     private byte[] encrypt(String aKey) {
         Cypher cypher = new Cypher();
         try {
-            return cypher.encrypt(aKey, new PasswordManager().createKey(cypher));
+            return cypher.encrypt(aKey, new PasswordManager().getKey());
         } catch (CryptographyException e) {
             return null;
         }
@@ -33,11 +33,7 @@ public class TestGetKey {
 
     private String decrypt(byte[] encryptedKey) {
         Cypher cypher = new Cypher();
-        try {
-            return cypher.decrypt(encryptedKey, new PasswordManager().createKey(cypher));
-        } catch (CryptographyException e) {
-            return null;
-        }
+        return cypher.decrypt(encryptedKey, new PasswordManager().getKey());
     }
 
 
@@ -47,6 +43,7 @@ public class TestGetKey {
 
         PasswordManager passwordManager = new PasswordManager();
         byte[] encryptedKey = encrypt(aKey);
+        assertNotNull(encryptedKey);
         passwordManager.setDBPassword(encryptedKey);
 
         String key = passwordManager.getDBPassword();
@@ -65,10 +62,9 @@ public class TestGetKey {
     public void testFailKey() throws PasswordNotExistException, PasswordException {
         PasswordManager passwordManager = new PasswordManager();
         byte[] encryptedKey = encrypt("password");
+        assertNotNull(encryptedKey);
         passwordManager.setDBPassword(encryptedKey);
-
         passwordManager.getDBPassword();
-
     }
 
     @Test
@@ -77,8 +73,9 @@ public class TestGetKey {
         Cypher cypher = new Cypher();
         byte[] bytes = new byte[0];
         try {
-            bytes = cypher.encrypt(password, new PasswordManager().createKey(cypher));
+            bytes = cypher.encrypt(password, new PasswordManager().getKey());
         } catch (CryptographyException e) {
+            e.printStackTrace();
             assertTrue(false);
         }
         System.out.println(StringUtils.bytesToHex(bytes));
@@ -88,6 +85,18 @@ public class TestGetKey {
     public void after() {
         PasswordManager passwordManager = new PasswordManager();
         passwordManager.removeDBPassword();
+    }
+
+    @Test
+    public void decryptPassword(){
+        Cypher cypher = new Cypher();
+        String encryptedPassword = "d8ec883f50cb260478538d3f9508d083";
+        String database_id = "1111111111111111";
+        String user_id = "000C299B664E";
+        byte[] key = cypher.createKey(database_id + user_id);
+        byte[] encryptedData = StringUtils.getBytesFromHexString(encryptedPassword);
+        String password = cypher.decrypt(encryptedData, key);
+        assertEquals("secret", password);
     }
 
 }

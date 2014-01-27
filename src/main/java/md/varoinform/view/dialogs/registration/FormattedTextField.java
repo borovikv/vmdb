@@ -2,6 +2,7 @@ package md.varoinform.view.dialogs.registration;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.text.ParseException;
@@ -71,5 +72,9 @@ public class FormattedTextField extends JFormattedTextField {
             mask += ".HHHH";
         }
         return mask;
+    }
+
+    public void addDocumentListener(DocumentListener listener){
+        getDocument().addDocumentListener(listener);
     }
 }

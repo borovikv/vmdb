@@ -45,7 +45,14 @@ public class Strings_en extends ListResourceBundle {
             {"title", "title"},
             {"creationdate", "creation date"},
             {"businessentitytype", "business entity type"},
-            {"registrationCode", "registration code"}
+            {"registrationCode", "registration code"},
+            {"licence", "licence"},
+            {"register_by_internet", "register by internet help"},
+            {"register_by_phone", "register by phone help"},
+            {"phone", "phone" },
+            {"internet", "internet" },
+            {"i_agree", "i agree"},
+            {"next", "next"}
     };
 
     @Override
