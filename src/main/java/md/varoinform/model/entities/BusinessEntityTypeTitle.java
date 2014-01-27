@@ -10,7 +10,7 @@ import javax.persistence.*;
  * Time: 10:54 AM
  */
 @Entity
-@Table(name = "DB_businessentitytypetitle")
+@Table(name = "DB_businessentitytype")
 public class BusinessEntityTypeTitle extends Title<BusinessEntityType> {
     public BusinessEntityTypeTitle() {
     }
