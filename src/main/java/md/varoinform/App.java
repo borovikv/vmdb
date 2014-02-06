@@ -9,7 +9,7 @@ import javax.swing.*;
 
 public class App
 {
-    MainFrame mainFrame = new MainFrame();
+    MainFrame mainFrame;
 
     public static void main( String[] args )
     {
@@ -19,8 +19,11 @@ public class App
     }
 
     public void start(){
+        /*
         PasswordDB passwordDB = new PasswordDB();
         passwordDB.getPassword();
+        */
+        mainFrame = new MainFrame();
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
 
