@@ -19,7 +19,10 @@ public enum  LanguageProxy {
 
     private LanguageProxy() {
         languageDao = new GenericDaoHibernateImpl<>(Language.class);
-        currentLanguage = getLanguages().get(0);
+        List<Language> languages = getLanguages();
+        if (languages.size() > 0) {
+            currentLanguage = languages.get(0);
+        }
     }
 
     public List<Language> getLanguages(){
