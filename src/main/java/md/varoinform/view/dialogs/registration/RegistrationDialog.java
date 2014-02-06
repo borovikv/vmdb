@@ -108,6 +108,7 @@ public class RegistrationDialog extends JDialog implements Observer{
 
 
     private void previousCard(){
+        // if current card not first
         if (currentCard > 0){
             currentCard -= 1;
             move(currentCard);
@@ -116,6 +117,7 @@ public class RegistrationDialog extends JDialog implements Observer{
             backButton.setVisible(false);
             backButton.setEnabled(false);
         }
+        nextButton.setEnabled(cards.get(currentCard).isInputValid());
     }
 
 
