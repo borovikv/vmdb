@@ -2,6 +2,7 @@ package md.varoinform.controller;
 
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Language;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.util.List;
 
@@ -34,7 +35,10 @@ public enum  LanguageProxy {
     }
 
     public static String getCurrentLanguageTitle() {
-        return instance.getCurrentLanguage().getTitle();
+        Language curLang = instance.getCurrentLanguage();
+        if (curLang != null)
+            return curLang.getTitle();
+        return "en";
     }
 
     public void setCurrentLanguage(Language currentLanguage) {

@@ -73,10 +73,12 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
 
     private BranchTreeNode createRoot() {
         Branch branchRoot = BranchDao.getRoot();
+        if (branchRoot == null) return null;
         return new BranchTreeNode(branchRoot);
     }
 
     private void createTree(Branch branchRoot, BranchTreeNode root) {
+        if (branchRoot == null) return;
         for (Branch branch : branchRoot.getChildren()) {
             BranchTreeNode branchTreeNode = new BranchTreeNode(branch);
             root.add(branchTreeNode);
@@ -90,6 +92,8 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
     }
 
     public void updateRoot(){
+        if (root == null) return;
+
         needToProcess = false;
         Branch branch = getBranchFromSelected();
 
@@ -131,13 +135,13 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
         if (branch.getId().equals(root.getBranch().getId())){
             return root;
         }
-        BranchTreeNode branchTreeNode = null;
+        BranchTreeNode branchTreeNode;
         for (int i = 0; i < root.getChildCount(); i++) {
             branchTreeNode = findNode(branch, (BranchTreeNode)root.getChildAt(i));
             if (branchTreeNode != null)
                 return branchTreeNode;
         }
-        return branchTreeNode;
+        return null;
     }
 
 
