@@ -2,6 +2,7 @@ package md.varoinform;
 
 
 import md.varoinform.sequrity.PasswordDB;
+import md.varoinform.sequrity.StringUtils;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.view.MainFrame;
 
@@ -19,13 +20,18 @@ public class App
     }
 
     public void start(){
-        /*
-        PasswordDB passwordDB = new PasswordDB();
-        passwordDB.getPassword();
-        */
-        mainFrame = new MainFrame();
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        mainFrame.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                /*
+                PasswordDB passwordDB = new PasswordDB();
+                passwordDB.getPassword();
+                */
+                mainFrame = new MainFrame();
+                mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                mainFrame.setVisible(true);
+            }
 
+        });
     }
 }
