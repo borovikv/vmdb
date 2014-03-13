@@ -37,7 +37,7 @@ import java.util.List;
 public class Enterprise extends TitleContainer<EnterpriseTitle>{
     private BusinessEntityType businessEntityType;
     private Date creation;
-    private Boolean foreingCapital;
+    private Boolean foreignCapital;
     private Integer workplaces;
     private String logo;
     private String ypUrl;
@@ -72,12 +72,12 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     }
 
     @Column(name = "foreing_capital")
-    public Boolean getForeingCapital() {
-        return foreingCapital;
+    public Boolean getForeignCapital() {
+        return foreignCapital;
     }
 
-    public void setForeingCapital(Boolean foreingCapital) {
-        this.foreingCapital = foreingCapital;
+    public void setForeignCapital(Boolean foreignCapital) {
+        this.foreignCapital = foreignCapital;
     }
 
     @Column(name = "workplaces")
@@ -195,7 +195,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
                 "title =" + getTitles() +
                 ", businessEntityType=" + businessEntityType +
                 ", creation=" + creation +
-                ", foreingCapital=" + foreingCapital +
+                ", foreignCapital=" + foreignCapital +
                 ", workplaces=" + workplaces +
                 ", logo='" + logo + '\'' +
                 ", ypUrl='" + ypUrl + '\'' +

@@ -58,7 +58,7 @@ public class EnterpriseTest extends TestHibernateBase {
         enterprise.setCreation(create);
         enterprise.setLastChange(change);
 
-        enterprise.setForeingCapital(Boolean.FALSE);
+        enterprise.setForeignCapital(Boolean.FALSE);
         enterprise.setLogo("logo");
         enterprise.setYpUrl("yp.md");
         enterprise.setWorkplaces(40);

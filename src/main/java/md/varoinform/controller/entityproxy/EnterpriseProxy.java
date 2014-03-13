@@ -48,7 +48,7 @@ public class EnterpriseProxy extends EntityProxy {
 
     @Property(name = "ForeingCapital")
     public String getForeingCapital(){
-        Boolean foreingCapital = enterprise.getForeingCapital();
+        Boolean foreingCapital = enterprise.getForeignCapital();
         return foreingCapital != null ? getResourceBundle().getString(foreingCapital.toString()) : "";
     }
 
