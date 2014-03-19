@@ -50,7 +50,7 @@ public class TitleContainer<T extends Title> {
         if (titles.size() > 0){
             return titles.get(0).getTitle();
         }
-        return null;
+        return "id = " + id;
     }
 
     @Override

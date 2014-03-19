@@ -71,7 +71,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
         this.creation = creation;
     }
 
-    @Column(name = "foreing_capital")
+    @Column(name = "foreign_capital")
     public Boolean getForeignCapital() {
         return foreignCapital;
     }
@@ -158,7 +158,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     }
 
     @ManyToMany
-    @JoinTable(name = "DB_enterprise_brand", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
+    @JoinTable(name = "DB_enterprise_brands", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
     @IndexedEmbedded
     public List<Brand> getBrands() {
         return brands;
