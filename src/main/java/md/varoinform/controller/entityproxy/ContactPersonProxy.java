@@ -1,6 +1,9 @@
 package md.varoinform.controller.entityproxy;
 
-import md.varoinform.model.entities.ContactPerson;
+import md.varoinform.controller.LanguageProxy;
+import md.varoinform.model.entities.*;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,10 +12,28 @@ import md.varoinform.model.entities.ContactPerson;
  * Time: 11:04 AM
  */
 public class ContactPersonProxy {
+    private final ContactPerson contactPerson;
+    private final List<Phone> phones;
+    private Position position;
+    private Person person;
+
     public ContactPersonProxy(ContactPerson contactPerson) {
+        this.contactPerson = contactPerson;
+        phones = contactPerson.getPhones();
+        position = contactPerson.getPosition();
+        person = contactPerson.getPerson();
     }
 
     public String getPersonTable() {
-        return "";
+        if (contactPerson == null) return "";
+
+        Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
+
+        String title = "";
+        if (person != null){
+            title = person.title(currentLanguage);
+        }
+        String result = position.title(currentLanguage) + " " + title + ": " + phones;
+        return result;
     }
 }
