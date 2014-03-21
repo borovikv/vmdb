@@ -11,51 +11,50 @@ import java.util.*;
  * Time: 11:33 AM
  */
 public class Creator {
-    private static final String CSV_ROOT = "src/main/java/md/varoinform/creator/csvdb_";
-    //private final Session session = HibernateSessionFactory.getSession();
+    private final File root;
+    private final String outputDB;
 
-    private Creator(){}
-
-    public static int updateDb() {
-        return new Creator().update();
-
+    public Creator(File root){
+        this.root = root;
+        outputDB = root.getAbsolutePath() + File.separator + "DB";
     }
 
-    private int update() {
-        readFolder(1);
+    public File create() throws CreateException {
+        File[] files = getFiles();
 
-        return 0;
+        for (File file : files) {
+            try {
+                createTableFromCsv(file);
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new CreateException(e);
+            }
+        }
+
+        return getOutputDB();
     }
 
-    private void readFolder(int count) {
-        File folder = new File(CSV_ROOT + count);
-        File[] files = folder.listFiles();
+    private File[] getFiles() {
+        File[] files = root.listFiles();
         Arrays.sort(files, new Comparator<File>() {
             @Override
             public int compare(File o1, File o2) {
                 return o1.getName().compareToIgnoreCase(o2.getName());
             }
         });
-
-        for (File file : files != null ? files : new File[0]) {
-            try {
-                createTableFromCsv(file);
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        return files != null ? files : new File[0];
     }
 
     private void createTableFromCsv(File file) throws SQLException, ClassNotFoundException {
-        Class.forName("org.h2.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:h2:database/DB", "admin", "password");
-        conn.createStatement().execute("CREATE TABLE " +
-                "DB_" + getName(file.getName()) +
-                " AS SELECT * FROM CSVREAD('" +
-                file.getAbsolutePath() +
-                "');");
-        conn.close();
+        String sql = "CREATE TABLE " + "DB_" + getName(file.getName()) +
+                " AS SELECT * FROM CSVREAD('" + file.getAbsolutePath() +  "');";
+        executeSQL(sql);
+    }
 
+    private void executeSQL(String sql) throws ClassNotFoundException, SQLException {
+        Class.forName("org.h2.Driver");
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:" + outputDB, "admin", "password")) {
+            conn.createStatement().execute(sql);
+        }
     }
 
     private String getName(String csv) {
@@ -66,5 +65,11 @@ public class Creator {
         return name;
     }
 
+
+    private File getOutputDB() throws CreateException {
+        File file = new File(outputDB + ".h2.db");
+        if (!file.exists()) throw new CreateException("file not created");
+        return file;
+    }
 
 }
