@@ -35,7 +35,7 @@ public class Registrar {
 
     private String getPassword(String idDB) throws RegistrationException {
 
-        String serverUrl = ResourceBundle.getBundle("VaroDB").getString("server_url");
+        String serverUrl = ResourceBundle.getBundle("VaroDB").getString("register_url");
         String url = serverUrl + "?code=" + getRegistrationCode(idDB);
 
         String response = request(url);
