@@ -23,7 +23,6 @@ public class Sender {
     public void send(File file)  {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(WWW);
-        System.out.println(1);
         MultipartEntityBuilder meb = MultipartEntityBuilder.create();
         meb.addBinaryBody("db", file);
         meb.addTextBody("title", file.getName());
@@ -33,12 +32,13 @@ public class Sender {
 
         try {
             HttpResponse response = client.execute(httpPost);
-            printRequest(response.getEntity().getContent());
+            //printRequest(response.getEntity().getContent());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private void printRequest(InputStream content) throws IOException {
         int c;
         StringBuilder builder = new StringBuilder();

@@ -18,7 +18,8 @@ public class Request {
         String response;
         HttpURLConnection connection = null;
         try {
-            connection = getHttpURLConnection(new URL(url));
+            URL url = new URL(this.url);
+            connection = getHttpURLConnection(url);
             response = getResponse(connection);
 
         } finally {
