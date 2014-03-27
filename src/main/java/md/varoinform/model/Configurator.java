@@ -2,6 +2,7 @@ package md.varoinform.model;
 
 
 import md.varoinform.Settings;
+import md.varoinform.model.entities.*;
 import org.hibernate.cfg.Configuration;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,9 +18,7 @@ public class Configurator {
     private final String pathToDb;
 
     public Configurator() {
-        Path path = Paths.get(Settings.getWorkFolder(), "database", "DB");
-        if (Files.notExists(path.getParent())) throw new RuntimeException("file " + path.toAbsolutePath().toString() + " not found");
-        this.pathToDb = path.toString();
+        pathToDb = Settings.pathToDB().toString();
     }
 
     public Configurator(String pathToDb) {
@@ -28,7 +27,6 @@ public class Configurator {
         if (Files.notExists(path.getParent())) throw new RuntimeException("file " + path.toAbsolutePath().toString() + " not found");
         this.pathToDb = path.toString();
     }
-
 
     public Configuration configure(){
         Configuration cfg = getConfiguration();
@@ -39,39 +37,41 @@ public class Configurator {
 
     public Configuration getConfiguration() {
         Configuration cfg  = new Configuration();
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Advertisement.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.AdvertisementText.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Branch.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.BranchTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Brand.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.BusinessEntityType.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.BusinessEntityTypeTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Contact.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.ContactPerson.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Email.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Enterprise.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.EnterpriseTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Good.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.GoodTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.GProduce.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Language.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Person.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.PersonTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Phone.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Position.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.PositionTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Region.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.RegionTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Sector.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.SectorTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Street.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.StreetTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Tag.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.TopAdministrativeUnit.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.TopAdministrativeUnitTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Town.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.TownTitle.class);
-        cfg.addAnnotatedClass(md.varoinform.model.entities.Url.class);
+        cfg.addAnnotatedClass(Advertisement.class);
+        cfg.addAnnotatedClass(AdvertisementText.class);
+        cfg.addAnnotatedClass(Branch.class);
+        cfg.addAnnotatedClass(BranchTitle.class);
+        cfg.addAnnotatedClass(Brand.class);
+        cfg.addAnnotatedClass(BusinessEntityType.class);
+        cfg.addAnnotatedClass(BusinessEntityTypeTitle.class);
+        cfg.addAnnotatedClass(Contact.class);
+        cfg.addAnnotatedClass(ContactPerson.class);
+        cfg.addAnnotatedClass(Email.class);
+        cfg.addAnnotatedClass(Enterprise.class);
+        cfg.addAnnotatedClass(EnterpriseTitle.class);
+        cfg.addAnnotatedClass(Good.class);
+        cfg.addAnnotatedClass(GoodTitle.class);
+        cfg.addAnnotatedClass(GProduce.class);
+        cfg.addAnnotatedClass(Language.class);
+        cfg.addAnnotatedClass(Person.class);
+        cfg.addAnnotatedClass(PersonTitle.class);
+        cfg.addAnnotatedClass(Phone.class);
+        cfg.addAnnotatedClass(Position.class);
+        cfg.addAnnotatedClass(PositionTitle.class);
+        cfg.addAnnotatedClass(Region.class);
+        cfg.addAnnotatedClass(RegionTitle.class);
+        cfg.addAnnotatedClass(Sector.class);
+        cfg.addAnnotatedClass(SectorTitle.class);
+        cfg.addAnnotatedClass(Street.class);
+        cfg.addAnnotatedClass(StreetTitle.class);
+        cfg.addAnnotatedClass(Tag.class);
+        cfg.addAnnotatedClass(TagEnterprise.class);
+        cfg.addAnnotatedClass(Database.class);
+        cfg.addAnnotatedClass(TopAdministrativeUnit.class);
+        cfg.addAnnotatedClass(TopAdministrativeUnitTitle.class);
+        cfg.addAnnotatedClass(Town.class);
+        cfg.addAnnotatedClass(TownTitle.class);
+        cfg.addAnnotatedClass(Url.class);
 
         cfg.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
 

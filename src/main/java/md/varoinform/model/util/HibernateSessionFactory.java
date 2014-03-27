@@ -16,13 +16,11 @@ import org.hibernate.service.ServiceRegistryBuilder;
 public class HibernateSessionFactory {
 
     private static SessionFactory sessionFactory;
-    private static Configuration configuration;
     private static Session session;
 
     private HibernateSessionFactory(){}
 
     private static SessionFactory buildSessionFactory(Configuration configuration) {
-        HibernateSessionFactory.configuration = configuration;
         try {
             ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();
             sessionFactory = configuration.buildSessionFactory(serviceRegistry);
@@ -32,14 +30,6 @@ public class HibernateSessionFactory {
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
-    }
-
-    private static SessionFactory rebuildSessionFactory(Configuration configuration){
-        if (configuration == HibernateSessionFactory.configuration && sessionFactory != null){
-            return sessionFactory;
-        }
-        closeSessionFactory();
-        return buildSessionFactory(configuration);
     }
 
     private static SessionFactory getSessionFactory(Configuration configuration) {

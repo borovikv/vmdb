@@ -2,6 +2,9 @@ package md.varoinform;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,5 +63,11 @@ public class Settings {
             return file.getParent();
         }
         return System.getProperty("user.dir");
+    }
+
+    public static Path pathToDB(){
+        Path path = Paths.get(Settings.getWorkFolder(), "database", "DB");
+        if (Files.notExists(path.getParent())) throw new RuntimeException("file " + path.toAbsolutePath().toString() + " not found");
+        return path;
     }
 }
