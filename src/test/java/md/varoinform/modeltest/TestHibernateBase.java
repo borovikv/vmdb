@@ -1,12 +1,11 @@
 package md.varoinform.modeltest;
 
+import md.varoinform.model.Configurator;
 import md.varoinform.model.util.HibernateSessionFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.junit.*;
-
-import java.io.File;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +18,11 @@ public class TestHibernateBase {
 
     @Before
     public void init() throws HibernateException {
-        session = HibernateSessionFactory.getSession(new File("/home/drifter/development/idea/VaroDB/src/main/resources/test_hibernate.cfg.xml"));
+        Configurator configurator = new Configurator("/home/drifter/development/idea/VaroDB/database/DBTEST");
+        Configuration cfg = configurator.getConfiguration();
+        configurator.showSql(cfg, false);
+        configurator.setAuto(cfg, "create");
+        session = HibernateSessionFactory.getSession(cfg);
     }
 
     @After

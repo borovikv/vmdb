@@ -6,13 +6,12 @@ package md.varoinform.model.util;
  * Date: 10/2/13
  * Time: 5:21 PM
  */
+import md.varoinform.model.Configurator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
-
-import java.io.File;
 
 public class HibernateSessionFactory {
 
@@ -54,20 +53,15 @@ public class HibernateSessionFactory {
         if(session != null){
             return session;
         }
+        if (configuration == null){
+            configuration = new Configurator().configure();
+        }
         session = HibernateSessionFactory.getSessionFactory(configuration).openSession();
         return session;
     }
 
-    public static Session getSession(File resource) {
-        Configuration configuration = new Configuration();
-        configuration.configure(resource);
-        return getSession(configuration);
-    }
-
     public static Session getSession(){
-        Configuration configuration = new Configuration();
-        configuration.configure();
-        return  getSession(configuration);
+        return  getSession(null);
     }
 
     public static void shutdown(){
