@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.Settings;
 import md.varoinform.controller.MailProxy;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
@@ -110,7 +111,7 @@ public class MainFrame extends JFrame implements Observer {
         toolbar.add(history.getForwardButton());
         toolbar.addSeparator();
 
-        searchField.setFont((Font) ResourceBundle.getBundle("VaroDB").getObject("SANS_SERIF"));
+        searchField.setFont(Settings.getDefaultFont("SANS_SERIF"));
         searchField.addActionListener(new SearchAction());
         toolbar.add(searchField);
 
