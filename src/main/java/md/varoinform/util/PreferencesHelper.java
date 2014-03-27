@@ -1,12 +1,12 @@
 package md.varoinform.util;
 
 import md.varoinform.App;
+import md.varoinform.Settings;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class PreferencesHelper implements Serializable {
@@ -37,9 +37,7 @@ public class PreferencesHelper implements Serializable {
     }
 
     public List<String> getDefaultFields() {
-        ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
-        String defaultFields =  bundle.getString(fieldKey);
-        return toList(defaultFields);
+        return toList(Settings.getDefaultColumns());
     }
 
     public void putUserFields(List<String> colNames){

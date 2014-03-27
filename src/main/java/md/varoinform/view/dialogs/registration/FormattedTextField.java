@@ -1,12 +1,13 @@
 package md.varoinform.view.dialogs.registration;
 
+import md.varoinform.Settings;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.text.ParseException;
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +27,7 @@ public class FormattedTextField extends JFormattedTextField {
                  return formatter(mask);
             }
         });
-        Font font = (Font) ResourceBundle.getBundle("VaroDB").getObject("MONOSPACED");
+        Font font = Settings.getDefaultFont("MONOSPACED");
         setFont(font);
 
         Dimension preferredSize = getFieldSize(font);

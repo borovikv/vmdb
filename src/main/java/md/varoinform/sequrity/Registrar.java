@@ -1,5 +1,6 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.Settings;
 import md.varoinform.util.PreferencesHelper;
 
 import java.io.IOException;
@@ -35,8 +36,7 @@ public class Registrar {
 
     private String getPassword(String idDB) throws RegistrationException {
 
-        String serverUrl = ResourceBundle.getBundle("VaroDB").getString("register_url");
-        String url = serverUrl + "?code=" + getRegistrationCode(idDB);
+        String url = Settings.getRegisterUrl() + "?code=" + getRegistrationCode(idDB);
 
         String response = request(url);
 

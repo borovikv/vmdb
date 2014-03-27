@@ -1,18 +1,17 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.Settings;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,9 +35,7 @@ public class TableView extends JTable implements Demonstrator {
         getTableHeader().addMouseListener(new TableMouseAdapter());
         getColumnModel().addColumnModelListener(new ColumnModelListener());
 
-        ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
-        Color highlightColor = (Color)bundle.getObject("highlightColor");
-        setSelectionBackground(highlightColor);
+        setSelectionBackground(Settings.getDefaultColor("highlight"));
 
         showResults(new ArrayList<Enterprise>());
     }

@@ -1,8 +1,9 @@
 package md.varoinform.view;
 
+import md.varoinform.Settings;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,11 +13,7 @@ import java.util.ResourceBundle;
  */
 public class RendererHelper {
     private static Color background;
-    protected static final Color HIGHLIGHT_COLOR;
-    static {
-        ResourceBundle bundle = ResourceBundle.getBundle("VaroDB");
-        HIGHLIGHT_COLOR = (Color)bundle.getObject("highlightColor");
-    }
+    protected static final Color HIGHLIGHT_COLOR = Settings.getDefaultColor("highlight");
 
 
     public static JPanel getPanel(String title){
