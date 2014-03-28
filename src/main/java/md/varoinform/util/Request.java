@@ -1,10 +1,10 @@
 package md.varoinform.util;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Response;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class Request {
 
@@ -14,48 +14,17 @@ public class Request {
         this.url = url;
     }
 
-    public String request() throws IOException {
-        String response;
-        HttpURLConnection connection = null;
+    public String timesGet(int times) throws IOException {
+        if (times <= 0) return null;
         try {
-            URL url = new URL(this.url);
-            connection = getHttpURLConnection(url);
-            response = getResponse(connection);
-
-        } finally {
-            if (connection != null) connection.disconnect();
-        }
-        return response;
-    }
-
-    HttpURLConnection getHttpURLConnection(URL url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-        return connection;
-    }
-
-    String getResponse(HttpURLConnection connection) throws IOException {
-        String response;
-
-        try (InputStream inputStream = connection.getInputStream()) {
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            copy(inputStream, outputStream);
-            response = outputStream.toString();
-
+            Response execute = org.apache.http.client.fluent.Request.Get(url).execute();
+            HttpResponse response = execute.returnResponse();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            response.getEntity().writeTo(out);
+            return out.toString();
         } catch (IOException e) {
-
-            throw new IOException(e);
-        }
-
-        return response;
-    }
-
-    void copy(InputStream inputStream, ByteArrayOutputStream outputStream) throws IOException {
-        int c;
-        while ((c = inputStream.read()) != -1) {
-            outputStream.write(c);
+            if (times == 1) throw e;
+            return timesGet(times - 1);
         }
     }
 }

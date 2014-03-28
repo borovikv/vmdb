@@ -72,9 +72,9 @@ public class Registrar {
     }
 
     private String request(String url) throws RegistrationException {
-        Request request = new Request(url);
+         Request request = new Request(url);
         try {
-            return request.request();
+            return request.timesGet(1);
         } catch (IOException e) {
             throw new RegistrationException(RegistrationException.CONNECTION_ERROR, e);
         }

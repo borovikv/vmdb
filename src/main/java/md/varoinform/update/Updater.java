@@ -9,15 +9,12 @@ import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
 import md.varoinform.sequrity.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.client.fluent.Response;
-import org.hibernate.*;
+import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -36,31 +33,18 @@ import java.util.regex.Pattern;
  */
 public class Updater {
 
-    public static void main(String[] args) throws UnregisteredDBExertion {
+    public static void main(String[] args) throws UnregisteredDBExertion, IOException {
         new Updater().update();
     }
 
-    public boolean checkUpdate() throws UnregisteredDBExertion {
+    public boolean checkUpdate() throws UnregisteredDBExertion, IOException {
         UrlCreator creator = new UrlCreator(getUserId());
-        creator.setCheck(true);
+        creator.setParam("check", "true");
         String url = creator.getString();
-
-        String content = requestGetExecuteTimes(url, 1);
+        Request request = new Request(url);
+        String content = request.timesGet(1);
+        System.out.println(content);
         return parseContent(content);
-    }
-
-    private String requestGetExecuteTimes(String url, int times) throws UnregisteredDBExertion {
-        if (times <= 0) return null;
-        try {
-            Response execute = Request.Get(url).execute();
-            HttpResponse response = execute.returnResponse();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            response.getEntity().writeTo(out);
-            return out.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return requestGetExecuteTimes(url, times - 1);
-        }
     }
 
     private boolean parseContent(String content) {
@@ -68,22 +52,17 @@ public class Updater {
         return content != null && pattern.matcher(content).matches();
     }
 
-    public void update() throws UnregisteredDBExertion {
-        try {
-            UrlCreator creator = new UrlCreator(getUserId());
-            URL source = creator.getUrl();
-            File destination = new File(getDBFile(getTempDB()));
-            FileUtils.copyURLToFile(source, destination);
-            copyUserData();
-            replaceDB();
-            confirm(5);
-        } catch (IOException e) {
-            String eMessage = e.getMessage();
-            System.out.println("error = " + eMessage);
-        }
+    public void update() throws UnregisteredDBExertion, IOException {
+        UrlCreator creator = new UrlCreator(getUserId());
+        URL source = creator.getUrl();
+        File destination = new File(getDBFile(getTempDB()));
+        FileUtils.copyURLToFile(source, destination);
+        copyUserData();
+        replaceDB();
+        confirm(5);
     }
 
-
+    //ToDo: replace return for getUserId
     private String getUserId() throws UnregisteredDBExertion {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
         String idDb = preferencesHelper.getIdDb();
@@ -99,12 +78,12 @@ public class Updater {
         return Settings.pathToDB().toString() + "Temp";
     }
 
-    private void confirm(int tryCounter) throws UnregisteredDBExertion {
+    private void confirm(int tryCounter) throws UnregisteredDBExertion, IOException {
         UrlCreator creator = new UrlCreator(getUserId());
-        creator.setConfirm(true);
+        creator.setParam("confirm", "true");
         String url = creator.getString();
-
-        requestGetExecuteTimes(url, tryCounter);
+        Request request = new Request(url);
+        request.timesGet(tryCounter);
     }
 
     private void copyUserData(){
