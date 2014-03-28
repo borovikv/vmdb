@@ -5,21 +5,28 @@ import md.varoinform.model.Configurator;
 import md.varoinform.model.entities.Database;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.entities.TagEnterprise;
-import md.varoinform.model.util.HibernateSessionFactory;
+import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.util.Synchronizer;
+import md.varoinform.sequrity.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.UrlCreator;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.commons.io.FileUtils;
+import org.apache.http.client.fluent.Response;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
+import java.util.regex.Pattern;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,88 +35,101 @@ import java.util.List;
  * Time: 2:06 PM
  */
 public class Updater {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws UnregisteredDBExertion {
         new Updater().update();
     }
 
-    public void update(){
+    public boolean checkUpdate() throws UnregisteredDBExertion {
+        UrlCreator creator = new UrlCreator(getUserId());
+        creator.setCheck(true);
+        String url = creator.getString();
+
+        String content = requestGetExecuteTimes(url, 1);
+        return parseContent(content);
+    }
+
+    private String requestGetExecuteTimes(String url, int times) throws UnregisteredDBExertion {
+        if (times <= 0) return null;
         try {
-            org.apache.commons.io.FileUtils.copyURLToFile(new URL(getUrl(false)), new File(getOutFile()));
-            confirm(5);
+            Response execute = Request.Get(url).execute();
+            HttpResponse response = execute.returnResponse();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            response.getEntity().writeTo(out);
+            return out.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return requestGetExecuteTimes(url, times - 1);
+        }
+    }
+
+    private boolean parseContent(String content) {
+        Pattern pattern = Pattern.compile("^value=(yes|true)$", Pattern.CASE_INSENSITIVE);
+        return content != null && pattern.matcher(content).matches();
+    }
+
+    public void update() throws UnregisteredDBExertion {
+        try {
+            UrlCreator creator = new UrlCreator(getUserId());
+            URL source = creator.getUrl();
+            File destination = new File(getDBFile(getTempDB()));
+            FileUtils.copyURLToFile(source, destination);
             copyUserData();
             replaceDB();
+            confirm(5);
         } catch (IOException e) {
             String eMessage = e.getMessage();
             System.out.println("error = " + eMessage);
         }
     }
 
-    public String getUrl(boolean confirm) {
-        String url = Settings.getUpdateUrl() + "?user=" + getUserId();
-        if (confirm){
-            url += "&confirm=true";
-        }
-        System.out.println(url);
-        return url;
-    }
 
-    @SuppressWarnings("UnusedDeclaration")
-    private String getUserId() {
+    private String getUserId() throws UnregisteredDBExertion {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
         String idDb = preferencesHelper.getIdDb();
+        if (idDb == null) throw new UnregisteredDBExertion();
         return "0";
     }
 
-    private String getOutFile() {
-        return "/home/drifter/DB/TempDB.h2.db";
+    private String getDBFile(String name) {
+        return name + ".h2.db";
     }
 
-    private void confirm(int tryCounter){
-        if (tryCounter <= 0) return;
-        try {
-            Request.Get(getUrl(true)).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-            confirm(tryCounter - 1);
-        }
+    public String getTempDB() {
+        return Settings.pathToDB().toString() + "Temp";
+    }
+
+    private void confirm(int tryCounter) throws UnregisteredDBExertion {
+        UrlCreator creator = new UrlCreator(getUserId());
+        creator.setConfirm(true);
+        String url = creator.getString();
+
+        requestGetExecuteTimes(url, tryCounter);
     }
 
     private void copyUserData(){
-        Configuration cfg = new Configurator(getNewDB()).configure();
-        ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
-        SessionFactory sessionFactory = cfg.buildSessionFactory(serviceRegistry);
-        Session to = sessionFactory.openSession();
+        Session from = SessionManager.getSession();
+        Configuration cfg = new Configurator(getTempDB()).configure();
+        Session to = SessionManager.getSession("updating", cfg);
 
-        synchronize(Database.class, HibernateSessionFactory.getSession(), to);
-        synchronize(Tag.class, HibernateSessionFactory.getSession(), to);
-        synchronize(TagEnterprise.class, HibernateSessionFactory.getSession(), to);
-        System.out.println("copied");
+        for (Class c : new Class[] {Database.class, Tag.class, TagEnterprise.class}){
+            Synchronizer.synchronize(c, from, to);
 
-    }
-
-    public void synchronize(Class hibernateClass, Session from, Session to) throws HibernateException
-    {
-        Transaction trans = to.beginTransaction();
-        List newData = from.createCriteria(hibernateClass).list();
-        for (Object o : newData) {
-            from.evict(o);
-            to.replicate(o, ReplicationMode.OVERWRITE);
         }
-        trans.commit();
 
+        SessionManager.shutdownAll();
     }
 
     private void replaceDB() {
         try {
-            String target = Settings.pathToDB().toString();
+            Path source = Paths.get(getDBFile(getTempDB()));
+            Path target = Paths.get(getDBFile(Settings.pathToDB().toString()));
 
-            Files.move(Paths.get(getOutFile()), Paths.get(target + ".h2.db"), StandardCopyOption.ATOMIC_MOVE);
+            Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String getNewDB() {
-        return "/home/drifter/DB/TempDB";
-    }
+
 }
