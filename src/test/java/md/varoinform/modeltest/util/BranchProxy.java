@@ -1,7 +1,7 @@
 package md.varoinform.modeltest.util;
 
 import md.varoinform.model.entities.Branch;
-import md.varoinform.model.util.HibernateSessionFactory;
+import md.varoinform.model.util.SessionManager;
 import org.hibernate.Query;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class BranchProxy {
                 "bt.language.id = :language_id " +
                 "order by bt.title";
 
-        Query query = HibernateSessionFactory.getSession().createQuery(hql)
+        Query query = SessionManager.getSession().createQuery(hql)
                 .setParameter("language_id", language_id);
 
         @SuppressWarnings("unchecked")
@@ -43,22 +43,6 @@ public class BranchProxy {
         BranchProxyView(Object[] row) {
             branch = (Branch) row[0];
             title = (String) row[1];
-        }
-
-        public BranchProxyView(Branch branch) {
-            this.branch = branch;
-        }
-
-        public Branch getBranch() {
-            return branch;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public Long getId(){
-            return branch.getId();
         }
 
         @Override

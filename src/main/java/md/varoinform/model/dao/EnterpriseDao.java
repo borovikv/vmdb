@@ -1,7 +1,7 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.util.HibernateSessionFactory;
+import md.varoinform.model.util.SessionManager;
 import org.hibernate.Query;
 import java.util.List;
 
@@ -14,7 +14,10 @@ public class EnterpriseDao {
                 "e from Enterprise e join e.goods good " +
                 "where good.good.branch.id in(:branchIds) ";
 
-        Query query = HibernateSessionFactory.getSession().createQuery(hql).setParameterList("branchIds", branchIds);
-        return query.list();
+        Query query = SessionManager.getSession().createQuery(hql).setParameterList("branchIds", branchIds);
+
+        @SuppressWarnings("unchecked")
+        List<Enterprise> list = query.list();
+        return list;
     }
 }

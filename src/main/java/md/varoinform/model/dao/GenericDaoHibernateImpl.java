@@ -1,6 +1,6 @@
 package md.varoinform.model.dao;
 
-import md.varoinform.model.util.HibernateSessionFactory;
+import md.varoinform.model.util.SessionManager;
 import org.hibernate.Session;
 
 import java.io.Serializable;
@@ -19,16 +19,19 @@ public class GenericDaoHibernateImpl<T, PK extends Serializable> implements Gene
         this.type = type;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public PK create(T newInstance) {
         return (PK)getSession().save(newInstance);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T read(PK id) {
         return (T)getSession().get(type, id);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> getAll() {
         return getSession().createCriteria(type).list();
@@ -45,7 +48,7 @@ public class GenericDaoHibernateImpl<T, PK extends Serializable> implements Gene
     }
 
     public Session getSession() {
-        return HibernateSessionFactory.getSession();
+        return SessionManager.getSession();
     }
 
 
