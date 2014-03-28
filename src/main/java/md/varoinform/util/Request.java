@@ -1,4 +1,4 @@
-package md.varoinform.sequrity;
+package md.varoinform.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class Request {
         this.url = url;
     }
 
-    String request() throws IOException {
+    public String request() throws IOException {
         String response;
         HttpURLConnection connection = null;
         try {

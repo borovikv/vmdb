@@ -2,11 +2,11 @@ package md.varoinform.sequrity;
 
 import md.varoinform.Settings;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.Request;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
