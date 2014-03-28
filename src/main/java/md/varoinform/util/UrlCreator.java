@@ -4,6 +4,8 @@ import md.varoinform.Settings;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 * Created with IntelliJ IDEA.
@@ -12,34 +14,24 @@ import java.net.URL;
 * Time: 3:45 PM
 */
 public class UrlCreator {
-    private String check;
-    private String confirm;
     private String url;
+    private Map<String, String> params = new HashMap<>();
 
     public UrlCreator(String uid) {
-        this.check = "";
-        this.confirm = "";
         url = Settings.getUpdateUrl() + "?user=" + uid;
     }
 
-    public void setCheck(boolean check){
-        if (check)
-            this.check = "&check=true";
-        else{
-            this.check = "";
-        }
-    }
-
-    public void setConfirm(boolean confirm){
-        if (confirm){
-            this.confirm = "&confirm=true";
-        } else {
-            this.confirm = "";
-        }
+    public void setParam(String name, String value) {
+        params.put(name, value);
     }
 
     public String getString(){
-        return url + check + confirm;
+        String delimiter = "&";
+        for (String name : params.keySet()) {
+            String value = params.get(name);
+            url += delimiter + name + "=" + value;
+        }
+        return url;
     }
 
     public URL getUrl(){
