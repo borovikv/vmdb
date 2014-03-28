@@ -1,7 +1,7 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.util.HibernateSessionFactory;
+import md.varoinform.model.util.SessionManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
@@ -19,7 +19,7 @@ import java.util.List;
 public class SearchEngine {
 
     public SearchEngine() {
-        Session session = HibernateSessionFactory.getSession();
+        Session session = SessionManager.getSession();
         initializeFullTextSession(session);
     }
 
@@ -38,7 +38,7 @@ public class SearchEngine {
 
 
     public List<Enterprise> search(String q) {
-        FullTextSession fullTextSession = Search.getFullTextSession(HibernateSessionFactory.getSession());
+        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.getSession());
         Transaction tx = fullTextSession.beginTransaction();
 
         // create native Lucene query unsing the query DSL

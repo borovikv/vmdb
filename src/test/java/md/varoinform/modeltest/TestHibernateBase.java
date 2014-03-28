@@ -1,7 +1,7 @@
 package md.varoinform.modeltest;
 
 import md.varoinform.model.Configurator;
-import md.varoinform.model.util.HibernateSessionFactory;
+import md.varoinform.model.util.SessionManager;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
@@ -22,11 +22,11 @@ public class TestHibernateBase {
         Configuration cfg = configurator.getConfiguration();
         configurator.showSql(cfg, false);
         configurator.setAuto(cfg, "create");
-        session = HibernateSessionFactory.getSession(cfg);
+        session = SessionManager.getSession(cfg);
     }
 
     @After
     public void  tearDown(){
-        HibernateSessionFactory.shutdown();
+        SessionManager.shutdown();
     }
 }
