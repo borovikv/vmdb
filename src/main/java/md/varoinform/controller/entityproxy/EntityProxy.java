@@ -3,9 +3,6 @@ package md.varoinform.controller.entityproxy;
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.TitleContainer;
-import md.varoinform.util.ResourceBundleHelper;
-
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,9 +21,7 @@ public class EntityProxy {
         this.language = language;
     }
 
-    protected ResourceBundle getResourceBundle() {
-        return ResourceBundleHelper.getResourceBundle();
-    }
+
 
     protected String getStringValueOrEmpty(Object value) {
         if ( value == null || value instanceof CharSequence && ((CharSequence) value).length() == 0 )

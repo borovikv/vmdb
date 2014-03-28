@@ -1,6 +1,7 @@
 package md.varoinform.controller.entityproxy;
 
 import md.varoinform.model.entities.*;
+import md.varoinform.util.ResourceBundleHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,7 +50,7 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "ForeingCapital")
     public String getForeingCapital(){
         Boolean foreingCapital = enterprise.getForeignCapital();
-        return foreingCapital != null ? getResourceBundle().getString(foreingCapital.toString()) : "";
+        return foreingCapital != null ? ResourceBundleHelper.getString(foreingCapital.toString()) : "";
     }
 
     @Property(name = "Workplaces")
@@ -118,7 +119,8 @@ public class EnterpriseProxy extends EntityProxy {
     public String getGoods(){
         StringBuilder result = new StringBuilder();
         for (GProduce gProduce : enterprise.getGoods()) {
-            String isProduced = getResourceBundle().getString("" + gProduce.getProduce());
+            String key = gProduce.getProduce().toString();
+            String isProduced = ResourceBundleHelper.getString(key);
             result.append(getTitle(gProduce.getGood()));
             String isProd = "( " + isProduced + " ); ";
             result.append(isProd);

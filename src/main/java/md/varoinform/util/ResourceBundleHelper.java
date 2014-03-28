@@ -3,6 +3,7 @@ package md.varoinform.util;
 import md.varoinform.controller.LanguageProxy;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -12,10 +13,6 @@ public class ResourceBundleHelper implements Serializable {
     private static Map<String, ResourceBundle> bundleMap = new HashMap<>();
 
     private ResourceBundleHelper() {
-    }
-
-    public static ResourceBundle getResourceBundle() {
-        return getResourceBundle(getCurrentLanguage());
     }
 
     private static String getCurrentLanguage() {
@@ -47,9 +44,13 @@ public class ResourceBundleHelper implements Serializable {
         ResourceBundle bundle = getResourceBundle(language);
 
         if ( bundle.containsKey(key)){
-            return bundle.getString(key);
+            String val = bundle.getString(key);
+            try {
+                return new String(val.getBytes("ISO-8859-1"), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
-
         return defaultValue;
     }
 
