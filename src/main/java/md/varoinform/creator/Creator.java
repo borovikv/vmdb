@@ -45,7 +45,7 @@ public class Creator {
     }
 
     private void createTableFromCsv(File file) throws SQLException, ClassNotFoundException {
-        String sql = "CREATE TABLE " + "DB_" + getName(file.getName()) +
+        String sql = "CREATE TABLE " /*+ "DB_"*/ + getName(file.getName()) +
                 " AS SELECT * FROM CSVREAD('" + file.getAbsolutePath() +  "');";
         executeSQL(sql);
     }
