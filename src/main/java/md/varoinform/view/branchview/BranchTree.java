@@ -132,7 +132,7 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
 
 
     private BranchTreeNode findNode(Branch branch, BranchTreeNode root) {
-        if (branch.getId().equals(root.getBranch().getId())){
+        if (branch.equals(root.getBranch())){
             return root;
         }
         BranchTreeNode branchTreeNode;

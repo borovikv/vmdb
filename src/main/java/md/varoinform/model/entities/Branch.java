@@ -1,7 +1,5 @@
 package md.varoinform.model.entities;
 
-import org.hibernate.search.annotations.Indexed;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +39,26 @@ public class Branch extends TitleContainer<BranchTitle> {
         return children;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setChildren(List<Branch> children) {
         this.children = children;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Branch branch = (Branch) o;
+
+        return getId().equals(branch.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parent.hashCode();
+        result = 31 * result + children.hashCode();
+        return result;
     }
 
     @Override
