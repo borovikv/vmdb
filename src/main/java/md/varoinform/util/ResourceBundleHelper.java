@@ -4,10 +4,7 @@ import md.varoinform.controller.LanguageProxy;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ResourceBundleHelper implements Serializable {
     private static Map<String, ResourceBundle> bundleMap = new HashMap<>();
@@ -41,7 +38,12 @@ public class ResourceBundleHelper implements Serializable {
 
     public static String getString(String language, String key, String defaultValue){
         language = getLanguageTitle(language);
-        ResourceBundle bundle = getResourceBundle(language);
+        ResourceBundle bundle;
+        try {
+            bundle = getResourceBundle(language);
+        } catch (MissingResourceException e) {
+            return defaultValue;
+        }
 
         if ( bundle.containsKey(key)){
             String val = bundle.getString(key);
