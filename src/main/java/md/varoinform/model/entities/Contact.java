@@ -15,7 +15,7 @@ import java.util.List;
  * Time: 10:54 AM
  */
 @Entity
-@Table(name = "DB_contact")
+@Table(name = "EXPORTED_DB.DB_contact")
 public class Contact {
     private Long id;
     private Enterprise enterprise;
@@ -26,7 +26,6 @@ public class Contact {
     private Sector sector;
     private Town town;
     private Region region;
-    private TopAdministrativeUnit topAdministrativeUnit;
     private List<Email> emails = new ArrayList<>();
     private List<Phone> phones = new ArrayList<>();
     private List<Url> urls = new ArrayList<>();
@@ -129,19 +128,8 @@ public class Contact {
         this.region = region;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "top_administrative_unit_id")
-    @IndexedEmbedded
-    public TopAdministrativeUnit getTopAdministrativeUnit() {
-        return topAdministrativeUnit;
-    }
-
-    public void setTopAdministrativeUnit(TopAdministrativeUnit topAdministrativeUnit) {
-        this.topAdministrativeUnit = topAdministrativeUnit;
-    }
-
     @OneToMany
-    @JoinTable(name = "DB_contact_emails", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contact_emails", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     public List<Email> getEmails() {
         return emails;
@@ -152,7 +140,7 @@ public class Contact {
     }
 
     @OneToMany
-    @JoinTable(name = "DB_contact_phones", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contact_phones", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     @Where(clause = "type=" + Phone.TEL + "or type=" + Phone.TELFAX)
     public List<Phone> getPhones() {
@@ -164,7 +152,7 @@ public class Contact {
     }
 
     @OneToMany
-    @JoinTable(name = "DB_contact_phones", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contact_phones", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     @Where(clause = "type=" + Phone.FAX + "or type=" + Phone.TELFAX)
     public List<Phone> getFax() {
@@ -178,7 +166,7 @@ public class Contact {
 
 
     @OneToMany
-    @JoinTable(name = "DB_contact_urls", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contact_urls", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     public List<Url> getUrls() {
         return urls;
@@ -198,7 +186,6 @@ public class Contact {
                 ", sector=" + sector +
                 ", town=" + town +
                 ", region=" + region +
-                ", topAdministrativeUnit=" + topAdministrativeUnit +
                 ", emails=" + emails +
                 ", phones=" + phones +
                 ", urls=" + urls

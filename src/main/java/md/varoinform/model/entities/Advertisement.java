@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "DB_advertisement")
+@Table(name = "EXPORTED_DB.DB_advertisement")
 public class Advertisement {
     private Long id;
     private Enterprise enterprise;

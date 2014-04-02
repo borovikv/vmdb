@@ -14,7 +14,7 @@ import java.util.List;
  * Time: 4:34 PM
  */
 @Entity
-@Table(name = "DB_contactperson")
+@Table(name = "EXPORTED_DB.DB_contactperson")
 public class ContactPerson {
     private Long id;
     private Enterprise enterprise;
@@ -66,7 +66,7 @@ public class ContactPerson {
     }
 
     @OneToMany
-    @JoinTable(name = "DB_contactperson_phones", joinColumns = @JoinColumn(name = "contactperson_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contactperson_phones", joinColumns = @JoinColumn(name = "contactperson_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     public List<Phone> getPhones() {
         return phones;

@@ -55,7 +55,7 @@ public class EnterpriseTest extends TestHibernateBase {
         Enterprise enterprise = new Enterprise();
 
         enterprise.setCheckDate(check);
-        enterprise.setCreation(create);
+        enterprise.setCreation(create.getYear());
         enterprise.setLastChange(change);
 
         enterprise.setForeignCapital(Boolean.FALSE);
@@ -96,7 +96,7 @@ public class EnterpriseTest extends TestHibernateBase {
     public void testDate(){
         Enterprise e = enterpriseDao.read(1L);
         Date check = e.getCheckDate();
-        Date create = e.getCreation();
+        Integer create = e.getCreation();
         Date change = e.getLastChange();
         System.out.println("check -" + check + "\ncreate - " + create + "\nchange - " + change);
         assertEquals(check, this.check);

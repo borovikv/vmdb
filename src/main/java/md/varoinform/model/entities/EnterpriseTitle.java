@@ -11,7 +11,7 @@ import javax.persistence.*;
  * Time: 11:26 AM
  */
 @Entity
-@Table(name = "DB_enterprisetitle")
+@Table(name = "EXPORTED_DB.DB_enterprisetitle")
 public class EnterpriseTitle extends Title<Enterprise> {
     public EnterpriseTitle() {
     }

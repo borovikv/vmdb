@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +12,12 @@ import java.util.List;
  * Time: 4:07 PM
  */
 @Entity
-@Table(name = "DB_branch")
-public class Branch extends TitleContainer<BranchTitle> {
+@Table(name = "EXPORTED_DB.DB_branch")
+public class Branch extends TitleContainer<BranchTitle> implements Serializable{
     private Branch parent;
     private List<Branch> children = new ArrayList<>();
+    @EmbeddedId
+    private Id branchId = new Id();
 
     public Branch() {
     }
@@ -23,7 +26,7 @@ public class Branch extends TitleContainer<BranchTitle> {
         setParent(parent);
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "parent_id")
     public Branch getParent() {
         return parent;
@@ -68,6 +71,25 @@ public class Branch extends TitleContainer<BranchTitle> {
                 ", parent=" + parent +
                 ", titles=" + getTitles() +
                 '}';
+    }
+
+
+    @Embeddable
+    public static class Id implements Serializable {
+        @Column(name = "id")
+        private Long id;
+
+        @Column(name = "parent_id")
+        private Long parentId;
+
+        public Id() {}
+
+        public Id(Long id, Long parentId) {
+            this.id = id;
+            this.parentId = parentId;
+        }
+
+
     }
 
 }

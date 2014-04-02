@@ -11,7 +11,7 @@ import javax.persistence.*;
  * Time: 10:42 AM
  */
 @Entity
-@Table(name = "DB_branchtitle")
+@Table(name = "EXPORTED_DB.DB_branchtitle")
 public class BranchTitle extends Title<Branch>{
     public BranchTitle() {
     }

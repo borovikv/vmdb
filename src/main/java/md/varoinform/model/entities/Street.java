@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 12:34 PM
  */
 @Entity
-@Table(name = "DB_street")
+@Table(name = "EXPORTED_DB.DB_street")
 public class Street extends TitleContainer<StreetTitle> {
     public Street() {}
     public Street(List<StreetTitle> titles) {

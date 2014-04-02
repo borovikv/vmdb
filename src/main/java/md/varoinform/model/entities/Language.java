@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "DB_language")
+@Table(name = "EXPORTED_DB.DB_language")
 public class Language {
     private Long id;
     private String title;

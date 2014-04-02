@@ -13,7 +13,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "DB_gproduce")
+@Table(name = "EXPORTED_DB.DB_gproduce")
 public class GProduce {
     private Long id;
     private Enterprise enterprise;

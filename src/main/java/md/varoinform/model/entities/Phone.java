@@ -13,7 +13,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "DB_phone")
+@Table(name = "EXPORTED_DB.DB_phone")
 public class Phone {
     public static final int FAX = 1;
     public static final int TELFAX = 2;

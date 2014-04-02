@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Time: 1:47 PM
  */
 @Entity
-@Table(name = "DB_towntitle")
+@Table(name = "EXPORTED_DB.DB_towntitle")
 public class TownTitle extends Title<Town> {
     public TownTitle() {
     }

@@ -13,7 +13,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "DB_url")
+@Table(name = "EXPORTED_DB.DB_url")
 public class Url {
     private Long id;
     private String url;

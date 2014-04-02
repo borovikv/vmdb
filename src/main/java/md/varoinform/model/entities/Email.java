@@ -13,7 +13,7 @@ import javax.persistence.*;
  * Time: 2:02 PM
  */
 @Entity
-@Table(name = "DB_email")
+@Table(name = "EXPORTED_DB.DB_email")
 public class Email {
     private Long id;
     private String email;

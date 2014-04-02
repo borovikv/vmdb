@@ -23,13 +23,11 @@ public class SessionManager {
     private SessionManager(){}
 
     public static Session getSession(){
-        return  getSession(null);
+        Configuration config = new Configurator().configure();
+        return  getSession(config);
     }
 
     public static Session getSession(Configuration configuration){
-        if (configuration == null){
-            configuration = new Configurator().configure();
-        }
         return getSession(DEFAULT, configuration);
     }
 

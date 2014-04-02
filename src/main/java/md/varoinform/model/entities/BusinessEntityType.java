@@ -12,6 +12,6 @@ import java.util.List;
  * Time: 10:54 AM
  */
 @Entity
-@Table(name = "DB_businessentitytype")
+@Table(name = "EXPORTED_DB.DB_businessentitytype")
 public class BusinessEntityType extends TitleContainer<BusinessEntityTypeTitle> {
 }

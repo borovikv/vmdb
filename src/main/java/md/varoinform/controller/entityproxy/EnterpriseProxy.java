@@ -184,11 +184,6 @@ public class EnterpriseProxy extends EntityProxy {
         return getContactProxy().getRegion();
     }
 
-    //@Property(name = "TopAdministrativeUnit")
-    public String getTopAdministrativeUnit(){
-        return getContactProxy().getTopAdministrativeUnit();
-    }
-
     //@Property(name = "Country")
     public String getCountry(){
         return getContactProxy().getCountry();

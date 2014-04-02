@@ -5,7 +5,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "DB_sector")
+@Table(name = "EXPORTED_DB.DB_sector")
 public class Sector extends TitleContainer<SectorTitle> {
     public Sector() {
     }

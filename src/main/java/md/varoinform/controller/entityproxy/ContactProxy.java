@@ -60,9 +60,6 @@ public class ContactProxy extends EntityProxy {
         return getTitle(contact.getRegion());
     }
 
-    public String getTopAdministrativeUnit(){
-        return getTitle(contact.getTopAdministrativeUnit());
-    }
 
 
     public String getCountry(){
@@ -108,13 +105,13 @@ public class ContactProxy extends EntityProxy {
     }
 
     public String getAddress() {
-        String[] addressParts = { getCountry(), getTopAdministrativeUnit(), getRegion(), getTown(), getSector(),
+        String[] addressParts = { getCountry(), getRegion(), getTown(), getSector(),
                 getStreet(), getHouseNumber(), getOfficeNumber()};
 
         StringBuilder result = new StringBuilder();
         String separator = "";
         for (String part: addressParts) {
-            if (part.isEmpty()) continue;
+            if (part == null || part.isEmpty()) continue;
             result.append(separator);
             result.append(part);
             separator = ", ";

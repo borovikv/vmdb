@@ -5,6 +5,6 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "DB_town")
+@Table(name = "EXPORTED_DB.DB_town")
 public class Town extends TitleContainer<TownTitle> {
 }

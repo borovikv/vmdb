@@ -5,6 +5,7 @@ import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Parameter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,10 +34,10 @@ import java.util.List;
                         @Parameter(name = "language", value = "Romanian")
                 })
         })
-@Table(name = "DB_enterprise")
-public class Enterprise extends TitleContainer<EnterpriseTitle>{
+@Table(name = "EXPORTED_DB.DB_enterprise")
+public class Enterprise extends TitleContainer<EnterpriseTitle> implements Serializable {
     private BusinessEntityType businessEntityType;
-    private Date creation;
+    private Integer creation;
     private Boolean foreignCapital;
     private Integer workplaces;
     private String logo;
@@ -63,15 +64,15 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     }
 
     @Column(name = "creation")
-    public Date getCreation() {
+    public Integer getCreation() {
         return creation;
     }
 
-    public void setCreation(Date creation) {
+    public void setCreation(Integer creation) {
         this.creation = creation;
     }
 
-    @Column(name = "foreign_capital")
+    @Column(name = "foreing_capital")
     public Boolean getForeignCapital() {
         return foreignCapital;
     }
@@ -158,7 +159,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     }
 
     @ManyToMany
-    @JoinTable(name = "DB_enterprise_brands", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
+    @JoinTable(name = "EXPORTED_DB.DB_enterprise_brands", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
     @IndexedEmbedded
     public List<Brand> getBrands() {
         return brands;
@@ -193,7 +194,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
     public String toString() {
         return "Enterprise{" +
                 "title =" + getTitles() +
-                ", businessEntityType=" + businessEntityType +
+                /*", businessEntityType=" + businessEntityType +
                 ", creation=" + creation +
                 ", foreignCapital=" + foreignCapital +
                 ", workplaces=" + workplaces +
@@ -206,7 +207,8 @@ public class Enterprise extends TitleContainer<EnterpriseTitle>{
                 ", contactPersons=" + contactPersons +
                 ", brands=" + brands +
                 ", goods=" + goods +
-                ", branches=" + branches +
+                //", branches=" + branches +
+                */
                 '}';
     }
 }

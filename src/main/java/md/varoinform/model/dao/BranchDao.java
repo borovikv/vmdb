@@ -1,6 +1,8 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Branch;
+import md.varoinform.model.util.SessionManager;
+import org.hibernate.Session;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,8 +16,10 @@ public class BranchDao extends GenericDaoHibernateImpl< Branch, Long >{
     }
 
     public static Branch getRoot(){
-        BranchDao dao = new BranchDao();
-        return dao.read(1L);
+        /*BranchDao dao = new BranchDao();
+        return dao.read(0L);*/
+        Session session = SessionManager.getSession();
+        return (Branch) session.createQuery("from Branch where id = 0").list().get(0);
     }
 
 }

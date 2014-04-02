@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 4:17 PM
  */
 @Entity
-@Table(name = "DB_good")
+@Table(name = "EXPORTED_DB.DB_good")
 public class Good extends TitleContainer<GoodTitle> {
     private Branch branch;
 

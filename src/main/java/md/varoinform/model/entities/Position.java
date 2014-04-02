@@ -11,6 +11,6 @@ import java.util.List;
  * Time: 4:27 PM
  */
 @Entity
-@Table(name = "DB_position")
+@Table(name = "EXPORTED_DB.DB_position")
 public class Position extends TitleContainer<PositionTitle> {
 }
