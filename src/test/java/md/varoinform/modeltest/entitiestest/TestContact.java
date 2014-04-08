@@ -13,7 +13,7 @@ public class TestContact extends TestHibernateBase{
 
     @Before
     public void createContact(){
-        EntityCreator.createEnterprises();
+        //EntityCreator.createEnterprises();
     }
     @Test
     public void testContact() {

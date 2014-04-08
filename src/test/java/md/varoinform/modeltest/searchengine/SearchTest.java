@@ -50,8 +50,8 @@ public class SearchTest extends TestHibernateBase {
             for (GProduce gProduce : enterprise.getGoods()) {
                 Good g = gProduce.getGood();
                 session.refresh(g);
-                session.refresh(g.getBranch());
-                System.out.println("ent = " + enterprise.getTitles() + " goods = " + g.getTitles() + " branch " + g.getBranch().getTitles());
+                //session.refresh(g.getTreeNode());
+                //System.out.println("ent = " + enterprise.getTitles() + " goods = " + g.getTitles() + " branch " + g.getTreeNode().getTitles());
             }
         }
         System.out.println(searchResult);
@@ -76,7 +76,7 @@ public class SearchTest extends TestHibernateBase {
 
     @Before
     public void createEnterprises(){
-        enterprises = EntityCreator.createEnterprises();
+        //enterprises = EntityCreator.createEnterprises();
 
         refresh(enterprises);
     }

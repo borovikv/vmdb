@@ -35,9 +35,9 @@ public class TagEnterprise {
 
         public Id() {}
 
-        public Id(Long categoryId, Long itemId) {
-            this.tagId = categoryId;
-            this.enterpriseId = itemId;
+        public Id(Long tagId, Long enterpriseId) {
+            this.tagId = tagId;
+            this.enterpriseId = enterpriseId;
         }
 
 

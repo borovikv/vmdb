@@ -1,9 +1,9 @@
 package md.varoinform.modeltest.entitiestest;
 
+import md.varoinform.model.entities.TreeNode;
 import md.varoinform.modeltest.util.BranchProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
-import md.varoinform.model.entities.Branch;
 import md.varoinform.model.entities.BranchTitle;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.modeltest.util.EntityCreator;
@@ -25,7 +25,7 @@ public class SelectTest extends TestHibernateBase {
 
     @Before
     public void createBranch(){
-        EntityCreator.createEnterprises();
+        //EntityCreator.createEnterprises();
     }
 
     @Test
@@ -58,18 +58,18 @@ public class SelectTest extends TestHibernateBase {
     }
 
     private void printBranches(List<Long> branchIds){
-        GenericDaoHibernateImpl<Branch, Long> branchDao = new GenericDaoHibernateImpl<>(Branch.class);
+        GenericDaoHibernateImpl<TreeNode, Long> branchDao = new GenericDaoHibernateImpl<>(TreeNode.class);
         System.out.println("branches==========================================================================");
         for (Long branchId : branchIds) {
-            Branch branch = branchDao.read(branchId);
-            session.refresh(branch);
-            List<BranchTitle> titles = branch.getTitles();
-            if (titles.isEmpty()){
+            TreeNode treeNode = branchDao.read(branchId);
+            session.refresh(treeNode);
+            //List<BranchTitle> titles = treeNode.getTitles();
+            /*if (titles.isEmpty()){
                 System.out.println("root");
             } else {
                 System.out.println(titles.get(0));
             }
-
+            */
         }
         System.out.println("end_branches======================================================================");
     }

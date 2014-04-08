@@ -2,7 +2,7 @@ package md.varoinform.view.branchview;
 
 import md.varoinform.model.dao.BranchDao;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Branch;
+import md.varoinform.model.entities.TreeNode;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.*;
 import md.varoinform.view.NavigationPaneList;
@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -72,18 +71,19 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
     }
 
     private BranchTreeNode createRoot() {
-        Branch branchRoot = BranchDao.getRoot();
-        if (branchRoot == null) return null;
-        return new BranchTreeNode(branchRoot);
+        TreeNode treeNodeRoot = BranchDao.getRoot();
+        if (treeNodeRoot == null) return null;
+        return new BranchTreeNode(treeNodeRoot);
     }
 
-    private void createTree(Branch branchRoot, BranchTreeNode root) {
-        if (branchRoot == null) return;
-        for (Branch branch : branchRoot.getChildren()) {
-            BranchTreeNode branchTreeNode = new BranchTreeNode(branch);
+    private void createTree(TreeNode treeNodeRoot, BranchTreeNode root) {
+        if (treeNodeRoot == null) return;
+        /*for (TreeNode treeNode : treeNodeRoot.getChildren()) {
+            BranchTreeNode branchTreeNode = new BranchTreeNode(treeNode);
             root.add(branchTreeNode);
-            createTree(branch, branchTreeNode);
+            createTree(treeNode, branchTreeNode);
         }
+        */
     }
 
 
@@ -95,49 +95,49 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
         if (root == null) return;
 
         needToProcess = false;
-        Branch branch = getBranchFromSelected();
+        TreeNode treeNode = getBranchFromSelected();
 
         root.removeAllChildren();
-        createTree(root.getBranch(), root);
+        createTree(root.getTreeNode(), root);
         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) treeModel;
         defaultTreeModel.setRoot(root);
 
-        scrollToBranch(branch);
+        scrollToBranch(treeNode);
         updateUI();
         needToProcess = true;
     }
 
-    private Branch getBranchFromSelected() {
+    private TreeNode getBranchFromSelected() {
         BranchTreeNode branchTreeNode = ((BranchTreeNode)getLastSelectedPathComponent());
         if(branchTreeNode != null)
-            return branchTreeNode.getBranch();
+            return branchTreeNode.getTreeNode();
         return null;
     }
 
-    private void scrollToBranch(Branch branch) {
-        if (branch != null){
-            TreePath treePath = getTreePathForBranch(branch);
+    private void scrollToBranch(TreeNode treeNode) {
+        if (treeNode != null){
+            TreePath treePath = getTreePathForBranch(treeNode);
 
             scrollPathToVisible(treePath);
             select(treePath);
         }
     }
 
-    private TreePath getTreePathForBranch(Branch branch) {
+    private TreePath getTreePathForBranch(TreeNode treeNode) {
         DefaultTreeModel defaultTreeModel = ( DefaultTreeModel ) treeModel;
-        BranchTreeNode node = findNode( branch, root );
-        TreeNode[] nodes = defaultTreeModel.getPathToRoot( node );
+        BranchTreeNode node = findNode(treeNode, root );
+        javax.swing.tree.TreeNode[] nodes = defaultTreeModel.getPathToRoot( node );
         return new TreePath( nodes );
     }
 
 
-    private BranchTreeNode findNode(Branch branch, BranchTreeNode root) {
-        if (branch.equals(root.getBranch())){
+    private BranchTreeNode findNode(TreeNode treeNode, BranchTreeNode root) {
+        if (treeNode.equals(root.getTreeNode())){
             return root;
         }
         BranchTreeNode branchTreeNode;
         for (int i = 0; i < root.getChildCount(); i++) {
-            branchTreeNode = findNode(branch, (BranchTreeNode)root.getChildAt(i));
+            branchTreeNode = findNode(treeNode, (BranchTreeNode)root.getChildAt(i));
             if (branchTreeNode != null)
                 return branchTreeNode;
         }

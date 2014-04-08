@@ -1,8 +1,10 @@
 package md.varoinform.model.dao;
 
-import md.varoinform.model.entities.Branch;
+import md.varoinform.model.entities.TreeNode;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Session;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,16 +12,18 @@ import org.hibernate.Session;
  * Date: 11/5/13
  * Time: 5:33 PM
  */
-public class BranchDao extends GenericDaoHibernateImpl< Branch, Long >{
+public class BranchDao extends GenericDaoHibernateImpl<TreeNode, Long >{
     public BranchDao() {
-        super(Branch.class);
+        super(TreeNode.class);
     }
 
-    public static Branch getRoot(){
+    public static TreeNode getRoot(){
         /*BranchDao dao = new BranchDao();
         return dao.read(0L);*/
         Session session = SessionManager.getSession();
-        return (Branch) session.createQuery("from Branch where id = 0").list().get(0);
+        List list = session.createQuery("from TreeNode where id = 1").list();
+        if (list.size() <= 0) return null;
+        return (TreeNode) list.get(0);
     }
 
 }

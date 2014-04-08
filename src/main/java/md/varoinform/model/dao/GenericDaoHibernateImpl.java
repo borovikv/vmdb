@@ -21,7 +21,7 @@ public class GenericDaoHibernateImpl<T, PK extends Serializable> implements Gene
 
     @SuppressWarnings("unchecked")
     @Override
-    public PK create(T newInstance) {
+    public PK save(T newInstance) {
         return (PK)getSession().save(newInstance);
     }
 

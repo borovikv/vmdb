@@ -39,8 +39,20 @@ public class Configurator {
         Configuration cfg  = new Configuration();
         cfg.addAnnotatedClass(Advertisement.class);
         cfg.addAnnotatedClass(AdvertisementText.class);
-        cfg.addAnnotatedClass(Branch.class);
+        cfg.addAnnotatedClass(TreeNode.class);
+        cfg.addAnnotatedClass(NodeTitle.class);
+        cfg.addAnnotatedClass(NodeTitleContainer.class);
+
         cfg.addAnnotatedClass(BranchTitle.class);
+        cfg.addAnnotatedClass(Branch.class);
+
+        cfg.addAnnotatedClass(Good.class);
+        cfg.addAnnotatedClass(GoodTitle.class);
+        cfg.addAnnotatedClass(GProduce.class);
+        cfg.addAnnotatedClass(G2Produce.class);
+        cfg.addAnnotatedClass(Good2.class);
+        cfg.addAnnotatedClass(Good2Title.class);
+
         cfg.addAnnotatedClass(Brand.class);
         cfg.addAnnotatedClass(BusinessEntityType.class);
         cfg.addAnnotatedClass(BusinessEntityTypeTitle.class);
@@ -49,9 +61,6 @@ public class Configurator {
         cfg.addAnnotatedClass(Email.class);
         cfg.addAnnotatedClass(Enterprise.class);
         cfg.addAnnotatedClass(EnterpriseTitle.class);
-        cfg.addAnnotatedClass(Good.class);
-        cfg.addAnnotatedClass(GoodTitle.class);
-        cfg.addAnnotatedClass(GProduce.class);
         cfg.addAnnotatedClass(Language.class);
         cfg.addAnnotatedClass(Person.class);
         cfg.addAnnotatedClass(PersonTitle.class);
@@ -87,6 +96,7 @@ public class Configurator {
 
         cfg.setProperty("hibernate.search.default.directory_provider", "filesystem");
         cfg.setProperty("hibernate.search.default.indexBase", pathToDb + "/indexes");
+
         return cfg;
     }
 

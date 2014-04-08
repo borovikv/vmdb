@@ -21,7 +21,7 @@ public class TestHibernateBase {
         Configurator configurator = new Configurator("/home/drifter/development/idea/VaroDB/database/DBTEST");
         Configuration cfg = configurator.getConfiguration();
         configurator.showSql(cfg, false);
-        configurator.setAuto(cfg, "create");
+        configurator.setAuto(cfg, "save");
         session = SessionManager.getSession(cfg);
     }
 

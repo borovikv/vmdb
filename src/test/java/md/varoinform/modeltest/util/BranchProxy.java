@@ -1,6 +1,6 @@
 package md.varoinform.modeltest.util;
 
-import md.varoinform.model.entities.Branch;
+import md.varoinform.model.entities.TreeNode;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Query;
 
@@ -12,10 +12,10 @@ public class BranchProxy {
         
     }
 
-    // Select branch, branch_title
+    // Select treeNode, branch_title
     public static List<BranchProxyView> getBranchProxyView(Long language_id, Long parent_id) {
 
-        String hql = "select b, bt.title from Branch b, BranchTitle bt " +
+        String hql = "select b, bt.title from TreeNode b, BranchTitle bt " +
                 "where " +
                 "b.parent.id = " + parent_id +
                 " and " +
@@ -37,18 +37,18 @@ public class BranchProxy {
     }
 
     public static class BranchProxyView {
-        private Branch branch;
+        private TreeNode treeNode;
         private String title;
 
         BranchProxyView(Object[] row) {
-            branch = (Branch) row[0];
+            treeNode = (TreeNode) row[0];
             title = (String) row[1];
         }
 
         @Override
         public String toString() {
             return "BranchProxyView{" +
-                    "branch=" + branch +
+                    "treeNode=" + treeNode +
                     ", title='" + title + '\'' +
                     '}';
         }

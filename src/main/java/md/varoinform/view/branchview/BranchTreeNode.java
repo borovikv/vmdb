@@ -1,7 +1,7 @@
 package md.varoinform.view.branchview;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Branch;
+import md.varoinform.model.entities.TreeNode;
 import md.varoinform.model.entities.Language;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -17,12 +17,12 @@ import java.util.List;
  * Time: 5:08 PM
  */
 public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparable {
-    private Branch branch;
+    private TreeNode treeNode;
     private List<Long> allChildrenId;
 
     public BranchTreeNode(Object userObject) {
         super(userObject);
-        this.branch = (Branch)userObject;
+        this.treeNode = (TreeNode)userObject;
     }
 
     @Override
@@ -39,28 +39,29 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
 
     public String getTitle(){
         Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
-        if (branch != null)
-            return branch.title(currentLanguage);
+        if (treeNode != null)
+            return treeNode.title(currentLanguage);
         return null;
     }
 
-    public Branch getBranch() {
-        return branch;
+    public TreeNode getTreeNode() {
+        return treeNode;
     }
 
     public List<Long> getAllChildrenId(){
         if (allChildrenId == null){
             allChildrenId = new ArrayList<>();
-            fillAllChildrenId(branch, allChildrenId);
+            fillAllChildrenId(treeNode, allChildrenId);
         }
         return allChildrenId;
     }
 
-    private void fillAllChildrenId(Branch branch, List<Long> result) {
-        result.add(branch.getId());
-
-        for (Branch child : branch.getChildren()) {
+    private void fillAllChildrenId(TreeNode treeNode, List<Long> result) {
+        result.add(treeNode.getId());
+        /*
+        for (TreeNode child : treeNode.getChildren()) {
             fillAllChildrenId(child, result);
         }
+        */
     }
 }

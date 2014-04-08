@@ -8,26 +8,21 @@ import javax.persistence.*;
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
- * Date: 10/7/13
- * Time: 4:20 PM
+ * Date: 4/8/14
+ * Time: 9:26 AM
  */
-
 @Entity
-@Table(name = "EXPORTED_DB.DB_gproduce")
-public class GProduce {
+@Table(name = "EXPORTED_DB.DB_g2produce")
+public class G2Produce {
     private Long id;
     private Enterprise enterprise;
-    private Good good;
+    private Good2 good;
     private Boolean produce;
 
-    public GProduce() {
+    public G2Produce() {
     }
 
-    public GProduce(Enterprise enterprise, Good good, Boolean produce) {
-        setEnterprise(enterprise);
-        setGood(good);
-        setProduce(produce);
-    }
+
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -54,11 +49,11 @@ public class GProduce {
     @ManyToOne
     @JoinColumn(name = "good_id")
     @IndexedEmbedded
-    public Good getGood() {
+    public Good2 getGood() {
         return good;
     }
 
-    public void setGood(Good good) {
+    public void setGood(Good2 good) {
         this.good = good;
     }
 
@@ -71,10 +66,7 @@ public class GProduce {
         this.produce = produce;
     }
 
-    public TreeNode branch(){
-        //return good.getTreeNode();
-        return null;
-    }
+
 
     @Override
     public String toString() {

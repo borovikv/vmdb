@@ -131,8 +131,8 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "Branches")
     public String getBranches(){
         StringBuilder result = new StringBuilder();
-        for (Branch branch : enterprise.branches()) {
-            result.append(getTitle(branch));
+        for (TreeNode treeNode : enterprise.branches()) {
+            result.append(treeNode.getTitle());
             result.append("; ");
         }
         return result.toString();

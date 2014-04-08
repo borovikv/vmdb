@@ -38,7 +38,7 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
             tag.getEnterprises().addAll(enterprises);
         }
 
-        create(tag);
+        save(tag);
     }
 
     public boolean removeTag(String title, List<Enterprise> enterprises){
@@ -52,7 +52,7 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
             delete(tag);
             return false;
         } else {
-            create(tag);
+            save(tag);
             return true;
         }
     }

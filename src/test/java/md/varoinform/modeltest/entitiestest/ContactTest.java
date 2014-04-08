@@ -42,7 +42,7 @@ public class ContactTest extends TestHibernateBase {
         c.setEmails(emails);
         c.setUrls(urls);
         c.setPhones(phones);
-        contactDao.create(c);
+        contactDao.save(c);
     }
 
     private List<Url> createUrls() {
@@ -51,7 +51,7 @@ public class ContactTest extends TestHibernateBase {
             Url u = new Url();
             u.setUrl("url_"+i);
             urls.add(u);
-            urlDao.create(u);
+            urlDao.save(u);
         }
         return urls;
     }
@@ -62,7 +62,7 @@ public class ContactTest extends TestHibernateBase {
             Phone p = new Phone();
             p.setPhone("phone_"+i);
             phones.add(p);
-            phoneDao.create(p);
+            phoneDao.save(p);
         }
         return phones;
     }
@@ -73,7 +73,7 @@ public class ContactTest extends TestHibernateBase {
             Email e = new Email();
             e.setEmail("email_"+i);
             emails.add(e);
-            emailDao.create(e);
+            emailDao.save(e);
         }
         return emails;
     }

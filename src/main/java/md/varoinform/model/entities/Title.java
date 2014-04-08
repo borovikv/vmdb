@@ -12,7 +12,7 @@ import javax.persistence.*;
  * Time: 9:34 AM
  */
 @MappedSuperclass
-public class Title<T extends TitleContainer> {
+public class Title<T extends TitleContainer> implements TitleInterface{
     private Long id;
     private Language language;
     private String title;

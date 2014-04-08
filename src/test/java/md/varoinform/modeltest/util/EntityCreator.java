@@ -19,26 +19,26 @@ public class EntityCreator {
     private EntityCreator() {
     }
 
-
-    public static List<Branch> createBranches(){
-        Branch root = new Branch();
-        save(Branch.class, root);
+/*
+    public static List<TreeNode> createBranches(){
+        TreeNode root = new TreeNode();
+        save(TreeNode.class, root);
         String [] rusBranchTitle = {"регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "дом и быт"};
         String [] engBranchTitle = {"Advertisement", "design", "printing", "furniture and wood", "House and family life"};
-        List<Branch> branches = new ArrayList<>();
+        List<TreeNode> treeNodes = new ArrayList<>();
         for (int i = 0; i < rusBranchTitle.length && i < engBranchTitle.length; i++) {
-            Branch b = new Branch();
+            TreeNode b = new TreeNode();
             b.setParent(root);
             if (i%2 == 0)
                 root = b;
-            save(Branch.class, b);
+            save(TreeNode.class, b);
             BranchTitle btr = new BranchTitle(getLanguage("rus"), rusBranchTitle[i], b);
             BranchTitle bte = new BranchTitle(getLanguage("eng"), engBranchTitle[i], b);
             save(BranchTitle.class, btr);
             save(BranchTitle.class, bte);
-            branches.add(b);
+            treeNodes.add(b);
         }
-        return branches;
+        return treeNodes;
     }
 
     public static List<Brand> createBrands(){
@@ -113,13 +113,13 @@ public class EntityCreator {
         String[] engTitles = {"posters", "models", "print", "nails", "irons"};
 
         // "регклама", "дизайн", "печать", "мебель и деревообрабатывающая промышленность", "Дом и быт"
-        List<Branch> branches = createBranches();
+        List<TreeNode> treeNodes = createBranches();
         List<Good> result = new ArrayList<>();
 
         for (int i = 0; i < rusTitles.length && i < engTitles.length; i++) {
             Good g = new Good();
             int branchIndex = i % Math.min(rusTitles.length, engTitles.length);
-            g.setBranch(branches.get(branchIndex));
+            g.setTreeNode(treeNodes.get(branchIndex));
             save(Good.class, g);
             GoodTitle gtr = new GoodTitle(getLanguage("rus"), rusTitles[i], g);
             GoodTitle gte = new GoodTitle(getLanguage("eng"), engTitles[i], g);
@@ -192,7 +192,7 @@ public class EntityCreator {
 
 
     private static <T> void save(Class<T> type, T inst) {
-        (new TransactionDaoHibernateImpl<T, Long>(type)).create(inst);
+        (new TransactionDaoHibernateImpl<T, Long>(type)).save(inst);
     }
 
     private static <T> T get(Class<T> type, String property, Object value){
@@ -205,5 +205,5 @@ public class EntityCreator {
         }
         return null;
     }
-
+*/
 }

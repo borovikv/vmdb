@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 10:23 AM
  */
 public interface GenericDao <T, PK extends Serializable> {
-    PK create(T newInstance);
+    PK save(T newInstance);
     T read(PK id);
     List<T> getAll();
     void update(T transientObject);

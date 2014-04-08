@@ -129,7 +129,7 @@ public class Contact {
     }
 
     @OneToMany
-    @JoinTable(name = "EXPORTED_DB.DB_contact_emails", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinColumn(name = "contact_id")
     @IndexedEmbedded
     public List<Email> getEmails() {
         return emails;
@@ -140,9 +140,9 @@ public class Contact {
     }
 
     @OneToMany
-    @JoinTable(name = "EXPORTED_DB.DB_contact_phones", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
-    @Where(clause = "type=" + Phone.TEL + "or type=" + Phone.TELFAX)
+    @Where(clause = "type=" + Phone.TEL + "or type=" + Phone.GSM)
     public List<Phone> getPhones() {
         return phones;
     }
@@ -152,7 +152,7 @@ public class Contact {
     }
 
     @OneToMany
-    @JoinTable(name = "EXPORTED_DB.DB_contact_phones", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     @Where(clause = "type=" + Phone.FAX + "or type=" + Phone.TELFAX)
     public List<Phone> getFax() {
@@ -166,7 +166,7 @@ public class Contact {
 
 
     @OneToMany
-    @JoinTable(name = "EXPORTED_DB.DB_contact_urls", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinColumn(name = "contact_id")
     @IndexedEmbedded
     public List<Url> getUrls() {
         return urls;

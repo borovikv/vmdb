@@ -69,7 +69,7 @@ public class SearchEngine {
     }
 
     private Query getLuceneQuery(FullTextSession fullTextSession, String q) {
-        // create native Lucene query unsing the query DSL
+        // save native Lucene query unsing the query DSL
         // alternatively you can write the Lucene query using the Lucene query parser
         // or the Lucene programmatic API. The Hibernate Search DSL is recommended though
         QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();

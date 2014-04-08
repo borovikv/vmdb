@@ -12,7 +12,7 @@ public class EnterpriseDao {
     public static List<Enterprise> getEnterprisesByBranchId(List<Long> branchIds) {
         String hql = "Select distinct " +
                 "e from Enterprise e join e.goods good " +
-                "where good.good.branch.id in(:branchIds) ";
+                "where good.good.treeNode.id in(:branchIds) ";
 
         Query query = SessionManager.getSession().createQuery(hql).setParameterList("branchIds", branchIds);
 

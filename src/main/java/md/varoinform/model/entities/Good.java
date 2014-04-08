@@ -3,7 +3,6 @@ package md.varoinform.model.entities;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
-import java.util.List;
 
 
 /**
@@ -15,28 +14,38 @@ import java.util.List;
 @Entity
 @Table(name = "EXPORTED_DB.DB_good")
 public class Good extends TitleContainer<GoodTitle> {
-    private Branch branch;
+    @Column(name = "branch_id")
+    public Long getBranchID() {
+        return branchID;
+    }
+
+    public void setBranchID(Long branchID) {
+        this.branchID = branchID;
+    }
+
+    //private TreeNode treeNode;
+    private Long branchID;
 
     public Good() {
     }
 
-    public Good(Branch branch) {
-        setBranch(branch);
+    /*
+    public Good(TreeNode treeNode) {
+        setTreeNode(treeNode);
     }
-
     @ManyToOne
     @JoinColumn(name = "branch_id")
     @IndexedEmbedded
-    public Branch getBranch() {
-        return branch;
+    public TreeNode getTreeNode() {
+        return treeNode;
     }
 
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+    public void setTreeNode(TreeNode treeNode) {
+        this.treeNode = treeNode;
     }
-
+    */
     @Override
     public String toString() {
-        return "id = " + getId() + " titles = " + getTitles() + " branch = " + branch;
+        return "id = " + getId() + " titles = " + getTitles() + " branch_id = " + branchID;
     }
 }

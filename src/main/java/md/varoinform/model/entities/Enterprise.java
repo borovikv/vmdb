@@ -49,7 +49,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
     private List<GProduce> goods = new ArrayList<>();
-    private List<Branch> branches;
+    private List<TreeNode> treeNodes;
 
 
     @ManyToOne
@@ -159,7 +159,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     }
 
     @ManyToMany
-    @JoinTable(name = "EXPORTED_DB.DB_enterprise_brands", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
+    @JoinTable(name = "EXPORTED_DB.DB_enterprise_brand", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
     @IndexedEmbedded
     public List<Brand> getBrands() {
         return brands;
@@ -180,14 +180,14 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
         this.goods = goods;
     }
 
-    public List<Branch> branches() {
-        if (branches == null){
-            branches = new ArrayList<>();
+    public List<TreeNode> branches() {
+        if (treeNodes == null){
+            treeNodes = new ArrayList<>();
             for (GProduce good : goods) {
-                branches.add(good.branch());
+                treeNodes.add(good.branch());
             }
         }
-        return branches;
+        return treeNodes;
     }
 
     @Override
@@ -207,7 +207,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
                 ", contactPersons=" + contactPersons +
                 ", brands=" + brands +
                 ", goods=" + goods +
-                //", branches=" + branches +
+                //", treeNodes=" + treeNodes +
                 */
                 '}';
     }

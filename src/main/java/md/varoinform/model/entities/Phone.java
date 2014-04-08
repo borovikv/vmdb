@@ -16,8 +16,8 @@ import javax.persistence.*;
 @Table(name = "EXPORTED_DB.DB_phone")
 public class Phone {
     public static final int FAX = 1;
-    public static final int TELFAX = 2;
-    public static final int TEL = 3;
+    public static final int TEL = 2;
+    public static final int TELFAX = 3;
     public static final int GSM = 4;
     private Long id;
     private Long type;

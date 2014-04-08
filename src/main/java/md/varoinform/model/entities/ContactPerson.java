@@ -66,7 +66,7 @@ public class ContactPerson {
     }
 
     @OneToMany
-    @JoinTable(name = "EXPORTED_DB.DB_contactperson_phones", joinColumns = @JoinColumn(name = "contactperson_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "EXPORTED_DB.DB_contactperson_phone", joinColumns = @JoinColumn(name = "contactperson_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
     public List<Phone> getPhones() {
         return phones;

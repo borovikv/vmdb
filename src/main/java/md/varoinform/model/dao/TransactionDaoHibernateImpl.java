@@ -16,10 +16,10 @@ public class TransactionDaoHibernateImpl<T, PK extends Serializable> extends Gen
     }
 
     @Override
-    public PK create(T newInstance) {
+    public PK save(T newInstance) {
         try{
             Transaction transaction = getSession().beginTransaction();
-            PK pk =  super.create(newInstance);
+            PK pk =  super.save(newInstance);
             transaction.commit();
             return pk;
 
