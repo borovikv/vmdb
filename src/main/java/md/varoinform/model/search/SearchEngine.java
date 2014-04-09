@@ -17,18 +17,19 @@ import java.util.List;
  * Date: 10/25/13
  * Time: 2:44 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 public class SearchEngine {
 
     public SearchEngine() {
-        Session session = SessionManager.getSession();
-        //initializeFullTextSession(session);
+        //Session session = SessionManager.getSession();
+        //createIndex(session);
     }
 
     public SearchEngine(Session session) {
-       // initializeFullTextSession(session);
+       // createIndex(session);
     }
 
-    private void initializeFullTextSession(Session session) {
+    private void createIndex(Session session) {
         FullTextSession fullTextSession = Search.getFullTextSession(session);
         try {
             fullTextSession.createIndexer().startAndWait();
@@ -74,7 +75,7 @@ public class SearchEngine {
         // or the Lucene programmatic API. The Hibernate Search DSL is recommended though
         QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
         return qb.keyword()
-                .onFields("titles.title", "goods.good.titles.title", "goods.good.branch.titles.title", "brands.title",
+                .onFields("titles.title", "goods.good.titles.title", "goods.good.treeNodes.title.titles.title", "brands.title",
                         "contacts.postalCode", "contacts.houseNumber", "contacts.officeNumber",
                         "contacts.street.titles.title", "contacts.sector.titles.title", "contacts.town.titles.title",
                         "contacts.region.titles.title",

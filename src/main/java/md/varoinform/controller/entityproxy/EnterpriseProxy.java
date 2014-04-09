@@ -1,5 +1,6 @@
 package md.varoinform.controller.entityproxy;
 
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
 
@@ -117,25 +118,26 @@ public class EnterpriseProxy extends EntityProxy {
 
     @Property(name = "Goods")
     public String getGoods(){
-        StringBuilder result = new StringBuilder();
-        for (GProduce gProduce : enterprise.getGoods()) {
-            String key = gProduce.getProduce().toString();
-            String isProduced = ResourceBundleHelper.getString(key);
-            result.append(getTitle(gProduce.getGood()));
-            String isProd = "( " + isProduced + " ); ";
-            result.append(isProd);
+        Set<String> goods = new TreeSet<>();
+        for (G2Produce gProduce : enterprise.getGoods()) {
+            goods.add(getTitle(gProduce.getGood()));
         }
-        return result.toString();
+        return getString(goods);
+
     }
 
     @Property(name = "Branches")
     public String getBranches(){
-        StringBuilder result = new StringBuilder();
-        for (TreeNode treeNode : enterprise.branches()) {
-            result.append(treeNode.getTitle());
-            result.append("; ");
+        Set<String> titleNodes = new TreeSet<>();
+        for (TreeNode treeNode : EnterpriseDao.getNodeByEnterprise(enterprise)) {
+            titleNodes.add(getTitle(treeNode.getTitle()));
         }
-        return result.toString();
+        return getString(titleNodes);
+    }
+
+    private String getString(Collection<String> collection) {
+        String result = String.valueOf(collection);
+        return result.substring(1, result.length() - 1);
     }
 
 
@@ -212,7 +214,8 @@ public class EnterpriseProxy extends EntityProxy {
 
     public String get(String name){
         try {
-            return (String)methods.get(name.toLowerCase()).invoke(this);
+            String key = name.toLowerCase();
+            return (String)methods.get(key).invoke(this);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

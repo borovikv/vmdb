@@ -3,7 +3,6 @@ package md.varoinform.modeltest.searchengine;
 import md.varoinform.model.entities.*;
 import md.varoinform.model.search.SearchEngine;
 import md.varoinform.modeltest.TestHibernateBase;
-import md.varoinform.modeltest.util.EntityCreator;
 import org.hibernate.criterion.Restrictions;
 import org.junit.*;
 
@@ -47,11 +46,11 @@ public class SearchTest extends TestHibernateBase {
     private void printResult(List<Enterprise> searchResult) {
         System.out.println("-------------------------------------------------------------");
         for (Enterprise enterprise : searchResult) {
-            for (GProduce gProduce : enterprise.getGoods()) {
-                Good g = gProduce.getGood();
+            for (G2Produce gProduce : enterprise.getGoods()) {
+                Good2 g = gProduce.getGood();
                 session.refresh(g);
-                //session.refresh(g.getTreeNode());
-                //System.out.println("ent = " + enterprise.getTitles() + " goods = " + g.getTitles() + " branch " + g.getTreeNode().getTitles());
+                //session.refresh(g.getTreeNodes());
+                //System.out.println("ent = " + enterprise.getTitles() + " goods = " + g.getTitles() + " branch " + g.getTreeNodes().getTitles());
             }
         }
         System.out.println(searchResult);
@@ -61,8 +60,8 @@ public class SearchTest extends TestHibernateBase {
 
     private List<Enterprise> getEnterprisesByName(String... names) {
         List<Enterprise> result = new ArrayList<>();
-        for (int i = 0; i < names.length; i++) {
-            result.add(getEnterpriseByName(names[i]));
+        for (String name : names) {
+            result.add(getEnterpriseByName(name));
         }
         return result;
     }
@@ -97,7 +96,6 @@ public class SearchTest extends TestHibernateBase {
         List<String> brandTitles = getBrandsNameSortedList(varo);
         assertEquals(brandTitles.get(1), "techno-design");
         assertEquals(brandTitles.get(0), "Varo");
-        assertEquals(varo.branches().size(), 3);
     }
 
     private List<String> getBrandsNameSortedList(Enterprise enterprise) {

@@ -66,11 +66,14 @@ public class G2Produce {
         this.produce = produce;
     }
 
-
+    @Override
+    public int hashCode() {
+        return good.getTitles().hashCode();
+    }
 
     @Override
     public String toString() {
-        return "GProduce{" +
+        return "G2Produce{" +
                 "good=" + good +
                 ", produce=" + produce +
                 '}';

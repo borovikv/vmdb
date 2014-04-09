@@ -8,8 +8,6 @@ import md.varoinform.util.*;
 import md.varoinform.view.NavigationPaneList;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -44,28 +42,8 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
                 TreePath path = tree.getPathForLocation(point.x, point.y);
                 if (path != null){
                     tree.clearSelection();
-                    tree.select(path);
+                    tree.select(path, false);
                 }
-            }
-        });
-
-        addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                BranchTree tree = (BranchTree) e.getSource();
-                if (!needToProcess) return;
-
-                BranchTreeNode node = (BranchTreeNode) tree.getLastSelectedPathComponent();
-                if (node == null) return;
-
-                java.util.List<Long> allChildren = node.getAllChildrenId();
-                java.util.List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
-
-                if (!programatically) {
-                    notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED_BY_USER, tree.getSelectionPath()));
-                }
-                notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED, enterprises));
-
             }
         });
     }
@@ -78,12 +56,11 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
 
     private void createTree(TreeNode treeNodeRoot, BranchTreeNode root) {
         if (treeNodeRoot == null) return;
-        /*for (TreeNode treeNode : treeNodeRoot.getChildren()) {
+        for (TreeNode treeNode : treeNodeRoot.getChildren()) {
             BranchTreeNode branchTreeNode = new BranchTreeNode(treeNode);
             root.add(branchTreeNode);
             createTree(treeNode, branchTreeNode);
         }
-        */
     }
 
 
@@ -119,7 +96,7 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
             TreePath treePath = getTreePathForBranch(treeNode);
 
             scrollPathToVisible(treePath);
-            select(treePath);
+            select(treePath, true);
         }
     }
 
@@ -149,20 +126,34 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
     public void updateSelection() {
         TreePath path = getSelectionPath();
         clearSelection();
-        select(path);
+        select(path, true);
     }
 
-    private void setSelectionPath(TreePath path, boolean programatically) {
-        this.programatically = programatically;
-        setSelectionPath(path);
-    }
-
-    public void select(Object object){
+    public void select(Object object, boolean programatically){
         if (object instanceof TreePath){
-            setSelectionPath((TreePath) object, true);
+            this.programatically = programatically;
+            setSelectionPath((TreePath) object);
+            performSelect();
             this.programatically = false;
         }
     }
+
+    private void performSelect() {
+        if (!needToProcess) return;
+
+        BranchTreeNode node = (BranchTreeNode) getLastSelectedPathComponent();
+        if (node == null) return;
+
+        List<Long> allChildren = node.getAllChildrenId();
+        List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
+
+        if (!programatically) {
+            notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED_BY_USER, getSelectionPath()));
+        }
+        notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED, enterprises));
+    }
+
+
 
     @Override
     public void addObserver(Observer observer) {
@@ -176,4 +167,6 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
             observer.update(event);
         }
     }
+
+
 }

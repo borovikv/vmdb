@@ -30,7 +30,6 @@ public class Configurator {
 
     public Configuration configure(){
         Configuration cfg = getConfiguration();
-        setAuto(cfg, "update");
         showSql(cfg, false);
         return cfg;
     }
@@ -96,7 +95,6 @@ public class Configurator {
 
         cfg.setProperty("hibernate.search.default.directory_provider", "filesystem");
         cfg.setProperty("hibernate.search.default.indexBase", pathToDb + "/indexes");
-
         return cfg;
     }
 

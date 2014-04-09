@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,10 +14,12 @@ import java.util.List;
  * Date: 10/2/13
  * Time: 4:07 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_TreeNode")
 public class TreeNode implements Serializable{
     private Long id;
+    //private TreeNode parent;
     private Long parent;
     private NodeTitleContainer title;
 
@@ -36,6 +39,7 @@ public class TreeNode implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "title_id")
+    @IndexedEmbedded
     public NodeTitleContainer getTitle() {
         return title;
     }
@@ -49,8 +53,19 @@ public class TreeNode implements Serializable{
     public TreeNode() {
     }
 
+    /*
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "parent_id")
+    public TreeNode getParent() {
+        return parent;
+    }
 
-    //@ManyToOne(optional = false)
+    public void setParent(TreeNode parent) {
+        this.parent = parent;
+    }
+
+    */
+
     @Column(name = "parent_id")
     public Long getParent() {
         return parent;
@@ -60,16 +75,15 @@ public class TreeNode implements Serializable{
         this.parent = parent;
     }
 
-    //@OneToMany(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "parent_id")
-    /*public List<TreeNode> getChildren() {
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_id")
+    public List<TreeNode> getChildren() {
         return children;
     }
     @SuppressWarnings("UnusedDeclaration")
     public void setChildren(List<TreeNode> children) {
         this.children = children;
     }
-     */
 
     @Override
     public boolean equals(Object o) {
@@ -83,7 +97,9 @@ public class TreeNode implements Serializable{
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        String s = String.valueOf(title);
+        System.out.println(s + " = " + s.hashCode());
+        return s.hashCode();
     }
 
     @Override
@@ -96,8 +112,10 @@ public class TreeNode implements Serializable{
     }
 
 
-    public String title(Language currentLanguage) {
-
-        return "" + getTitle();
+    public String title(Language language) {
+        if (title != null){
+            return title.title(language);
+        }
+        return null;
     }
 }

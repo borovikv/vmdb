@@ -40,7 +40,7 @@ public class BranchPanel extends JPanel implements NavigationPaneList, Observabl
     }
 
     public void select(Object obj) {
-        branchTree.select(obj);
+        branchTree.select(obj, true);
     }
 
     public void clearSelection() {
@@ -50,4 +50,6 @@ public class BranchPanel extends JPanel implements NavigationPaneList, Observabl
     public Object getSelectionPath() {
         return branchTree.getSelectionPath();
     }
+
+
 }

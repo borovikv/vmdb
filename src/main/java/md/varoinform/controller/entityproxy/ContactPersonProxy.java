@@ -33,7 +33,7 @@ public class ContactPersonProxy {
         if (person != null){
             title = person.title(currentLanguage);
         }
-        String result = position.title(currentLanguage) + " " + title + ": " + phones;
-        return result;
+        String sPhones = phones.toString();
+        return position.title(currentLanguage) + " " + title + ": " + sPhones.substring(1, sPhones.length()-1);
     }
 }

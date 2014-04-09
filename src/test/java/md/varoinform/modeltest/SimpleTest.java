@@ -29,8 +29,13 @@ public class SimpleTest {
     static TransactionDaoHibernateImpl<NodeTitle, Long> nodeTitleDao = new TransactionDaoHibernateImpl<>(NodeTitle.class);
     static TransactionDaoHibernateImpl<Good2, Long> good2Dao = new TransactionDaoHibernateImpl<>(Good2.class);
     static TransactionDaoHibernateImpl<Good2Title, Long> good2TitleDao = new TransactionDaoHibernateImpl<>(Good2Title.class);
+    static TransactionDaoHibernateImpl<G2Produce, Long> g2pDao = new TransactionDaoHibernateImpl<>(G2Produce.class);
+
     static Set<Long> nodeIds = new HashSet<>();
+    static Set<Long> goodIds = new HashSet<>();
     public static void main(String[] args) {
+
+
         List<Branch> branches = getBranches();
         System.out.println(branches.size());
         max_id = getMaxBranchId();
@@ -39,6 +44,7 @@ public class SimpleTest {
             Long id = branch.id();
 
             List<BranchTitle> branchTitles = getBranchTitleByBranchId(id);
+            System.out.println(branchTitles);
             NodeTitleContainer nodeTitleContainer = getNTContainerByTitle(branchTitles);
             if (nodeTitleContainer == null){
                 nodeTitleContainer = createNodeTitleContainer(branchTitles);
@@ -47,7 +53,11 @@ public class SimpleTest {
 
             List<Good> goods = getGoodByBranchId(id);
             for (Good good : goods) {
-                createGood2(good.getTitles(), node);
+                Good2 good2 = createGood2(good.getTitles(), node);
+                if (!goodIds.contains(good.getId())){
+                    setG2Produces(good, good2);
+                    goodIds.add(good.getId());
+                }
             }
         }
 
@@ -68,9 +78,9 @@ public class SimpleTest {
         return getEntityByProperty(BranchTitle.class, "containerID", bid);
     }
 
-    private static <T> List<T> getEntityByProperty(Class<T> c, String propertyName, Long bid) {
+    private static <T, V> List<T> getEntityByProperty(Class<T> c, String propertyName, V id) {
         Session session = SessionManager.getSession();
-        Criteria criteria = session.createCriteria(c).add(Restrictions.eq(propertyName, bid));
+        Criteria criteria = session.createCriteria(c).add(Restrictions.eq(propertyName, id));
 
         //noinspection unchecked
         return criteria.list();
@@ -169,9 +179,9 @@ public class SimpleTest {
             good2Dao.save(good2);
             createGood2Title(good2, goods);
         }
-        Set<TreeNode> treeNode = good2.getTreeNode();
+        Set<TreeNode> treeNode = good2.getTreeNodes();
         treeNode.add(node);
-        good2.setTreeNode(treeNode);
+        good2.setTreeNodes(treeNode);
         good2Dao.save(good2);
         return good2;
     }
@@ -194,5 +204,15 @@ public class SimpleTest {
     }
 
 
+    private static void setG2Produces(Good good, Good2 good2){
+        List<GProduce> produces = getEntityByProperty(GProduce.class, "good", good.getId());
+        for (GProduce produce : produces) {
+            G2Produce g2p = new G2Produce();
+            g2p.setEnterprise(produce.getEnterprise());
+            g2p.setGood(good2);
+            g2p.setProduce(g2p.getProduce());
+            g2pDao.save(g2p);
+        }
+    }
 
 }

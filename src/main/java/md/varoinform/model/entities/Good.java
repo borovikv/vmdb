@@ -1,7 +1,5 @@
 package md.varoinform.model.entities;
 
-import org.hibernate.search.annotations.IndexedEmbedded;
-
 import javax.persistence.*;
 
 
@@ -11,9 +9,15 @@ import javax.persistence.*;
  * Date: 10/7/13
  * Time: 4:17 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_good")
 public class Good extends TitleContainer<GoodTitle> {
+    private Long branchID;
+
+    public Good() {
+    }
+
     @Column(name = "branch_id")
     public Long getBranchID() {
         return branchID;
@@ -23,27 +27,7 @@ public class Good extends TitleContainer<GoodTitle> {
         this.branchID = branchID;
     }
 
-    //private TreeNode treeNode;
-    private Long branchID;
 
-    public Good() {
-    }
-
-    /*
-    public Good(TreeNode treeNode) {
-        setTreeNode(treeNode);
-    }
-    @ManyToOne
-    @JoinColumn(name = "branch_id")
-    @IndexedEmbedded
-    public TreeNode getTreeNode() {
-        return treeNode;
-    }
-
-    public void setTreeNode(TreeNode treeNode) {
-        this.treeNode = treeNode;
-    }
-    */
     @Override
     public String toString() {
         return "id = " + getId() + " titles = " + getTitles() + " branch_id = " + branchID;

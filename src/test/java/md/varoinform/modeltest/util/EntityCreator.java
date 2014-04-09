@@ -1,13 +1,5 @@
 package md.varoinform.modeltest.util;
 
-import md.varoinform.model.dao.TransactionDaoHibernateImpl;
-import md.varoinform.model.entities.*;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -119,7 +111,7 @@ public class EntityCreator {
         for (int i = 0; i < rusTitles.length && i < engTitles.length; i++) {
             Good g = new Good();
             int branchIndex = i % Math.min(rusTitles.length, engTitles.length);
-            g.setTreeNode(treeNodes.get(branchIndex));
+            g.setTreeNodes(treeNodes.get(branchIndex));
             save(Good.class, g);
             GoodTitle gtr = new GoodTitle(getLanguage("rus"), rusTitles[i], g);
             GoodTitle gte = new GoodTitle(getLanguage("eng"), engTitles[i], g);

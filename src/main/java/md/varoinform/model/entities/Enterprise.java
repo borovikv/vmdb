@@ -6,9 +6,7 @@ import org.hibernate.search.annotations.Parameter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +14,7 @@ import java.util.List;
  * Date: 10/7/13
  * Time: 11:12 AM
  */
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
@@ -48,8 +47,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private List<Advertisement> advertisements = new ArrayList<>();
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
-    private List<GProduce> goods = new ArrayList<>();
-    private List<TreeNode> treeNodes;
+    private Set<G2Produce> goods = new HashSet<>();
 
 
     @ManyToOne
@@ -169,46 +167,22 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
         this.brands = brands;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinColumn(name = "enterprise_id")
     @IndexedEmbedded
-    public List<GProduce> getGoods() {
+    public Set<G2Produce> getGoods() {
         return goods;
     }
 
-    public void setGoods(List<GProduce> goods) {
+    public void setGoods(Set<G2Produce> goods) {
         this.goods = goods;
-    }
-
-    public List<TreeNode> branches() {
-        if (treeNodes == null){
-            treeNodes = new ArrayList<>();
-            for (GProduce good : goods) {
-                treeNodes.add(good.branch());
-            }
-        }
-        return treeNodes;
     }
 
     @Override
     public String toString() {
         return "Enterprise{" +
                 "title =" + getTitles() +
-                /*", businessEntityType=" + businessEntityType +
-                ", creation=" + creation +
-                ", foreignCapital=" + foreignCapital +
-                ", workplaces=" + workplaces +
-                ", logo='" + logo + '\'' +
-                ", ypUrl='" + ypUrl + '\'' +
-                ", checkDate=" + checkDate +
-                ", lastChange=" + lastChange +
-                ", contacts=" + contacts +
-                ", advertisements=" + advertisements +
-                ", contactPersons=" + contactPersons +
-                ", brands=" + brands +
-                ", goods=" + goods +
-                //", treeNodes=" + treeNodes +
-                */
+
                 '}';
     }
 }

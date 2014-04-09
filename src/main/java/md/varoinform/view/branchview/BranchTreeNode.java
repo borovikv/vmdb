@@ -31,6 +31,8 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
         Collections.sort(this.children);
     }
 
+    @SuppressWarnings("NullableProblems")
+    @Override
     public int compareTo(final Object o) {
         if (o instanceof BranchTreeNode)
             return getTitle().compareToIgnoreCase(((BranchTreeNode)o).getTitle());
@@ -58,10 +60,9 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
 
     private void fillAllChildrenId(TreeNode treeNode, List<Long> result) {
         result.add(treeNode.getId());
-        /*
+
         for (TreeNode child : treeNode.getChildren()) {
             fillAllChildrenId(child, result);
         }
-        */
     }
 }

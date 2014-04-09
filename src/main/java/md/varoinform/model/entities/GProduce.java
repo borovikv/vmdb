@@ -1,8 +1,6 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.IndexedEmbedded;
-
 import javax.persistence.*;
 
 /**
@@ -12,22 +10,18 @@ import javax.persistence.*;
  * Time: 4:20 PM
  */
 
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_gproduce")
 public class GProduce {
     private Long id;
     private Enterprise enterprise;
-    private Good good;
+    private Long good;
     private Boolean produce;
 
     public GProduce() {
     }
 
-    public GProduce(Enterprise enterprise, Good good, Boolean produce) {
-        setEnterprise(enterprise);
-        setGood(good);
-        setProduce(produce);
-    }
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -51,14 +45,12 @@ public class GProduce {
         this.enterprise = enterprise;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "good_id")
-    @IndexedEmbedded
-    public Good getGood() {
+    @Column(name = "good_id")
+    public Long getGood() {
         return good;
     }
 
-    public void setGood(Good good) {
+    public void setGood(Long good) {
         this.good = good;
     }
 
@@ -72,7 +64,7 @@ public class GProduce {
     }
 
     public TreeNode branch(){
-        //return good.getTreeNode();
+        //return good.getTreeNodes();
         return null;
     }
 
