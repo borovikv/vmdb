@@ -2,6 +2,8 @@ package md.varoinform.modeltest.entitiestest;
 
 import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.*;
+import md.varoinform.model.entities.convert.GProduce;
+import md.varoinform.model.entities.convert.Good;
 import md.varoinform.modeltest.TestHibernateBase;
 import org.junit.*;
 import static org.junit.Assert.*;

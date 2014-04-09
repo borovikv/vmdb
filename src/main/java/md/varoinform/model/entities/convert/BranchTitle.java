@@ -1,8 +1,8 @@
-package md.varoinform.model.entities;
+package md.varoinform.model.entities.convert;
 
+import md.varoinform.model.entities.Language;
+import md.varoinform.model.entities.TitleInterface;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 
@@ -12,9 +12,10 @@ import javax.persistence.*;
  * Date: 10/4/13
  * Time: 10:42 AM
  */
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_branchtitle")
-public class BranchTitle implements TitleInterface{
+public class BranchTitle implements TitleInterface {
     public BranchTitle() {
     }
 

@@ -2,7 +2,7 @@ package md.varoinform.modeltest.entitiestest;
 
 import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.TreeNode;
-import md.varoinform.model.entities.BranchTitle;
+import md.varoinform.model.entities.convert.BranchTitle;
 import md.varoinform.model.entities.Language;
 import md.varoinform.modeltest.TestHibernateBase;
 import org.hibernate.criterion.Restrictions;
@@ -63,7 +63,7 @@ public class TreeNodeTitleTest extends TestHibernateBase {
 
     @Test
     public void testBranchGetTitles(){
-        TreeNode treeNode = getBranch();
+        //TreeNode treeNode = getBranch();
         //List<BranchTitle> titles = treeNode.getTitles();
         //System.out.println(titles);
         //assertEquals(titles.size(), 3);
@@ -88,8 +88,8 @@ public class TreeNodeTitleTest extends TestHibernateBase {
 
     @Test
     public void testGetContainer(){
-        BranchTitle branchTitle = daoBranchTitle.read(1L);
-        TreeNode treeNode = daoBranch.read(1L);
+        //BranchTitle branchTitle = daoBranchTitle.read(1L);
+        //TreeNode treeNode = daoBranch.read(1L);
         //assertEquals(treeNode.getId(), branchTitle.getContainerID().getId());
     }
 }

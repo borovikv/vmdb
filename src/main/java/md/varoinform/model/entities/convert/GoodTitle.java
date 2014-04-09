@@ -1,4 +1,7 @@
-package md.varoinform.model.entities;
+package md.varoinform.model.entities.convert;
+
+import md.varoinform.model.entities.Language;
+import md.varoinform.model.entities.Title;
 
 import javax.persistence.*;
 
@@ -11,11 +14,5 @@ import javax.persistence.*;
 @Entity
 @Table(name = "EXPORTED_DB.DB_goodtitle")
 public class GoodTitle extends Title<Good> {
-    public GoodTitle() {
-    }
-
-    public GoodTitle(Language language, String title, Good good) {
-        super(language, title, good);
-    }
 }
 

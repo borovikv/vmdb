@@ -3,6 +3,7 @@ package md.varoinform.model;
 
 import md.varoinform.Settings;
 import md.varoinform.model.entities.*;
+import md.varoinform.model.entities.convert.*;
 import org.hibernate.cfg.Configuration;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -2,6 +2,8 @@ package md.varoinform;
 
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.*;
+import md.varoinform.model.entities.convert.Branch;
+import md.varoinform.model.entities.convert.Good;
 
 /**
  * Created with IntelliJ IDEA.

@@ -3,6 +3,7 @@ package md.varoinform.modeltest;
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.dao.TransactionDaoHibernateImpl;
 import md.varoinform.model.entities.*;
+import md.varoinform.model.entities.convert.*;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Criteria;
 import org.hibernate.Query;

@@ -1,4 +1,6 @@
-package md.varoinform.model.entities;
+package md.varoinform.model.entities.convert;
+
+import md.varoinform.model.entities.TitleContainer;
 
 import javax.persistence.*;
 

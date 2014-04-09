@@ -4,9 +4,7 @@ import md.varoinform.model.entities.TreeNode;
 import md.varoinform.modeltest.util.BranchProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
-import md.varoinform.model.entities.BranchTitle;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.modeltest.util.EntityCreator;
 import org.junit.*;
 import static org.junit.Assert.*;
 import md.varoinform.modeltest.TestHibernateBase;
@@ -21,8 +19,6 @@ import java.util.List;
  * Time: 11:54 AM
  */
 public class SelectTest extends TestHibernateBase {
-    private final BranchProxy branchProxy = new BranchProxy();
-
     @Before
     public void createBranch(){
         //EntityCreator.createEnterprises();
