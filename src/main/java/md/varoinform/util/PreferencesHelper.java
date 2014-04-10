@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 public class PreferencesHelper implements Serializable {
+    private static final String DIVIDE_KEY = "divide";
     private final String fieldKey = "columns";
     private final Preferences preferences;
     private final String defaultDelimiter = ";";
     private String passwordKey = "password";
     private String idDbKey = "idDB";
+    private static final String LANGUAGE_KEY = "language";
 
     public PreferencesHelper() {
         preferences = Preferences.userNodeForPackage(App.class);
@@ -87,5 +89,25 @@ public class PreferencesHelper implements Serializable {
     //------------------------------------------------------------------------------------------------------------------
     public void remove(String key) {
         preferences.remove(key);
+    }
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setCurrentLanguage(String title){
+        preferences.put(LANGUAGE_KEY, title);
+    }
+
+    public String getCurrentLanguage(){
+        return preferences.get(LANGUAGE_KEY, "");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void setDivideLocation(Double value){
+        preferences.putDouble(DIVIDE_KEY, value);
+    }
+
+    public double getDivideLocation(){
+        return preferences.getDouble(DIVIDE_KEY, .65d);
     }
 }

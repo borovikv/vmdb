@@ -22,6 +22,7 @@ public class LanguageComboBox extends JComboBox<Language> implements Observable 
 
     public LanguageComboBox() {
         DefaultComboBoxModel<Language> model = new DefaultComboBoxModel<>(getLanguages());
+        model.setSelectedItem(LanguageProxy.instance.getCurrentLanguage());
         setModel(model);
         addActionListener(new AbstractAction() {
             @Override

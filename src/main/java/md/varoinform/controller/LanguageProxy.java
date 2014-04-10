@@ -2,7 +2,7 @@ package md.varoinform.controller;
 
 import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Language;
-import org.apache.commons.lang.ObjectUtils;
+import md.varoinform.util.PreferencesHelper;
 
 import java.util.List;
 
@@ -16,18 +16,32 @@ public enum  LanguageProxy {
     instance;
 
     private Language currentLanguage;
-    private final GenericDaoHibernateImpl<Language, Long> languageDao;
+    private List<Language> languages;
 
     private LanguageProxy() {
-        languageDao = new GenericDaoHibernateImpl<>(Language.class);
-        List<Language> languages = getLanguages();
+        languages = getLanguages();
         if (languages.size() > 0) {
-            currentLanguage = languages.get(0);
+            currentLanguage = getPrefLanguage(languages);
         }
     }
 
+    private Language getPrefLanguage(List<Language> languages) {
+        PreferencesHelper preferences = new PreferencesHelper();
+        String prefLanguage = preferences.getCurrentLanguage();
+        for (Language language : languages) {
+            if (language.getTitle().startsWith(prefLanguage)){
+                return language;
+            }
+        }
+        return languages.get(0);
+    }
+
     public List<Language> getLanguages(){
-        return languageDao.getAll();
+        if (languages != null)
+            return languages;
+        GenericDaoHibernateImpl<Language, Long> languageDao = new GenericDaoHibernateImpl<>(Language.class);
+        languages = languageDao.getAll();
+        return languages;
     }
 
     public Language getCurrentLanguage() {
@@ -43,5 +57,7 @@ public enum  LanguageProxy {
 
     public void setCurrentLanguage(Language currentLanguage) {
         this.currentLanguage = currentLanguage;
+        PreferencesHelper preferences = new PreferencesHelper();
+        preferences.setCurrentLanguage(currentLanguage.getTitle());
     }
 }
