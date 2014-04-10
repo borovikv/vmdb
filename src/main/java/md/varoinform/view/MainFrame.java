@@ -3,6 +3,7 @@ package md.varoinform.view;
 import md.varoinform.Settings;
 import md.varoinform.controller.MailProxy;
 import md.varoinform.model.dao.DAOTag;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.search.SearchEngine;
@@ -25,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Created with IntelliJ IDEA.
@@ -228,9 +228,11 @@ public class MainFrame extends JFrame implements Observer {
     public void update(ObservableEvent event) {
         switch (event.getType()){
             case ObservableEvent.BRANCH_SELECTED:
-                @SuppressWarnings("unchecked")
-                List<Enterprise> enterprises = (List<Enterprise>) event.getValue();
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                List<Long> allChildren = branchPanel.getNodes();
+                List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
                 showResults(enterprises);
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 break;
 
             case ObservableEvent.BRANCH_SELECTED_BY_USER:

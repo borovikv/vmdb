@@ -6,7 +6,8 @@ import md.varoinform.util.Observer;
 import md.varoinform.view.branchview.BranchTree;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,5 +52,7 @@ public class BranchPanel extends JPanel implements NavigationPaneList, Observabl
         return branchTree.getSelectionPath();
     }
 
-
+    public List<Long> getNodes(){
+        return branchTree.getAllChildrenId();
+    }
 }

@@ -1,9 +1,7 @@
 package md.varoinform.view.branchview;
 
 import md.varoinform.model.dao.BranchDao;
-import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.TreeNode;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.*;
 import md.varoinform.view.NavigationPaneList;
 
@@ -141,18 +139,18 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
     private void performSelect() {
         if (!needToProcess) return;
 
-        BranchTreeNode node = (BranchTreeNode) getLastSelectedPathComponent();
-        if (node == null) return;
-
-        List<Long> allChildren = node.getAllChildrenId();
-        List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
-
         if (!programatically) {
             notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED_BY_USER, getSelectionPath()));
         }
-        notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED, enterprises));
+        notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED));
     }
 
+    public List<Long> getAllChildrenId() {
+        BranchTreeNode node = (BranchTreeNode) getLastSelectedPathComponent();
+        if (node == null) return null;
+
+        return node.getAllChildrenId();
+    }
 
 
     @Override
