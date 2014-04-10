@@ -4,6 +4,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.Observable;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
+import md.varoinform.util.PreferencesHelper;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -26,14 +27,13 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
     private Set<Observer> observers = new HashSet<>();
-
+    private boolean painted = false;
+    private final JSplitPane splitPane;
 
     public DemonstratorPanel() {
         setLayout(new BorderLayout());
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
-        splitPane.setResizeWeight(0.6);
-
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
         demonstrator.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -47,11 +47,12 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         demonstrator.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_DELETE){
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     notifyObservers(new ObservableEvent(ObservableEvent.DELETE));
                 }
             }
         });
+
         add(splitPane);
     }
 
@@ -113,6 +114,20 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         for (Observer observer : observers) {
             observer.update(event);
         }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        if (!painted){
+            painted = true;
+            PreferencesHelper helper = new PreferencesHelper();
+            double location = helper.getDivideLocation();
+            splitPane.setDividerLocation(location);
+            splitPane.setResizeWeight(location);
+        }
+
     }
 
 }
