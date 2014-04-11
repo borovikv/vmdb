@@ -41,7 +41,8 @@ public class Address extends PrintableBase {
         EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
         for (String field : fields) {
             int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
-            java.util.List<String> wrapLines = StringUtils.wrap(enterpriseProxy.get(field), g2.getFontMetrics(), maxWriteAreaWidth);
+            String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(field));
+            java.util.List<String> wrapLines = StringUtils.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
             for (String line : wrapLines) {
                 g2.drawString(line, xoff, y + lineHeight);
                 lineHeight += fontHeight;

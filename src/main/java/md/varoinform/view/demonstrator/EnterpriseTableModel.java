@@ -3,6 +3,7 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.StringUtils;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -55,9 +56,9 @@ public class EnterpriseTableModel extends AbstractTableModel {
         EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
         List<String> columns = getColumns();
         String name = columns.get(columnIndex);
-        return proxy.get(name);
+        Object value = proxy.get(name);
+        return StringUtils.valueOf(value);
     }
-
 
     @Override
     public String getColumnName(int column) {

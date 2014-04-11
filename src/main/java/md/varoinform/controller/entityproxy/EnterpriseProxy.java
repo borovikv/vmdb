@@ -96,33 +96,25 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "ContactPerson")
-    public String getContactPerson(){
-        StringBuilder result = new StringBuilder();
-        for (ContactPerson contactPerson : enterprise.getContactPersons()) {
-            ContactPersonProxy proxy = new ContactPersonProxy(contactPerson);
-            result.append(proxy.getPersonTable());
-        }
-
-        return result.toString();
+    public Map<String, Object> getContactPerson(){
+        List<ContactPerson> contactPersons = enterprise.getContactPersons();
+        ContactPerson contactPerson = contactPersons.size() > 0 ? contactPersons.get(0) : null;
+        ContactPersonProxy proxy = new ContactPersonProxy(contactPerson);
+        return proxy.getPersonMap();
     }
 
     @Property(name = "Brands")
-    public String getBrands(){
-        StringBuilder result = new StringBuilder();
-        for (Brand brand : enterprise.getBrands()) {
-            result.append(brand.getTitle());
-            result.append(", ");
-        }
-        return result.toString();
+    public Collection<Brand> getBrands(){
+        return enterprise.getBrands();
     }
 
     @Property(name = "Goods")
-    public String getGoods(){
+    public Collection<String> getGoods(){
         Set<String> goods = new TreeSet<>();
         for (G2Produce gProduce : enterprise.getGoods()) {
             goods.add(getTitle(gProduce.getGood()));
         }
-        return getString(goods);
+        return goods;
 
     }
 
@@ -146,7 +138,7 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "Address")
-    public String getAddress() {
+    public List<String> getAddress() {
         return  getContactProxy().getAddress();
     }
 
@@ -192,30 +184,30 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "Emails")
-    public String getEmails(){
+    public List<Email> getEmails(){
         return getContactProxy().getEmail();
     }
 
     @Property(name = "Phones")
-    public String getPhones(){
+    public List<Phone> getPhones(){
         return getContactProxy().getPhones();
     }
 
     @Property(name = "Urls")
-    public String getUrls(){
+    public List<Url> getUrls(){
         return getContactProxy().getUrls();
     }
 
     @Property(name = "Faxes")
-    public String getFaxes() {
+    public List<Phone> getFaxes() {
         return getContactProxy().getFax();
     }
 
 
-    public String get(String name){
+    public Object get(String name){
         try {
             String key = name.toLowerCase();
-            return (String)methods.get(key).invoke(this);
+            return methods.get(key).invoke(this);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

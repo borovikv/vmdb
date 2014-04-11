@@ -220,7 +220,9 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     private void showResults(List<Enterprise> enterprises) {
+        long s = System.nanoTime();
         demonstrator.showResults(enterprises);
+        System.out.println(System.nanoTime() - s);
         resultLabel.setResultCount(enterprises.size());
     }
 

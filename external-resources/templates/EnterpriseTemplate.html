@@ -1,0 +1,29 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{css}}">
+</head>
+<body>
+<!-- variables:    
+address, addressLabel, branchesLabel, brands, brandsLabel, businessentitytype, businessentitytypeLabel, checkdate,    
+checkdateLabel, contactperson, contactpersonLabel, creationdate, creationdateLabel, emails, emailsLabel, faxes,   
+faxesLabel, foreingcapital, foreingcapitalLabel, goods, goodsLabel, phones, phonesLabel, postalcode, postalcodeLabel,    
+title, titleLabel, urls, urlsLabel, workplaces, workplacesLabel, ypurl, ypurlLabel-->
+<h1>{{title}}</h1>
+<table>
+    <tr><th>{{postalcodeLabel}}</th><td>{{postalcode}}</td></tr>
+    <tr><th>{{addressLabel}}</th><td>{{address}}</td></tr>
+    <tr><th>{{phonesLabel}}</th><td>{{phones}}</td></tr>
+    <tr><th>{{faxesLabel}}</th><td>{{faxes}}</td></tr>
+    <tr><th>{{emailsLabel}}</th><td><ul>{% [emails] <li><a href="mailto:{{emails}}">{{emails}}</a></li> %}</ul></td></tr>
+    <tr><th>{{urlsLabel}}</th><td><ul>{% [urls] <li><a href="{{urls}}">{{urls}}</a></li> %}</ul></td></tr>
+    <tr><th>{{contactpersonLabel}}</th><td>{% [contactperson] {{personPosition}} {{personTitle}} {{personPhones}} %}</td></tr>
+    <tr><th>{{brandsLabel}}</th><td>{{brands}}</td></tr><tr><th>{{businessentitytypeLabel}}</th><td>{{businessentitytype}}</td></tr>
+    <tr><th>{{foreingcapitalLabel}}</th><td>{{foreingcapital}}</td></tr>
+    <tr><th>{{goodsLabel}}</th><td><ul>{% [goods] <li>{{goods}}</li> %}</ul></td></tr>
+    <tr><th>{{workplacesLabel}}</th><td>{{workplaces}}</td></tr>
+    <tr><th>{{ypurlLabel}}</th><td>{{ypurl}}</td></tr>
+    <tr><th>{{creationdateLabel}}</th><td>{{creationdate}}</td></tr>
+    <tr><th>{{checkdateLabel}}</th><td>{{checkdate}}</td></tr>
+</table>
+</body>
+</html>

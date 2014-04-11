@@ -2,7 +2,6 @@ package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 
@@ -18,12 +17,6 @@ public class Brand {
     private Long id;
     private String title;
 
-    public Brand() {
-    }
-
-    public Brand(String title) {
-        setTitle(title);
-    }
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -49,9 +42,6 @@ public class Brand {
 
     @Override
     public String toString() {
-        return "Brand{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                '}';
+        return title;
     }
 }

@@ -3,7 +3,8 @@ package md.varoinform.controller.entityproxy;
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,27 +14,22 @@ import java.util.List;
  */
 public class ContactPersonProxy {
     private final ContactPerson contactPerson;
-    private final List<Phone> phones;
-    private Position position;
-    private Person person;
 
     public ContactPersonProxy(ContactPerson contactPerson) {
         this.contactPerson = contactPerson;
-        phones = contactPerson.getPhones();
-        position = contactPerson.getPosition();
-        person = contactPerson.getPerson();
     }
 
-    public String getPersonTable() {
-        if (contactPerson == null) return "";
+    public Map<String, Object> getPersonMap() {
+        Map<String, Object> map = new HashMap<>();
+        if (contactPerson == null || contactPerson.getPerson() == null) return map;
 
         Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
 
-        String title = "";
-        if (person != null){
-            title = person.title(currentLanguage);
-        }
-        String sPhones = phones.toString();
-        return position.title(currentLanguage) + " " + title + ": " + sPhones.substring(1, sPhones.length()-1);
+        map.put("personTitle", contactPerson.getPerson().title(currentLanguage));
+        map.put("personPosition", contactPerson.getPosition().title(currentLanguage));
+        if (contactPerson.getPhones().size() > 0)
+            map.put("personPhones", contactPerson.getPhones());
+
+        return map;
     }
 }

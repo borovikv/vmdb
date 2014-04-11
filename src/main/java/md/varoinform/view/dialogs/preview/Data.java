@@ -69,8 +69,9 @@ public class Data extends PrintableBase {
             }
             int maxWriteAreaWidth = width - indent * 2;
             String field = selectedFields.get(i);
+            String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(field));
             str += ResourceBundleHelper.getString(language.getTitle(), field, field) + ": "
-                    + md.varoinform.util.StringUtils.getStringOrNA(enterpriseProxy.get(field));
+                    + md.varoinform.util.StringUtils.getStringOrNA(value);
             List<String> wrapLines = StringUtils.wrap(str, fm, maxWriteAreaWidth);
             lines.addAll(wrapLines);
         }

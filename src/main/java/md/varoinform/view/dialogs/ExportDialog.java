@@ -5,6 +5,7 @@ import md.varoinform.controller.comparators.ColumnPriorityComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.StringUtils;
 import md.varoinform.view.demonstrator.Demonstrator;
 
 import javax.swing.*;
@@ -69,7 +70,7 @@ public class ExportDialog extends JDialog {
 
     private void save(File selectedFile) {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(selectedFile), ',');
+            CSVWriter writer = new CSVWriter(new FileWriter(selectedFile), ';');
             List<String> selectedColumns = fieldChooser.getSelectedFieldNames();
             Collections.sort(selectedColumns, new ColumnPriorityComparator());
 
@@ -87,7 +88,8 @@ public class ExportDialog extends JDialog {
         String[] entries = new String[selectedColumns.size()];
         EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
         for (int i = 0; i < selectedColumns.size(); i++) {
-             entries[i] = proxy.get(selectedColumns.get(i));
+            Object obj = proxy.get(selectedColumns.get(i));
+            entries[i] = StringUtils.valueOf(obj);
         }
         writer.writeNext(entries);
     }

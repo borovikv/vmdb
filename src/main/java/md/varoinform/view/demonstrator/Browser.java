@@ -1,5 +1,7 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.Settings;
+
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -11,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,7 +37,6 @@ public class Browser extends JEditorPane {
         addHyperlinkListener(new BrowserHyperlinkListener());
     }
 
-
     private StyleSheet getStyleSheet() {
         URL styleUrl = getStyleSheetUrl();
         if (styleUrl == null) return null;
@@ -47,10 +49,7 @@ public class Browser extends JEditorPane {
     private URL getStyleSheetUrl() {
         URL styleUrl = null;
         try {
-            //File f = new File("style.css");
-            //System.out.println(f.toURI());
-            styleUrl = new URL("file:/home/drifter/development/idea/VaroDB/src/main/resources/style.css");
-            //System.out.println(styleUrl);
+            styleUrl = Paths.get(Settings.getWorkFolder(), "external-resources", "style.css").toUri().toURL();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -77,5 +76,4 @@ public class Browser extends JEditorPane {
         }
 
     }
-
 }

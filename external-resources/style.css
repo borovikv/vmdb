@@ -17,3 +17,14 @@ th {
     font-weight: bold;
     padding-right: 5px;
 }
+
+ul {
+    list-style-type:none;
+
+}
+li {
+    display:inline;
+}
+a {
+    color: #0000FF;
+}

@@ -2,7 +2,7 @@ package md.varoinform.controller.entityproxy;
 
 import md.varoinform.model.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,66 +63,40 @@ public class ContactProxy extends EntityProxy {
 
 
     public String getCountry(){
-        return "Молдова";
+        return null;
     }
 
-    public String getEmail(){
-        StringBuilder result = new StringBuilder();
-        String separator = "";
-        for (Email email : contact.getEmails()) {
-            result.append(separator);
-            result.append(email.getEmail());
-            separator = ", ";
+    public List<Email> getEmail(){
+        return contact.getEmails();
+    }
+
+    public List<Phone> getPhones(){
+        return contact.getPhones();
+    }
+
+    public List<Url> getUrls(){
+        return contact.getUrls();
+    }
+
+    public List<String> getAddress() {
+        List<String> list = new ArrayList<>(Arrays.asList(getCountry(), getRegion(), getTown(), getSector(), getStreet(), getHouseNumber(), getOfficeNumber()));
+        list.remove(null);
+        for (int i = 1; i < list.size(); i++) {
+            String current = list.get(i);
+            String preview = list.get(i - 1);
+            if (current!= null && preview != null  && current.equals(preview)) {
+                list.remove(i);
+                i--;
+            }
+
         }
-        return result.toString();
-    }
+        return list;
 
-    public String getPhones(){
-        List<Phone> phones = contact.getPhones();
-        return concatPhones(phones);
-    }
-
-    private String concatPhones(List<Phone> phones) {
-        StringBuilder result = new StringBuilder();
-        String separator = "";
-        for (Phone phone : phones) {
-            result.append(separator);
-            result.append(phone.getPhone());
-            separator = ", ";
-        }
-        return result.toString();
-    }
-
-    public String getUrls(){
-        StringBuilder result = new StringBuilder();
-        String separator = "";
-        for (Url url : contact.getUrls()) {
-            result.append(separator);
-            result.append(url.getUrl());
-            separator = ", ";
-        }
-        return result.toString();
-    }
-
-    public String getAddress() {
-        String[] addressParts = { getCountry(), getRegion(), getTown(), getSector(),
-                getStreet(), getHouseNumber(), getOfficeNumber()};
-
-        StringBuilder result = new StringBuilder();
-        String separator = "";
-        for (String part: addressParts) {
-            if (part == null || part.isEmpty()) continue;
-            result.append(separator);
-            result.append(part);
-            separator = ", ";
-        }
-
-        return result.toString();
     }
 
 
 
-    public String getFax() {
-       return concatPhones(contact.getFax());
+    public List<Phone> getFax() {
+       return contact.getFax();
     }
 }

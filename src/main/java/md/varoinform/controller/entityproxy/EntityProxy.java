@@ -4,6 +4,9 @@ import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.TitleContainer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
@@ -26,6 +29,9 @@ public class EntityProxy {
     protected String getStringValueOrEmpty(Object value) {
         if ( value == null || value instanceof CharSequence && ((CharSequence) value).length() == 0 )
             return  "";
+        if (value instanceof Date) {
+            return new SimpleDateFormat("yyyy-MM-dd").format(value);
+        }
         return value.toString();
     }
 
