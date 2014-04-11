@@ -25,7 +25,7 @@ public class PrintPreviewDialog extends JDialog{
     }
 
     private void layoutUI(Book book) {
-        ImageIcon image = ImageHelper.getImageIcon("/icons/V.png");
+        ImageIcon image = ImageHelper.getImageIcon("/external-resources/icons/V.png");
         setIconImage(image.getImage());
         setModal(true);
         setDefaultLookAndFeelDecorated(true);

@@ -1,8 +1,12 @@
 package md.varoinform.util;
 
+import md.varoinform.Settings;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ImageHelper implements Serializable {
     public static ImageIcon getScaledImageIcon(String filename, int width, int height) {
@@ -15,7 +19,7 @@ public class ImageHelper implements Serializable {
     }
 
     public static ImageIcon getImageIcon(String filename) {
-        ImageIcon icon = null;
-        return new ImageIcon(ImageHelper.class.getResource(filename));
+        Path path = Paths.get(Settings.getWorkFolder(), filename);
+        return new ImageIcon(path.toString());
     }
 }

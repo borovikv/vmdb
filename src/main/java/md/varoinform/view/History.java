@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class History implements Observable {
-    private final JButton homeButton = new ToolbarButton("/icons/home.png");
-    private final JButton backButton = new ToolbarButton("/icons/arrow_left2.png", false);
-    private final JButton forwardButton = new ToolbarButton("/icons/arrow_right2.png", false);
+    private final JButton homeButton = new ToolbarButton("/external-resources/icons/home.png");
+    private final JButton backButton = new ToolbarButton("/external-resources/icons/arrow_left2.png", false);
+    private final JButton forwardButton = new ToolbarButton("/external-resources/icons/arrow_right2.png", false);
     private final HistoryProxy historyProxy = new HistoryProxy();
 
     // back

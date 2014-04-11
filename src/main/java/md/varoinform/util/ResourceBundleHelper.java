@@ -1,9 +1,15 @@
 package md.varoinform.util;
 
+import md.varoinform.Settings;
 import md.varoinform.controller.LanguageProxy;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ResourceBundleHelper implements Serializable {
@@ -21,13 +27,18 @@ public class ResourceBundleHelper implements Serializable {
         return languageTitle.substring(0, 2);
     }
 
-    private static ResourceBundle getResourceBundle(String language) {
+    private static ResourceBundle getResourceBundle(String language) throws MalformedURLException {
         language = getLanguageTitle(language);
         if (bundleMap.containsKey(language)) {
             return bundleMap.get(language);
         }
         Locale locale = new Locale(language);
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale);
+
+        Path path = Paths.get(Settings.getWorkFolder(), "external-resources");
+        URL[] urls = { path.toUri().toURL()};
+        ClassLoader classLoader = new URLClassLoader(urls);
+
+        ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale, classLoader);
 
         bundleMap.put(language, bundle);
 
@@ -41,7 +52,8 @@ public class ResourceBundleHelper implements Serializable {
         ResourceBundle bundle;
         try {
             bundle = getResourceBundle(language);
-        } catch (MissingResourceException e) {
+        } catch (MissingResourceException|MalformedURLException e) {
+            e.printStackTrace();
             return defaultValue;
         }
 

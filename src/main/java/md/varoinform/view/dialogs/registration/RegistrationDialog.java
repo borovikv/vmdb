@@ -39,7 +39,7 @@ public class RegistrationDialog extends JDialog implements Observer{
         setSize(width, height);
         setResizable(false);
         setLocationRelativeTo(null);
-        setIconImage(ImageHelper.getImageIcon("/icons/V.png").getImage());
+        setIconImage(ImageHelper.getImageIcon("/external-resources/icons/V.png").getImage());
 
         nextButton = new JButton();
         nextButton.setEnabled(false);

@@ -40,11 +40,11 @@ public class MainFrame extends JFrame implements Observer {
     private final History history = new History();
     private final BranchPanel branchPanel = new BranchPanel();
     private final OutputLabel resultLabel = new OutputLabel();
-    private final JButton exportButton = new ToolbarButton("/icons/export.png");
-    private final JButton mailButton = new ToolbarButton("/icons/mail.png");
-    private final JButton settingsButton = new ToolbarButton("/icons/settings.png");
-    private final JButton tagButton = new ToolbarButton("/icons/star.png");
-    private final JButton printButton = new ToolbarButton("/icons/print.png");
+    private final JButton exportButton = new ToolbarButton("/external-resources/icons/export.png");
+    private final JButton mailButton = new ToolbarButton("/external-resources/icons/mail.png");
+    private final JButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png");
+    private final JButton tagButton = new ToolbarButton("/external-resources/icons/star.png");
+    private final JButton printButton = new ToolbarButton("/external-resources/icons/print.png");
     private final JTextField searchField = new JTextField();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final SettingsDialog settingsDialog;
@@ -71,7 +71,7 @@ public class MainFrame extends JFrame implements Observer {
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
-        ImageIcon image = ImageHelper.getImageIcon("/icons/V.png");
+        ImageIcon image = ImageHelper.getImageIcon("/external-resources/icons/V.png");
         setIconImage(image.getImage());
         setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(400, 300));
@@ -147,8 +147,8 @@ public class MainFrame extends JFrame implements Observer {
 
     private JTabbedPane createNavigationPane() {
         JTabbedPane navigationPane = new JTabbedPane(JTabbedPane.TOP);
-        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/tree.png", 24, 24), branchPanel);
-        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/icons/star.png", 24, 24), tagPanel);
+        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/external-resources/icons/tree.png", 24, 24), branchPanel);
+        navigationPane.addTab("", ImageHelper.getScaledImageIcon("/external-resources/icons/star.png", 24, 24), tagPanel);
         navigationPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
