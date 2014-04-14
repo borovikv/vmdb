@@ -1,7 +1,8 @@
 package md.varoinform;
 
 import java.awt.*;
-import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,10 +58,17 @@ public class Settings {
     }
 
     public static String getWorkFolder(){
-        String path = Settings.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        if (path.endsWith(".jar")){
-            File file = new File(path);
-            return file.getParent();
+        Path path = null;
+        try {
+            URI uri = Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+            path = Paths.get(uri);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+
+        }
+
+        if (path != null && path.endsWith(".jar")){
+            return path.getParent().toString();
         }
         return System.getProperty("user.dir");
     }
