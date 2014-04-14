@@ -17,7 +17,7 @@ public class PreferencesHelper implements Serializable {
     private String passwordKey = "password";
     private String idDbKey = "idDB";
     private static final String LANGUAGE_KEY = "language";
-    private List<String> userFields;
+    private static List<String> userFields;
 
     public PreferencesHelper() {
         preferences = Preferences.userNodeForPackage(App.class);
