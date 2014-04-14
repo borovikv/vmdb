@@ -58,7 +58,7 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
 
                 setCurrentTagTitle(tag.getTitle());
 
-                if (!programatically) notifyObservers(new ObservableEvent(ObservableEvent.TAG_SELECTED, tag));
+                if (!programatically) notifyObservers(new ObservableEvent(ObservableEvent.TAG_SELECTED));
             }
         });
 

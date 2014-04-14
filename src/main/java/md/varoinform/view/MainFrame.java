@@ -96,6 +96,11 @@ public class MainFrame extends JFrame implements Observer {
         setContentPane(mainPanel);
 
         updateDisplay();
+
+        //ToDo: show All in Home?
+        List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
+        demonstrator.showResults(enterprises);
+        resultLabel.setResultCount(enterprises.size());
     }
 
     private JToolBar createToolBar() {
@@ -195,34 +200,36 @@ public class MainFrame extends JFrame implements Observer {
 
 
     public void performHistoryMove(Object obj) {
-        {
-            if (BranchTree.isTreePath(obj)) {
-                branchPanel.select(obj);
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if (BranchTree.isTreePath(obj)) {
+            branchPanel.select(obj);
 
-            } else if (obj instanceof String) {
-                String text = (String) obj;
-                searchField.setText(text);
-                searchText(text);
-                branchPanel.clearSelection();
+        } else if (obj instanceof String) {
+            String text = (String) obj;
+            searchField.setText(text);
+            searchText(text);
+            branchPanel.clearSelection();
 
-            } else {
-                demonstrator.clear();
-                branchPanel.clearSelection();
-            }
+        } else {
+            //ToDo:Show all or Clear?
+            List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
+            demonstrator.showResults(enterprises);
+            branchPanel.clearSelection();
         }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void searchText(String value) {
         if (value == null) return;
-
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         List<Enterprise> enterprises = searchEngine.search(value);
         showResults(enterprises);
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
     }
 
     private void showResults(List<Enterprise> enterprises) {
-        long s = System.nanoTime();
         demonstrator.showResults(enterprises);
-        System.out.println(System.nanoTime() - s);
         resultLabel.setResultCount(enterprises.size());
     }
 
@@ -247,7 +254,7 @@ public class MainFrame extends JFrame implements Observer {
                 performHistoryMove(event.getValue());
                 break;
             case ObservableEvent.TAG_SELECTED:
-                Tag tag = (Tag) event.getValue();
+                Tag tag = tagPanel.getSelectedTag();
                 showResults(new ArrayList<>(tag.getEnterprises()));
                 break;
             case ObservableEvent.LANGUAGE_CHANGED:
