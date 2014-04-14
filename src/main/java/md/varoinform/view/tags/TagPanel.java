@@ -65,14 +65,12 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
         tagList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                programatically = true;
                 JList list = (JList) e.getSource();
                 int index = list.locationToIndex(e.getPoint());
                 if (index >= 0){
                     list.clearSelection();
                     list.setSelectedIndex(index);
                 }
-                programatically = false;
             }
         });
         add(new JScrollPane(tagList), BorderLayout.CENTER);
