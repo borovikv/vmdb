@@ -17,19 +17,23 @@ public class PreferencesHelper implements Serializable {
     private String passwordKey = "password";
     private String idDbKey = "idDB";
     private static final String LANGUAGE_KEY = "language";
+    private List<String> userFields;
 
     public PreferencesHelper() {
         preferences = Preferences.userNodeForPackage(App.class);
     }
 
     public List<String> getUserFields() {
+        if (userFields != null) return userFields;
+
         String columns = preferences.get(fieldKey, "default");
 
         if (columns.equals("default")) {
             return getDefaultFields();
         }
 
-        return toList(columns);
+        userFields = toList(columns);
+        return userFields;
     }
 
     private List<String> toList(String columns) {
@@ -44,6 +48,7 @@ public class PreferencesHelper implements Serializable {
 
     public void putUserFields(List<String> colNames){
         String value = concatList(colNames);
+        userFields = colNames;
         putUserFields(value);
     }
 

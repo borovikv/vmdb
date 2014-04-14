@@ -5,7 +5,9 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +19,7 @@ import java.util.List;
 public class TitleContainer<T extends Title> {
     protected Long id;
     private List<T> titles = new ArrayList<>();
+    private Map<String, String> titleMap = new HashMap<>();
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -39,14 +42,20 @@ public class TitleContainer<T extends Title> {
 
     public void setTitles(List<T> titles) {
         this.titles = titles;
+        for (T title : titles) {
+            titleMap.put(title.getLanguage().getTitle(), title.getTitle());
+        }
     }
 
     public String title(Language lang){
-        for (T title : titles) {
+        /*for (T title : titles) {
             if (title.getLanguage().equals(lang)){
                 return title.getTitle();
             }
         }
+        */
+        String result = titleMap.get(lang.getTitle());
+        if (result != null) return result;
         if (titles.size() > 0){
             return titles.get(0).getTitle();
         }
