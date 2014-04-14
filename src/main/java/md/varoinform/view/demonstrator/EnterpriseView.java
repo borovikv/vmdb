@@ -32,7 +32,6 @@ public class EnterpriseView  {
     private static String getTable(EnterpriseProxy enterpriseProxy) throws IOException {
         List<String> viewParts = EnterpriseProxy.getFields();
         Map<String, Object> map = new HashMap<>();
-        map.put("css", Paths.get(Settings.getWorkFolder(), "external-resources", "style.css"));
         for (String viewPart : viewParts) {
             Object value = enterpriseProxy.get(viewPart);
             if (value == null
