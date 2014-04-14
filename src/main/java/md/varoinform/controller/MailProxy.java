@@ -1,6 +1,7 @@
 package md.varoinform.controller;
 
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.model.entities.Email;
 import md.varoinform.model.entities.Enterprise;
 
 import java.awt.*;
@@ -43,14 +44,17 @@ public class MailProxy {
     }
 
     private String getMailTo() {
-        StringBuilder builder = new StringBuilder("mailto:vladimir@varo-inform.com, borovikv.vladimir@gmail.com");
+        StringBuilder builder = new StringBuilder("mailto:");
 
         for (Enterprise enterprise : enterprises) {
             EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
-            builder.append(proxy.getEmails());
-            builder.append(",");
+            List<Email> emails = proxy.getEmails();
+            for (Email email : emails) {
+                builder.append(email);
+                builder.append(";");
+            }
         }
 
-        return builder.toString().replaceAll("\\s*", "");
+        return builder.toString();//.replaceAll("\\s*", "");
     }
 }
