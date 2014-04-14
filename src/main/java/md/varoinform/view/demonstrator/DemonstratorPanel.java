@@ -100,8 +100,9 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
      */
     @Override
     public void update(ObservableEvent event) {
-        if ( event.getType() == ObservableEvent.STRUCTURE_CHANGED)
+        if ( event.getType() == ObservableEvent.STRUCTURE_CHANGED) {
             demonstrator.fireViewStructureChanged();
+        }
     }
 
     @Override
