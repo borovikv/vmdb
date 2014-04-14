@@ -41,4 +41,9 @@ public class EnterpriseDao {
         return executeQuery(hql, "ids", query.list());
 
     }
+
+    public static List<Enterprise> getEnterprises(){
+        //noinspection unchecked
+        return SessionManager.getSession().createCriteria(Enterprise.class).list();
+    }
 }
