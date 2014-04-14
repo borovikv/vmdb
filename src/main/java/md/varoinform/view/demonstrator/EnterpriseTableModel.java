@@ -16,7 +16,6 @@ import java.util.List;
  * Time: 4:47 PM
  */
 public class EnterpriseTableModel extends AbstractTableModel {
-
     private List<Enterprise> enterprises;
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
 
@@ -53,9 +52,9 @@ public class EnterpriseTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
         List<String> columns = getColumns();
         String name = columns.get(columnIndex);
+        EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
         Object value = proxy.get(name);
         return StringUtils.valueOf(value);
     }

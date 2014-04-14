@@ -27,7 +27,7 @@ public class EntityProxy {
 
 
     protected String getStringValueOrEmpty(Object value) {
-        if ( value == null || value instanceof CharSequence && ((CharSequence) value).length() == 0 )
+        if ( value == null || value instanceof String && ((String) value).isEmpty() )
             return  "";
         if (value instanceof Date) {
             return new SimpleDateFormat("yyyy-MM-dd").format(value);
@@ -40,7 +40,7 @@ public class EntityProxy {
         return container.title(currentLanguage());
     }
 
-    private Language currentLanguage() {
+    protected Language currentLanguage() {
         if (language != null) return language;
         return LanguageProxy.instance.getCurrentLanguage();
     }

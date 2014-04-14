@@ -71,7 +71,7 @@ public class Data extends PrintableBase {
             String field = selectedFields.get(i);
             String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(field));
             str += ResourceBundleHelper.getString(language.getTitle(), field, field) + ": "
-                    + md.varoinform.util.StringUtils.getStringOrNA(value);
+                    + md.varoinform.util.StringUtils.getStringOrNA(value, language);
             List<String> wrapLines = StringUtils.wrap(str, fm, maxWriteAreaWidth);
             lines.addAll(wrapLines);
         }

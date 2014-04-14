@@ -26,8 +26,8 @@ import java.util.*;
 public class ContactProxy extends EntityProxy {
     private Contact contact;
 
-    public ContactProxy(Contact contact) {
-        super();
+    public ContactProxy(Contact contact, Language language) {
+        super(language);
         this.contact = contact;
     }
 
@@ -79,21 +79,37 @@ public class ContactProxy extends EntityProxy {
     }
 
     public List<String> getAddress() {
-        List<String> list = new ArrayList<>(Arrays.asList(getCountry(), getRegion(), getTown(), getSector(), getStreet(), getHouseNumber(), getOfficeNumber()));
-        list.remove(null);
-        for (int i = 1; i < list.size(); i++) {
-            String current = list.get(i);
-            String preview = list.get(i - 1);
-            if (current!= null && preview != null  && current.equals(preview)) {
-                list.remove(i);
-                i--;
-            }
+        String country = getCountry();
+        String sector = getSector();
+        String region = getRegion();
+        String town = getTown();
+        String street = getStreet();
+        String houseNumber = getHouseNumber();
+        String officeNumber = getOfficeNumber();
 
+        String [] parts;
+        if (sector !=null && region != null &&sector.equals(region) && region.equals(town)) {
+            parts = new String[] {country, sector, region, town, street, houseNumber, officeNumber};
+        } else if (sector !=null && sector.equals(region)){
+            parts = new String[] {country, region, town, street, houseNumber, officeNumber};
+        } else {
+            parts = new String[] {country, sector, region, town, street, houseNumber, officeNumber};
         }
+
+        List<String> list = new ArrayList<>();
+        list.addAll(addIfNotNull(parts));
         return list;
 
     }
 
+    private List<String> addIfNotNull(String[] strings) {
+        List<String> list = new ArrayList<>();
+        for (String s : strings) {
+            if (s == null || s.isEmpty()) continue;
+            list.add(s);
+        }
+        return list;
+    }
 
 
     public List<Phone> getFax() {

@@ -51,7 +51,7 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "ForeingCapital")
     public String getForeingCapital(){
         Boolean foreingCapital = enterprise.getForeignCapital();
-        return foreingCapital != null ? ResourceBundleHelper.getString(foreingCapital.toString()) : "";
+        return ResourceBundleHelper.getString(currentLanguage(), String.valueOf(foreingCapital), "");
     }
 
     @Property(name = "Workplaces")
@@ -80,7 +80,7 @@ public class EnterpriseProxy extends EntityProxy {
     public List<ContactProxy> getContactProxies(){
         List<ContactProxy> result = new ArrayList<>();
         for (Contact contact : enterprise.getContacts()) {
-            result.add(new ContactProxy(contact));
+            result.add(new ContactProxy(contact, currentLanguage()));
         }
         return result;
     }
@@ -99,7 +99,7 @@ public class EnterpriseProxy extends EntityProxy {
     public Map<String, Object> getContactPerson(){
         List<ContactPerson> contactPersons = enterprise.getContactPersons();
         ContactPerson contactPerson = contactPersons.size() > 0 ? contactPersons.get(0) : null;
-        ContactPersonProxy proxy = new ContactPersonProxy(contactPerson);
+        ContactPersonProxy proxy = new ContactPersonProxy(contactPerson, currentLanguage());
         return proxy.getPersonMap();
     }
 
