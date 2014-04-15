@@ -45,7 +45,7 @@ public class MainFrame extends JFrame implements Observer {
     private final JButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png");
     private final JButton tagButton = new ToolbarButton("/external-resources/icons/star.png");
     private final JButton printButton = new ToolbarButton("/external-resources/icons/print.png");
-    private final JTextField searchField = new JTextField();
+    private final SearchField searchField = new SearchField();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final SettingsDialog settingsDialog;
     private final PrintDialog printDialog;
