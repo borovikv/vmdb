@@ -141,6 +141,12 @@ public class TableView extends JTable implements Demonstrator {
         getTableHeader().repaint();
     }
 
+    @Override
+    public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+        // if row already selected remove selection from current row
+        boolean rowSelected = isRowSelected(rowIndex);
+        super.changeSelection(rowIndex, columnIndex, toggle || rowSelected, extend);
+    }
 
     private class TableMouseAdapter extends MouseAdapter {
         @Override
