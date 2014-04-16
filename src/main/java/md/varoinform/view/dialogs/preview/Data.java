@@ -24,32 +24,33 @@ public class Data extends PrintableBase {
     private final List<String> selectedFields;
     private static final int indent = 15;
     private static final Font PLAIN = new Font("SanSerif", Font.PLAIN, 10);
-    private int counter = 0;
+    //private int counter = 0;
 
     public Data(List<Enterprise> enterprises, List<String> selectedFields, Language language) {
         super(enterprises, language);
         this.selectedFields = new ArrayList<>(selectedFields);
         Collections.sort(this.selectedFields, new ColumnPriorityComparator());
+        height = inchToPTCoefficient * 2;
         offset = 15;
     }
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
         width = getImageableWidth(pageFormat);
-        counter = 0;
+        //counter = 0;
         return super.print(graphics, pageFormat, pageIndex);
     }
 
     @Override
     protected void drawItem(float x, float y, Graphics2D g2, Enterprise enterprise) {
         g2.setFont(PLAIN);
-        counter++;
+        //counter++;
         int fontHeight = g2.getFontMetrics().getHeight();
         float xoff = x + indent;
         int lineHeight = fontHeight;
         List<String> lines = getLines(width, g2.getFontMetrics(), enterprise);
 
-        height = lineHeight*lines.size() + indent;
+        //height = lineHeight*lines.size() + indent;
         for (String line : lines) {
             g2.drawString(line, xoff, y + lineHeight);
             lineHeight += fontHeight;
@@ -62,15 +63,11 @@ public class Data extends PrintableBase {
     private List<String> getLines(int width, FontMetrics fm, Enterprise enterprise) {
         List<String> lines = new ArrayList<>();
         EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
-        for (int i = 0; i < selectedFields.size(); i++) {
+        for (String selectedField : selectedFields) {
             String str = "";
-            if (i == 0){
-                str += counter + ". ";
-            }
             int maxWriteAreaWidth = width - indent * 2;
-            String field = selectedFields.get(i);
-            String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(field));
-            str += ResourceBundleHelper.getString(language.getTitle(), field, field) + ": "
+            String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(selectedField));
+            str += ResourceBundleHelper.getString(language.getTitle(), selectedField, selectedField) + ": "
                     + md.varoinform.util.StringUtils.getStringOrNA(value, language);
             List<String> wrapLines = StringUtils.wrap(str, fm, maxWriteAreaWidth);
             lines.addAll(wrapLines);
