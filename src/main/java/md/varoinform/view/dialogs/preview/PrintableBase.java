@@ -3,10 +3,12 @@ package md.varoinform.view.dialogs.preview;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +24,7 @@ public abstract class PrintableBase implements Printable {
     protected int width;
     protected int height;
 
-    public PrintableBase(java.util.List<Enterprise> enterprises, Language language) {
+    public PrintableBase(List<Enterprise> enterprises, Language language) {
         this.enterprises = enterprises;
         this.language = language;
     }
@@ -36,15 +38,16 @@ public abstract class PrintableBase implements Printable {
         return PAGE_EXISTS;
     }
 
-    private java.util.List<Enterprise> getEnterprisesForPage(java.util.List<Enterprise> enterprises, int pageIndex, PageFormat pageFormat) {
+    private List<Enterprise> getEnterprisesForPage(List<Enterprise> enterprises, int pageIndex, PageFormat pageFormat) {
         int perPage = perPage(pageFormat);
         int fromIndex = pageIndex * perPage;
         int toIndex = (pageIndex + 1) * perPage;
         toIndex = toIndex <= enterprises.size()? toIndex : enterprises.size();
+        if (fromIndex > toIndex) return new ArrayList<>();
         return enterprises.subList(fromIndex, toIndex);
     }
 
-    private void draw(Graphics2D graphics2D, PageFormat pageFormat, java.util.List<Enterprise> enterprises){
+    private void draw(Graphics2D graphics2D, PageFormat pageFormat, List<Enterprise> enterprises){
         float y = (float) pageFormat.getImageableY();
         float x = (float) pageFormat.getImageableX();
         int columnsNumber = countCols(pageFormat);
