@@ -134,73 +134,88 @@ public class EnterpriseProxy extends EntityProxy {
 
 
     public ContactProxy getContactProxy(){
-        return getContactProxies().get(0);
+        List<ContactProxy> contactProxies = getContactProxies();
+        return contactProxies.isEmpty() ? null: contactProxies.get(0);
     }
 
     @Property(name = "Address")
     public List<String> getAddress() {
-        return  getContactProxy().getAddress();
+        ContactProxy contactProxy = getContactProxy();
+
+        return  contactProxy == null ? null : contactProxy.getAddress();
     }
 
     @Property(name = "PostalCode")
     public String getPostalCode(){
-        return getContactProxy().getPostalCode();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getPostalCode();
     }
 
     //@Property(name = "HouseNumber")
     public String getHouseNumber(){
 
-        return getContactProxy().getHouseNumber();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getHouseNumber();
     }
 
     //@Property(name = "OfficeNumber")
     public String getOfficeNumber(){
-        return getContactProxy().getOfficeNumber();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getOfficeNumber();
     }
 
     //@Property(name = "Street")
     public String getStreet(){
-        return getContactProxy().getStreet();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getStreet();
     }
 
     //@Property(name = "Sector")
     public String getSector(){
-        return getContactProxy().getSector();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getSector();
     }
 
     //@Property(name = "Town")
     public String getTown(){
-        return getContactProxy().getTown();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getTown();
     }
 
     //@Property(name = "Region")
     public String getRegion(){
-        return getContactProxy().getRegion();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getRegion();
     }
 
     //@Property(name = "Country")
     public String getCountry(){
-        return getContactProxy().getCountry();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getCountry();
     }
 
     @Property(name = "Emails")
     public List<Email> getEmails(){
-        return getContactProxy().getEmail();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getEmail();
     }
 
     @Property(name = "Phones")
     public List<Phone> getPhones(){
-        return getContactProxy().getPhones();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getPhones();
     }
 
     @Property(name = "Urls")
     public List<Url> getUrls(){
-        return getContactProxy().getUrls();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getUrls();
     }
 
     @Property(name = "Faxes")
     public List<Phone> getFaxes() {
-        return getContactProxy().getFax();
+        ContactProxy contactProxy = getContactProxy();
+        return contactProxy == null ? null : contactProxy.getFax();
     }
 
 
