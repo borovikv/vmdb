@@ -1,5 +1,6 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.util.StringConverter;
 import org.apache.commons.lang.ArrayUtils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -33,7 +34,7 @@ public class Cypher {
 
 
     public byte[] encrypt(String data, byte[] key) throws CryptographyException {
-        byte[] bytes = StringUtils.getBytesFromString(data);
+        byte[] bytes = StringConverter.getBytesFromString(data);
         if (bytes == null) return null;
 
         bytes = ArrayUtils.addAll(bytes, getPadding(MAX_LENGTH - bytes.length));

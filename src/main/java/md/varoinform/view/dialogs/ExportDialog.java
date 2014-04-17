@@ -73,7 +73,7 @@ public class ExportDialog extends JDialog {
             CSVWriter writer = new CSVWriter(new FileWriter(selectedFile), ';');
             List<String> selectedColumns = fieldChooser.getSelectedFieldNames();
             Collections.sort(selectedColumns, new ColumnPriorityComparator());
-
+            writer.writeNext(selectedColumns.toArray(new String[selectedColumns.size()]));
             for (Enterprise enterprise : getEnterprises()) {
                 writeLine(writer, selectedColumns, enterprise);
             }

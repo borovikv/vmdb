@@ -1,4 +1,4 @@
-package md.varoinform.sequrity;
+package md.varoinform.util;
 
 import java.io.UnsupportedEncodingException;
 
@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException;
  * Date: 12/16/13
  * Time: 5:30 PM
  */
-public class StringUtils {
+public class StringConverter {
     public static String bytesToHex(byte[] bytes) {
         char[] hexArray = "0123456789ABCDEF".toCharArray();
         char[] hexChars = new char[bytes.length * 2];

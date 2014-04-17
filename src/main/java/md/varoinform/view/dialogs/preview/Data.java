@@ -5,6 +5,8 @@ import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.StringUtils;
+import md.varoinform.util.StringWrapper;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -66,10 +68,10 @@ public class Data extends PrintableBase {
         for (String selectedField : selectedFields) {
             String str = "";
             int maxWriteAreaWidth = width - indent * 2;
-            String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(selectedField));
-            str += ResourceBundleHelper.getString(language.getTitle(), selectedField, selectedField) + ": "
-                    + md.varoinform.util.StringUtils.getStringOrNA(value, language);
-            List<String> wrapLines = StringUtils.wrap(str, fm, maxWriteAreaWidth);
+            String value = StringUtils.valueOf(enterpriseProxy.get(selectedField));
+            str += ResourceBundleHelper.getString(language, selectedField, selectedField) + ": "
+                    + StringUtils.getStringOrNA(value, language);
+            List<String> wrapLines = StringWrapper.wrap(str, fm, maxWriteAreaWidth);
             lines.addAll(wrapLines);
         }
         return lines;

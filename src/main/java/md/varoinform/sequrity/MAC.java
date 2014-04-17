@@ -1,5 +1,7 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.util.StringConverter;
+
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
@@ -9,7 +11,7 @@ public enum  MAC {
 
     private String name;
     public String getMacAddressAsString() {
-        return StringUtils.bytesToHex(getMacAddress());
+        return StringConverter.bytesToHex(getMacAddress());
     }
     public byte[] getMacAddress() {
         byte[] mac = null;

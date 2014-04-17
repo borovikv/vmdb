@@ -3,6 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.Settings;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
+import md.varoinform.util.StringConverter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class Registrar {
 
     private void setPassword(String encryptedPassword) throws RegistrationException {
         try {
-            byte[] bytes = StringUtils.getBytesFromHexString(encryptedPassword);
+            byte[] bytes = StringConverter.getBytesFromHexString(encryptedPassword);
             passwordManager.setDBPassword(bytes);
         } catch (PasswordException e) {
             throw new RegistrationException(e);

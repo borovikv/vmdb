@@ -1,9 +1,7 @@
-package md.varoinform.view.dialogs.preview;
+package md.varoinform.util;
 
 import java.awt.FontMetrics;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -11,7 +9,7 @@ import java.util.List;
  *
  * @author Jim Menard, <a href="mailto:jimm@io.com">jimm@io.com</a>
  */
-public class StringUtils {
+public class StringWrapper {
     /**
      * Returns an array of strings, one for each line in the string after it has
      * been wrapped to fit lines of <var>maxWidth</var>. Lines end with any of
@@ -33,9 +31,8 @@ public class StringUtils {
         if (lines.size() == 0)
             return lines;
 
-        ArrayList strings = new ArrayList();
-        for (Iterator iter = lines.iterator(); iter.hasNext();)
-            wrapLineInto((String) iter.next(), strings, fm, maxWidth);
+        List<String> strings = new ArrayList<>();
+        for (String line : lines) wrapLineInto(line, strings, fm, maxWidth);
         return strings;
     }
 
@@ -52,7 +49,7 @@ public class StringUtils {
      * @param maxWidth
      *          maximum width of the line(s)
      */
-    public static void wrapLineInto(String line, List list, FontMetrics fm, int maxWidth) {
+    public static void wrapLineInto(String line, List<String> list, FontMetrics fm, int maxWidth) {
         int len = line.length();
         int width;
         while (len > 0 && (width = fm.stringWidth(line)) > maxWidth) {
@@ -133,8 +130,8 @@ public class StringUtils {
      *          the string to split
      * @return a non-empty list of strings
      */
-    public static List splitIntoLines(String str) {
-        ArrayList strings = new ArrayList();
+    public static List<String> splitIntoLines(String str) {
+        List<String> strings = new ArrayList<>();
         int len = str.length();
         if (len == 0) {
             strings.add("");

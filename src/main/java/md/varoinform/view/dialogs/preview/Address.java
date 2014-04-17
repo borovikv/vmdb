@@ -3,6 +3,8 @@ package md.varoinform.view.dialogs.preview;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
+import md.varoinform.util.StringUtils;
+import md.varoinform.util.StringWrapper;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -41,8 +43,8 @@ public class Address extends PrintableBase {
         EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
         for (String field : fields) {
             int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
-            String value = md.varoinform.util.StringUtils.valueOf(enterpriseProxy.get(field));
-            java.util.List<String> wrapLines = StringUtils.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
+            String value = StringUtils.valueOf(enterpriseProxy.get(field));
+            java.util.List<String> wrapLines = StringWrapper.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
             for (String line : wrapLines) {
                 g2.drawString(line, xoff, y + lineHeight);
                 lineHeight += fontHeight;

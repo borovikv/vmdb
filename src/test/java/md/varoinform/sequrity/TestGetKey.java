@@ -1,5 +1,6 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.util.StringConverter;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -78,7 +79,7 @@ public class TestGetKey {
             e.printStackTrace();
             assertTrue(false);
         }
-        System.out.println(StringUtils.bytesToHex(bytes));
+        System.out.println(StringConverter.bytesToHex(bytes));
     }
 
     @After
@@ -94,7 +95,7 @@ public class TestGetKey {
         String database_id = "1111111111111111";
         String user_id = "000C299B664E";
         byte[] key = cypher.createKey(database_id + user_id);
-        byte[] encryptedData = StringUtils.getBytesFromHexString(encryptedPassword);
+        byte[] encryptedData = StringConverter.getBytesFromHexString(encryptedPassword);
         String password = cypher.decrypt(encryptedData, key);
         assertEquals("secret", password);
     }
