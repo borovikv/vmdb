@@ -21,16 +21,7 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class SearchEngine {
 
-    public SearchEngine() {
-        //Session session = SessionManager.getSession();
-        //createIndex(session);
-    }
-
-    public SearchEngine(Session session) {
-       // createIndex(session);
-    }
-
-    private void createIndex(Session session) {
+    public void createIndex(Session session) {
         FullTextSession fullTextSession = Search.getFullTextSession(session);
         try {
             fullTextSession.createIndexer().startAndWait();
@@ -39,28 +30,24 @@ public class SearchEngine {
         }
     }
 
+    public List<Enterprise> search(String q, String field){
+        if (field == null) return search(q);
+        return null;
+    }
 
-    public List<Enterprise> search(String q) {
+    private List<Enterprise> search(String q) {
         FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.getSession());
         Transaction tx = fullTextSession.beginTransaction();
         try {
-
-
             org.hibernate.Query hibQuery = getQuery(fullTextSession, q);
-
-            // perform search
             @SuppressWarnings("unchecked")
             List<Enterprise> result = (List<Enterprise>)hibQuery.list();
-
             tx.commit();
             return result;
-
         } catch (Exception ex) {
-            // Log the exception here
             tx.rollback();
             throw ex;
         }
-
     }
 
     private org.hibernate.Query getQuery(FullTextSession fullTextSession, String q) {

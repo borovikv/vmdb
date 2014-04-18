@@ -222,7 +222,7 @@ public class MainFrame extends JFrame implements Observer {
     private void searchText(String value) {
         if (value == null) return;
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        List<Enterprise> enterprises = searchEngine.search(value);
+        List<Enterprise> enterprises = searchEngine.search(value, null);
         showResults(enterprises);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
