@@ -97,7 +97,6 @@ public class MainFrame extends JFrame implements Observer {
 
         updateDisplay();
 
-        //ToDo: show All in Home?
         List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
         demonstrator.showResults(enterprises);
         resultLabel.setResultCount(enterprises.size());
@@ -196,6 +195,7 @@ public class MainFrame extends JFrame implements Observer {
         settingsDialog.updateDisplay();
         tagDialog.updateDisplay();
         history.updateDisplay();
+        searchField.updateDisplay();
     }
 
 
@@ -211,7 +211,6 @@ public class MainFrame extends JFrame implements Observer {
             branchPanel.clearSelection();
 
         } else {
-            //ToDo:Show all or Clear?
             List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
             demonstrator.showResults(enterprises);
             branchPanel.clearSelection();

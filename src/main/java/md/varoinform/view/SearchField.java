@@ -1,5 +1,7 @@
 package md.varoinform.view;
 
+import md.varoinform.util.ResourceBundleHelper;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +12,6 @@ import java.awt.*;
  * Time: 10:17 AM
  */
 public class SearchField extends JTextField {
-    private String placeholder = "Поиск";
     @Override
     protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
@@ -21,12 +22,16 @@ public class SearchField extends JTextField {
             g2.setFont(getFont().deriveFont(Font.ITALIC));
             FontMetrics fontMetrics = g2.getFontMetrics();
             int height = fontMetrics.getHeight();
-            g2.drawString(placeholder, 5, height); //figure out x, y from font's FontMetrics and size of component.
+            g2.drawString(getPlaceholder(), 5, height); //figure out x, y from font's FontMetrics and size of component.
             g2.dispose();
         }
     }
 
-    public void updateDisplay(){
+    private String getPlaceholder() {
+        return ResourceBundleHelper.getString("search");
+    }
 
+    public void updateDisplay(){
+        repaint();
     }
 }
