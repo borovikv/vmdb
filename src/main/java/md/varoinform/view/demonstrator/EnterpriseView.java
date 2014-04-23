@@ -32,6 +32,13 @@ public class EnterpriseView  {
     private static String getTable(EnterpriseProxy enterpriseProxy) throws IOException {
         List<String> viewParts = EnterpriseProxy.getFields();
         Map<String, Object> map = new HashMap<>();
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        set.add(enterpriseProxy.getCountry());
+        set.add(enterpriseProxy.getSector());
+        set.add(enterpriseProxy.getTown());
+        set.addAll(enterpriseProxy.getStreetHouseOffice());
+        map.put("address", set);
+
         for (String viewPart : viewParts) {
             Object value = enterpriseProxy.get(viewPart);
             if (value == null

@@ -17,7 +17,7 @@ public class Settings {
     private static final String SERVER_URL = "http://localhost:8000/";
     private static final String REGISTER_URL =  SERVER_URL + "registry/online/";
     private static final String UPDATE_URL = SERVER_URL + "manage/update/";
-    private static final String DEFAULT_COLUMNS = "title;address;phones;faxes;emails;urls";
+    private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
    // {"defaultFieldPriority", "title;address;phones;faxes;emails;urls"},
 
 
