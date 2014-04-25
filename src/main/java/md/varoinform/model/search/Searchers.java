@@ -17,7 +17,6 @@ public class Searchers {
         searchers.add(new BranchSearcher());
         searchers.add(new BusinessEntityTypeSearcher());
         searchers.add(new ContactPersonSearcher());
-        searchers.add(new CountrySearcher());
         searchers.add(new CreationDateSearcher());
         searchers.add(new EmailsSearcher());
         searchers.add(new ForeingCapitalSearcher());
