@@ -7,11 +7,11 @@ import md.varoinform.util.PreferencesHelper;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class TableView extends JTable implements Demonstrator {
     private boolean dragComplete = false;
+    private TableRowSorter<TableModel> sorter;
+    private Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
+    private Map<Integer, String> filtersText = new HashMap<>();
 
     //-----------------------------------------------------------------------------------------------------------------
     public TableView() {
@@ -34,10 +37,59 @@ public class TableView extends JTable implements Demonstrator {
 
         getTableHeader().addMouseListener(new TableMouseAdapter());
         getColumnModel().addColumnModelListener(new ColumnModelListener());
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                    int i = TableView.this.columnAtPoint(e.getPoint());
+
+                    JPopupMenu popup = createPopup(i);
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
 
         setSelectionBackground(Settings.getDefaultColor("highlight"));
 
         showResults(new ArrayList<Enterprise>());
+    }
+
+    private JPopupMenu createPopup(final int column) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem filter = new JMenuItem("filter");
+        filter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String result = JOptionPane.showInputDialog("filter by", filtersText.get(column));
+                newFilter(result, ".*" +result  + ".*", column);
+            }
+        });
+        popupMenu.add(filter);
+        JMenuItem notContainFilter = new JMenuItem("not contain");
+        notContainFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String result = JOptionPane.showInputDialog("filter by", filtersText.get(column));
+
+                newFilter(result, "^((?!" + result + ").)*$", column);
+            }
+        });
+        popupMenu.add(notContainFilter);
+        return popupMenu;
+    }
+
+    private void newFilter(String text, String pattern, int column) {
+
+        RowFilter<TableModel, Object> rf;
+        //If current expression doesn't parse, don't update.
+        try {
+            filters.put(column, RowFilter.regexFilter(pattern , column));
+            filtersText.put(column, text);
+        } catch (java.util.regex.PatternSyntaxException e) {
+            return;
+        }
+        rf = RowFilter.andFilter(filters.values());
+        sorter.setRowFilter(rf);
     }
 
     public void fireViewStructureChanged() {
@@ -59,10 +111,17 @@ public class TableView extends JTable implements Demonstrator {
             enterprises = new ArrayList<>();
         }
 
-        setModel(new EnterpriseTableModel(enterprises));
+        EnterpriseTableModel dataModel = new EnterpriseTableModel(enterprises);
+        setModel(dataModel);
         doLayout();
     }
 
+    @Override
+    public void setModel(TableModel dataModel) {
+        super.setModel(dataModel);
+        sorter = new TableRowSorter<>(dataModel);
+        setRowSorter(sorter);
+    }
 
     @Override
     public List<Enterprise> getSelected() {
