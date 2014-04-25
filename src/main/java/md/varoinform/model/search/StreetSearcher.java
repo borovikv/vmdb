@@ -16,7 +16,7 @@ public class StreetSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
         String hql = "Select distinct e from Enterprise e join e.contacts cs join cs.street s join s.titles titles where lower(titles.title) like :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", q);
+        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + q.toLowerCase() + "%");
         //noinspection unchecked
         return query.list();
     }
