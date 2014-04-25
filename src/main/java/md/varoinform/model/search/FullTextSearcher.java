@@ -19,7 +19,7 @@ import java.util.List;
  * Time: 2:44 PM
  */
 @SuppressWarnings("UnusedDeclaration")
-public class SearchEngine {
+public class FullTextSearcher extends Searcher {
 
     public void createIndex(Session session) {
         FullTextSession fullTextSession = Search.getFullTextSession(session);
@@ -30,12 +30,8 @@ public class SearchEngine {
         }
     }
 
-    public List<Enterprise> search(String q, String field){
-        if (field == null) return search(q);
-        return null;
-    }
-
-    private List<Enterprise> search(String q) {
+    @Override
+    public List<Enterprise> search(String q) {
         FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.getSession());
         Transaction tx = fullTextSession.beginTransaction();
         try {
@@ -84,5 +80,15 @@ public class SearchEngine {
         }
         return phraseMatchingContext.sentence(q).createQuery();
 
+    }
+
+    @Override
+    public String getName() {
+        return "default";
+    }
+
+    @Override
+    public int compareTo(Searcher o) {
+        return -1;
     }
 }

@@ -6,7 +6,8 @@ import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
-import md.varoinform.model.search.SearchEngine;
+import md.varoinform.model.search.Searcher;
+import md.varoinform.model.search.Searchers;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
@@ -34,7 +35,6 @@ import java.util.List;
  * Time: 9:15 AM
  */
 public class MainFrame extends JFrame implements Observer {
-    private final SearchEngine searchEngine = new SearchEngine();
     private final JTabbedPane navigationPane;
     private final TagPanel tagPanel = new TagPanel();
     private final History history = new History();
@@ -46,6 +46,7 @@ public class MainFrame extends JFrame implements Observer {
     private final JButton tagButton = new ToolbarButton("/external-resources/icons/star.png");
     private final JButton printButton = new ToolbarButton("/external-resources/icons/print.png");
     private final SearchField searchField = new SearchField();
+    private final FieldComboBox fields = new FieldComboBox(Searchers.getSearchers());
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final SettingsDialog settingsDialog;
     private final PrintDialog printDialog;
@@ -118,6 +119,7 @@ public class MainFrame extends JFrame implements Observer {
         searchField.setFont(Settings.getDefaultFont("SANS_SERIF"));
         searchField.addActionListener(new SearchAction());
         toolbar.add(searchField);
+        toolbar.add(fields);
 
         toolbar.addSeparator();
         toolbar.add(tagButton);
@@ -196,6 +198,7 @@ public class MainFrame extends JFrame implements Observer {
         tagDialog.updateDisplay();
         history.updateDisplay();
         searchField.updateDisplay();
+        fields.updateDisplay();
     }
 
 
@@ -221,7 +224,8 @@ public class MainFrame extends JFrame implements Observer {
     private void searchText(String value) {
         if (value == null) return;
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        List<Enterprise> enterprises = searchEngine.search(value, null);
+        Searcher searcher = fields.getSearcher();
+        List<Enterprise> enterprises = searcher.search(value);
         showResults(enterprises);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
@@ -229,7 +233,7 @@ public class MainFrame extends JFrame implements Observer {
 
     private void showResults(List<Enterprise> enterprises) {
         demonstrator.showResults(enterprises);
-        resultLabel.setResultCount(enterprises.size());
+        resultLabel.setResultCount(enterprises == null ? 0: enterprises.size());
     }
 
     @Override
