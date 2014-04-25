@@ -45,6 +45,7 @@ public class MainFrame extends JFrame implements Observer {
     private final JButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png");
     private final JButton tagButton = new ToolbarButton("/external-resources/icons/star.png");
     private final JButton printButton = new ToolbarButton("/external-resources/icons/print.png");
+    private final JButton searchButton = new ToolbarButton("search", "/external-resources/icons/search.png");
     private final SearchField searchField = new SearchField();
     private final FieldComboBox fields = new FieldComboBox(Searchers.getSearchers());
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
@@ -117,9 +118,13 @@ public class MainFrame extends JFrame implements Observer {
         toolbar.addSeparator();
 
         searchField.setFont(Settings.getDefaultFont("SANS_SERIF"));
-        searchField.addActionListener(new SearchAction());
+        SearchAction searchAction = new SearchAction();
+        searchField.addActionListener(searchAction);
         toolbar.add(searchField);
         toolbar.add(fields);
+        //toolbar.addSeparator();
+        searchButton.addActionListener(searchAction);
+        toolbar.add(searchButton);
 
         toolbar.addSeparator();
         toolbar.add(tagButton);
@@ -190,6 +195,7 @@ public class MainFrame extends JFrame implements Observer {
         navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
         navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
         resultLabel.setMessageText(ResourceBundleHelper.getString("result"));
+        searchButton.setText(ResourceBundleHelper.getString("search", "search"));
         branchPanel.updateRoot();
         demonstrator.updateDisplay();
         printDialog.updateDisplay();
@@ -285,7 +291,7 @@ public class MainFrame extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String value = e.getActionCommand();
+            String value = searchField.getText();
             searchText(value);
             history.appendHistory(value);
             branchPanel.clearSelection();

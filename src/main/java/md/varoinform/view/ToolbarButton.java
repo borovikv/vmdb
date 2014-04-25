@@ -19,9 +19,9 @@ public class ToolbarButton extends JButton {
         ImageIcon icon = ImageHelper.getScaledImageIcon(filename, width, height);
 
         setIcon(icon);
-        setPreferredSize(new Dimension(width+4, height+4));
+        setPreferredSize(new Dimension(width + 4, height + 4));
         setOpaque(false);
-        setContentAreaFilled(false);
+        setContentAreaFilled(true);
     }
 
     public ToolbarButton(String filename) {
@@ -31,6 +31,12 @@ public class ToolbarButton extends JButton {
     public ToolbarButton(String filename, boolean enabled) {
         this(filename, iconWidth, iconHeight);
         setEnabled(enabled);
+    }
 
+    public ToolbarButton(String text, String filename){
+        this(filename, iconWidth, iconHeight);
+        FontMetrics metrics = getFontMetrics(getFont());
+        int textWidth = metrics.stringWidth(text);
+        setPreferredSize(new Dimension(textWidth + iconWidth + 20, iconHeight + 4));
     }
 }
