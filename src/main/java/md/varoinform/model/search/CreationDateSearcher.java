@@ -1,6 +1,8 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.util.SessionManager;
+import org.hibernate.Query;
 
 import java.util.List;
 
@@ -13,6 +15,10 @@ import java.util.List;
 public class CreationDateSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
-        return null;
+        String hql = "Select distinct e from Enterprise e where e.creation = :creation";
+        int year = Integer.parseInt(q);
+        Query query = SessionManager.getSession().createQuery(hql).setInteger("creation", year);
+        //noinspection unchecked
+        return query.list();
     }
 }
