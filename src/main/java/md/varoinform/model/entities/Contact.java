@@ -14,6 +14,7 @@ import java.util.List;
  * Date: 10/8/13
  * Time: 10:54 AM
  */
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_contact")
 public class Contact {
@@ -28,6 +29,7 @@ public class Contact {
     private Region region;
     private List<Email> emails = new ArrayList<>();
     private List<Phone> phones = new ArrayList<>();
+    private List<Phone> allPhones = new ArrayList<>();
     private List<Url> urls = new ArrayList<>();
     private List<Phone> fax = new ArrayList<>();
 
@@ -163,7 +165,15 @@ public class Contact {
         this.fax = fax;
     }
 
+    @OneToMany
+    @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    public List<Phone> getAllPhones() {
+        return allPhones;
+    }
 
+    public void setAllPhones(List<Phone> allPhones) {
+        this.allPhones = allPhones;
+    }
 
     @OneToMany
     @JoinColumn(name = "contact_id")
