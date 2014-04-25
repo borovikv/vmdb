@@ -48,12 +48,6 @@ public class TitleContainer<T extends Title> {
     }
 
     public String title(Language lang){
-        /*for (T title : titles) {
-            if (title.getLanguage().equals(lang)){
-                return title.getTitle();
-            }
-        }
-        */
         String result = titleMap.get(lang.getTitle());
         if (result != null) return result;
         if (titles.size() > 0){
