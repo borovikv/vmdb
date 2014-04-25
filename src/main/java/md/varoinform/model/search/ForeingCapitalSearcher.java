@@ -1,7 +1,10 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.util.SessionManager;
+import org.hibernate.Query;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,7 +16,15 @@ import java.util.List;
 public class ForeingCapitalSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
-        return null;
+        String hql = "Select distinct e from Enterprise e where e.foreignCapital = :hasForeingCapital";
+        boolean has = convertToBoolean(q);
+        Query query = SessionManager.getSession().createQuery(hql).setBoolean("hasForeingCapital", has);
+        //noinspection unchecked
+        return query.list();
+    }
+
+    private boolean convertToBoolean(String q) {
+        return Arrays.asList("yes", "да", "da").contains(q.toLowerCase());
     }
 
 }
