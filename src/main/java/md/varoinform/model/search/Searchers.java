@@ -33,7 +33,9 @@ public class Searchers {
         searchers.add(new TitleSearcher(false));
         searchers.add(new TownSearcher());
         searchers.add(new UrlsSearcher());
-        searchers.add(new WorkplacesSearcher());
+        searchers.add(new WorkplacesSearcher(WorkplacesSearcher.ComparisonType.EQ));
+        searchers.add(new WorkplacesSearcher(WorkplacesSearcher.ComparisonType.GTE));
+        searchers.add(new WorkplacesSearcher(WorkplacesSearcher.ComparisonType.LTE));
         searchers.add(new YpUrlSearcher());
         return searchers;
     }
