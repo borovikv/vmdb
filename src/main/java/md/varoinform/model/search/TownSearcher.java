@@ -1,6 +1,8 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.util.SessionManager;
+import org.hibernate.Query;
 
 import java.util.List;
 
@@ -13,6 +15,9 @@ import java.util.List;
 public class TownSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
-        return null;
+        String hql = "Select distinct e from Enterprise e join e.contacts cs join cs.town t join t.titles titles where lower(titles.title) like :pattern";
+        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + q.toLowerCase() + "%");
+        //noinspection unchecked
+        return query.list();
     }
 }
