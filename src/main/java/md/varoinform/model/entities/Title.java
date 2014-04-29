@@ -11,6 +11,7 @@ import javax.persistence.*;
  * Date: 10/4/13
  * Time: 9:34 AM
  */
+@SuppressWarnings("UnusedDeclaration")
 @MappedSuperclass
 public class Title<T extends TitleContainer> implements TitleInterface{
     private Long id;
@@ -50,7 +51,7 @@ public class Title<T extends TitleContainer> implements TitleInterface{
     }
 
     @Column(name = "title")
-    @Field
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     @Analyzer(definition = "customanalyzer")
     public String getTitle() {
         return title;
