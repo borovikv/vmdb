@@ -98,7 +98,6 @@ public class TreeNode implements Serializable{
     @Override
     public int hashCode() {
         String s = String.valueOf(title);
-        System.out.println(s + " = " + s.hashCode());
         return s.hashCode();
     }
 
