@@ -43,7 +43,11 @@ public class TitleContainer<T extends Title> {
     public void setTitles(List<T> titles) {
         this.titles = titles;
         for (T title : titles) {
-            titleMap.put(title.getLanguage().getTitle(), title.getTitle());
+            if (title == null) continue;
+            Language language = title.getLanguage();
+            String lang = language.getTitle();
+            String t = title.getTitle();
+            titleMap.put(lang, t);
         }
     }
 

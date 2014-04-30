@@ -1,5 +1,7 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.util.StringUtils;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,10 +42,8 @@ public class TemplateRenderer {
         if (variable == null) return template;
         String name = getVariableName(variable);
         Object value = context.get(name);
-        String result = value == null? "": String.valueOf(value);
-        if (value instanceof Collection){
-            result = result.substring(1, result.length() - 1);
-        }
+        String result = value == null? "": StringUtils.valueOf(value);
+
         return template.replace(variable, result);
     }
 

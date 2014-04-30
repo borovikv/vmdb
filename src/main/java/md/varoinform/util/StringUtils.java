@@ -1,9 +1,10 @@
 package md.varoinform.util;
 
 import md.varoinform.model.entities.Language;
-
+import java.util.Collection;
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 public class StringUtils {
 
     public static String getStringOrNA(String s, Language language) {
@@ -16,12 +17,26 @@ public class StringUtils {
         return org.apache.commons.lang.StringUtils.strip(str, "[], ");
     }
 
+    public static String valueOf(Collection<?> collection){
+        StringBuilder builder = new StringBuilder();
+        String delimiter = "";
+        for (Object title : collection) {
+            if (title == null || String.valueOf(title).isEmpty()) continue;
+            builder.append(delimiter);
+            builder.append(title);
+            delimiter = ", ";
+        }
+        return builder.toString();
+    }
+
     public static String valueOf(Object value) {
         if (value == null) return "";
         if (value instanceof Map) {
-            return strip(((Map<?, ?>) value).values());
+            return valueOf(((Map<?, ?>) value).values());
+        } else if(value instanceof Collection<?>) {
+            return valueOf((Collection<?>)value);
         } else {
-            return strip(value);
+            return String.valueOf(value);
         }
     }
 }
