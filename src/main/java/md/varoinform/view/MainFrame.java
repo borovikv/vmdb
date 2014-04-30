@@ -263,8 +263,13 @@ public class MainFrame extends JFrame implements Observer {
                 performHistoryMove(event.getValue());
                 break;
             case ObservableEvent.TAG_SELECTED:
+            case ObservableEvent.TAGS_CHANGED:
                 Tag tag = tagPanel.getSelectedTag();
-                showResults(new ArrayList<>(tag.getEnterprises()));
+                if (tag == null) {
+                    showResults(null);
+                } else {
+                    showResults(new ArrayList<>(tag.getEnterprises()));
+                }
                 break;
             case ObservableEvent.LANGUAGE_CHANGED:
                 updateDisplay();

@@ -10,6 +10,7 @@ import java.util.*;
  * Time: 11:54 AM
  */
 public class FilteringModel<T> extends AbstractListModel<T>{
+    private final Comparator<T> comparator;
     List<T> list = new ArrayList<>();
     List<T> filteredList = new ArrayList<>();
     String lastSearch;
@@ -17,6 +18,13 @@ public class FilteringModel<T> extends AbstractListModel<T>{
     public FilteringModel(List<T> tags) {
         list.addAll(tags);
         filteredList.addAll(tags);
+        comparator = new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        };
+        Collections.sort(filteredList, comparator);
     }
 
     @Override
@@ -35,15 +43,26 @@ public class FilteringModel<T> extends AbstractListModel<T>{
     @SuppressWarnings("UnusedDeclaration")
     public void addElement(T element) {
         list.add(element);
-        filter();
+        updateModel();
     }
 
-    private void filter() {
+    public void removeElement(T element) {
+        list.remove(element);
+        updateModel();
+    }
+
+    public void updateModel() {
         if(lastSearch != null){
             filter(lastSearch);
         } else {
-            filteredList.addAll(list);
+            filteredList = new ArrayList<>(list);
+            Collections.sort(filteredList, comparator);
+            fireContentsChanged();
         }
+    }
+
+    public void fireContentsChanged() {
+        fireContentsChanged(this, 0, getSize());
     }
 
     public void filter(String lastSearch) {
@@ -54,13 +73,8 @@ public class FilteringModel<T> extends AbstractListModel<T>{
                 filteredList.add(el);
             }
         }
-        Collections.sort(filteredList, new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.toString().compareTo(o2.toString());
-            }
-        });
-        fireContentsChanged(this, 0, getSize());
+        Collections.sort(filteredList, comparator);
+        fireContentsChanged();
 
     }
 
@@ -71,8 +85,7 @@ public class FilteringModel<T> extends AbstractListModel<T>{
 
     public void addAll(List<T> all) {
         list.addAll(all);
-        filter();
-        fireContentsChanged(this, 0, getSize());
+        updateModel();
     }
 
     public int getIndexAtElement(T t) {

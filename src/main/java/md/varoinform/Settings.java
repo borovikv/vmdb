@@ -34,16 +34,7 @@ public class Settings {
     }
 
     public static Font getDefaultFont(String name){
-        switch (name){
-            case "SERIF":
-                return new Font(Font.SERIF, Font.PLAIN, 18);
-            case "SANS_SERIF":
-                return new Font(Font.SANS_SERIF, Font.PLAIN, 18);
-            case "MONOSPACED":
-                return new Font(Font.MONOSPACED, Font.PLAIN, 18);
-            default:
-                return new Font(Font.SERIF, Font.PLAIN, 18);
-        }
+        return getDefaultFont(name, 18);
     }
 
     public static Color getDefaultColor(String name){
@@ -77,5 +68,18 @@ public class Settings {
         Path path = Paths.get(Settings.getWorkFolder(), "database", "DB");
         if (Files.notExists(path.getParent())) throw new RuntimeException("file " + path.toAbsolutePath().toString() + " not found");
         return path;
+    }
+
+    public static Font getDefaultFont(String name, int size) {
+        switch (name){
+            case "SERIF":
+                return new Font(Font.SERIF, Font.PLAIN, size);
+            case "SANS_SERIF":
+                return new Font(Font.SANS_SERIF, Font.PLAIN, size);
+            case "MONOSPACED":
+                return new Font(Font.MONOSPACED, Font.PLAIN, size);
+            default:
+                return new Font(Font.SERIF, Font.PLAIN, size);
+        }
     }
 }

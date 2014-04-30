@@ -1,5 +1,6 @@
 package md.varoinform.view.tags;
 
+import md.varoinform.Settings;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.*;
@@ -15,9 +16,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
@@ -72,8 +71,101 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
                     list.setSelectedIndex(index);
                 }
             }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                 showPopupMenu(e);
+            }
+
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                 showPopupMenu(e);
+            }
         });
+
+        tagList.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getExtendedKeyCode() == KeyEvent.VK_DELETE) {
+                    deleteTag(getSelectedTag());
+                }
+            }
+        });
+
         add(new JScrollPane(tagList), BorderLayout.CENTER);
+    }
+
+    private void showPopupMenu(MouseEvent e) {
+        if (!e.isPopupTrigger()) return;
+
+        Point point = e.getPoint();
+        int index = tagList.locationToIndex(point);
+        if (index < 0) return;
+
+        Rectangle cellBounds = tagList.getCellBounds(0, index);
+        if (cellBounds.getHeight() < point.getY()) return;
+
+        tagList.setSelectedIndex(index);
+        final Tag tag = tagList.getModel().getElementAt(index);
+        Font font = Settings.getDefaultFont("SERIF", 14);
+
+        String deleteText = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag + "...";
+        JMenuItem deleteItem = new JMenuItem(deleteText);
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+        deleteItem.setAccelerator(keyStroke);
+        deleteItem.setFont(font);
+        deleteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteTag(tag);
+            }
+        });
+
+        String renameText = ResourceBundleHelper.getString("rename_tag", "Rename") + "...";
+        JMenuItem renameItem = new JMenuItem(renameText);
+        KeyStroke renameKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK);
+        renameItem.setAccelerator(renameKeyStroke);
+        renameItem.setFont(font);
+        renameItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                renameTag(tag);
+            }
+        });
+
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(renameItem);
+        popupMenu.addSeparator();
+        popupMenu.add(deleteItem);
+        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+
+    }
+
+    private void renameTag(Tag tag) {
+        if (tag == null) return;
+        String message = ResourceBundleHelper.getString("rename_tag_message", "Insert new title");
+        String result = getNewTitle(tag, message);
+        if (result == null || result.isEmpty() || result.equals(tag.getTitle())) return;
+        tag.setTitle(result);
+        ((FilteringModel<Tag>)tagList.getModel()).updateModel();
+        daoTag.save(tag);
+
+    }
+
+    private String getNewTitle(Tag tag, String message) {
+        return (String) JOptionPane.showInputDialog(null, message, "", JOptionPane.QUESTION_MESSAGE, null, null, tag.getTitle());
+    }
+
+    private void deleteTag(Tag tag) {
+        if (tag == null) return;
+
+        String message = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag.getTitle() + "?";
+        if (JOptionPane.showConfirmDialog(null, message) == JOptionPane.OK_OPTION) {
+            ((FilteringModel<Tag>)tagList.getModel()).removeElement(tag);
+            notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+            daoTag.delete(tag);
+        }
     }
 
     public String getCurrentTagTitle(){
@@ -137,6 +229,10 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
 
     public void addOnEnterAction(ActionListener listener){
         textField.addActionListener(listener);
+    }
+
+    public void clearFilter() {
+        textField.setText("");
     }
 
     private class MyDocumentListener implements DocumentListener {

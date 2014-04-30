@@ -41,6 +41,7 @@ public class TagDialog extends JDialog implements Observable, Observer {
             public void actionPerformed(ActionEvent e) {
                 addTag();
                 setVisible(false);
+                tagPanel.clearFilter();
             }
         };
         tagPanel.addOnEnterAction(addTagAction);
