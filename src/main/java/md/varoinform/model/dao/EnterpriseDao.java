@@ -1,11 +1,14 @@
 package md.varoinform.model.dao;
 
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.TreeNode;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Query;
 import org.hibernate.type.LongType;
 
+import java.text.Collator;
 import java.util.*;
 
 public class EnterpriseDao {
@@ -16,11 +19,27 @@ public class EnterpriseDao {
         String hql = "Select distinct " +
                 "e from Enterprise e " +
                 "join e.goods good " +
-                "join good.good.treeNodes tn " +
-                "where tn.id in(:branchIds) ";
+                "join good.good.treeNodes tn  " +
+                "where tn.id in(:branchIds)";
 
         //noinspection unchecked
-        return executeQuery(hql, "branchIds", branchIds);
+        List<Enterprise> enterprises = executeQuery(hql, "branchIds", branchIds);
+        sortEnterprises(enterprises);
+        return enterprises;
+    }
+
+    private static void sortEnterprises(List<Enterprise> enterprises) {
+        Collections.sort(enterprises, new Comparator<Enterprise>() {
+            @Override
+            public int compare(Enterprise o1, Enterprise o2) {
+                Language lang = LanguageProxy.instance.getCurrentLanguage();
+                Locale locale = new Locale(LanguageProxy.getCurrentLanguageTitle());
+                Collator collator = Collator.getInstance(locale);
+                String titleO1 = o1.title(lang);
+                String titleO2 = o2.title(lang);
+                return collator.compare(titleO1, titleO2);
+            }
+        });
     }
 
     private static List  executeQuery(String hql, String property, List branchIds) {
