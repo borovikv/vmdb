@@ -25,6 +25,9 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +43,12 @@ public class MainFrame extends JFrame implements Observer {
     private final History history = new History();
     private final BranchPanel branchPanel = new BranchPanel();
     private final OutputLabel resultLabel = new OutputLabel();
-    private final JButton exportButton = new ToolbarButton("/external-resources/icons/export.png");
-    private final JButton mailButton = new ToolbarButton("/external-resources/icons/mail.png");
-    private final JButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png");
-    private final JButton tagButton = new ToolbarButton("/external-resources/icons/star.png");
-    private final JButton printButton = new ToolbarButton("/external-resources/icons/print.png");
-    private final JButton searchButton = new ToolbarButton("search", "/external-resources/icons/search.png");
+    private final ToolbarButton exportButton = new ToolbarButton("/external-resources/icons/export.png", "export", "export");
+    private final ToolbarButton mailButton = new ToolbarButton("/external-resources/icons/mail.png", "mail", "mail");
+    private final ToolbarButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png", "settings", "settings");
+    private final ToolbarButton tagButton = new ToolbarButton("/external-resources/icons/star.png", "tag", "tag");
+    private final ToolbarButton printButton = new ToolbarButton("/external-resources/icons/print.png", "print", "print");
+    private final ToolbarButton searchButton = new ToolbarButton("/external-resources/icons/search.png", "search", "search");
     private final SearchField searchField = new SearchField();
     private final FieldComboBox fields = new FieldComboBox(Searchers.getSearchers());
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
@@ -112,10 +115,10 @@ public class MainFrame extends JFrame implements Observer {
         toolbar.addSeparator();
 
 
-        toolbar.add(history.getBackButton());
+        /*toolbar.add(history.getBackButton());
 
         toolbar.add(history.getForwardButton());
-        toolbar.addSeparator();
+        */toolbar.addSeparator();
 
         searchField.setFont(Settings.getDefaultFont("SANS_SERIF"));
         SearchAction searchAction = new SearchAction();
@@ -187,24 +190,19 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     private void updateDisplay() {
-        mailButton.setToolTipText(ResourceBundleHelper.getString("mail"));
-        exportButton.setToolTipText(ResourceBundleHelper.getString("export"));
-        printButton.setToolTipText(ResourceBundleHelper.getString("print"));
-        tagButton.setToolTipText(ResourceBundleHelper.getString("tag"));
-        settingsButton.setToolTipText(ResourceBundleHelper.getString("dialogs"));
+        Field[] declaredFields = MainFrame.class.getDeclaredFields();
+        for (Field field : declaredFields) {
+            try {
+                Method updateDisplay = field.getType().getMethod("updateDisplay");
+                Object obj = field.get(this);
+                updateDisplay.invoke(obj);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+            }
+        }
+
         navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
         navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
-        resultLabel.setMessageText(ResourceBundleHelper.getString("result"));
-        searchButton.setText(ResourceBundleHelper.getString("search", "search"));
-        branchPanel.updateRoot();
-        demonstrator.updateDisplay();
-        printDialog.updateDisplay();
-        exportDialog.updateDisplay();
-        settingsDialog.updateDisplay();
-        tagDialog.updateDisplay();
-        history.updateDisplay();
-        searchField.updateDisplay();
-        fields.updateDisplay();
+
     }
 
 

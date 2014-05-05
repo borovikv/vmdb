@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class History implements Observable {
-    private final JButton homeButton = new ToolbarButton("/external-resources/icons/home.png");
-    private final JButton backButton = new ToolbarButton("/external-resources/icons/arrow_left2.png", false);
-    private final JButton forwardButton = new ToolbarButton("/external-resources/icons/arrow_right2.png", false);
+    private final JButton homeButton = new ToolbarButton("/external-resources/icons/home.png", "home");
+    //private final JButton backButton = new ToolbarButton("/external-resources/icons/arrow_left2.png", false);
+    //private final JButton forwardButton = new ToolbarButton("/external-resources/icons/arrow_right2.png", false);
     private final HistoryProxy historyProxy = new HistoryProxy();
 
     // back
@@ -23,8 +23,8 @@ public class History implements Observable {
         public void actionPerformed(ActionEvent e) {
             Object obj = historyProxy.back();
             notifyObservers(new ObservableEvent(ObservableEvent.BACK, obj));
-            backButton.setEnabled(historyProxy.hasBack());
-            forwardButton.setEnabled(true);
+            //backButton.setEnabled(historyProxy.hasBack());
+            //forwardButton.setEnabled(true);
         }
     };
 
@@ -34,8 +34,8 @@ public class History implements Observable {
         public void actionPerformed(ActionEvent e) {
             Object obj = historyProxy.forward();
             notifyObservers(new ObservableEvent(ObservableEvent.FORWARD, obj));
-            forwardButton.setEnabled(historyProxy.hasForward());
-            backButton.setEnabled(true);
+            //forwardButton.setEnabled(historyProxy.hasForward());
+            //backButton.setEnabled(true);
         }
     };
 
@@ -45,8 +45,8 @@ public class History implements Observable {
         public void actionPerformed(ActionEvent e) {
             historyProxy.home();
             notifyObservers(new ObservableEvent(ObservableEvent.HOME, null));
-            forwardButton.setEnabled(false);
-            backButton.setEnabled(historyProxy.hasBack());
+            //forwardButton.setEnabled(false);
+           // backButton.setEnabled(historyProxy.hasBack());
         }
     };
     private List<Observer> observers = new ArrayList<>();
@@ -54,31 +54,31 @@ public class History implements Observable {
 
     public History() {
         homeButton.addActionListener(homeAction);
-        backButton.addActionListener(backAction);
-        forwardButton.addActionListener(forwardAction);
+        //backButton.addActionListener(backAction);
+        //forwardButton.addActionListener(forwardAction);
 
     }
 
     public void appendHistory(Object value) {
         historyProxy.append(value);
-        forwardButton.setEnabled(false);
-        backButton.setEnabled(true);
+        //forwardButton.setEnabled(false);
+        //backButton.setEnabled(true);
     }
 
     public void updateDisplay() {
-        backButton.setToolTipText(ResourceBundleHelper.getString("back"));
-        forwardButton.setToolTipText(ResourceBundleHelper.getString("forward"));
+        //backButton.setToolTipText(ResourceBundleHelper.getString("back"));
+        //forwardButton.setToolTipText(ResourceBundleHelper.getString("forward"));
         homeButton.setToolTipText(ResourceBundleHelper.getString("home"));
     }
 
-    public JButton getBackButton() {
+    /*public JButton getBackButton() {
         return backButton;
     }
 
     public JButton getForwardButton() {
         return forwardButton;
     }
-
+    */
     public JButton getHomeButton() {
         return homeButton;
     }

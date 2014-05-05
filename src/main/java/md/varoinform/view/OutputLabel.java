@@ -1,5 +1,7 @@
 package md.varoinform.view;
 
+import md.varoinform.util.ResourceBundleHelper;
+
 import javax.swing.*;
 
 /**
@@ -20,5 +22,9 @@ public class OutputLabel extends JLabel {
     public void setResultCount(int resultCount) {
         this.resultCount = resultCount;
         setText(message + ": " + resultCount);
+    }
+
+    public void updateDisplay(){
+        setMessageText(ResourceBundleHelper.getString("result", "result"));
     }
 }

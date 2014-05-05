@@ -12,6 +12,12 @@ import java.awt.*;
  * Time: 10:17 AM
  */
 public class SearchField extends JTextField {
+    public SearchField() {
+        int height = getFontMetrics(getFont()).getHeight() + 4*2;
+        Dimension dimension = new Dimension(Short.MAX_VALUE, height);
+        setPreferredSize(dimension);
+    }
+
     @Override
     protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);

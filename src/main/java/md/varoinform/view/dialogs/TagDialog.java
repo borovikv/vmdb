@@ -67,11 +67,6 @@ public class TagDialog extends JDialog implements Observable, Observer {
         notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
     }
 
-
-
-    public void updateDisplay() {
-    }
-
     @Override
     public void addObserver(Observer observer) {
          observers.add(observer);

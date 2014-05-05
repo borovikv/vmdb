@@ -36,7 +36,7 @@ public class BranchPanel extends JPanel implements NavigationPaneList, Observabl
     public void notifyObservers(ObservableEvent event) {
     }
 
-    public void updateRoot() {
+    public void updateDisplay() {
         branchTree.updateRoot();
     }
 
