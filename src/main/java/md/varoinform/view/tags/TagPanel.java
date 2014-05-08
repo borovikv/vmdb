@@ -1,12 +1,11 @@
 package md.varoinform.view.tags;
 
 import md.varoinform.Settings;
-import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.*;
 import md.varoinform.util.Observable;
 import md.varoinform.util.Observer;
-import md.varoinform.view.NavigationPaneList;
+import md.varoinform.view.demonstrator.EnterpriseTransferableHandler;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -26,14 +25,12 @@ import java.util.List;
  * Date: 11/29/13
  * Time: 11:34 AM
  */
-public class TagPanel extends JPanel implements Observer, NavigationPaneList, Observable{
+public class TagPanel extends JPanel implements Observer, Observable{
 
     private final AutoCompleteTextField textField;
-    private final DAOTag daoTag;
-    private final JList<Tag> tagList = new JList<>();
-    private String currentTagTitle;
+    private final TagList tagList = new TagList();
     private List<Observer> observers = new ArrayList<>();
-    private boolean programatically = false;
+
 
     public TagPanel() {
         setLayout(new BorderLayout());
@@ -42,11 +39,6 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
         textField.getDocument().addDocumentListener(new MyDocumentListener());
         add(textField, BorderLayout.NORTH);
 
-        daoTag = new DAOTag();
-        List<Tag> tags = daoTag.getAll();
-        FilteringModel<Tag> model = new FilteringModel<>(tags);
-        tagList.setModel(model);
-        tagList.setCellRenderer(new TagListCellRenderer());
         tagList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -55,26 +47,19 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
                 Tag tag = getSelectedTag();
                 if (tag == null) return;
 
-                setCurrentTagTitle(tag.getTitle());
-
-                if (!programatically) notifyObservers(new ObservableEvent(ObservableEvent.TAG_SELECTED));
+                tagList.setCurrentTagTitle(tag.getTitle());
+                notifyObservers(new ObservableEvent(ObservableEvent.TAG_SELECTED));
             }
         });
 
         tagList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JList list = (JList) e.getSource();
-                int index = list.locationToIndex(e.getPoint());
-                if (index >= 0){
-                    list.clearSelection();
-                    list.setSelectedIndex(index);
-                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                 showPopupMenu(e);
+                showPopupMenu(e);
             }
 
 
@@ -88,13 +73,18 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getExtendedKeyCode() == KeyEvent.VK_DELETE) {
-                    deleteTag(getSelectedTag());
+                    Tag tag = getSelectedTag();
+                    deleteTag(tag);
                 }
             }
         });
 
+        tagList.setTransferHandler(new EnterpriseTransferableHandler());
+        tagList.setDropMode(DropMode.ON_OR_INSERT);
+
         add(new JScrollPane(tagList), BorderLayout.CENTER);
     }
+
 
     private void showPopupMenu(MouseEvent e) {
         if (!e.isPopupTrigger()) return;
@@ -102,9 +92,6 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
         Point point = e.getPoint();
         int index = tagList.locationToIndex(point);
         if (index < 0) return;
-
-        Rectangle cellBounds = tagList.getCellBounds(0, index);
-        if (cellBounds.getHeight() < point.getY()) return;
 
         tagList.setSelectedIndex(index);
         final Tag tag = tagList.getModel().getElementAt(index);
@@ -130,7 +117,7 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
         renameItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                renameTag(tag);
+                tagList.renameTag(tag);
             }
         });
 
@@ -142,78 +129,33 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
 
     }
 
-    private void renameTag(Tag tag) {
-        if (tag == null) return;
-        String message = ResourceBundleHelper.getString("rename_tag_message", "Insert new title");
-        String result = getNewTitle(tag, message);
-        if (result == null || result.isEmpty() || result.equals(tag.getTitle())) return;
-        tag.setTitle(result);
-        ((FilteringModel<Tag>)tagList.getModel()).updateModel();
-        daoTag.save(tag);
-
-    }
-
-    private String getNewTitle(Tag tag, String message) {
-        return (String) JOptionPane.showInputDialog(null, message, "", JOptionPane.QUESTION_MESSAGE, null, null, tag.getTitle());
-    }
-
-    private void deleteTag(Tag tag) {
-        if (tag == null) return;
-
-        String message = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag.getTitle() + "?";
-        if (JOptionPane.showConfirmDialog(null, message) == JOptionPane.OK_OPTION) {
-            ((FilteringModel<Tag>)tagList.getModel()).removeElement(tag);
-            notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
-            daoTag.delete(tag);
-        }
-    }
-
-    public String getCurrentTagTitle(){
-        return currentTagTitle;
-    }
-
-    private void setCurrentTagTitle(String currentTagTitle) {
-        this.currentTagTitle = currentTagTitle;
-    }
 
     public Tag getSelectedTag() {
         return tagList.getSelectedValue();
     }
 
-    @Override
-    public void updateSelection(){
-        select(getSelectedTag());
+
+    private void deleteTag(Tag tag) {
+        tagList.deleteTag(tag);
+        notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
     }
 
-    public void select(Tag tag){
-        programatically = true;
-        int index = ((FilteringModel<Tag>)tagList.getModel()).getIndexAtElement(tag);
-        if (index >= 0) {
-            clearSelection();
-            tagList.setSelectedIndex(index);
+
+    @Override
+    public void update(ObservableEvent event) {
+        if (event.getType() == ObservableEvent.TAGS_CHANGED || event.getType() == ObservableEvent.DELETE){
+            tagList.updateModel();
+            boolean tagNotExist = event.getValue() != null && (Boolean) event.getValue();
+            if (tagNotExist){
+                clearSelection();
+            }
         }
-        programatically = false;
     }
 
     public void clearSelection(){
         tagList.clearSelection();
     }
 
-    @Override
-    public void update(ObservableEvent event) {
-        if (event.getType() == ObservableEvent.TAGS_CHANGED || event.getType() == ObservableEvent.DELETE){
-            updateModel();
-            if (event.getValue() != null && (Boolean)event.getValue()){
-                clearSelection();
-            }
-        }
-    }
-
-    public void updateModel(){
-        FilteringModel<Tag> model = (FilteringModel<Tag>) tagList.getModel();
-        model.clear();
-        model.addAll(daoTag.getAll());
-    }
 
     @Override
     public void addObserver(Observer observer) {
@@ -235,6 +177,10 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
         textField.setText("");
     }
 
+    public String getCurrentTagTitle() {
+        return tagList.getCurrentTagTitle();
+    }
+
     private class MyDocumentListener implements DocumentListener {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -242,7 +188,8 @@ public class TagPanel extends JPanel implements Observer, NavigationPaneList, Ob
         }
 
         private void filter(DocumentEvent e) {
-            currentTagTitle = getLastSearch(e.getDocument());
+            String currentTagTitle = getLastSearch(e.getDocument());
+            tagList.setCurrentTagTitle(currentTagTitle);
             ((FilteringModel)tagList.getModel()).filter(currentTagTitle);
         }
 

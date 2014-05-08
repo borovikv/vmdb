@@ -56,20 +56,16 @@ public class MainFrame extends JFrame implements Observer {
     private final PrintDialog printDialog;
     private final ExportDialog exportDialog;
     private final TagListener tagListener = new TagListener();
-    private final TagDialog tagDialog;
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
         settingsDialog = new SettingsDialog(this);
         printDialog = new PrintDialog(this, demonstrator);
         exportDialog = new ExportDialog(this, demonstrator);
-        tagDialog = new TagDialog(this, demonstrator);
 
-        tagDialog.addObserver(tagPanel);
         branchPanel.addObserver(this);
         history.addObserver(this);
         demonstrator.addObserver(tagListener);
-        demonstrator.addObserver(tagDialog);
         settingsDialog.addObserver(demonstrator);
         tagPanel.addObserver(this);
         tagPanel.addObserver(tagListener);
@@ -125,13 +121,22 @@ public class MainFrame extends JFrame implements Observer {
         searchField.addActionListener(searchAction);
         toolbar.add(searchField);
         toolbar.add(fields);
-        //toolbar.addSeparator();
+        toolbar.addSeparator();
         searchButton.addActionListener(searchAction);
         toolbar.add(searchButton);
 
         toolbar.addSeparator();
+        toolbar.addSeparator();
         toolbar.add(tagButton);
-        tagButton.addActionListener(new ShowDialogAction(tagDialog));
+        tagButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String tagTitle = TagDialog.getTag();
+                DAOTag daoTag = new DAOTag();
+                daoTag.createTag(tagTitle, demonstrator.getSelected());
+                tagPanel.update(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+            }
+        });
 
         toolbar.addSeparator();
         toolbar.add(exportButton);
@@ -167,10 +172,6 @@ public class MainFrame extends JFrame implements Observer {
             @Override
             public void stateChanged(ChangeEvent e) {
                 tagListener.enableDeleting(false);
-
-                JTabbedPane source = (JTabbedPane) e.getSource();
-                NavigationPaneList list = (NavigationPaneList) source.getSelectedComponent();
-                list.updateSelection();
             }
         });
 
@@ -319,10 +320,17 @@ public class MainFrame extends JFrame implements Observer {
         }
 
         private void onTagDeleted() {
-            if (!enableDeleting) return;
+            if (!enableDeleting || !isTagSelected()) return;
             boolean tagExist = removeEnterprisesFromTag();
             tagPanel.update(new ObservableEvent(ObservableEvent.TAGS_CHANGED, !tagExist));
             updateDemonstrator();
+        }
+
+        private boolean isTagSelected() {
+            Component component = navigationPane.getSelectedComponent();
+            if (!(component instanceof TagPanel)) return false;
+            Tag tag = ((TagPanel) component).getSelectedTag();
+            return tag != null;
         }
 
         private boolean removeEnterprisesFromTag() {

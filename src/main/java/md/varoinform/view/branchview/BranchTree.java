@@ -3,7 +3,6 @@ package md.varoinform.view.branchview;
 import md.varoinform.model.dao.BranchDao;
 import md.varoinform.model.entities.TreeNode;
 import md.varoinform.util.*;
-import md.varoinform.view.NavigationPaneList;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
  * Date: 11/12/13
  * Time: 11:22 AM
  */
-public class BranchTree extends JTree implements Observable, NavigationPaneList {
+public class BranchTree extends JTree implements Observable {
     private BranchTreeNode root;
     private boolean needToProcess = true;
     private List<Observer> observers = new ArrayList<>();
@@ -119,13 +118,6 @@ public class BranchTree extends JTree implements Observable, NavigationPaneList 
         return null;
     }
 
-
-    @Override
-    public void updateSelection() {
-        TreePath path = getSelectionPath();
-        clearSelection();
-        select(path, true);
-    }
 
     public void select(Object object, boolean programatically){
         if (object instanceof TreePath){

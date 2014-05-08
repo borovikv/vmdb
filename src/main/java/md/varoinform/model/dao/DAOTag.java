@@ -27,6 +27,7 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
     }
 
     public void createTag(String title, List<Enterprise> enterprises) {
+        if (title == null || title.isEmpty()) return;
 
         Tag tag = read(title);
         if (tag == null){

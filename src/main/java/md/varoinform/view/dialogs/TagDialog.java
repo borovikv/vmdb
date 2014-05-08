@@ -1,19 +1,11 @@
 package md.varoinform.view.dialogs;
 
-import md.varoinform.model.dao.DAOTag;
-import md.varoinform.model.entities.Enterprise;
-import md.varoinform.util.Observable;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.tags.TagPanel;
-import md.varoinform.view.demonstrator.Demonstrator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,25 +13,21 @@ import java.util.List;
  * Date: 11/29/13
  * Time: 9:56 AM
  */
-public class TagDialog extends JDialog implements Observable, Observer {
+public class TagDialog extends JDialog {
     private final TagPanel tagPanel = new TagPanel();
-    private final Demonstrator demonstrator;
-    private List<Observer> observers = new ArrayList<>();
+    private static String tagTitle = "";
 
 
-    public TagDialog(Component parent, Demonstrator demonstrator) {
-        this.demonstrator = demonstrator;
-        setLocationRelativeTo(parent);
+    private TagDialog() {
+        setLocationRelativeTo(null);
         setModal(true);
         setTitle(ResourceBundleHelper.getString("tag_add", ""));
         setMinimumSize(new Dimension(400, 400));
 
-        addObserver(tagPanel);
-
         AbstractAction addTagAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTag();
+                tagTitle = tagPanel.getCurrentTagTitle();
                 setVisible(false);
                 tagPanel.clearFilter();
             }
@@ -58,29 +46,10 @@ public class TagDialog extends JDialog implements Observable, Observer {
         pack();
     }
 
-    private void addTag() {
-        List<Enterprise> enterprises = new ArrayList<>(demonstrator.getSelected());
-        if (enterprises.isEmpty()) return;
 
-        DAOTag daoTag = new DAOTag();
-        daoTag.createTag(tagPanel.getCurrentTagTitle(), enterprises);
-        notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
-    }
-
-    @Override
-    public void addObserver(Observer observer) {
-         observers.add(observer);
-    }
-
-    @Override
-    public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
-        }
-    }
-
-    @Override
-    public void update(ObservableEvent event) {
-        tagPanel.update(event);
+    public static String getTag() {
+        TagDialog tagDialog = new TagDialog();
+        tagDialog.setVisible(true);
+        return tagTitle;
     }
 }

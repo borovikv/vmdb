@@ -15,16 +15,11 @@ import java.util.List;
  * Date: 12/3/13
  * Time: 2:58 PM
  */
-public class BranchPanel extends JPanel implements NavigationPaneList, Observable {
+public class BranchPanel extends JPanel implements Observable {
     private final BranchTree branchTree = new BranchTree();
     public BranchPanel() {
         setLayout(new BorderLayout());
         add(new JScrollPane(branchTree));
-    }
-
-    @Override
-    public void updateSelection() {
-        branchTree.updateSelection();
     }
 
     @Override

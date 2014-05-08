@@ -50,8 +50,10 @@ public class TableView extends JTable implements Demonstrator {
         });
 
         setSelectionBackground(Settings.getDefaultColor("highlight"));
-
         showResults(new ArrayList<Enterprise>());
+
+        setDragEnabled(true);
+        setTransferHandler(new EnterpriseTransferableHandler());
     }
 
     private JPopupMenu createPopup(final int column) {
