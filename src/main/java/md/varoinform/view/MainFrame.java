@@ -66,9 +66,8 @@ public class MainFrame extends JFrame implements Observer {
         branchPanel.addObserver(this);
         history.addObserver(this);
         demonstrator.addObserver(tagListener);
-        settingsDialog.addObserver(demonstrator);
-        tagPanel.addObserver(this);
         tagPanel.addObserver(tagListener);
+        settingsDialog.addObserver(demonstrator);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -261,15 +260,6 @@ public class MainFrame extends JFrame implements Observer {
             case ObservableEvent.HOME:
                 performHistoryMove(event.getValue());
                 break;
-            case ObservableEvent.TAG_SELECTED:
-            case ObservableEvent.TAGS_CHANGED:
-                Tag tag = tagPanel.getSelectedTag();
-                if (tag == null) {
-                    showResults(null);
-                } else {
-                    showResults(new ArrayList<>(tag.getEnterprises()));
-                }
-                break;
             case ObservableEvent.LANGUAGE_CHANGED:
                 updateDisplay();
                 break;
@@ -312,9 +302,18 @@ public class MainFrame extends JFrame implements Observer {
             switch (event.getType()){
                 case ObservableEvent.TAG_SELECTED:
                     enableDeleting = true;
+                    Tag tag = tagPanel.getSelectedTag();
+                    if (tag == null) {
+                        showResults(null);
+                    } else {
+                        showResults(new ArrayList<>(tag.getEnterprises()));
+                    }
                     break;
                 case ObservableEvent.DELETE:
                     onTagDeleted();
+                    break;
+                case ObservableEvent.TAGS_CHANGED:
+                    tagPanel.update(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
                     break;
             }
         }
