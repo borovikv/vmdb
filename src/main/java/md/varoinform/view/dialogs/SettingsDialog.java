@@ -22,9 +22,9 @@ public class SettingsDialog extends JDialog implements Observable {
     private final FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
     private List<Observer> observers = new ArrayList<>();
 
-    public SettingsDialog(Component parent) {
+    public SettingsDialog() {
         setSize(400, 450);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
         setTitle(ResourceBundleHelper.getString("Settings", "Settings"));
         setLayout(new BorderLayout());
 

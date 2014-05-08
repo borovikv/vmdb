@@ -53,15 +53,11 @@ public class MainFrame extends JFrame implements Observer {
     private final FieldComboBox fields = new FieldComboBox(Searchers.getSearchers());
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final SettingsDialog settingsDialog;
-    private final PrintDialog printDialog;
-    private final ExportDialog exportDialog;
     private final TagListener tagListener = new TagListener();
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
-        settingsDialog = new SettingsDialog(this);
-        printDialog = new PrintDialog(this, demonstrator);
-        exportDialog = new ExportDialog(this, demonstrator);
+        settingsDialog = new SettingsDialog();
 
         branchPanel.addObserver(this);
         history.addObserver(this);
@@ -139,7 +135,12 @@ public class MainFrame extends JFrame implements Observer {
 
         toolbar.addSeparator();
         toolbar.add(exportButton);
-        exportButton.addActionListener(new ShowDialogAction(exportDialog));
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ExportDialog.export(demonstrator);
+            }
+        });
 
         toolbar.addSeparator();
         toolbar.add(mailButton);
@@ -153,11 +154,21 @@ public class MainFrame extends JFrame implements Observer {
         });
 
         toolbar.addSeparator();
-        printButton.addActionListener(new ShowDialogAction(printDialog));
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PrintDialog.print(demonstrator);
+            }
+        });
         toolbar.add(printButton);
 
         toolbar.addSeparator();
-        settingsButton.addActionListener(new ShowDialogAction(settingsDialog));
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settingsDialog.setVisible(true);
+            }
+        });
         toolbar.add(settingsButton);
         return toolbar;
     }
@@ -266,19 +277,6 @@ public class MainFrame extends JFrame implements Observer {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private class ShowDialogAction extends AbstractAction {
-        private JDialog dialog;
-
-        private ShowDialogAction(JDialog dialog) {
-            this.dialog = dialog;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dialog.setVisible(true);
-        }
-    }
 
 
     private class SearchAction implements ActionListener {

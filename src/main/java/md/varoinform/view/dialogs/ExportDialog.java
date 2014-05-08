@@ -28,15 +28,16 @@ public class ExportDialog extends JDialog {
 
     private Demonstrator demonstrator;
     private FieldChoosePanel fieldChooser = new FieldChoosePanel();
-    private RowsChoosePanel rowsChoosePanel = new RowsChoosePanel("export rows");
+    private RowsChoosePanel rowsChoosePanel;
 
-    public ExportDialog(Component parent, Demonstrator demonstrator) {
+    public ExportDialog(Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
 
         setSize(500, 500);
         setModal(true);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
+        rowsChoosePanel = new RowsChoosePanel("export rows", demonstrator.getSelected().size(), demonstrator.getALL().size());
         add(rowsChoosePanel, BorderLayout.WEST);
 
         JScrollPane scrollPane = new JScrollPane(fieldChooser);
@@ -103,5 +104,10 @@ public class ExportDialog extends JDialog {
 
     public void updateDisplay() {
         fieldChooser.updateDisplay();
+    }
+
+    public static void export(Demonstrator demonstrator){
+        ExportDialog exportDialog = new ExportDialog(demonstrator);
+        exportDialog.setVisible(true);
     }
 }

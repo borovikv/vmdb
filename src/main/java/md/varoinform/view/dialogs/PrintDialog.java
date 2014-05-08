@@ -29,7 +29,7 @@ import java.util.List;
 public class PrintDialog extends JDialog {
     private static final int DATA_MODE = 1;
     private static final int ADDRESS_MODE = 2;
-    private final RowsChoosePanel rowsChooser = new RowsChoosePanel("print");
+    private final RowsChoosePanel rowsChooser;
 
 
     private int mode = DATA_MODE;
@@ -41,13 +41,13 @@ public class PrintDialog extends JDialog {
     private final JComboBox<Object> languageCombo;
 
 
-    public PrintDialog(Component parent, Demonstrator demonstrator) {
+    public PrintDialog( Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
 
         setSize(450, 500);
         setModal(true);
         updateTitle();
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 1));
@@ -61,6 +61,7 @@ public class PrintDialog extends JDialog {
         panel.add(typePanel);
 
 
+        rowsChooser = new RowsChoosePanel("print", demonstrator.getSelected().size(), demonstrator.getALL().size());
         panel.add(rowsChooser);
 
 
@@ -219,5 +220,7 @@ public class PrintDialog extends JDialog {
         }
     }
 
-
+    public static void print(Demonstrator demonstrator) {
+        new PrintDialog(demonstrator).setVisible(true);
+    }
 }
