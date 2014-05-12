@@ -1,7 +1,5 @@
 package md.varoinform.model.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 /**

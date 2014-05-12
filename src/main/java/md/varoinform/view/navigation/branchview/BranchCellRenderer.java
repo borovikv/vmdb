@@ -25,9 +25,9 @@ public class BranchCellRenderer extends DefaultTreeCellRenderer {
 
         rendererHelper.setBackground(sel, tree.getBackground());
 
-        if (value instanceof BranchTreeNode){
-            BranchTreeNode branchTreeNode = (BranchTreeNode) value;
-            String title = branchTreeNode.getTitle();
+        if (value instanceof BranchNode){
+            BranchNode branchNode = (BranchNode) value;
+            String title = branchNode.getTitle();
             return RendererHelper.getPanel(title);
         }
 

@@ -3,6 +3,8 @@ package md.varoinform.view.navigation.branchview;
 import md.varoinform.util.Observable;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
+import md.varoinform.view.navigation.FilteringDocumentListener;
+import md.varoinform.view.navigation.tags.AutoCompleteTextField;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -15,9 +17,12 @@ import java.util.List;
  * Time: 2:58 PM
  */
 public class BranchPanel extends JPanel implements Observable {
+    private final JTextField textField = new AutoCompleteTextField();
     private final BranchTree branchTree = new BranchTree();
     public BranchPanel() {
+        textField.getDocument().addDocumentListener(new FilteringDocumentListener(branchTree));
         setLayout(new BorderLayout());
+        add(textField, BorderLayout.NORTH);
         add(new JScrollPane(branchTree));
     }
 

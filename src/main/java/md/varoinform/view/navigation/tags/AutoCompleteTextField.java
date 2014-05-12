@@ -15,6 +15,7 @@ public class AutoCompleteTextField extends JTextField {
 
     public AutoCompleteTextField() {
         Font font = new Font("Serif", Font.PLAIN, 14);
+        setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         setFont(font);
         //fontHeight = getFontMetrics(font).getHeight();
     }

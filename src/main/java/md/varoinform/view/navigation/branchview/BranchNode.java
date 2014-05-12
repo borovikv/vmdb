@@ -16,11 +16,11 @@ import java.util.List;
  * Date: 11/5/13
  * Time: 5:08 PM
  */
-public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparable {
+public class BranchNode extends DefaultMutableTreeNode implements Comparable {
     private TreeNode treeNode;
     private List<Long> allChildrenId;
 
-    public BranchTreeNode(Object userObject) {
+    public BranchNode(Object userObject) {
         super(userObject);
         this.treeNode = (TreeNode)userObject;
     }
@@ -34,8 +34,8 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
     @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(final Object o) {
-        if (o instanceof BranchTreeNode)
-            return getTitle().compareToIgnoreCase(((BranchTreeNode)o).getTitle());
+        if (o instanceof BranchNode)
+            return getTitle().compareToIgnoreCase(((BranchNode) o).getTitle());
         return -2;
     }
 
@@ -59,6 +59,8 @@ public class BranchTreeNode  extends DefaultMutableTreeNode implements Comparabl
     }
 
     private void fillAllChildrenId(TreeNode treeNode, List<Long> result) {
+        if (treeNode == null) return;
+
         result.add(treeNode.getId());
 
         for (TreeNode child : treeNode.getChildren()) {
