@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.search;
 
 import md.varoinform.model.search.Searcher;
 import md.varoinform.util.ResourceBundleHelper;
@@ -11,10 +11,10 @@ import javax.swing.*;
  * Date: 4/23/14
  * Time: 3:09 PM
  */
-class ItemSearcher extends DefaultListCellRenderer implements Comparable<ItemSearcher>  {
+class FieldSearcherItem extends DefaultListCellRenderer implements Comparable<FieldSearcherItem>  {
     private Searcher searcher;
 
-    public ItemSearcher(Searcher searcher) {
+    public FieldSearcherItem(Searcher searcher) {
         if (searcher == null) throw new NullPointerException();
         this.searcher = searcher;
 
@@ -31,7 +31,7 @@ class ItemSearcher extends DefaultListCellRenderer implements Comparable<ItemSea
     }
 
     @Override
-    public int compareTo(ItemSearcher o) {
+    public int compareTo(FieldSearcherItem o) {
         if (o == null) throw new NullPointerException();
         if (searcher.getName().equalsIgnoreCase("default")) return -1;
         if (o.getSearcher().getName().equalsIgnoreCase("default")) return 1;

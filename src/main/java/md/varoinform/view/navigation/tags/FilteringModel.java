@@ -1,4 +1,4 @@
-package md.varoinform.view.tags;
+package md.varoinform.view.navigation.tags;
 
 import javax.swing.*;
 import java.util.*;
@@ -88,6 +88,7 @@ public class FilteringModel<T> extends AbstractListModel<T>{
         updateModel();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public int getIndexAtElement(T t) {
         return filteredList.indexOf(t);
     }

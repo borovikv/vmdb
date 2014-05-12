@@ -1,4 +1,4 @@
-package md.varoinform.view.tags;
+package md.varoinform.view.navigation.tags;
 
 import md.varoinform.Settings;
 import md.varoinform.model.entities.Tag;
@@ -6,14 +6,12 @@ import md.varoinform.util.*;
 import md.varoinform.util.Observable;
 import md.varoinform.util.Observer;
 import md.varoinform.view.demonstrator.EnterpriseTransferableHandler;
+import md.varoinform.view.navigation.FilteringDocumentListener;
+import md.varoinform.view.navigation.FilteringNavigator;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -25,7 +23,7 @@ import java.util.List;
  * Date: 11/29/13
  * Time: 11:34 AM
  */
-public class TagPanel extends JPanel implements Observer, Observable{
+public class TagPanel extends JPanel implements Observer, Observable, FilteringNavigator{
 
     private final AutoCompleteTextField textField;
     private final TagList tagList = new TagList();
@@ -36,7 +34,7 @@ public class TagPanel extends JPanel implements Observer, Observable{
         setLayout(new BorderLayout());
         textField = new AutoCompleteTextField();
         textField.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        textField.getDocument().addDocumentListener(new MyDocumentListener());
+        textField.getDocument().addDocumentListener(new FilteringDocumentListener(this));
         add(textField, BorderLayout.NORTH);
 
         tagList.addListSelectionListener(new ListSelectionListener() {
@@ -181,34 +179,9 @@ public class TagPanel extends JPanel implements Observer, Observable{
         return tagList.getCurrentTagTitle();
     }
 
-    private class MyDocumentListener implements DocumentListener {
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            filter(e);
-        }
-
-        private void filter(DocumentEvent e) {
-            String currentTagTitle = getLastSearch(e.getDocument());
-            tagList.setCurrentTagTitle(currentTagTitle);
-            ((FilteringModel)tagList.getModel()).filter(currentTagTitle);
-        }
-
-        private String getLastSearch(Document document) {
-            try {
-                return document.getText(0, document.getLength());
-            } catch (BadLocationException e) {
-                e.printStackTrace();
-            }
-            return "";
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            filter(e);
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-        }
+    @Override
+    public void filter(String text) {
+        tagList.setCurrentTagTitle(text);
+        ((FilteringModel)tagList.getModel()).filter(text);
     }
 }

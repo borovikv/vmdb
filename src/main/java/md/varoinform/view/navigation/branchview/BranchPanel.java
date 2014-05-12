@@ -1,9 +1,8 @@
-package md.varoinform.view;
+package md.varoinform.view.navigation.branchview;
 
 import md.varoinform.util.Observable;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
-import md.varoinform.view.branchview.BranchTree;
 
 import javax.swing.*;
 import java.awt.BorderLayout;

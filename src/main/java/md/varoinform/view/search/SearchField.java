@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.search;
 
 import md.varoinform.util.ResourceBundleHelper;
 

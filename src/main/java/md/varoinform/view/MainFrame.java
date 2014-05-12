@@ -12,13 +12,16 @@ import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
-import md.varoinform.view.branchview.BranchTree;
+import md.varoinform.view.navigation.branchview.BranchPanel;
+import md.varoinform.view.navigation.branchview.BranchTree;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.ExportDialog;
 import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 import md.varoinform.view.dialogs.TagDialog;
-import md.varoinform.view.tags.TagPanel;
+import md.varoinform.view.navigation.tags.TagPanel;
+import md.varoinform.view.search.FieldSearcherCombo;
+import md.varoinform.view.search.SearchField;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -50,7 +53,7 @@ public class MainFrame extends JFrame implements Observer {
     private final ToolbarButton printButton = new ToolbarButton("/external-resources/icons/print.png", "print", "print");
     private final ToolbarButton searchButton = new ToolbarButton("/external-resources/icons/search.png", "search", "search");
     private final SearchField searchField = new SearchField();
-    private final FieldComboBox fields = new FieldComboBox(Searchers.getSearchers());
+    private final FieldSearcherCombo fields = new FieldSearcherCombo(Searchers.getSearchers());
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final SettingsDialog settingsDialog;
     private final TagListener tagListener = new TagListener();

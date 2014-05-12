@@ -1,4 +1,4 @@
-package md.varoinform.view.tags;
+package md.varoinform.view.navigation.tags;
 
 import md.varoinform.model.entities.Tag;
 import md.varoinform.view.RendererHelper;

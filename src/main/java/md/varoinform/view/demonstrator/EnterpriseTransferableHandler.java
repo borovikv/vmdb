@@ -1,7 +1,7 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.view.tags.TagList;
+import md.varoinform.view.navigation.tags.TagList;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,7 +1,7 @@
 package md.varoinform.view.dialogs;
 
 import md.varoinform.util.ResourceBundleHelper;
-import md.varoinform.view.tags.TagPanel;
+import md.varoinform.view.navigation.tags.TagPanel;
 
 import javax.swing.*;
 import java.awt.*;
