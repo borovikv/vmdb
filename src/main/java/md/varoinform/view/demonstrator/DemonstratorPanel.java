@@ -3,10 +3,9 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.controller.comparators.ColumnPriorityComparator;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.util.*;
 import md.varoinform.util.Observable;
-import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
-import md.varoinform.util.PreferencesHelper;
 import md.varoinform.view.dialogs.CheckBoxSelectionPerformer;
 import md.varoinform.view.dialogs.FieldChoosePanel;
 import md.varoinform.view.dialogs.TagDialog;
@@ -29,24 +28,25 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
-    private final ActionListener addTagListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String tagTitle = TagDialog.getTag();
-            DAOTag daoTag = new DAOTag();
-            daoTag.createTag(tagTitle, demonstrator.getSelected());
-            notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
-        }
-    };
     private Set<Observer> observers = new HashSet<>();
     private boolean painted = false;
     private final JSplitPane splitPane;
-
-
+    private final JMenuItem addTagItem = new JMenuItem(ResourceBundleHelper.getString("tag", "add tag"));
 
 
     public DemonstratorPanel() {
         setLayout(new BorderLayout());
+
+        addTagItem.setIcon(ImageHelper.getScaledImageIcon("/external-resources/icons/star.png", 16, 16));
+        addTagItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String tagTitle = TagDialog.getTag();
+                DAOTag daoTag = new DAOTag();
+                daoTag.createTag(tagTitle, demonstrator.getSelected());
+                notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+            }
+        });
 
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
         demonstrator.addListSelectionListener(new ListSelectionListener() {
@@ -107,9 +107,6 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private JPopupMenu createPopup(final int column, Object value) {
         JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem addTagItem = new JMenuItem("add tag");
-
-        addTagItem.addActionListener(addTagListener);
         popupMenu.add(addTagItem);
         popupMenu.addSeparator();
 
@@ -117,7 +114,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         List<ActionListener> listeners = FilterListener.getListeners(columnClass, demonstrator, column, value);
         for (ActionListener listener : listeners) {
             String name = listener.toString();
-            JMenuItem menuItem = new JMenuItem(name);
+            JMenuItem menuItem = new JMenuItem(ResourceBundleHelper.getString(name, name));
             menuItem.addActionListener(listener);
             popupMenu.add(menuItem);
         }
