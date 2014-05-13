@@ -39,4 +39,14 @@ public class StringUtils {
             return String.valueOf(value);
         }
     }
+
+    public static Object objectOrString(Object value){
+        if (value == null) return null;
+        if (value instanceof Map) {
+            return valueOf(((Map<?, ?>) value).values());
+        } else if(value instanceof Collection<?>) {
+            return valueOf((Collection<?>)value);
+        }
+        return value;
+    }
 }

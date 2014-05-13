@@ -54,8 +54,8 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "CreationDate")
-    public String getCreationDate(){
-        return getStringValueOrEmpty(enterprise.getCreation());
+    public Integer getCreationDate(){
+        return enterprise.getCreation();
     }
 
     @Property(name = "ForeingCapital")
@@ -65,8 +65,8 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "Workplaces")
-    public String getWorkplaces(){
-        return getStringValueOrEmpty(enterprise.getWorkplaces());
+    public Integer getWorkplaces(){
+        return enterprise.getWorkplaces();
     }
 
     public String getLogo(){
@@ -79,8 +79,8 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "CheckDate")
-    public String getCheckDate(){
-        return getStringValueOrEmpty(enterprise.getCheckDate());
+    public Date getCheckDate(){
+        return enterprise.getCheckDate();
     }
 
     public String getLastChange(){
@@ -202,6 +202,15 @@ public class EnterpriseProxy extends EntityProxy {
         }
 
         return null;
+    }
+
+    public static Class getType(String name){
+        String key = name.toLowerCase();
+        if (Arrays.asList("workplaces", "creationdate", "checkdate").contains(key)){
+            Method method = methods.get(key);
+            return method.getReturnType();
+        }
+        return String.class;
     }
 
     public static List<String> getFields(){

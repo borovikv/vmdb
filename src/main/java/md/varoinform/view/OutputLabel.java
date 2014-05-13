@@ -3,6 +3,7 @@ package md.varoinform.view;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,21 +11,25 @@ import javax.swing.*;
  * Date: 11/12/13
  * Time: 12:27 PM
  */
-public class OutputLabel extends JLabel {
+public enum OutputLabel {
+    instance;
+
+    private JLabel label = new JLabel();
     private String message;
     private int resultCount;
-
-    public void setMessageText(String message) {
-        this.message = message;
-        setResultCount(resultCount);
+    public Component getLabel(){
+        return label;
     }
+
 
     public void setResultCount(int resultCount) {
         this.resultCount = resultCount;
-        setText(message + ": " + resultCount);
+        label.setText(message + ": " + resultCount);
     }
 
     public void updateDisplay(){
-        setMessageText(ResourceBundleHelper.getString("result", "result"));
+        this.message = ResourceBundleHelper.getString("result", "result");
+        setResultCount(resultCount);
     }
+
 }

@@ -28,6 +28,7 @@ public class TableView extends JTable implements Demonstrator {
         setRowHeight(24);
         setAutoCreateRowSorter(true);
 
+        setDefaultRenderer(Date.class, new DataCellRenderer());
         setColumnModel(new EnterpriseColumnModel());
         setModel(new EnterpriseTableModel());
         setFillsViewportHeight(true);
@@ -36,7 +37,9 @@ public class TableView extends JTable implements Demonstrator {
         getColumnModel().addColumnModelListener(new ColumnModelListener());
 
         setSelectionBackground(Settings.getDefaultColor("highlight"));
-        showResults(new ArrayList<Enterprise>());
+
+        setColumnSelectionAllowed(false);
+        setRowSelectionAllowed(true);
 
         setDragEnabled(true);
         setTransferHandler(new EnterpriseTransferableHandler());

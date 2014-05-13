@@ -45,7 +45,6 @@ public class MainFrame extends JFrame implements Observer {
     private final TagPanel tagPanel = new TagPanel();
     private final History history = new History();
     private final BranchPanel branchPanel = new BranchPanel();
-    private final OutputLabel resultLabel = new OutputLabel();
     private final ToolbarButton exportButton = new ToolbarButton("/external-resources/icons/export.png", "export", "export");
     private final ToolbarButton mailButton = new ToolbarButton("/external-resources/icons/mail.png", "mail", "mail");
     private final ToolbarButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png", "settings", "settings");
@@ -98,7 +97,7 @@ public class MainFrame extends JFrame implements Observer {
 
         List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
         demonstrator.showResults(enterprises);
-        resultLabel.setResultCount(enterprises.size());
+        OutputLabel.instance.setResultCount(enterprises.size());
     }
 
     private JToolBar createToolBar() {
@@ -194,7 +193,7 @@ public class MainFrame extends JFrame implements Observer {
     private JPanel createStatusBar() {
         JPanel statusBar = new JPanel();
         statusBar.setLayout(new BorderLayout());
-        statusBar.add(resultLabel, BorderLayout.WEST);
+        statusBar.add(OutputLabel.instance.getLabel(), BorderLayout.WEST);
 
         LanguageComboBox languageCombo = new LanguageComboBox();
         languageCombo.addObserver(this);
@@ -217,6 +216,7 @@ public class MainFrame extends JFrame implements Observer {
         navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
         navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
 
+        OutputLabel.instance.updateDisplay();
     }
 
 
@@ -251,7 +251,7 @@ public class MainFrame extends JFrame implements Observer {
 
     private void showResults(List<Enterprise> enterprises) {
         demonstrator.showResults(enterprises);
-        resultLabel.setResultCount(enterprises == null ? 0: enterprises.size());
+        OutputLabel.instance.setResultCount(enterprises == null ? 0: enterprises.size());
     }
 
     @Override

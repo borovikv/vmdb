@@ -56,7 +56,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
         String name = columns.get(columnIndex);
         EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
         Object value = proxy.get(name);
-        return StringUtils.valueOf(value);
+        return StringUtils.objectOrString(value);
     }
 
     @Override
@@ -75,5 +75,12 @@ public class EnterpriseTableModel extends AbstractTableModel {
     public Enterprise getEnterpriseAt(int rowIndex) {
         if ( 0 > rowIndex || rowIndex > enterprises.size() ) return null;
         return enterprises.get(rowIndex);
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        List<String> columns = getColumns();
+        String name = columns.get(columnIndex);
+        return EnterpriseProxy.getType(name);
     }
 }

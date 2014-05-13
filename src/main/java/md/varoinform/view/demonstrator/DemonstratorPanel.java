@@ -1,18 +1,19 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.controller.comparators.ColumnPriorityComparator;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.Observable;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.view.dialogs.CheckBoxSelectionPerformer;
+import md.varoinform.view.dialogs.FieldChoosePanel;
 import md.varoinform.view.dialogs.TagDialog;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -28,19 +29,26 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
+    private final ActionListener addTagListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String tagTitle = TagDialog.getTag();
+            DAOTag daoTag = new DAOTag();
+            daoTag.createTag(tagTitle, demonstrator.getSelected());
+            notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+        }
+    };
     private Set<Observer> observers = new HashSet<>();
     private boolean painted = false;
     private final JSplitPane splitPane;
-    private Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
-    private Map<Integer, String> filtersText = new HashMap<>();
-    private TableRowSorter<TableModel> sorter ;
+
+
 
 
     public DemonstratorPanel() {
         setLayout(new BorderLayout());
 
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
-        demonstrator.setRowSorter(sorter);
         demonstrator.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -63,74 +71,61 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         demonstrator.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
-                    int i = demonstrator.columnAtPoint(e.getPoint());
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
+                    int column = demonstrator.columnAtPoint(e.getPoint());
+                    int row = demonstrator.rowAtPoint(e.getPoint());
+                    Object value = demonstrator.getModel().getValueAt(row, column);
 
-                    JPopupMenu popup = createPopup(i);
+                    JPopupMenu popup = createPopup(column, value);
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
 
+
+        demonstrator.getTableHeader().setComponentPopupMenu(createHeaderPopup());
+
         add(splitPane);
     }
 
-
-    private JPopupMenu createPopup(final int column) {
+    private JPopupMenu createHeaderPopup() {
         JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem addTagItem = new JMenuItem("add tag");
-        addTagItem.addActionListener(new ActionListener() {
+        FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
+        fieldChoosePanel.addCheckBoxGroupStateExecutor(new CheckBoxSelectionPerformer() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                String tagTitle = TagDialog.getTag();
-                DAOTag daoTag = new DAOTag();
-                daoTag.createTag(tagTitle, demonstrator.getSelected());
-                notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+            public void perform(List<String> names) {
+                Collections.sort(names, new ColumnPriorityComparator());
+                PreferencesHelper preferencesHelper = new PreferencesHelper();
+                preferencesHelper.putUserFields(names);
+                demonstrator.fireViewStructureChanged();
             }
         });
+        popupMenu.add(fieldChoosePanel);
+        return popupMenu;
+    }
+
+
+    private JPopupMenu createPopup(final int column, Object value) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem addTagItem = new JMenuItem("add tag");
+
+        addTagItem.addActionListener(addTagListener);
         popupMenu.add(addTagItem);
         popupMenu.addSeparator();
 
-        JMenuItem filter = new JMenuItem("filter");
-        filter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String result = JOptionPane.showInputDialog("filter by", filtersText.get(column));
-                newFilter(result, ".*" +result  + ".*", column);
-            }
-        });
-        popupMenu.add(filter);
-
-        JMenuItem notContainFilter = new JMenuItem("not contain");
-        notContainFilter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String result = JOptionPane.showInputDialog("filter by", filtersText.get(column));
-
-                newFilter(result, "^((?!" + result + ").)*$", column);
-            }
-        });
-        popupMenu.add(notContainFilter);
-
+        Class<?> columnClass = demonstrator.getModel().getColumnClass(column);
+        List<ActionListener> listeners = FilterListener.getListeners(columnClass, demonstrator, column, value);
+        for (ActionListener listener : listeners) {
+            String name = listener.toString();
+            JMenuItem menuItem = new JMenuItem(name);
+            menuItem.addActionListener(listener);
+            popupMenu.add(menuItem);
+        }
 
         return popupMenu;
     }
 
-    private void newFilter(String text, String pattern, int column) {
 
-        RowFilter<TableModel, Object> rf;
-        //If current expression doesn't parse, don't update.
-        try {
-            filters.put(column, RowFilter.regexFilter(pattern , column));
-            filtersText.put(column, text);
-        } catch (java.util.regex.PatternSyntaxException e) {
-            return;
-        }
-        rf = RowFilter.andFilter(filters.values());
-        sorter = new TableRowSorter<>(demonstrator.getModel());
-        sorter.setRowFilter(rf);
-        demonstrator.setRowSorter(sorter);
-    }
 
     @Override
     public void showResults(List<Enterprise> enterprises){
