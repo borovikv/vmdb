@@ -7,8 +7,9 @@ import md.varoinform.util.*;
 import md.varoinform.util.Observable;
 import md.varoinform.util.Observer;
 import md.varoinform.view.dialogs.CheckBoxSelectionPerformer;
-import md.varoinform.view.dialogs.FieldChoosePanel;
 import md.varoinform.view.dialogs.TagDialog;
+import md.varoinform.view.fieldgroup.ColumnCheckBox;
+import md.varoinform.view.fieldgroup.FieldGroup;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -90,8 +91,8 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private JPopupMenu createHeaderPopup() {
         JPopupMenu popupMenu = new JPopupMenu();
-        FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
-        fieldChoosePanel.addCheckBoxGroupStateExecutor(new CheckBoxSelectionPerformer() {
+        FieldGroup fieldGroup = new FieldGroup();
+        fieldGroup.addCheckBoxGroupStateExecutor(new CheckBoxSelectionPerformer() {
             @Override
             public void perform(List<String> names) {
                 Collections.sort(names, new ColumnPriorityComparator());
@@ -100,7 +101,10 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 demonstrator.fireViewStructureChanged();
             }
         });
-        popupMenu.add(fieldChoosePanel);
+        List<ColumnCheckBox> group = fieldGroup.getGroup();
+        for (ColumnCheckBox columnCheckBox : group) {
+            popupMenu.add(columnCheckBox);
+        }
         return popupMenu;
     }
 

@@ -213,9 +213,9 @@ public class PrintDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             mode = this.value;
             if (mode == ADDRESS_MODE){
-                fieldChoosePanel.setEnable(false);
+                fieldChoosePanel.setEnabled(false);
             } else {
-                fieldChoosePanel.setEnable(true);
+                fieldChoosePanel.setEnabled(true);
             }
         }
     }

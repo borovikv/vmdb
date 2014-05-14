@@ -1,4 +1,4 @@
-package md.varoinform.view.dialogs;
+package md.varoinform.view.fieldgroup;
 
 import md.varoinform.util.ResourceBundleHelper;
 
@@ -28,7 +28,10 @@ public class ColumnCheckBox extends JCheckBox{
     }
 
     public void updateDisplay() {
-        String trText = ResourceBundleHelper.getString(name, name);
-        setText(trText);
+        setText(getI18nName());
+    }
+
+    public String getI18nName() {
+        return ResourceBundleHelper.getString(name, name);
     }
 }

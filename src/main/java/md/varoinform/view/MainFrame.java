@@ -60,6 +60,7 @@ public class MainFrame extends JFrame implements Observer {
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
         settingsDialog = new SettingsDialog();
+        settingsButton.setEnabled(false);
 
         branchPanel.addObserver(this);
         history.addObserver(this);

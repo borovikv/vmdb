@@ -1,81 +1,42 @@
 package md.varoinform.view.dialogs;
 
-import md.varoinform.controller.comparators.TranslateComparator;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.util.PreferencesHelper;
+import md.varoinform.view.fieldgroup.ColumnCheckBox;
+import md.varoinform.view.fieldgroup.FieldGroup;
 
 import javax.swing.*;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 
 public class FieldChoosePanel extends JPanel {
-    private final Set<String> selectedFields = new TreeSet<>();
-    private final List<ColumnCheckBox> checkBoxes = new ArrayList<>();
-    private CheckBoxSelectionPerformer checkBoxPerformer;
+    private final FieldGroup fieldGroup = new FieldGroup();
 
     public FieldChoosePanel() {
-        List<String> fields = EnterpriseProxy.getFields();
-        Collections.sort(fields, new TranslateComparator());
+        List<ColumnCheckBox> group = fieldGroup.getGroup();
 
-        PreferencesHelper preferencesHelper = new PreferencesHelper();
-        List<String> userFields = preferencesHelper.getUserFields();
-
-        setLayout(new GridLayout(fields.size(), 1));
-        for (String field : fields) {
-            boolean isSelected = userFields.contains(field);
-            ColumnCheckBox checkBox = createCheckBox(field, isSelected);
-
+        setLayout(new GridLayout(group.size(), 1));
+        for (ColumnCheckBox checkBox : group) {
             add(checkBox);
-            checkBoxes.add(checkBox);
-            if (isSelected) {
-                selectedFields.add(field);
-            }
         }
 
-    }
-
-    private ColumnCheckBox createCheckBox(String field, boolean selected) {
-        ColumnCheckBox checkBox = new ColumnCheckBox(field);
-        checkBox.setSelected(selected);
-        checkBox.addActionListener(new CheckBoxListener());
-        return checkBox;
     }
 
     public void addCheckBoxGroupStateExecutor(CheckBoxSelectionPerformer executor){
-         this.checkBoxPerformer = executor;
+         fieldGroup.addCheckBoxGroupStateExecutor(executor);
     }
 
     public List<String> getSelectedFieldNames() {
-        return new ArrayList<>(selectedFields);
+        return fieldGroup.getSelectedFieldNames();
     }
 
-    private class CheckBoxListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ColumnCheckBox checkBox = (ColumnCheckBox) e.getSource();
-            if ( checkBox.isSelected() ) {
-                selectedFields.add(checkBox.getName());
-            } else {
-                selectedFields.remove(checkBox.getName());
-            }
 
-            if (checkBoxPerformer != null){
-                checkBoxPerformer.perform(getSelectedFieldNames());
-            }
-        }
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        fieldGroup.setEnable(enabled);
     }
 
-    public void setEnable(boolean enable){
-        for (ColumnCheckBox checkBox : checkBoxes) {
-            checkBox.setEnabled(enable);
-        }
-    }
 
     public void updateDisplay(){
-        for (ColumnCheckBox checkBox : checkBoxes) {
-            checkBox.updateDisplay();
-        }
+        fieldGroup.updateDisplay();
     }
 }
