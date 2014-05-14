@@ -45,7 +45,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
                 if (tag == null) return;
 
                 tagList.setCurrentTagTitle(tag.getTitle());
-                notifyObservers(new ObservableEvent(ObservableEvent.TAG_SELECTED));
+                notifyObservers(new ObservableEvent(ObservableEvent.Type.TAG_SELECTED));
             }
         });
 
@@ -134,13 +134,13 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     private void deleteTag(Tag tag) {
         tagList.deleteTag(tag);
-        notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+        notifyObservers(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
     }
 
 
     @Override
     public void update(ObservableEvent event) {
-        if (event.getType() == ObservableEvent.TAGS_CHANGED || event.getType() == ObservableEvent.DELETE){
+        if (event.getType() == ObservableEvent.Type.TAGS_CHANGED || event.getType() == ObservableEvent.Type.DELETE){
             tagList.updateModel();
             boolean tagNotExist = event.getValue() != null && (Boolean) event.getValue();
             if (tagNotExist){

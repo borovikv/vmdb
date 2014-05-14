@@ -59,7 +59,7 @@ public class SettingsDialog extends JDialog implements Observable {
             Collections.sort(names, new ColumnPriorityComparator());
             preferencesHelper.putUserFields(names);
 
-            notifyObservers(new ObservableEvent(ObservableEvent.STRUCTURE_CHANGED));
+            notifyObservers(new ObservableEvent(ObservableEvent.Type.STRUCTURE_CHANGED));
         }
     }
 

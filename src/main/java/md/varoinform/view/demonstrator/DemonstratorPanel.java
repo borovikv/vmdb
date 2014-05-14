@@ -6,6 +6,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.*;
 import md.varoinform.util.Observable;
 import md.varoinform.util.Observer;
+import md.varoinform.view.OutputLabel;
 import md.varoinform.view.dialogs.CheckBoxSelectionPerformer;
 import md.varoinform.view.dialogs.TagDialog;
 import md.varoinform.view.fieldgroup.ColumnCheckBox;
@@ -45,7 +46,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 String tagTitle = TagDialog.getTag();
                 DAOTag daoTag = new DAOTag();
                 daoTag.createTag(tagTitle, demonstrator.getSelected());
-                notifyObservers(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+                notifyObservers(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
             }
         });
 
@@ -64,7 +65,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    notifyObservers(new ObservableEvent(ObservableEvent.DELETE));
+                    notifyObservers(new ObservableEvent(ObservableEvent.Type.DELETE));
                 }
             }
         });
@@ -131,6 +132,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
     @Override
     public void showResults(List<Enterprise> enterprises){
         demonstrator.showResults(enterprises);
+        OutputLabel.instance.setResultCount(enterprises == null ? 0: enterprises.size());
     }
 
     @Override
@@ -172,7 +174,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
      */
     @Override
     public void update(ObservableEvent event) {
-        if ( event.getType() == ObservableEvent.STRUCTURE_CHANGED) {
+        if ( event.getType() == ObservableEvent.Type.STRUCTURE_CHANGED) {
             demonstrator.fireViewStructureChanged();
         }
     }

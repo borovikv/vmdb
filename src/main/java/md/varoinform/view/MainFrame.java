@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.MailProxy;
+import md.varoinform.controller.history.History;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
@@ -12,6 +13,9 @@ import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.view.historynavigator.BackButton;
+import md.varoinform.view.historynavigator.ForwardButton;
+import md.varoinform.view.historynavigator.HomeButton;
 import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.branchview.BranchTree;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
@@ -43,7 +47,6 @@ import java.util.List;
 public class MainFrame extends JFrame implements Observer {
     private final JTabbedPane navigationPane;
     private final TagPanel tagPanel = new TagPanel();
-    private final History history = new History();
     private final BranchPanel branchPanel = new BranchPanel();
     private final ToolbarButton exportButton = new ToolbarButton("/external-resources/icons/export.png", "export", "export");
     private final ToolbarButton mailButton = new ToolbarButton("/external-resources/icons/mail.png", "mail", "mail");
@@ -54,19 +57,24 @@ public class MainFrame extends JFrame implements Observer {
     private final SearchField searchField = new SearchField();
     private final FieldSearcherCombo fields = new FieldSearcherCombo(Searchers.getSearchers());
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
+    private final HomeButton homeButton = new HomeButton(demonstrator);
     private final SettingsDialog settingsDialog;
     private final TagListener tagListener = new TagListener();
+    private final BackButton backButton = new BackButton();
+    private final ForwardButton forwardButton = new ForwardButton();
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
+
         settingsDialog = new SettingsDialog();
         settingsButton.setEnabled(false);
 
         branchPanel.addObserver(this);
-        history.addObserver(this);
         demonstrator.addObserver(tagListener);
         tagPanel.addObserver(tagListener);
         settingsDialog.addObserver(demonstrator);
+        History.instance.addObserver(backButton);
+        History.instance.addObserver(forwardButton);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -96,16 +104,17 @@ public class MainFrame extends JFrame implements Observer {
 
         updateDisplay();
 
-        List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
-        demonstrator.showResults(enterprises);
-        OutputLabel.instance.setResultCount(enterprises.size());
+        homeButton.home();
     }
 
     private JToolBar createToolBar() {
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
+        toolbar.add(homeButton);
 
-        toolbar.add(history.getHomeButton());
+        toolbar.add(backButton);
+
+        toolbar.add(forwardButton);
         toolbar.addSeparator();
 
 
@@ -132,7 +141,7 @@ public class MainFrame extends JFrame implements Observer {
                 String tagTitle = TagDialog.getTag();
                 DAOTag daoTag = new DAOTag();
                 daoTag.createTag(tagTitle, demonstrator.getSelected());
-                tagPanel.update(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+                tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
             }
         });
 
@@ -252,13 +261,12 @@ public class MainFrame extends JFrame implements Observer {
 
     private void showResults(List<Enterprise> enterprises) {
         demonstrator.showResults(enterprises);
-        OutputLabel.instance.setResultCount(enterprises == null ? 0: enterprises.size());
     }
 
     @Override
     public void update(ObservableEvent event) {
         switch (event.getType()){
-            case ObservableEvent.BRANCH_SELECTED:
+            case BRANCH_SELECTED:
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 List<Long> allChildren = branchPanel.getNodes();
                 List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
@@ -266,16 +274,12 @@ public class MainFrame extends JFrame implements Observer {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 break;
 
-            case ObservableEvent.BRANCH_SELECTED_BY_USER:
-                history.appendHistory(branchPanel.getSelectionPath());
-                break;
-
-            case ObservableEvent.FORWARD:
-            case ObservableEvent.BACK:
-            case ObservableEvent.HOME:
+            case FORWARD:
+            case BACK:
+            case HOME:
                 performHistoryMove(event.getValue());
                 break;
-            case ObservableEvent.LANGUAGE_CHANGED:
+            case LANGUAGE_CHANGED:
                 updateDisplay();
                 break;
         }
@@ -289,7 +293,6 @@ public class MainFrame extends JFrame implements Observer {
         public void actionPerformed(ActionEvent e) {
             String value = searchField.getText();
             searchText(value);
-            history.appendHistory(value);
             branchPanel.clearSelection();
             tagPanel.clearSelection();
         }
@@ -302,7 +305,7 @@ public class MainFrame extends JFrame implements Observer {
         @Override
         public void update(ObservableEvent event) {
             switch (event.getType()){
-                case ObservableEvent.TAG_SELECTED:
+                case TAG_SELECTED:
                     enableDeleting = true;
                     Tag tag = tagPanel.getSelectedTag();
                     if (tag == null) {
@@ -311,11 +314,11 @@ public class MainFrame extends JFrame implements Observer {
                         showResults(new ArrayList<>(tag.getEnterprises()));
                     }
                     break;
-                case ObservableEvent.DELETE:
+                case DELETE:
                     onTagDeleted();
                     break;
-                case ObservableEvent.TAGS_CHANGED:
-                    tagPanel.update(new ObservableEvent(ObservableEvent.TAGS_CHANGED));
+                case TAGS_CHANGED:
+                    tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
                     break;
             }
         }
@@ -323,7 +326,7 @@ public class MainFrame extends JFrame implements Observer {
         private void onTagDeleted() {
             if (!enableDeleting || !isTagSelected()) return;
             boolean tagExist = removeEnterprisesFromTag();
-            tagPanel.update(new ObservableEvent(ObservableEvent.TAGS_CHANGED, !tagExist));
+            tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED, !tagExist));
             updateDemonstrator();
         }
 

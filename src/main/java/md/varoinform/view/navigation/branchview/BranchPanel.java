@@ -40,15 +40,11 @@ public class BranchPanel extends JPanel implements Observable {
     }
 
     public void select(Object obj) {
-        branchTree.select(obj, true);
+        branchTree.select(obj);
     }
 
     public void clearSelection() {
         branchTree.clearSelection();
-    }
-
-    public Object getSelectionPath() {
-        return branchTree.getSelectionPath();
     }
 
     public List<Long> getNodes(){

@@ -29,7 +29,7 @@ public class LanguageComboBox extends JComboBox<Language> implements Observable 
             public void actionPerformed(ActionEvent e) {
                 Language newLanguage = (Language) getSelectedItem();
                 LanguageProxy.instance.setCurrentLanguage(newLanguage);
-                notifyObservers(new ObservableEvent(ObservableEvent.LANGUAGE_CHANGED));
+                notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED));
             }
         });
     }

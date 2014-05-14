@@ -1,5 +1,8 @@
 package md.varoinform.view.navigation.branchview;
 
+import md.varoinform.controller.history.EventSource;
+import md.varoinform.controller.history.History;
+import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.TreeNode;
 import md.varoinform.util.*;
@@ -20,11 +23,10 @@ import java.util.ArrayList;
  * Date: 11/12/13
  * Time: 11:22 AM
  */
-public class BranchTree extends JTree implements Observable, FilteringNavigator {
+public class BranchTree extends JTree implements Observable, FilteringNavigator, EventSource {
     private BranchNode root = new BranchNode(null);
     private boolean needToProcess = true;
     private List<Observer> observers = new ArrayList<>();
-    private boolean programatically = false;
     private String text = "";
 
     public BranchTree() {
@@ -40,7 +42,7 @@ public class BranchTree extends JTree implements Observable, FilteringNavigator 
                 TreePath path = tree.getPathForLocation(point.x, point.y);
                 if (path != null) {
                     tree.clearSelection();
-                    tree.select(path, false);
+                    tree.select(path);
                 }
             }
         });
@@ -81,7 +83,7 @@ public class BranchTree extends JTree implements Observable, FilteringNavigator 
             TreePath treePath = getTreePathForBranch(treeNode);
 
             scrollPathToVisible(treePath);
-            select(treePath, true);
+            select(treePath);
         }
     }
 
@@ -107,22 +109,18 @@ public class BranchTree extends JTree implements Observable, FilteringNavigator 
     }
 
 
-    public void select(Object object, boolean programatically){
+    public void select(Object object){
         if (object instanceof TreePath){
-            this.programatically = programatically;
             setSelectionPath((TreePath) object);
             performSelect();
-            this.programatically = false;
         }
     }
 
     private void performSelect() {
         if (!needToProcess) return;
 
-        if (!programatically) {
-            notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED_BY_USER, getSelectionPath()));
-        }
-        notifyObservers(new ObservableEvent(ObservableEvent.BRANCH_SELECTED));
+        notifyObservers(new ObservableEvent(ObservableEvent.Type.BRANCH_SELECTED));
+        History.instance.add(new HistoryEvent(this, getSelectionPath()));
     }
 
     public List<Long> getAllChildrenId() {
@@ -157,5 +155,10 @@ public class BranchTree extends JTree implements Observable, FilteringNavigator 
         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) treeModel;
         defaultTreeModel.setRoot(root);
         this.text = text;
+    }
+
+    @Override
+    public void checkout(Object state) {
+        select(state);
     }
 }
