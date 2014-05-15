@@ -25,13 +25,15 @@ public class BackButton extends ToolbarButton implements Observer {
                 setEnabled(History.instance.hasBack());
             }
         });
+        History.instance.addObserver(this);
     }
 
 
     @Override
     public void update(ObservableEvent event) {
-        if (event.getType() == ObservableEvent.Type.HISTORY_MOVE_FORWARD){
-            setEnabled(true);
+        ObservableEvent.Type type = event.getType();
+        if (type == ObservableEvent.Type.HISTORY_MOVE_FORWARD || type == ObservableEvent.Type.HISTORY_ADDED){
+            setEnabled(History.instance.hasBack());
         }
     }
 }

@@ -25,13 +25,14 @@ public class ForwardButton extends ToolbarButton implements Observer{
                 setEnabled(History.instance.hasForward());
             }
         });
+        History.instance.addObserver(this);
     }
 
 
     @Override
     public void update(ObservableEvent event) {
         if (event.getType() == ObservableEvent.Type.HISTORY_MOVE_BACK) {
-            setEnabled(true);
+            setEnabled(History.instance.hasForward());
         }
     }
 }
