@@ -29,4 +29,9 @@ public abstract class Searcher implements Comparable<Searcher>{
             return name.compareTo(oName);
         return 0;
     }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
 }

@@ -1,5 +1,6 @@
 package md.varoinform.view.search;
 
+import md.varoinform.Settings;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class SearchField extends JTextField {
         int height = getFontMetrics(getFont()).getHeight() + 4*2;
         Dimension dimension = new Dimension(Short.MAX_VALUE, height);
         setPreferredSize(dimension);
+        setFont(Settings.getDefaultFont("SANS_SERIF"));
     }
 
     @Override

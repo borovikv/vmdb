@@ -34,5 +34,14 @@ public class FieldSearcherCombo extends JComboBox<FieldSearcherItem> {
         FieldSearcherItem item = (FieldSearcherItem) getSelectedItem();
         return item.getSearcher();
     }
+
+    public void setSearcher(Searcher searcher){
+        for (FieldSearcherItem item : fieldSearcherItems) {
+            if (item.getSearcher() == searcher){
+                setSelectedItem(item);
+                return;
+            }
+        }
+    }
 }
 
