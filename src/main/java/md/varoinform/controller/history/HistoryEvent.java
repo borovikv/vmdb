@@ -7,16 +7,20 @@ package md.varoinform.controller.history;
  * Time: 1:04 PM
  */
 public class HistoryEvent {
-    private final EventSource source;
+    private final Object source;
     private final Object state;
 
-    public HistoryEvent(EventSource source, Object state) {
+    public HistoryEvent(Object source, Object state) {
         this.source = source;
         this.state = state;
     }
 
-    public void checkout() {
-        source.checkout(state);
+    public Object getSource() {
+        return source;
+    }
+
+    public Object getState() {
+        return state;
     }
 
     @Override
@@ -37,4 +41,6 @@ public class HistoryEvent {
         result = 31*result + state.hashCode();
         return result;
     }
+
+
 }

@@ -1,34 +1,30 @@
 package md.varoinform.view;
 
-import md.varoinform.Settings;
 import md.varoinform.controller.MailProxy;
-import md.varoinform.controller.history.History;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
-import md.varoinform.model.search.Searcher;
-import md.varoinform.model.search.Searchers;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
-import md.varoinform.view.historynavigator.BackButton;
-import md.varoinform.view.historynavigator.ForwardButton;
-import md.varoinform.view.historynavigator.HomeButton;
-import md.varoinform.view.navigation.branchview.BranchPanel;
-import md.varoinform.view.navigation.branchview.BranchTree;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.ExportDialog;
 import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 import md.varoinform.view.dialogs.TagDialog;
+import md.varoinform.view.historynavigator.BackButton;
+import md.varoinform.view.historynavigator.ForwardButton;
+import md.varoinform.view.historynavigator.HomeButton;
+import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.tags.TagPanel;
-import md.varoinform.view.search.FieldSearcherCombo;
-import md.varoinform.view.search.SearchField;
+import md.varoinform.view.search.SearchListener;
+import md.varoinform.view.search.SearchPanel;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,9 +49,7 @@ public class MainFrame extends JFrame implements Observer {
     private final ToolbarButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png", "settings", "settings");
     private final ToolbarButton tagButton = new ToolbarButton("/external-resources/icons/star.png", "tag", "tag");
     private final ToolbarButton printButton = new ToolbarButton("/external-resources/icons/print.png", "print", "print");
-    private final ToolbarButton searchButton = new ToolbarButton("/external-resources/icons/search.png", "search", "search");
-    private final SearchField searchField = new SearchField();
-    private final FieldSearcherCombo fields = new FieldSearcherCombo(Searchers.getSearchers());
+    private final SearchPanel searchPanel = new SearchPanel();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final HomeButton homeButton = new HomeButton(demonstrator);
     private final SettingsDialog settingsDialog;
@@ -65,7 +59,48 @@ public class MainFrame extends JFrame implements Observer {
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ExportDialog.export(demonstrator);
+            }
+        });
+        mailButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Enterprise> enterprises = demonstrator.getSelected();
+                MailProxy mailProxy = new MailProxy(enterprises);
+                mailProxy.mail();
+            }
+        });
 
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PrintDialog.print(demonstrator);
+            }
+        });
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settingsDialog.setVisible(true);
+            }
+        });
+        tagButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String tagTitle = TagDialog.getTag();
+                DAOTag daoTag = new DAOTag();
+                daoTag.createTag(tagTitle, demonstrator.getSelected());
+                tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
+            }
+        });
+        searchPanel.addSearchAction(new SearchListener() {
+            @Override
+            public void perform(List<Enterprise> enterprises) {
+                showResults(enterprises);
+            }
+        });
         settingsDialog = new SettingsDialog();
         settingsButton.setEnabled(false);
 
@@ -73,8 +108,6 @@ public class MainFrame extends JFrame implements Observer {
         demonstrator.addObserver(tagListener);
         tagPanel.addObserver(tagListener);
         settingsDialog.addObserver(demonstrator);
-        History.instance.addObserver(backButton);
-        History.instance.addObserver(forwardButton);
 
         setTitle("Varo-Inform Database");
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -110,78 +143,31 @@ public class MainFrame extends JFrame implements Observer {
     private JToolBar createToolBar() {
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
+
         toolbar.add(homeButton);
-
         toolbar.add(backButton);
-
         toolbar.add(forwardButton);
         toolbar.addSeparator();
 
-
-        /*toolbar.add(history.getBackButton());
-
-        toolbar.add(history.getForwardButton());
-        */toolbar.addSeparator();
-
-        searchField.setFont(Settings.getDefaultFont("SANS_SERIF"));
-        SearchAction searchAction = new SearchAction();
-        searchField.addActionListener(searchAction);
-        toolbar.add(searchField);
-        toolbar.add(fields);
+        toolbar.add(searchPanel.searchField);
+        toolbar.add(searchPanel.searcherCombo);
+        toolbar.add(searchPanel.searchButton);
         toolbar.addSeparator();
-        searchButton.addActionListener(searchAction);
-        toolbar.add(searchButton);
 
-        toolbar.addSeparator();
-        toolbar.addSeparator();
         toolbar.add(tagButton);
-        tagButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String tagTitle = TagDialog.getTag();
-                DAOTag daoTag = new DAOTag();
-                daoTag.createTag(tagTitle, demonstrator.getSelected());
-                tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
-            }
-        });
-
         toolbar.addSeparator();
+
         toolbar.add(exportButton);
-        exportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ExportDialog.export(demonstrator);
-            }
-        });
-
         toolbar.addSeparator();
+
         toolbar.add(mailButton);
-        mailButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<Enterprise> enterprises = demonstrator.getSelected();
-                MailProxy mailProxy = new MailProxy(enterprises);
-                mailProxy.mail();
-            }
-        });
-
         toolbar.addSeparator();
-        printButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PrintDialog.print(demonstrator);
-            }
-        });
+
         toolbar.add(printButton);
-
         toolbar.addSeparator();
-        settingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                settingsDialog.setVisible(true);
-            }
-        });
+
         toolbar.add(settingsButton);
+
         return toolbar;
     }
 
@@ -229,40 +215,6 @@ public class MainFrame extends JFrame implements Observer {
         OutputLabel.instance.updateDisplay();
     }
 
-
-    public void performHistoryMove(Object obj) {
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if (BranchTree.isTreePath(obj)) {
-            branchPanel.select(obj);
-
-        } else if (obj instanceof String) {
-            String text = (String) obj;
-            searchField.setText(text);
-            searchText(text);
-            branchPanel.clearSelection();
-
-        } else {
-            List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
-            demonstrator.showResults(enterprises);
-            branchPanel.clearSelection();
-        }
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    }
-
-    private void searchText(String value) {
-        if (value == null) return;
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        Searcher searcher = fields.getSearcher();
-        List<Enterprise> enterprises = searcher.search(value);
-        showResults(enterprises);
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
-    }
-
-    private void showResults(List<Enterprise> enterprises) {
-        demonstrator.showResults(enterprises);
-    }
-
     @Override
     public void update(ObservableEvent event) {
         switch (event.getType()){
@@ -274,31 +226,15 @@ public class MainFrame extends JFrame implements Observer {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 break;
 
-            case FORWARD:
-            case BACK:
-            case HOME:
-                performHistoryMove(event.getValue());
-                break;
             case LANGUAGE_CHANGED:
                 updateDisplay();
                 break;
         }
     }
 
-
-
-    private class SearchAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String value = searchField.getText();
-            searchText(value);
-            branchPanel.clearSelection();
-            tagPanel.clearSelection();
-        }
-
+    private void showResults(List<Enterprise> enterprises) {
+        demonstrator.showResults(enterprises);
     }
-
 
     private class TagListener implements Observer {
         private boolean enableDeleting = false;
