@@ -1,6 +1,8 @@
 package md.varoinform.view.navigation.tags;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.history.History;
+import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.*;
 import md.varoinform.util.Observable;
@@ -45,6 +47,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
                 if (tag == null) return;
 
                 tagList.setCurrentTagTitle(tag.getTitle());
+                History.instance.add(new HistoryEvent(TagPanel.this, tag));
                 notifyObservers(new ObservableEvent(ObservableEvent.Type.TAG_SELECTED));
             }
         });
@@ -79,7 +82,9 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
         tagList.setTransferHandler(new EnterpriseTransferableHandler());
         tagList.setDropMode(DropMode.ON_OR_INSERT);
 
+
         add(new JScrollPane(tagList), BorderLayout.CENTER);
+        History.instance.addObserver(this);
     }
 
 
@@ -140,12 +145,24 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     @Override
     public void update(ObservableEvent event) {
-        if (event.getType() == ObservableEvent.Type.TAGS_CHANGED || event.getType() == ObservableEvent.Type.DELETE){
-            tagList.updateModel();
-            boolean tagNotExist = event.getValue() != null && (Boolean) event.getValue();
-            if (tagNotExist){
-                clearSelection();
-            }
+        Object value = event.getValue();
+        switch (event.getType()){
+            case TAGS_CHANGED:
+            case DELETE:
+                tagList.updateModel();
+                boolean tagNotExist = value != null && (Boolean) value;
+                if (tagNotExist){
+                    clearSelection();
+                }
+                break;
+            case HISTORY_MOVE_FORWARD:
+            case HISTORY_MOVE_BACK:
+                if (value instanceof HistoryEvent && ((HistoryEvent) value).getSource() == this){
+                    tagList.setSelectedValue(((HistoryEvent) value).getState(), true);
+                } else {
+                    clearSelection();
+                }
+                break;
         }
     }
 

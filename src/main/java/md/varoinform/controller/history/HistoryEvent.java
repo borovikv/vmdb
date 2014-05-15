@@ -42,5 +42,11 @@ public class HistoryEvent {
         return result;
     }
 
-
+    @Override
+    public String toString() {
+        return "HistoryEvent{" +
+                "source=" + source +
+                ", state=" + state +
+                '}';
+    }
 }
