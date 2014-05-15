@@ -3,6 +3,7 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.Settings;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.view.OutputLabel;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -68,10 +69,16 @@ public class TableView extends JTable implements Demonstrator {
 
         EnterpriseTableModel dataModel = new EnterpriseTableModel(enterprises);
         setModel(dataModel);
+
         doLayout();
+        OutputLabel.instance.setResultCount(getRowCount());
     }
 
-
+    @Override
+    public void setRowSorter(RowSorter<? extends TableModel> sorter) {
+        super.setRowSorter(sorter);
+        OutputLabel.instance.setResultCount(getRowCount());
+    }
 
     @Override
     public List<Enterprise> getSelected() {

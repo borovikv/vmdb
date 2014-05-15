@@ -1,6 +1,7 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.view.OutputLabel;
+import md.varoinform.controller.history.History;
+import md.varoinform.controller.history.HistoryEvent;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -70,8 +71,6 @@ enum FilterListener {
 
                 String result = JOptionPane.showInputDialog("filter by", filter == null ? value : filter);
                 filter(result, columnClass, tableView, column);
-                int rowCount = tableView.getRowCount();
-                OutputLabel.instance.setResultCount(rowCount);
             }
 
             @Override
@@ -83,7 +82,7 @@ enum FilterListener {
 
 
     private void filter(String text, Class<?> columnClass, TableView tableView, int column) {
-        if (text.isEmpty() && filters.containsKey(column)) {
+        if (text == null || text.isEmpty() && filters.containsKey(column)) {
             filters.remove(column);
         } else {
             RowFilter<Object, Object> rowFilter = getRowFilter(text, columnClass, column);
@@ -96,6 +95,7 @@ enum FilterListener {
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
         tableView.setRowSorter(sorter);
+        History.instance.add(new HistoryEvent(this, sorter));
     }
 
 
