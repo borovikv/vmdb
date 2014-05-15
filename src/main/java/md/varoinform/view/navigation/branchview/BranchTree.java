@@ -1,6 +1,5 @@
 package md.varoinform.view.navigation.branchview;
 
-import md.varoinform.controller.history.EventSource;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.NodeDao;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
  * Date: 11/12/13
  * Time: 11:22 AM
  */
-public class BranchTree extends JTree implements Observable, FilteringNavigator, EventSource {
+public class BranchTree extends JTree implements Observable, Observer, FilteringNavigator{
     private BranchNode root = new BranchNode(null);
     private boolean needToProcess = true;
     private List<Observer> observers = new ArrayList<>();
@@ -46,12 +45,8 @@ public class BranchTree extends JTree implements Observable, FilteringNavigator,
                 }
             }
         });
+        History.instance.addObserver(this);
     }
-
-    public static boolean isTreePath(Object value) {
-        return value instanceof TreePath;
-    }
-
 
     public void updateRoot(){
         needToProcess = false;
@@ -158,7 +153,15 @@ public class BranchTree extends JTree implements Observable, FilteringNavigator,
     }
 
     @Override
-    public void checkout(Object state) {
-        select(state);
+    public void update(ObservableEvent event) {
+        ObservableEvent.Type type = event.getType();
+        Object value = event.getValue();
+        if ((type == ObservableEvent.Type.HISTORY_MOVE_FORWARD || type == ObservableEvent.Type.HISTORY_MOVE_BACK) && value instanceof HistoryEvent){
+            if (((HistoryEvent) value).getSource() == this){
+                select(((HistoryEvent) value).getState());
+            } else {
+                clearSelection();
+            }
+        }
     }
 }
