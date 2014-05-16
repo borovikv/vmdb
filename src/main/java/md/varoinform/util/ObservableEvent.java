@@ -10,7 +10,6 @@ public class ObservableEvent {
     public static enum Type{
         HISTORY_MOVE_FORWARD,
         HISTORY_MOVE_BACK,
-        STRUCTURE_CHANGED,
         DELETE,
         TAGS_CHANGED,
         BRANCH_SELECTED,

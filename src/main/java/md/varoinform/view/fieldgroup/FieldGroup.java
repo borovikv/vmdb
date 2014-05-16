@@ -3,7 +3,6 @@ package md.varoinform.view.fieldgroup;
 import md.varoinform.controller.comparators.TranslateComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.view.dialogs.CheckBoxSelectionPerformer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

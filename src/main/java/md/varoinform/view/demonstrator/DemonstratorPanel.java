@@ -8,7 +8,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.*;
 import md.varoinform.util.Observable;
 import md.varoinform.util.Observer;
-import md.varoinform.view.dialogs.CheckBoxSelectionPerformer;
+import md.varoinform.view.fieldgroup.CheckBoxSelectionPerformer;
 import md.varoinform.view.dialogs.TagDialog;
 import md.varoinform.view.fieldgroup.ColumnCheckBox;
 import md.varoinform.view.fieldgroup.FieldGroup;
@@ -169,22 +169,14 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         }
     }
 
-    /*
-        calls from settings dialog
-     */
     @Override
     public void update(ObservableEvent event) {
-        switch (event.getType()) {
-            case STRUCTURE_CHANGED:
-                demonstrator.fireViewStructureChanged();
-                break;
-            case HISTORY_MOVE_BACK:
-            case HISTORY_MOVE_FORWARD:
-                Object value = event.getValue();
-                if (value instanceof HistoryEvent && ((HistoryEvent) value).getSource() instanceof FilterListener){
-                    //noinspection unchecked
-                    demonstrator.setRowSorter((RowSorter<? extends javax.swing.table.TableModel>) ((HistoryEvent) value).getState());
-                }
+        Object value = event.getValue();
+        if ((event.getType() == ObservableEvent.Type.HISTORY_MOVE_BACK || event.getType() == ObservableEvent.Type.HISTORY_MOVE_FORWARD)
+                && value instanceof HistoryEvent
+                && ((HistoryEvent) value).getSource() instanceof FilterListener) {
+                //noinspection unchecked
+                demonstrator.setRowSorter((RowSorter<? extends javax.swing.table.TableModel>) ((HistoryEvent) value).getState());
         }
     }
 

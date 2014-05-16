@@ -20,10 +20,6 @@ public class FieldChoosePanel extends JPanel {
 
     }
 
-    public void addCheckBoxGroupStateExecutor(CheckBoxSelectionPerformer executor){
-         fieldGroup.addCheckBoxGroupStateExecutor(executor);
-    }
-
     public List<String> getSelectedFieldNames() {
         return fieldGroup.getSelectedFieldNames();
     }

@@ -11,6 +11,7 @@ import javax.swing.table.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,7 +71,7 @@ public class TableView extends JTable implements Demonstrator {
         EnterpriseTableModel dataModel = new EnterpriseTableModel(enterprises);
         setModel(dataModel);
 
-        doLayout();
+        //doLayout();
         OutputLabel.instance.setResultCount(getRowCount());
     }
 
