@@ -1,4 +1,4 @@
-package md.varoinform.view;
+package md.varoinform.view.status;
 
 import md.varoinform.util.ResourceBundleHelper;
 

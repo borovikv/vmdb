@@ -70,19 +70,20 @@ public class ExportDialog extends JDialog {
     }
 
     private void save(File selectedFile) {
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter(selectedFile), ';');
+        try (FileWriter fileWriter = new FileWriter(selectedFile); CSVWriter writer = new CSVWriter(fileWriter, ';')){
             List<String> selectedColumns = fieldChooser.getSelectedFieldNames();
             Collections.sort(selectedColumns, new ColumnPriorityComparator());
+
             writer.writeNext(selectedColumns.toArray(new String[selectedColumns.size()]));
-            for (Enterprise enterprise : getEnterprises()) {
+
+            List<Enterprise> enterprises = getEnterprises();
+            for (Enterprise enterprise : enterprises) {
                 writeLine(writer, selectedColumns, enterprise);
             }
 
-            writer.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException ignored){
         }
+
     }
 
     private void writeLine(CSVWriter writer, List<String> selectedColumns, Enterprise enterprise) {

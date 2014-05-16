@@ -3,7 +3,7 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.Settings;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.view.OutputLabel;
+import md.varoinform.view.status.OutputLabel;
 
 import javax.swing.*;
 import javax.swing.event.*;

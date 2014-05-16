@@ -21,6 +21,8 @@ import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.tags.TagPanel;
 import md.varoinform.view.search.SearchListener;
 import md.varoinform.view.search.SearchPanel;
+import md.varoinform.view.status.OutputLabel;
+import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -130,8 +132,7 @@ public class MainFrame extends JFrame implements Observer {
         splitPane.setDividerLocation(300);
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
-        JPanel statusBar = createStatusBar();
-        mainPanel.add(statusBar, BorderLayout.SOUTH);
+        mainPanel.add(StatusBar.instance.getStatusBar(), BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
 
@@ -186,17 +187,7 @@ public class MainFrame extends JFrame implements Observer {
         return navigationPane;
     }
 
-    private JPanel createStatusBar() {
-        JPanel statusBar = new JPanel();
-        statusBar.setLayout(new BorderLayout());
-        statusBar.add(OutputLabel.instance.getLabel(), BorderLayout.WEST);
 
-        LanguageComboBox languageCombo = new LanguageComboBox();
-        languageCombo.addObserver(this);
-        statusBar.add(languageCombo, BorderLayout.EAST);
-
-        return statusBar;
-    }
 
     private void updateDisplay() {
         Field[] declaredFields = MainFrame.class.getDeclaredFields();

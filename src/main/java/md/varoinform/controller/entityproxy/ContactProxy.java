@@ -70,18 +70,18 @@ public class ContactProxy extends EntityProxy {
     }
 
     public List<Email> getEmail(){
-        return contact == null ? null : contact.getEmails();
+        return contact == null ? new ArrayList<Email>() : contact.getEmails();
     }
 
     public List<Phone> getPhones(){
-        return contact == null ? null : contact.getPhones();
+        return contact == null ? new ArrayList<Phone>() : contact.getPhones();
     }
 
     public List<Url> getUrls(){
-        return contact == null ? null : contact.getUrls();
+        return contact == null ? new ArrayList<Url>() : contact.getUrls();
     }
 
     public List<Phone> getFax() {
-       return contact == null ? null : contact.getFax();
+       return contact == null ? new ArrayList<Phone>() : contact.getFax();
     }
 }
