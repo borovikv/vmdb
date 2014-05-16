@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +19,8 @@ import java.util.List;
  */
 public class MailProxy {
     private List<Enterprise> enterprises;
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     public MailProxy(List<Enterprise> enterprises) {
         this.enterprises = enterprises;
@@ -50,8 +53,11 @@ public class MailProxy {
             EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
             List<Email> emails = proxy.getEmails();
             for (Email email : emails) {
-                builder.append(email);
-                builder.append(";");
+                String s = email.getEmail();
+                if (VALID_EMAIL_ADDRESS_REGEX.matcher(s).find()){
+                    builder.append(s);
+                    builder.append(";");
+                }
             }
         }
 
