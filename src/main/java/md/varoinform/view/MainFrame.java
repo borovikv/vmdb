@@ -10,7 +10,7 @@ import md.varoinform.util.ObservableEvent;
 import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
-import md.varoinform.view.dialogs.ExportDialog;
+import md.varoinform.view.dialogs.export.ExportDialog;
 import md.varoinform.view.dialogs.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 import md.varoinform.view.dialogs.TagDialog;

@@ -1,21 +1,19 @@
-package md.varoinform.view.dialogs;
+package md.varoinform.view.dialogs.export;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import md.varoinform.controller.comparators.ColumnPriorityComparator;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;
-import md.varoinform.util.StringUtils;
 import md.varoinform.view.demonstrator.Demonstrator;
+import md.varoinform.view.dialogs.FieldChoosePanel;
+import md.varoinform.view.dialogs.ProgressDialog;
+import md.varoinform.view.dialogs.RowsChoosePanel;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,6 +27,7 @@ public class ExportDialog extends JDialog {
     private Demonstrator demonstrator;
     private FieldChoosePanel fieldChooser = new FieldChoosePanel();
     private RowsChoosePanel rowsChoosePanel;
+    private final JButton saveButton;
 
     public ExportDialog(Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
@@ -44,13 +43,15 @@ public class ExportDialog extends JDialog {
         scrollPane.setBorder(getTitledBorder(ResourceBundleHelper.getString("fields", "Fields")));
         add(scrollPane, BorderLayout.CENTER);
 
-        JButton saveButton = new JButton("Ok");
+        saveButton = new JButton("Ok");
         saveButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                save();
+                save(fieldChooser.getSelectedFieldNames(), getEnterprises());
+                setVisible(false);
             }
         });
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(saveButton);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -62,38 +63,34 @@ public class ExportDialog extends JDialog {
     }
 
 
-    private void save(){
+    private void save(List<String> fieldNames, List<Enterprise> enterprises){
+
         JFileChooser saveDialog = new JFileChooser(System.getProperty("user.home"));
-        if (JFileChooser.APPROVE_OPTION == saveDialog.showSaveDialog(this)){
-            save(saveDialog.getSelectedFile());
-        }
-    }
-
-    private void save(File selectedFile) {
-        try (FileWriter fileWriter = new FileWriter(selectedFile); CSVWriter writer = new CSVWriter(fileWriter, ';')){
-            List<String> selectedColumns = fieldChooser.getSelectedFieldNames();
-            Collections.sort(selectedColumns, new ColumnPriorityComparator());
-
-            writer.writeNext(selectedColumns.toArray(new String[selectedColumns.size()]));
-
-            List<Enterprise> enterprises = getEnterprises();
-            for (Enterprise enterprise : enterprises) {
-                writeLine(writer, selectedColumns, enterprise);
+        FileFilter csvFileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                String extension = FilenameUtils.getExtension(f.getAbsolutePath());
+                return f.isDirectory() || extension.equalsIgnoreCase("csv");
             }
 
-        } catch (IOException ignored){
-        }
+            @Override
+            public String getDescription() {
+                return "csv";
+            }
+        };
+        saveDialog.addChoosableFileFilter(csvFileFilter);
+        saveDialog.setFileFilter(csvFileFilter);
 
-    }
+        if (JFileChooser.APPROVE_OPTION == saveDialog.showSaveDialog(this)){
+            File file = saveDialog.getSelectedFile();
+            if (!file.getName().endsWith(".csv")){
+                file = new File(file.getAbsolutePath() + ".csv");
+            }
+            if (enterprises.isEmpty()) return;
 
-    private void writeLine(CSVWriter writer, List<String> selectedColumns, Enterprise enterprise) {
-        String[] entries = new String[selectedColumns.size()];
-        EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
-        for (int i = 0; i < selectedColumns.size(); i++) {
-            Object obj = proxy.get(selectedColumns.get(i));
-            entries[i] = StringUtils.valueOf(obj);
+            ExportActivity exportActivity = new ExportActivity(file, fieldNames, enterprises);
+            ProgressDialog.start(exportActivity, ResourceBundleHelper.getString("wait_for_export", "wait"));
         }
-        writer.writeNext(entries);
     }
 
     private List<Enterprise> getEnterprises() {
@@ -103,12 +100,13 @@ public class ExportDialog extends JDialog {
         return demonstrator.getSelected();
     }
 
+
     public void updateDisplay() {
         fieldChooser.updateDisplay();
     }
 
     public static void export(Demonstrator demonstrator){
-        ExportDialog exportDialog = new ExportDialog(demonstrator);
+        final ExportDialog exportDialog = new ExportDialog(demonstrator);
         exportDialog.setVisible(true);
     }
 }
