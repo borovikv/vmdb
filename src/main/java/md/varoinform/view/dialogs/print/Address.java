@@ -1,4 +1,4 @@
-package md.varoinform.view.dialogs.preview;
+package md.varoinform.view.dialogs.print;
 
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;

@@ -1,6 +1,4 @@
-package md.varoinform.view.dialogs;
-
-import md.varoinform.view.dialogs.progress.Activity;
+package md.varoinform.view.dialogs.progress;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,13 +43,6 @@ public class ProgressDialog extends JDialog{
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
         setTitle(message);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                isCanceled = true;
-            }
-        });
         noteLabel = new JLabel("note");
 
         progressBar = new JProgressBar(0, 100);
@@ -119,7 +110,14 @@ public class ProgressDialog extends JDialog{
 
     public static void start(Activity activity, String message){
         activity.execute();
-        JDialog dialog = new ProgressDialog(activity, message);
+        final ProgressDialog dialog = new ProgressDialog(activity, message);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                dialog.isCanceled = true;
+            }
+        });
         dialog.setVisible(true);
         dialog.dispose();
     }

@@ -1,6 +1,6 @@
 package md.varoinform.view;
 
-import md.varoinform.controller.MailProxy;
+import md.varoinform.view.mail.MailAction;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
@@ -11,7 +11,7 @@ import md.varoinform.util.Observer;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.export.ExportDialog;
-import md.varoinform.view.dialogs.PrintDialog;
+import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 import md.varoinform.view.dialogs.TagDialog;
 import md.varoinform.view.historynavigator.BackButton;
@@ -67,14 +67,7 @@ public class MainFrame extends JFrame implements Observer {
                 ExportDialog.export(demonstrator);
             }
         });
-        mailButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<Enterprise> enterprises = demonstrator.getSelected();
-                MailProxy mailProxy = new MailProxy(enterprises);
-                mailProxy.mail();
-            }
-        });
+        mailButton.addActionListener(new MailAction(demonstrator));
 
         printButton.addActionListener(new ActionListener() {
             @Override

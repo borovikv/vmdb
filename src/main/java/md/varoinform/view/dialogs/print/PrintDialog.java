@@ -1,13 +1,12 @@
-package md.varoinform.view.dialogs;
+package md.varoinform.view.dialogs.print;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.Demonstrator;
-import md.varoinform.view.dialogs.preview.Address;
-import md.varoinform.view.dialogs.preview.Data;
-import md.varoinform.view.dialogs.preview.PrintPreviewDialog;
+import md.varoinform.view.dialogs.FieldChoosePanel;
+import md.varoinform.view.dialogs.RowsChoosePanel;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.swing.*;

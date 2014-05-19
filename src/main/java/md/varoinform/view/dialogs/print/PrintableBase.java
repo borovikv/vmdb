@@ -1,4 +1,4 @@
-package md.varoinform.view.dialogs.preview;
+package md.varoinform.view.dialogs.print;
 
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;

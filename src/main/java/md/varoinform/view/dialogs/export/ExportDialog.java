@@ -4,7 +4,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.Demonstrator;
 import md.varoinform.view.dialogs.FieldChoosePanel;
-import md.varoinform.view.dialogs.ProgressDialog;
+import md.varoinform.view.dialogs.progress.ProgressDialog;
 import md.varoinform.view.dialogs.RowsChoosePanel;
 import org.apache.commons.io.FilenameUtils;
 
