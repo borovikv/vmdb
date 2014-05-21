@@ -102,7 +102,7 @@ public class TableView extends JTable implements Demonstrator {
 
     private Enterprise getEnterpriseAt(int rowIndex) {
 
-        return getEnterpriseTableModel().getEnterpriseAt(rowIndex);
+        return getEnterpriseTableModel().getEnterpriseAt(convertRowIndexToModel(rowIndex));
     }
 
     private EnterpriseTableModel getEnterpriseTableModel() {

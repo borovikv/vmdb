@@ -23,6 +23,8 @@ public abstract class PrintableBase implements Printable {
     protected Language language;
     protected int width;
     protected int height;
+    protected Graphics2D graphics2D;
+    //protected PageFormat pageFormat;
 
     public PrintableBase(List<Enterprise> enterprises, Language language) {
         this.enterprises = enterprises;
@@ -31,9 +33,9 @@ public abstract class PrintableBase implements Printable {
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex > getPageCount(pageFormat)) return NO_SUCH_PAGE;
+        if (pageIndex > getNumPages(pageFormat)) return NO_SUCH_PAGE;
 
-        Graphics2D graphics2D = (Graphics2D) graphics;
+        graphics2D = (Graphics2D) graphics;
         draw(graphics2D, pageFormat, getEnterprisesForPage(enterprises, pageIndex, pageFormat));
         return PAGE_EXISTS;
     }
@@ -65,6 +67,7 @@ public abstract class PrintableBase implements Printable {
 
     }
 
+
     protected abstract void drawItem(float x, float y, Graphics2D g2, Enterprise enterprise);
 
     private int countCols(PageFormat pageFormat){
@@ -79,7 +82,7 @@ public abstract class PrintableBase implements Printable {
         return (int) ((pageFormat.getImageableHeight() + offset)/ (height + offset));
     }
 
-    public int getPageCount(PageFormat pageFormat){
+    public int getNumPages(PageFormat pageFormat){
         return (int)Math.ceil((double)enterprises.size() / perPage(pageFormat));
     }
 

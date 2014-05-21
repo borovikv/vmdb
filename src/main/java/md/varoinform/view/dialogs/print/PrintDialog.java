@@ -141,20 +141,20 @@ public class PrintDialog extends JDialog {
             pageFormat = job.defaultPage();
         }
 
-        Book book = new Book();
         List<Enterprise> enterprises = getEnterprises();
-
+        Book book = new Book();
+        Printable painter = null;
+        int numPages = 0;
         if (mode == DATA_MODE){
-            Data data = new Data(enterprises, getSelectedFields(), language);
-            int pageCount = data.getPageCount((Graphics2D)getGraphics(), pageFormat);
-            book.append(data, pageFormat, pageCount);
+            painter = new Data(pageFormat, enterprises, getSelectedFields(), language);
+            numPages = ((Data)painter).getNumPages();
 
         } else if (mode == ADDRESS_MODE){
-            Address address = new Address(enterprises, language);
-            int pageCount = address.getPageCount(pageFormat);
-            book.append(address, pageFormat, pageCount);
+            painter = new Address(enterprises, language);
+            numPages = ((Address)painter).getNumPages(pageFormat);
         }
-
+        if (painter != null)
+            book.append(painter, pageFormat, numPages);
         return book;
     }
 

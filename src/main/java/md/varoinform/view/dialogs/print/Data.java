@@ -1,19 +1,13 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.comparators.ColumnPriorityComparator;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
-import md.varoinform.util.StringUtils;
-import md.varoinform.util.StringWrapper;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
+import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,76 +16,89 @@ import java.util.List;
  * Date: 11/28/13
  * Time: 11:44 AM
  */
-public class Data extends PrintableBase {
-    private final List<String> selectedFields;
-    private static final int indent = 15;
-    private static final Font PLAIN = new Font("SanSerif", Font.PLAIN, 10);
-    //private int counter = 0;
+public class Data implements Printable {
+    private final Pages pages;
+    private final Language language;
 
-    public Data(List<Enterprise> enterprises, List<String> selectedFields, Language language) {
-        super(enterprises, language);
-        this.selectedFields = new ArrayList<>(selectedFields);
-        Collections.sort(this.selectedFields, new ColumnPriorityComparator());
-        height = inchToPTCoefficient * 2;
-        offset = 15;
+
+    public Data(PageFormat pageFormat, List<Enterprise> enterprises, List<String> selectedFields, Language language) {
+        this.language = language;
+        pages = new Pages(enterprises, selectedFields, language, pageFormat);
     }
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        width = getImageableWidth(pageFormat);
-        //counter = 0;
-        return super.print(graphics, pageFormat, pageIndex);
+        if (pageIndex > pages.size()) return NO_SUCH_PAGE;
+
+        Page page = pages.get(pageIndex);
+        if (page == null) return NO_SUCH_PAGE;
+
+        drawHeader((Graphics2D) graphics, pageIndex, pageFormat);
+        draw((Graphics2D) graphics, pageFormat, page);
+
+        return PAGE_EXISTS;
     }
 
-    @Override
-    protected void drawItem(float x, float y, Graphics2D g2, Enterprise enterprise) {
-        g2.setFont(PLAIN);
-        //counter++;
-        int fontHeight = g2.getFontMetrics().getHeight();
-        float xoff = x + indent;
-        int lineHeight = fontHeight;
-        List<String> lines = getLines(width, g2.getFontMetrics(), enterprise);
+    private void draw(Graphics2D graphics2D, PageFormat pageFormat, Page page) {
+        float y = (float) pageFormat.getImageableY();
+        float x = (float) pageFormat.getImageableX();
+        double height = pageFormat.getImageableHeight();
+        float xoff = x;
+        int lineHeight = graphics2D.getFontMetrics(pages.getTitleFont()).getHeight();
+        float yoff = y + lineHeight;
 
-        //height = lineHeight*lines.size() + indent;
-        for (String line : lines) {
-            g2.drawString(line, xoff, y + lineHeight);
-            lineHeight += fontHeight;
+        for (Block block : page) {
+            for (String field : block) {
+                List<String> lines = block.getLines(field);
+                if (lines == null) continue;
+                for (String line : lines) {
+                    graphics2D.setFont(block.getFont(field));
+                    lineHeight = graphics2D.getFontMetrics().getHeight();
+                    if (yoff > height + y){
+                        xoff += pages.getBlockWidth() + pages.getHorizontalPadding();
+                        lineHeight = graphics2D.getFontMetrics(pages.getTitleFont()).getHeight();
+                        yoff = y + lineHeight;
+                    }
+                    graphics2D.drawString(line, xoff, yoff);
+                    yoff += lineHeight;
+                }
+            }
+            yoff += pages.getVerticalPadding();
         }
 
-        Rectangle2D rectangle = new Rectangle2D.Double(x, y, width, height);
-        g2.draw(rectangle);
     }
 
-    private List<String> getLines(int width, FontMetrics fm, Enterprise enterprise) {
-        List<String> lines = new ArrayList<>();
-        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
-        for (String selectedField : selectedFields) {
-            String str = "";
-            int maxWriteAreaWidth = width - indent * 2;
-            String value = StringUtils.valueOf(enterpriseProxy.get(selectedField));
-            str += ResourceBundleHelper.getString(language, selectedField, selectedField) + ": "
-                    + StringUtils.getStringOrNA(value, language);
-            List<String> wrapLines = StringWrapper.wrap(str, fm, maxWriteAreaWidth);
-            lines.addAll(wrapLines);
+    private void drawHeader(Graphics2D graphics2D, int pageIndex, PageFormat pageFormat) {
+        float y = (float) pageFormat.getImageableY();
+        float x = (float) pageFormat.getImageableX();
+        String page = " " + ResourceBundleHelper.getString(language, "page", "page: ") + (pageIndex + 1);
+        FontMetrics fm = graphics2D.getFontMetrics();
+        double imageableWidth = pageFormat.getImageableWidth();
+
+        String header = getHeader(fm, imageableWidth - fm.stringWidth(page));
+
+        int lineHeight = fm.getHeight();
+        graphics2D.drawString(header, x, y - lineHeight/2);
+        graphics2D.drawString(page, (float) (x + imageableWidth - fm.stringWidth(page)), y-lineHeight/2);
+    }
+
+    private String getHeader(FontMetrics fm, double width) {
+        String header = ResourceBundleHelper.getString(language, "print_header", "VaroDB");
+
+        if (fm.stringWidth(header) > width ) {
+            String ellipsis = "... ";
+            String builder = "";
+            for (int i = 0; i < header.length(); i++) {
+                builder += (header.charAt(i));
+                if (fm.stringWidth(builder + ellipsis) >= width) break;
+            }
+            header = builder + ellipsis;
         }
-        return lines;
+        return header;
     }
 
-    public int getPageCount(Graphics2D g2, PageFormat pageFormat) {
-        int linesCounter = 0;
-        for (Enterprise enterprise : enterprises) {
-            linesCounter += getLines(getImageableWidth(pageFormat), g2.getFontMetrics(), enterprise).size();
-        }
 
-        double imageableHeight = pageFormat.getImageableHeight();
-
-        return (int) Math.ceil(linesCounter * g2.getFontMetrics().getHeight() / imageableHeight);
+    public int getNumPages() {
+        return pages.size();
     }
-
-    private int getImageableWidth(PageFormat pageFormat) {
-        int imageableWidth = (int) pageFormat.getImageableWidth();
-        int maxWidth = 7 * inchToPTCoefficient;
-        return imageableWidth < maxWidth ? imageableWidth : maxWidth;
-    }
-
 }

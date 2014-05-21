@@ -216,4 +216,16 @@ public class EnterpriseProxy extends EntityProxy {
     public static List<String> getFields(){
         return new ArrayList<>(methods.keySet());
     }
+
+    public static boolean isTitle(String field){
+        return field.equalsIgnoreCase("title");
+    }
+
+    public static boolean isAddress(String field){
+        return getAddressFields().contains(field.toLowerCase());
+    }
+
+    public static List<String> getAddressFields() {
+        return Arrays.asList("country", "postalcode", "sector", "region", "town", "streethouseoffice");
+    }
 }
