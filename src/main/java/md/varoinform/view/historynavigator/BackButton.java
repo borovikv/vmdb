@@ -1,8 +1,8 @@
 package md.varoinform.view.historynavigator;
 
 import md.varoinform.controller.history.History;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
 
 import java.awt.event.ActionEvent;

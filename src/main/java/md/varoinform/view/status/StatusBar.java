@@ -2,15 +2,15 @@ package md.varoinform.view.status;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Language;
-import md.varoinform.util.Observable;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.Observable;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.ObservableIml;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.LanguageComboBox;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +20,7 @@ import java.util.*;
  */
 public enum StatusBar  implements Observable {
     instance;
-    private java.util.List<Observer> observers = new ArrayList<>();
+    private ObservableIml observable = new ObservableIml();
 
     private JPanel statusBar;
 
@@ -47,14 +47,12 @@ public enum StatusBar  implements Observable {
 
     @Override
     public void addObserver(Observer observer) {
-        observers.add(observer);
+        observable.addObserver(observer);
     }
 
     @Override
     public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
-        }
+        observable.notifyObservers(event);
     }
 
 }

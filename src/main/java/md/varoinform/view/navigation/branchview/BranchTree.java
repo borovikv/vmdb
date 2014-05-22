@@ -4,7 +4,10 @@ import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.TreeNode;
-import md.varoinform.util.*;
+import md.varoinform.util.observer.Observable;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.ObservableIml;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.navigation.FilteringNavigator;
 
 import javax.swing.*;
@@ -14,7 +17,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 public class BranchTree extends JTree implements Observable, Observer, FilteringNavigator{
     private BranchNode root = new BranchNode(null);
     private boolean needToProcess = true;
-    private List<Observer> observers = new ArrayList<>();
+    private ObservableIml observable = new ObservableIml();
     private String text = "";
 
     public BranchTree() {
@@ -128,15 +130,12 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
 
     @Override
     public void addObserver(Observer observer) {
-        observers.add(observer);
-
+        observable.addObserver(observer);
     }
 
     @Override
     public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
-        }
+        observable.notifyObservers(event);
     }
 
 

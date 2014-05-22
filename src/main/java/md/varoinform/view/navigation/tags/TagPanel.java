@@ -4,9 +4,11 @@ import md.varoinform.Settings;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Tag;
-import md.varoinform.util.*;
-import md.varoinform.util.Observable;
-import md.varoinform.util.Observer;
+import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.observer.Observable;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.ObservableIml;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.demonstrator.EnterpriseTransferableHandler;
 import md.varoinform.view.navigation.FilteringDocumentListener;
 import md.varoinform.view.navigation.FilteringNavigator;
@@ -16,8 +18,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,8 +29,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     private final AutoCompleteTextField textField;
     private final TagList tagList = new TagList();
-    private List<Observer> observers = new ArrayList<>();
-
+    private ObservableIml observable = new ObservableIml();
 
     public TagPanel() {
         setLayout(new BorderLayout());
@@ -173,14 +172,12 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     @Override
     public void addObserver(Observer observer) {
-        observers.add(observer);
+        observable.addObserver(observer);
     }
 
     @Override
     public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
-        }
+        observable.notifyObservers(event);
     }
 
     public void addOnEnterAction(ActionListener listener){

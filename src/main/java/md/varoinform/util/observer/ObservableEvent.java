@@ -1,4 +1,4 @@
-package md.varoinform.util;
+package md.varoinform.util.observer;
 
 /**
  * Created with IntelliJ IDEA.

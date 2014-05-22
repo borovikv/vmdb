@@ -6,8 +6,8 @@ import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ImageHelper;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.export.ExportDialog;
@@ -102,7 +102,6 @@ public class MainFrame extends JFrame implements Observer {
         branchPanel.addObserver(this);
         demonstrator.addObserver(tagListener);
         tagPanel.addObserver(tagListener);
-        settingsDialog.addObserver(demonstrator);
         StatusBar.instance.addObserver(this);
 
         setTitle("Varo-Inform Database");

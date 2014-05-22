@@ -1,8 +1,9 @@
 package md.varoinform.controller.history;
 
-import md.varoinform.util.Observable;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.Observable;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.ObservableIml;
+import md.varoinform.util.observer.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public enum History implements Observable{
 
     private List<HistoryEvent> history = new ArrayList<>();
     private int currentIndex = -1;
-    private List<Observer> observers = new ArrayList<>();
+    private ObservableIml observable = new ObservableIml();
 
     public void add(HistoryEvent event){
         int size = history.size();
@@ -65,13 +66,11 @@ public enum History implements Observable{
 
     @Override
     public void addObserver(Observer observer) {
-        observers.add(observer);
+        observable.addObserver(observer);
     }
 
     @Override
     public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
-        }
+        observable.notifyObservers(event);
     }
 }

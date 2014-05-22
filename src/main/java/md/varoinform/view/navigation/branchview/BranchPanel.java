@@ -1,8 +1,8 @@
 package md.varoinform.view.navigation.branchview;
 
-import md.varoinform.util.Observable;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.Observable;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.navigation.FilteringDocumentListener;
 import md.varoinform.view.navigation.tags.AutoCompleteTextField;
 
@@ -41,10 +41,6 @@ public class BranchPanel extends JPanel implements Observable {
 
     public void select(Object obj) {
         branchTree.select(obj);
-    }
-
-    public void clearSelection() {
-        branchTree.clearSelection();
     }
 
     public List<Long> getNodes(){

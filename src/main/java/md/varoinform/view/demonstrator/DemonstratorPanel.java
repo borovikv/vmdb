@@ -6,8 +6,10 @@ import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.*;
-import md.varoinform.util.Observable;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.Observable;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.ObservableIml;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.fieldgroup.CheckBoxSelectionPerformer;
 import md.varoinform.view.dialogs.TagDialog;
 import md.varoinform.view.fieldgroup.ColumnCheckBox;
@@ -31,7 +33,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
-    private Set<Observer> observers = new HashSet<>();
+    private ObservableIml observable = new ObservableIml();
     private boolean painted = false;
     private final JSplitPane splitPane;
     private final JMenuItem addTagItem = new JMenuItem(ResourceBundleHelper.getString("tag", "add tag"));
@@ -182,14 +184,12 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     @Override
     public void addObserver(Observer observer) {
-        observers.add(observer);
+        observable.addObserver(observer);
     }
 
     @Override
     public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
-        }
+        observable.notifyObservers(event);
     }
 
     @Override

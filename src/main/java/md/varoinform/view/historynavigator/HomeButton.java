@@ -3,8 +3,8 @@ package md.varoinform.view.historynavigator;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
 import md.varoinform.view.demonstrator.Demonstrator;
 

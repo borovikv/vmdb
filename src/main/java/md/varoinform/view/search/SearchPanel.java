@@ -5,8 +5,8 @@ import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.search.Searcher;
 import md.varoinform.model.search.Searchers;
-import md.varoinform.util.*;
-import md.varoinform.util.Observer;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
 
 import java.awt.event.ActionEvent;
