@@ -31,7 +31,10 @@ public class MailActivity extends Activity {
 
     @Override
     protected Void doInBackground() throws Exception {
-        StringBuilder builder = new StringBuilder("mailto:");
+        if (enterprises.isEmpty()) return null;
+
+        String mailTo = "mailto:";
+        StringBuilder builder = new StringBuilder(mailTo);
         for (Enterprise enterprise : enterprises) {
 
             List<Email> emails = new EnterpriseProxy(enterprise).getEmails();
@@ -46,7 +49,9 @@ public class MailActivity extends Activity {
             }
         }
 
-        mail(builder.toString());
+        String url = builder.toString();
+        if (mailTo.equalsIgnoreCase(url)) return null;
+        mail(mailTo);
 
         return null;
     }
