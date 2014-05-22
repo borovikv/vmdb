@@ -28,7 +28,6 @@ public class PrintPreviewDialog extends JDialog{
         ImageIcon image = ImageHelper.getImageIcon("/external-resources/icons/V.png");
         setIconImage(image.getImage());
         setModal(true);
-        setDefaultLookAndFeelDecorated(true);
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         setMinimumSize(new Dimension(400, 300));
 

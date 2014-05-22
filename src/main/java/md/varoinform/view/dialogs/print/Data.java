@@ -3,6 +3,7 @@ package md.varoinform.view.dialogs.print;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.view.dialogs.progress.ProgressDialog;
 
 import java.awt.*;
 import java.awt.print.PageFormat;
@@ -17,20 +18,21 @@ import java.util.List;
  * Time: 11:44 AM
  */
 public class Data implements Printable {
-    private final Pages pages;
+    private final PagesActivity pagesActivity;
     private final Language language;
 
 
     public Data(PageFormat pageFormat, List<Enterprise> enterprises, List<String> selectedFields, Language language) {
         this.language = language;
-        pages = new Pages(enterprises, selectedFields, language, pageFormat);
+        pagesActivity = new PagesActivity(enterprises, selectedFields, language, pageFormat);
+        ProgressDialog.start(pagesActivity, ResourceBundleHelper.getString("print_prepare_progress"));
     }
 
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-        if (pageIndex > pages.size()) return NO_SUCH_PAGE;
+        if (pageIndex > pagesActivity.size()) return NO_SUCH_PAGE;
 
-        Page page = pages.get(pageIndex);
+        Page page = pagesActivity.get(pageIndex);
         if (page == null) return NO_SUCH_PAGE;
 
         drawHeader((Graphics2D) graphics, pageIndex, pageFormat);
@@ -44,7 +46,7 @@ public class Data implements Printable {
         float x = (float) pageFormat.getImageableX();
         double height = pageFormat.getImageableHeight();
         float xoff = x;
-        int lineHeight = graphics2D.getFontMetrics(pages.getTitleFont()).getHeight();
+        int lineHeight = graphics2D.getFontMetrics(pagesActivity.getTitleFont()).getHeight();
         float yoff = y + lineHeight;
 
         for (Block block : page) {
@@ -55,15 +57,15 @@ public class Data implements Printable {
                     graphics2D.setFont(block.getFont(field));
                     lineHeight = graphics2D.getFontMetrics().getHeight();
                     if (yoff > height + y){
-                        xoff += pages.getBlockWidth() + pages.getHorizontalPadding();
-                        lineHeight = graphics2D.getFontMetrics(pages.getTitleFont()).getHeight();
+                        xoff += pagesActivity.getBlockWidth() + pagesActivity.getHorizontalPadding();
+                        lineHeight = graphics2D.getFontMetrics(pagesActivity.getTitleFont()).getHeight();
                         yoff = y + lineHeight;
                     }
                     graphics2D.drawString(line, xoff, yoff);
                     yoff += lineHeight;
                 }
             }
-            yoff += pages.getVerticalPadding();
+            yoff += pagesActivity.getVerticalPadding();
         }
 
     }
@@ -99,6 +101,6 @@ public class Data implements Printable {
 
 
     public int getNumPages() {
-        return pages.size();
+        return pagesActivity.size();
     }
 }

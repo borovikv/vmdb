@@ -1,6 +1,7 @@
 package md.varoinform.controller.entityproxy;
 
 import md.varoinform.model.entities.*;
+import md.varoinform.util.ResourceBundleHelper;
 
 import java.util.*;
 
@@ -63,10 +64,7 @@ public class ContactProxy extends EntityProxy {
 
 
     public String getCountry(){
-        switch (currentLanguage().getTitle().substring(0, 2)){
-            case "ru": return "Молдова";
-            default:   return "Moldova";
-        }
+        return ResourceBundleHelper.getString(currentLanguage(), "moldova", "Republic Moldova");
     }
 
     public List<Email> getEmail(){

@@ -4,6 +4,7 @@ import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.view.LanguageComboBox;
 import md.varoinform.view.demonstrator.Demonstrator;
 import md.varoinform.view.dialogs.FieldChoosePanel;
 import md.varoinform.view.dialogs.RowsChoosePanel;
@@ -14,8 +15,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.print.*;
 import java.util.List;
 
@@ -32,12 +31,11 @@ public class PrintDialog extends JDialog {
 
 
     private int mode = DATA_MODE;
-    private Language language = LanguageProxy.instance.getCurrentLanguage();
-    private final FieldChoosePanel fieldChoosePanel = new FieldChoosePanel();
+    private final FieldChoosePanel fieldChoosePanel;
     private final HashPrintRequestAttributeSet attributes;
     private PageFormat pageFormat;
     private Demonstrator demonstrator;
-    private final JComboBox<Object> languageCombo;
+    private final LanguageComboBox languageCombo;
 
 
     public PrintDialog( Demonstrator demonstrator) {
@@ -66,18 +64,8 @@ public class PrintDialog extends JDialog {
 
         JPanel languagePanel = new JPanel();
         languagePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString("language-choose", "Choose language")));
-        List<Language> languages = LanguageProxy.instance.getLanguages();
-        languageCombo = new JComboBox<>(languages.toArray());
-        languageCombo.setSelectedIndex(languages.indexOf(language));
-        languageCombo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    language = (Language) e.getItem();
-                }
-            }
-        });
 
+        languageCombo = new LanguageComboBox();
         languagePanel.add(languageCombo);
         panel.add(languagePanel);
 
@@ -87,15 +75,17 @@ public class PrintDialog extends JDialog {
         printButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+                int result = JOptionPane.showConfirmDialog(null, ResourceBundleHelper.getString("printing_warning", "Are you sure?"));
+                if (result == JOptionPane.YES_OPTION){
                     PrinterJob job = PrinterJob.getPrinterJob();
-                    job.setPageable(makeBook());
+                    Book book = makeBook();
+                    job.setPageable(book);
                     if (job.printDialog(attributes)) {
-                        job.print(attributes);
+                        PrintActivity printActivity = new PrintActivity(job, attributes);
+                        printActivity.execute();
                     }
-                } catch (PrinterException e1) {
-                    e1.printStackTrace();
                 }
+                setVisible(false);
             }
         });
         buttonPanel.add(printButton);
@@ -124,6 +114,7 @@ public class PrintDialog extends JDialog {
 
 
         add(panel, BorderLayout.CENTER);
+        fieldChoosePanel = new FieldChoosePanel();
         JScrollPane choosePane = new JScrollPane(fieldChoosePanel);
         choosePane.setBorder(getTitledBorder(ResourceBundleHelper.getString("fields", "Fields")));
         add(choosePane, BorderLayout.EAST);
@@ -146,11 +137,11 @@ public class PrintDialog extends JDialog {
         Printable painter = null;
         int numPages = 0;
         if (mode == DATA_MODE){
-            painter = new Data(pageFormat, enterprises, getSelectedFields(), language);
+            painter = new Data(pageFormat, enterprises, getSelectedFields(), (Language) languageCombo.getSelectedItem());
             numPages = ((Data)painter).getNumPages();
 
         } else if (mode == ADDRESS_MODE){
-            painter = new Address(enterprises, language);
+            painter = new Address(enterprises, (Language) languageCombo.getSelectedItem());
             numPages = ((Address)painter).getNumPages(pageFormat);
         }
         if (painter != null)
@@ -194,7 +185,7 @@ public class PrintDialog extends JDialog {
 
     public void updateDisplay() {
         fieldChoosePanel.updateDisplay();
-        language = LanguageProxy.instance.getCurrentLanguage();
+        Language language = LanguageProxy.instance.getCurrentLanguage();
         languageCombo.setSelectedItem(language);
         updateTitle();
 
@@ -203,6 +194,7 @@ public class PrintDialog extends JDialog {
 
     private class PrintModeAction extends AbstractAction {
         private final int value;
+        private final String ru = "ru";
 
         public PrintModeAction(int value) {
             this.value = value;
@@ -211,15 +203,21 @@ public class PrintDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             mode = this.value;
+            Language lang = LanguageProxy.instance.getLanguage(ru);
             if (mode == ADDRESS_MODE){
                 fieldChoosePanel.setEnabled(false);
+                languageCombo.setEnableItem(lang, false);
             } else {
                 fieldChoosePanel.setEnabled(true);
+                languageCombo.setEnableItem(lang, true);
             }
         }
+
     }
 
     public static void print(Demonstrator demonstrator) {
-        new PrintDialog(demonstrator).setVisible(true);
+        PrintDialog printDialog = new PrintDialog(demonstrator);
+        printDialog.setVisible(true);
+        printDialog.dispose();
     }
 }

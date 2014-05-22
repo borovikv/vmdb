@@ -24,14 +24,13 @@ public class ExportActivity extends Activity {
     private final File file;
     private final List<String> selectedColumns;
     private final List<Enterprise> enterprises;
-    private String note;
     private String format;
 
     public ExportActivity(File file, List<String> selectedColumns, List<Enterprise> enterprises) {
         this.file = file;
         this.selectedColumns = selectedColumns;
         this.enterprises = enterprises;
-        format = ResourceBundleHelper.getString("i_from_size", "Exported %d from %d");
+        format = ResourceBundleHelper.getString("exported_i_from_size", super.getFormat());
         Collections.sort(selectedColumns, new ColumnPriorityComparator());
     }
 
@@ -45,6 +44,7 @@ public class ExportActivity extends Activity {
                 Thread.sleep(millis);
                 Enterprise enterprise = enterprises.get(i);
                 writeLine(writer, selectedColumns, enterprise);
+
                 int progress = i * 100 / size;
                 setProgress(progress);
                 setNote(i, size);
@@ -65,11 +65,8 @@ public class ExportActivity extends Activity {
         writer.writeNext(entries);
     }
 
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(int i, int size) {
-        this.note = String.format(format, i, size);
+    @Override
+    public String getFormat() {
+        return format;
     }
 }

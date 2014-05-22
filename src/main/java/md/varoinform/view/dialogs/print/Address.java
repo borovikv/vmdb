@@ -38,17 +38,33 @@ public class Address extends PrintableBase {
         int fontHeight = g2.getFontMetrics().getHeight();
         float xoff = x + indent;
         int lineHeight = fontHeight;
+        int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
 
-        String[] fields = {"title", "address"};
+
         EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
-        for (String field : fields) {
-            int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
-            String value = StringUtils.valueOf(enterpriseProxy.get(field));
-            java.util.List<String> wrapLines = StringWrapper.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
-            for (String line : wrapLines) {
-                g2.drawString(line, xoff, y + lineHeight);
-                lineHeight += fontHeight;
-            }
+        String postalCode = enterpriseProxy.getPostalCode();
+        postalCode = postalCode.toUpperCase().startsWith("MD") ? postalCode : "MD-" + postalCode;
+        String[] strings = new String[]{
+                enterpriseProxy.getTitle(),
+                StringUtils.valueOf(enterpriseProxy.getStreetHouseOffice()),
+                postalCode + " " + enterpriseProxy.getTown(),
+                enterpriseProxy.getCountry().toUpperCase()
+        };
+        for (String string : strings) {
+            lineHeight = drawString(y, g2, fontHeight, xoff, lineHeight, maxWriteAreaWidth, string);
         }
+
+
     }
+
+    private int drawString(float y, Graphics2D g2, int fontHeight, float xoff, int lineHeight, int maxWriteAreaWidth, String value) {
+        List<String> wrapLines = StringWrapper.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
+        for (String line : wrapLines) {
+            g2.drawString(line, xoff, y + lineHeight);
+            lineHeight += fontHeight;
+        }
+        return lineHeight;
+    }
+
+
 }

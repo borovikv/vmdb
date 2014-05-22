@@ -4,6 +4,7 @@ import md.varoinform.model.dao.GenericDaoHibernateImpl;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.PreferencesHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,10 +39,10 @@ public enum  LanguageProxy {
 
     public List<Language> getLanguages(){
         if (languages != null)
-            return languages;
+            return new ArrayList<>(languages);
         GenericDaoHibernateImpl<Language, Long> languageDao = new GenericDaoHibernateImpl<>(Language.class);
         languages = languageDao.getAll();
-        return languages;
+        return new ArrayList<>(languages);
     }
 
     public Language getCurrentLanguage() {
@@ -59,5 +60,16 @@ public enum  LanguageProxy {
         this.currentLanguage = currentLanguage;
         PreferencesHelper preferences = new PreferencesHelper();
         preferences.setCurrentLanguage(currentLanguage.getTitle());
+    }
+
+    public Language getLanguage(String title) {
+        if (title == null) return null;
+        List<Language> list = getLanguages();
+        for (Language language : list) {
+            if (language.getTitle().toLowerCase().startsWith(title.toLowerCase())){
+                return language;
+            }
+        }
+        return null;
     }
 }

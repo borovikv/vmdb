@@ -6,6 +6,7 @@ import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.StringWrapper;
+import md.varoinform.view.dialogs.progress.Activity;
 
 import java.awt.*;
 import java.awt.print.PageFormat;
@@ -18,8 +19,10 @@ import java.util.List;
  * Date: 5/20/14
  * Time: 9:40 AM
  */
-public class Pages {
+public class PagesActivity extends Activity {
     private static final Font TITLE_FONT = new Font("SanSerif", Font.BOLD, 10);
+    private final double canvasWidth;
+    private final double canvasHeight;
     private List<Page> pages = new ArrayList<>();
     private final List<Enterprise> enterprises;
     private final Language language;
@@ -31,16 +34,19 @@ public class Pages {
     private final FontMetrics titleFM;
     private double blockWidth;
     private int counter = 1;
+    private String format;
 
 
-    public Pages(List<Enterprise> enterprises, List<String> fields, Language language, PageFormat pageFormat) {
+    public PagesActivity(List<Enterprise> enterprises, List<String> fields, Language language, PageFormat pageFormat) {
         this.enterprises = enterprises;
         this.language = language;
         this.fields = fields;
         Canvas canvas = new Canvas();
         defaultFM = canvas.getFontMetrics(DEFAULT_FONT);
         titleFM = canvas.getFontMetrics(TITLE_FONT);
-        create(pageFormat.getImageableWidth(), pageFormat.getImageableHeight());
+        canvasWidth = pageFormat.getImageableWidth();
+        canvasHeight = pageFormat.getImageableHeight();
+        format = ResourceBundleHelper.getString("prepared_i_from_size", super.getFormat());
     }
 
     public int getHorizontalPadding() {
@@ -48,15 +54,18 @@ public class Pages {
     }
 
 
-    private void create(double canvasWidth, double canvasHeight) {
+    @Override
+    protected Void doInBackground() throws Exception {
         Page page = new Page();
         pages.add(page);
         blockWidth = calculateBlockWidth(canvasWidth);
         double canvasArea = calculateEffectiveArea(blockWidth, canvasWidth, canvasHeight);
 
         int usedArea = 0;
-        for (Enterprise enterprise : enterprises) {
-            Block block = getBlock(enterprise, language);
+        int size = enterprises.size();
+        for (int i = 0; i < size; i++) {
+
+            Block block = getBlock(enterprises.get(i), language);
             double blockArea = (block.height() + verticalPadding) * (blockWidth + horizontalPadding);
             usedArea += blockArea;
 
@@ -67,7 +76,17 @@ public class Pages {
             }
             page.addBlock(block);
 
+
+            int progress = i * 100 / size;
+            setProgress(progress);
+            setNote(i, size);
         }
+        return null;
+    }
+
+    @Override
+    public String getFormat() {
+        return format;
     }
 
     private double calculateEffectiveArea(double innerBlockWidth, double canvasWidth, double canvasHeight) {
@@ -168,4 +187,5 @@ public class Pages {
     public Font getTitleFont() {
         return TITLE_FONT;
     }
+
 }

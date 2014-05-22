@@ -102,6 +102,7 @@ public class FieldGroup {
     }
 
     public void setEnable(boolean enable){
+        selectAll.setEnabled(enable);
         for (ColumnCheckBox checkBox : checkBoxes) {
             checkBox.setEnabled(enable);
         }

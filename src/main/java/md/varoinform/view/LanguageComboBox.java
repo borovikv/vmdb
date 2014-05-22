@@ -2,14 +2,9 @@ package md.varoinform.view;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Language;
-import md.varoinform.util.Observable;
-import md.varoinform.util.ObservableEvent;
-import md.varoinform.util.Observer;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,39 +12,46 @@ import java.util.List;
  * Date: 12/3/13
  * Time: 3:20 PM
  */
-public class LanguageComboBox extends JComboBox<Language> implements Observable {
-    private List<Observer> observers = new ArrayList<>();
+public class LanguageComboBox extends JComboBox<Language> {
+    private final List<Language> languages;
+    private List<Language> disabledLanguages = new ArrayList<>();
+    private List<Language> currentLanguages = new ArrayList<>();
 
     public LanguageComboBox() {
-        DefaultComboBoxModel<Language> model = new DefaultComboBoxModel<>(getLanguages());
-        model.setSelectedItem(LanguageProxy.instance.getCurrentLanguage());
-        setModel(model);
-        addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Language newLanguage = (Language) getSelectedItem();
-                LanguageProxy.instance.setCurrentLanguage(newLanguage);
-                notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED));
-            }
-        });
+        languages = LanguageProxy.instance.getLanguages();
+        setCurrentLanguages();
+
     }
 
-    private Language[] getLanguages() {
-        List<Language> languageList = LanguageProxy.instance.getLanguages();
-        Language[] languages = new Language[languageList.size()];
-        languageList.toArray(languages);
-        return languages;
-    }
-
-    @Override
-    public void addObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void notifyObservers(ObservableEvent event) {
-        for (Observer observer : observers) {
-            observer.update(event);
+    public void setCurrentLanguages() {
+        currentLanguages = new ArrayList<>(languages);
+        for (Language language : disabledLanguages) {
+            currentLanguages.remove(language);
         }
+        DefaultComboBoxModel<Language> model = new DefaultComboBoxModel<>(currentLanguages.toArray(new Language[languages.size()]));
+        Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
+        if (currentLanguages.contains(currentLanguage)) {
+            model.setSelectedItem(currentLanguage);
+        }
+        removeAllItems();
+        setModel(model);
+    }
+
+    public void setEnableItem(Language language, boolean enable){
+        if (language == null) return;
+        if (languages.contains(language)){
+            if (enable){
+                disabledLanguages.remove(language);
+            } else if (!disabledLanguages.contains(language)){
+                disabledLanguages.add(language);
+            }
+            setCurrentLanguages();
+        }
+    }
+
+    @Override
+    public void setSelectedIndex(int anIndex) {
+        if (disabledLanguages.contains(languages.get(anIndex))) return;
+        super.setSelectedIndex(anIndex);
     }
 }
