@@ -57,7 +57,6 @@ public class ResourceBundleHelper implements Serializable {
             e.printStackTrace();
             return defaultValue;
         }
-
         if ( bundle.containsKey(key)){
             String val = bundle.getString(key);
             try {

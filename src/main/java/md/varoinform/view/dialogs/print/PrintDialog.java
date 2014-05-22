@@ -41,7 +41,7 @@ public class PrintDialog extends JDialog {
     public PrintDialog( Demonstrator demonstrator) {
         this.demonstrator = demonstrator;
 
-        setSize(450, 500);
+        setSize(700, 600);
         setModal(true);
         updateTitle();
         setLocationRelativeTo(null);
@@ -54,7 +54,7 @@ public class PrintDialog extends JDialog {
         JRadioButton typeData = new JRadioButton(ResourceBundleHelper.getString("type-data", "Data"));
         typeData.addActionListener(new PrintModeAction(DATA_MODE));
         typeData.setSelected(true);
-        JPanel typePanel = createRadioButtonGroup("print value", new JRadioButton[]{typeData, typeAddress});
+        JPanel typePanel = createRadioButtonGroup(null, new JRadioButton[]{typeData, typeAddress});
         panel.add(typePanel);
 
 
@@ -164,7 +164,9 @@ public class PrintDialog extends JDialog {
     private JPanel createRadioButtonGroup(String title, JRadioButton[] buttons) {
         JPanel typePanel = new JPanel();
         typePanel.setLayout(new BoxLayout(typePanel, BoxLayout.Y_AXIS));
-        typePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString(title, title)));
+        if (title != null && !title.isEmpty()) {
+            typePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString(title, title)));
+        }
 
         ButtonGroup buttonGroup = new ButtonGroup();
         for (JRadioButton button : buttons) {

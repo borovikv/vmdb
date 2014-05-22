@@ -21,11 +21,11 @@ public class RowsChoosePanel extends JPanel {
     public RowsChoosePanel(String title, int selectedRowsCount, int allRowsCount) {
         String ent = ResourceBundleHelper.getString("enterprises", "enterprises");
         String all = ResourceBundleHelper.getString("all", "All");
-        JRadioButton allCheckBox = new JRadioButton(all + " " + allRowsCount + " " + ent);
+        JRadioButton allCheckBox = new JRadioButton(all + " (" + allRowsCount + ") " + ent);
         allCheckBox.addActionListener(new ChooseAction(ALL));
 
         String selectedOnly = ResourceBundleHelper.getString("selected-only", "Only selected");
-        JRadioButton selectedCheckBox = new JRadioButton(selectedOnly + " " + selectedRowsCount + " " + ent);
+        JRadioButton selectedCheckBox = new JRadioButton(selectedOnly + " (" + selectedRowsCount + ") " + ent);
         selectedCheckBox.addActionListener(new ChooseAction(SELECTED));
         selectedCheckBox.setSelected(true);
 

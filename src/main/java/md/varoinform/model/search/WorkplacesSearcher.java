@@ -44,6 +44,7 @@ public class WorkplacesSearcher extends Searcher {
 
     @Override
     public String getName() {
+        if (type == ComparisonType.EQ) return super.getName();
         return super.getName() + type.toString();
     }
 }

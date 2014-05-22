@@ -1,5 +1,7 @@
 package md.varoinform.view.dialogs.progress;
 
+import md.varoinform.util.ResourceBundleHelper;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -43,11 +45,11 @@ public class ProgressDialog extends JDialog{
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
         setTitle(message);
-        noteLabel = new JLabel("note");
+        noteLabel = new JLabel();
 
         progressBar = new JProgressBar(0, 100);
 
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton(ResourceBundleHelper.getString("cancel", "Cancel"));
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
