@@ -116,7 +116,7 @@ public class MainFrame extends JFrame implements Observer {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 
-        JToolBar toolbar = createToolBar();
+        JPanel toolbar = createToolBar();
         mainPanel.add(toolbar, BorderLayout.NORTH);
 
         navigationPane = createNavigationPane();
@@ -134,35 +134,42 @@ public class MainFrame extends JFrame implements Observer {
         homeButton.home();
     }
 
-    private JToolBar createToolBar() {
-        JToolBar toolbar = new JToolBar();
-        toolbar.setFloatable(false);
+    private JPanel createToolBar() {
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createEmptyBorder());
+        GroupLayout layout = new GroupLayout(panel);
+        layout.setAutoCreateContainerGaps(true);
+        layout.setAutoCreateGaps(true);
+        panel.setLayout(layout);
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                        .addComponent(homeButton)
+                        .addComponent(backButton)
+                        .addComponent(forwardButton)
+                        .addComponent(searchPanel.searchField)
+                        .addComponent(searchPanel.searcherCombo, 0, searchPanel.searcherCombo.getMaxWidth(), GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchPanel.searchButton)
+                        .addComponent(tagButton)
+                        .addComponent(exportButton)
+                        .addComponent(mailButton)
+                        .addComponent(printButton)
+                        .addComponent(settingsButton)
+        );
+        int height = searchPanel.searchField.height();
+        layout.setVerticalGroup(layout.createParallelGroup()
+                        .addComponent(homeButton, height, height, height)
+                        .addComponent(backButton, height, height, height)
+                        .addComponent(forwardButton, height, height, height)
+                        .addComponent(searchPanel.searchField, height, height, height)
+                        .addComponent(searchPanel.searcherCombo, height, height, height)
+                        .addComponent(searchPanel.searchButton, height, height, height)
+                        .addComponent(tagButton, height, height, height)
+                        .addComponent(exportButton, height, height, height)
+                        .addComponent(mailButton, height, height, height)
+                        .addComponent(printButton, height, height, height)
+                        .addComponent(settingsButton, height, height, height)
+        );
 
-        toolbar.add(homeButton);
-        toolbar.add(backButton);
-        toolbar.add(forwardButton);
-        toolbar.addSeparator();
-
-        toolbar.add(searchPanel.searchField);
-        toolbar.add(searchPanel.searcherCombo);
-        toolbar.add(searchPanel.searchButton);
-        toolbar.addSeparator();
-
-        toolbar.add(tagButton);
-        toolbar.addSeparator();
-
-        toolbar.add(exportButton);
-        toolbar.addSeparator();
-
-        toolbar.add(mailButton);
-        toolbar.addSeparator();
-
-        toolbar.add(printButton);
-        toolbar.addSeparator();
-
-        toolbar.add(settingsButton);
-
-        return toolbar;
+        return panel;
     }
 
 

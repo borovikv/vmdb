@@ -14,17 +14,18 @@ import java.awt.*;
  */
 public class SearchField extends JTextField {
     public SearchField() {
-        int height = getFontMetrics(getFont()).getHeight() + 4*2;
-        Dimension dimension = new Dimension(Short.MAX_VALUE, height);
-        setPreferredSize(dimension);
         setFont(Settings.getDefaultFont("SANS_SERIF"));
+    }
+
+    public int height() {
+        return getFontMetrics(getFont()).getHeight() + 10;
     }
 
     @Override
     protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
 
-        if (getText().isEmpty() /*&& !(FocusManager.getCurrentKeyboardFocusManager().getFocusOwner() == this)*/) {
+        if (getText().isEmpty()) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setBackground(Color.gray);
             g2.setFont(getFont().deriveFont(Font.ITALIC));

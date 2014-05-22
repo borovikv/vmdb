@@ -4,6 +4,7 @@ import md.varoinform.model.search.Searcher;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +40,10 @@ class FieldSearcherItem extends DefaultListCellRenderer implements Comparable<Fi
         return getNameDisplay().compareTo(o.getNameDisplay());
     }
 
+    public int getWidth(){
+        FontMetrics metrics = getFontMetrics(getFont());
+        return metrics.stringWidth(toString());
+    }
     public Searcher getSearcher() {
         return searcher;
     }

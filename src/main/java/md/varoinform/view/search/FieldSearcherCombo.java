@@ -13,12 +13,15 @@ import java.util.List;
  * Time: 2:22 PM
  */
 public class FieldSearcherCombo extends JComboBox<FieldSearcherItem> {
-    List<FieldSearcherItem> fieldSearcherItems = new ArrayList<>();
+    private List<FieldSearcherItem> fieldSearcherItems = new ArrayList<>();
+    private int maxWidth = 0;
 
     public FieldSearcherCombo(List<Searcher> searchers) {
         for (Searcher searcher : searchers) {
             this.fieldSearcherItems.add(new FieldSearcherItem(searcher));
         }
+        setMaximumRowCount(fieldSearcherItems.size());
+        updateDisplay();
     }
 
     public void updateDisplay(){
@@ -26,6 +29,10 @@ public class FieldSearcherCombo extends JComboBox<FieldSearcherItem> {
         Collections.sort(fieldSearcherItems);
         for (FieldSearcherItem fieldSearcherItem : fieldSearcherItems) {
             addItem(fieldSearcherItem);
+            int width = fieldSearcherItem.getWidth();
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
         }
 
     }
@@ -42,6 +49,10 @@ public class FieldSearcherCombo extends JComboBox<FieldSearcherItem> {
                 return;
             }
         }
+    }
+
+    public int getMaxWidth() {
+        return maxWidth;
     }
 }
 

@@ -1,14 +1,10 @@
 package md.varoinform.view;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,36 +25,19 @@ public class ToolbarButton extends JButton {
 
         setIcon(icon);
         setFont(Settings.getDefaultFont("Serif", 14));
-        setPreferredSize(new Dimension(width + 4, height + 4));
         setOpaque(false);
         setContentAreaFilled(true);
         updateDisplay();
     }
 
     public ToolbarButton(String filename, String toolTipText) {
-        this(filename, iconWidth * 2, iconHeight * 2, "", toolTipText);
+        this(filename, iconWidth, iconHeight, "", toolTipText);
     }
 
 
 
     public ToolbarButton(String filename, String text, String toolTipText){
         this(filename, iconWidth, iconHeight, text, toolTipText);
-        int textWidth = getTextWidth();
-        int left = getBorder().getBorderInsets(this).left;
-        int right = getBorder().getBorderInsets(this).right;
-        setPreferredSize(new Dimension(textWidth + iconWidth + left + right, iconHeight * 2 + 4));
-    }
-
-    private int getTextWidth() {
-        FontMetrics metrics = getFontMetrics(getFont());
-        java.util.List<Language> languages = LanguageProxy.instance.getLanguages();
-        int result = 0;
-        for (Language language : languages) {
-            String text = ResourceBundleHelper.getString(language, this.text, this.text);
-            int width = metrics.stringWidth(text);
-            if (width > result) result = width;
-        }
-        return result;
     }
 
     public void updateDisplay(){
