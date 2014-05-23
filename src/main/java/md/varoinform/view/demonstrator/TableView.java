@@ -39,7 +39,7 @@ public class TableView extends JTable implements Demonstrator {
         getColumnModel().addColumnModelListener(new ColumnModelListener());
 
         setSelectionBackground(Settings.getDefaultColor("highlight"));
-
+        setFont(Settings.getDefaultFont("SANS_SERIF", 12));
         setColumnSelectionAllowed(false);
         setRowSelectionAllowed(true);
 

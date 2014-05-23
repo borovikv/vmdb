@@ -49,9 +49,4 @@ public class LanguageComboBox extends JComboBox<Language> {
         }
     }
 
-    @Override
-    public void setSelectedIndex(int anIndex) {
-        if (disabledLanguages.contains(languages.get(anIndex))) return;
-        super.setSelectedIndex(anIndex);
-    }
 }

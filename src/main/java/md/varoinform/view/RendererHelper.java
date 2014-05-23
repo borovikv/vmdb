@@ -22,6 +22,7 @@ public class RendererHelper {
         panel.setBackground(background);
 
         JLabel label = new JLabel(title);
+        label.setFont(Settings.getDefaultFont("SANS_SERIF", 14));
 
         panel.add(label);
         int height = 6 + label.getFontMetrics(label.getFont()).getHeight();

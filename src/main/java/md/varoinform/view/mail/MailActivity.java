@@ -51,7 +51,7 @@ public class MailActivity extends Activity {
 
         String url = builder.toString();
         if (mailTo.equalsIgnoreCase(url)) return null;
-        mail(mailTo);
+        mail(url);
 
         return null;
     }

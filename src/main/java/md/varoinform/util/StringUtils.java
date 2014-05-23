@@ -1,7 +1,11 @@
 package md.varoinform.util;
 
 import md.varoinform.model.entities.Language;
+
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("ALL")
@@ -48,5 +52,35 @@ public class StringUtils {
             return valueOf((Collection<?>)value);
         }
         return value;
+    }
+
+    public static List<String> wrap(String value, FontMetrics fm, int maxWidth){
+        List<String> result = new ArrayList<>();
+        if (value.length() == 0) return result;
+
+        if (fm.stringWidth(value) < maxWidth) {
+            result.add(value);
+            return result;
+        }
+
+        String[] split = value.split("[\\r\\n\\s]+");
+        String line = "";
+        for (String s : split) {
+            if (fm.stringWidth(line + " " + s) < maxWidth){
+                line += s + " ";
+            } else {
+                wrap(result, line.trim(), fm, maxWidth);
+                line = s;
+            }
+
+        }
+        wrap(result, line.trim(), fm, maxWidth);
+        return result;
+    }
+
+    private static void wrap(List<String> result, String line, FontMetrics fm, int maxWidth) {
+        if (line.length() > 0) {
+            result.addAll(StringWrapper.wrap(line, fm, maxWidth));
+        }
     }
 }

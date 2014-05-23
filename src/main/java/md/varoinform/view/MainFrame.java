@@ -138,16 +138,17 @@ public class MainFrame extends JFrame implements Observer {
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder());
         GroupLayout layout = new GroupLayout(panel);
-        layout.setAutoCreateContainerGaps(true);
         layout.setAutoCreateGaps(true);
         panel.setLayout(layout);
         layout.setHorizontalGroup(layout.createSequentialGroup()
                         .addComponent(homeButton)
                         .addComponent(backButton)
                         .addComponent(forwardButton)
+                        .addGap(15)
                         .addComponent(searchPanel.searchField)
                         .addComponent(searchPanel.searcherCombo, 0, searchPanel.searcherCombo.getMaxWidth(), GroupLayout.PREFERRED_SIZE)
                         .addComponent(searchPanel.searchButton)
+                        .addGap(15)
                         .addComponent(tagButton)
                         .addComponent(exportButton)
                         .addComponent(mailButton)
@@ -155,7 +156,10 @@ public class MainFrame extends JFrame implements Observer {
                         .addComponent(settingsButton)
         );
         int height = searchPanel.searchField.height();
-        layout.setVerticalGroup(layout.createParallelGroup()
+        int padding = 5;
+        int gapHeight = height + padding*2;
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addGap(gapHeight, gapHeight, gapHeight)
                         .addComponent(homeButton, height, height, height)
                         .addComponent(backButton, height, height, height)
                         .addComponent(forwardButton, height, height, height)

@@ -4,7 +4,6 @@ import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.StringUtils;
-import md.varoinform.util.StringWrapper;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -21,7 +20,7 @@ public class Address extends PrintableBase {
 
     public Address(List<Enterprise> enterprises, Language language) {
         super(enterprises, language);
-        width = (int)(2.5 * inchToPTCoefficient);
+        width = (int)(3.0 * inchToPTCoefficient);
         height = (int) (1.5 * inchToPTCoefficient);
     }
 
@@ -42,12 +41,10 @@ public class Address extends PrintableBase {
 
 
         EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
-        String postalCode = enterpriseProxy.getPostalCode();
-        postalCode = postalCode.toUpperCase().startsWith("MD") ? postalCode : "MD-" + postalCode;
         String[] strings = new String[]{
                 enterpriseProxy.getTitle(),
                 StringUtils.valueOf(enterpriseProxy.getStreetHouseOffice()),
-                postalCode + " " + enterpriseProxy.getTown(),
+                enterpriseProxy.getPostalCode() + " " + enterpriseProxy.getTown(),
                 enterpriseProxy.getCountry().toUpperCase()
         };
         for (String string : strings) {
@@ -58,13 +55,14 @@ public class Address extends PrintableBase {
     }
 
     private int drawString(float y, Graphics2D g2, int fontHeight, float xoff, int lineHeight, int maxWriteAreaWidth, String value) {
-        List<String> wrapLines = StringWrapper.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
+        List<String> wrapLines = StringUtils.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);
         for (String line : wrapLines) {
             g2.drawString(line, xoff, y + lineHeight);
             lineHeight += fontHeight;
         }
         return lineHeight;
     }
+
 
 
 }

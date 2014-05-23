@@ -25,8 +25,8 @@ public class ToolbarButton extends JButton {
 
         setIcon(icon);
         setFont(Settings.getDefaultFont("Serif", 14));
-        setOpaque(false);
-        setContentAreaFilled(true);
+        //setOpaque(false);
+        //setContentAreaFilled(true);
         updateDisplay();
     }
 
@@ -45,5 +45,4 @@ public class ToolbarButton extends JButton {
         String text = ResourceBundleHelper.getString(this.text, this.text);
         setText(text);
     }
-
 }

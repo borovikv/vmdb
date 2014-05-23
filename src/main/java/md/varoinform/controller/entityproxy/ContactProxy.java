@@ -33,7 +33,9 @@ public class ContactProxy extends EntityProxy {
     }
 
     public String getPostalCode(){
-        return contact == null ? null : contact.getPostalCode();
+        if (contact == null) return null;
+        String postalCode = contact.getPostalCode();
+        return postalCode.toUpperCase().startsWith("MD") ? postalCode : "MD-" + postalCode;
     }
 
     public String getHouseNumber(){

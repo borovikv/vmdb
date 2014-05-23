@@ -10,8 +10,7 @@ import md.varoinform.view.dialogs.progress.Activity;
 
 import java.awt.*;
 import java.awt.print.PageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -140,7 +139,7 @@ public class PagesActivity extends Activity {
 
     private String getAddress(List<String> fields, EnterpriseProxy enterpriseProxy, Language language) {
         List<String> addressFields = EnterpriseProxy.getAddressFields();
-        List<Object> address = new ArrayList<>();
+        Set<Object> address = new LinkedHashSet<>();
         for (String field : addressFields) {
             if (fields.contains(field)){
                 Object o = enterpriseProxy.get(field);
