@@ -18,6 +18,7 @@ import md.varoinform.view.fieldgroup.FieldGroup;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -33,10 +34,11 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
+    private JPopupMenu headerPopup;
     private ObservableIml observable = new ObservableIml();
     private boolean painted = false;
     private final JSplitPane splitPane;
-    private final JMenuItem addTagItem = new JMenuItem(ResourceBundleHelper.getString("tag", "add tag"));
+    private final JMenuItem addTagItem = new JMenuItem(ResourceBundleHelper.getString("tag_add", "Add tag"));
 
 
     public DemonstratorPanel() {
@@ -87,7 +89,8 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         });
 
 
-        demonstrator.getTableHeader().setComponentPopupMenu(createHeaderPopup());
+        headerPopup = createHeaderPopup();
+//        demonstrator.getTableHeader().setComponentPopupMenu(headerPopup);
 
         add(splitPane);
         History.instance.addObserver(this);
@@ -160,6 +163,9 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     public void updateDisplay(){
         demonstrator.updateDisplay();
+        headerPopup = createHeaderPopup();
+        JTableHeader tableHeader = demonstrator.getTableHeader();
+        tableHeader.setComponentPopupMenu(headerPopup);
         showEnterprise(getSelectedEnterprise());
     }
 

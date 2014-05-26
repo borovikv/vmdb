@@ -21,7 +21,7 @@ public class TagDialog extends JDialog {
     private TagDialog() {
         setLocationRelativeTo(null);
         setModal(true);
-        setTitle(ResourceBundleHelper.getString("tag_add", ""));
+        setTitle(ResourceBundleHelper.getString("tag_add", "Add tag"));
         setMinimumSize(new Dimension(400, 400));
 
         AbstractAction addTagAction = new AbstractAction() {

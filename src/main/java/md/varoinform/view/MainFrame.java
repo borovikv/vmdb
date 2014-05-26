@@ -49,7 +49,7 @@ public class MainFrame extends JFrame implements Observer {
     private final ToolbarButton exportButton = new ToolbarButton("/external-resources/icons/export.png", "export", "export");
     private final ToolbarButton mailButton = new ToolbarButton("/external-resources/icons/mail.png", "mail", "mail");
     private final ToolbarButton settingsButton = new ToolbarButton("/external-resources/icons/settings.png", "settings", "settings");
-    private final ToolbarButton tagButton = new ToolbarButton("/external-resources/icons/star.png", "tag", "tag");
+    private final ToolbarButton tagButton = new ToolbarButton("/external-resources/icons/star.png", "tag_add", "tag_add");
     private final ToolbarButton printButton = new ToolbarButton("/external-resources/icons/print.png", "print", "print");
     private final SearchPanel searchPanel = new SearchPanel();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
@@ -104,7 +104,7 @@ public class MainFrame extends JFrame implements Observer {
         tagPanel.addObserver(tagListener);
         StatusBar.instance.addObserver(this);
 
-        setTitle("Varo-Inform Database");
+        setTitle("Varo-Inform DATABASE");
         JFrame.setDefaultLookAndFeelDecorated(true);
         ImageIcon image = ImageHelper.getImageIcon("/external-resources/icons/V.png");
         setIconImage(image.getImage());
@@ -204,8 +204,8 @@ public class MainFrame extends JFrame implements Observer {
             }
         }
 
-        navigationPane.setTitleAt(0, ResourceBundleHelper.getString("treebranch"));
-        navigationPane.setTitleAt(1, ResourceBundleHelper.getString("selected"));
+        navigationPane.setTitleAt(0, ResourceBundleHelper.getString("tree", "Tree"));
+        navigationPane.setTitleAt(1, ResourceBundleHelper.getString("tag", "Tag"));
 
         OutputLabel.instance.updateDisplay();
     }

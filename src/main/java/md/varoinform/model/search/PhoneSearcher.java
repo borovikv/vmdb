@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 4/24/14
  * Time: 10:20 AM
  */
-public class PhonesSearcher extends Searcher {
+public class PhoneSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
         String hql = "Select distinct e from Enterprise e join e.contacts c join c.allPhones p where lower(p.phone) like :pattern";

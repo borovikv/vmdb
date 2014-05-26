@@ -22,7 +22,7 @@ public class Searchers {
         searchers.add(new ForeingCapitalSearcher());
         searchers.add(new FullTextSearcher());
         searchers.add(new GoodsSearcher());
-        searchers.add(new PhonesSearcher());
+        searchers.add(new PhoneSearcher());
         searchers.add(new PostalCodeSearcher());
         searchers.add(new BrandsSearcher());
         searchers.add(new RegionSearcher());
