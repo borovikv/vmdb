@@ -18,7 +18,6 @@ import md.varoinform.view.fieldgroup.FieldGroup;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -34,7 +33,6 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private final Browser browser  = new Browser();
     private final TableView demonstrator = new TableView();
-    private JPopupMenu headerPopup;
     private ObservableIml observable = new ObservableIml();
     private boolean painted = false;
     private final JSplitPane splitPane;
@@ -77,7 +75,16 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
         demonstrator.addMouseListener(new MouseAdapter() {
             @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopupMenu(e);
+            }
+
+            @Override
             public void mousePressed(MouseEvent e) {
+                showPopupMenu(e);
+            }
+
+            public void showPopupMenu(MouseEvent e) {
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
                     int column = demonstrator.columnAtPoint(e.getPoint());
                     int row = demonstrator.rowAtPoint(e.getPoint());
@@ -89,15 +96,33 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         });
 
 
-        headerPopup = createHeaderPopup();
-//        demonstrator.getTableHeader().setComponentPopupMenu(headerPopup);
+        demonstrator.getTableHeader().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopupMenu(e);
+            }
+
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopupMenu(e);
+            }
+
+            private void showPopupMenu(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    JPopupMenu headerPopup = createHeaderPopup();
+                    headerPopup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
 
         add(splitPane);
         History.instance.addObserver(this);
     }
 
     private JPopupMenu createHeaderPopup() {
-        JPopupMenu popupMenu = new JPopupMenu();
+        final JPopupMenu popupMenu = new JPopupMenu();
+
         FieldGroup fieldGroup = new FieldGroup();
         fieldGroup.addCheckBoxGroupStateExecutor(new CheckBoxSelectionPerformer() {
             @Override
@@ -112,6 +137,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         for (ColumnCheckBox columnCheckBox : group) {
             popupMenu.add(columnCheckBox);
         }
+
         return popupMenu;
     }
 
@@ -163,9 +189,6 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     public void updateDisplay(){
         demonstrator.updateDisplay();
-        headerPopup = createHeaderPopup();
-        JTableHeader tableHeader = demonstrator.getTableHeader();
-        tableHeader.setComponentPopupMenu(headerPopup);
         showEnterprise(getSelectedEnterprise());
     }
 
