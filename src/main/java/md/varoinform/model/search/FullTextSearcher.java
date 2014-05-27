@@ -8,12 +8,14 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.query.dsl.*;
+import org.hibernate.search.query.dsl.BooleanJunction;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.TermMatchingContext;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,6 @@ import java.util.List;
  * Date: 10/25/13
  * Time: 2:44 PM
  */
-@SuppressWarnings("UnusedDeclaration")
 public class FullTextSearcher extends Searcher {
 
     private final List<String> stopWords;
@@ -33,6 +34,7 @@ public class FullTextSearcher extends Searcher {
         stopWords = getStopWords();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void createIndex(Session session) {
         FullTextSession fullTextSession = Search.getFullTextSession(session);
         try {
@@ -83,18 +85,18 @@ public class FullTextSearcher extends Searcher {
     }
 
     private List<String> getStopWords(){
-        try {
-            Path path = getPathToStopWords();
-            return Files.readAllLines(path, Charset.defaultCharset());
+        List<String> stopWords = new ArrayList<>();
+        InputStream resource = getClass().getResourceAsStream("/word.txt");
+        if (resource == null) return stopWords;
+        try(InputStreamReader inputStreamReader = new InputStreamReader(resource); BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line;
+            while ((line = reader.readLine()) != null){
+                stopWords.add(line);
+            }
         } catch (IOException e) {
-            return new ArrayList<>();
+            e.printStackTrace();
         }
-    }
-
-    private Path getPathToStopWords() throws IOException {
-        FinderVisitor visitor = new FinderVisitor();
-        Files.walkFileTree(Paths.get(""), visitor);
-        return visitor.getResult();
+        return stopWords;
     }
 
     @Override
@@ -105,23 +107,5 @@ public class FullTextSearcher extends Searcher {
     @Override
     public int compareTo(Searcher o) {
         return -1;
-    }
-
-    class FinderVisitor extends SimpleFileVisitor<Path> {
-        Path result = null;
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if (file.getFileName().toString().equals("word.txt")) {
-                    result = file;
-                    return FileVisitResult.TERMINATE;
-                }
-
-                return FileVisitResult.CONTINUE;
-            }
-
-        public Path getResult() {
-            return result;
-        }
     }
 }
