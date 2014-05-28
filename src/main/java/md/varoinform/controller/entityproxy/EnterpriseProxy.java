@@ -1,6 +1,5 @@
 package md.varoinform.controller.entityproxy;
 
-import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
 
@@ -118,20 +117,6 @@ public class EnterpriseProxy extends EntityProxy {
         }
         return goods;
 
-    }
-
-    @Property(name = "Branches")
-    public String getBranches(){
-        Set<String> titleNodes = new TreeSet<>();
-        for (TreeNode treeNode : EnterpriseDao.getNodeByEnterprise(enterprise)) {
-            titleNodes.add(getTitle(treeNode.getTitle()));
-        }
-        return getString(titleNodes);
-    }
-
-    private String getString(Collection<String> collection) {
-        String result = String.valueOf(collection);
-        return result.substring(1, result.length() - 1);
     }
 
     @Property(name = "PostalCode")
