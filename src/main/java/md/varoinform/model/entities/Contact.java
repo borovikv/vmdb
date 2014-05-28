@@ -144,7 +144,7 @@ public class Contact {
     @OneToMany
     @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded
-    @Where(clause = "type=" + Phone.TEL + "or type=" + Phone.GSM)
+    @Where(clause = "type=" + Phone.TEL + " or type=" + Phone.GSM + " or type=" + Phone.TELFAX)
     public List<Phone> getPhones() {
         return phones;
     }
