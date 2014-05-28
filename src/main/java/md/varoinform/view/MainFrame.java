@@ -93,6 +93,8 @@ public class MainFrame extends JFrame implements Observer {
         searchPanel.addSearchAction(new SearchListener() {
             @Override
             public void perform(List<Enterprise> enterprises) {
+                tagPanel.clearSelection();
+                branchPanel.clearSelection();
                 showResults(enterprises);
             }
         });

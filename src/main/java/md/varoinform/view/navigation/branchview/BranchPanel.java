@@ -47,4 +47,8 @@ public class BranchPanel extends JPanel implements Observable {
     public List<Long> getNodes(){
         return branchTree.getAllChildrenId();
     }
+
+    public void clearSelection() {
+        branchTree.clearSelection();
+    }
 }
