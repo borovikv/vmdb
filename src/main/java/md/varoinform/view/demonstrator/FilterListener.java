@@ -26,7 +26,9 @@ enum FilterListener {
     AFTER(RowFilter.ComparisonType.AFTER, "after"),
     BEFORE(RowFilter.ComparisonType.BEFORE, "before"),
     EQUAL(RowFilter.ComparisonType.EQUAL, "equal"),
-    NOT_EQUAL(RowFilter.ComparisonType.NOT_EQUAL, "not_equal");
+    NOT_EQUAL(RowFilter.ComparisonType.NOT_EQUAL, "not_equal"),
+    EMPTY("^\\s*$", "empty"),
+    NOT_EMPTY("^.+$", "not_empty");
 
     private static Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
     private static Map<Integer, String> filtersText = new HashMap<>();
@@ -49,13 +51,18 @@ enum FilterListener {
         if (CharSequence.class.isAssignableFrom(columnClass)){
             return Arrays.asList(
                     CONTAIN.getFilterListener(columnClass, tableView, column, value),
-                    NOT_CONTAIN.getFilterListener(columnClass, tableView, column, value));
+                    NOT_CONTAIN.getFilterListener(columnClass, tableView, column, value),
+                    EMPTY.getEmptyFilterListener(tableView, column),
+                    NOT_EMPTY.getEmptyFilterListener(tableView, column)
+            );
         } else if (Number.class.isAssignableFrom(columnClass) || Date.class.isAssignableFrom(columnClass)) {
             return Arrays.asList(
                     AFTER.getFilterListener(columnClass, tableView, column, value),
                     BEFORE.getFilterListener(columnClass, tableView, column, value),
                     EQUAL.getFilterListener(columnClass, tableView, column, value),
-                    NOT_EQUAL.getFilterListener(columnClass, tableView, column, value)
+                    NOT_EQUAL.getFilterListener(columnClass, tableView, column, value),
+                    EMPTY.getEmptyFilterListener(tableView, column),
+                    NOT_EMPTY.getEmptyFilterListener(tableView, column)
             );
         }
         return new ArrayList<>();
@@ -80,6 +87,26 @@ enum FilterListener {
         };
     }
 
+    public ActionListener getEmptyFilterListener(final TableView tableView, final int column){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (filters.containsKey(column)){
+                    filters.remove(column);
+                }
+                RowFilter<Object, Object> filter = RowFilter.regexFilter(regex, column);
+                filters.put(column, filter);
+                setRowSorter(tableView);
+
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+        };
+    }
+
 
     private void filter(String text, Class<?> columnClass, TableView tableView, int column) {
         if (text == null || text.isEmpty() && filters.containsKey(column)) {
@@ -91,13 +118,16 @@ enum FilterListener {
             filters.put(column, rowFilter);
             filtersText.put(column, text);
         }
+        setRowSorter(tableView);
+    }
+
+    private void setRowSorter(TableView tableView) {
         RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
         tableView.setRowSorter(sorter);
         History.instance.add(new HistoryEvent(this, sorter));
     }
-
 
 
     private RowFilter<Object, Object> getRowFilter(String text, Class<?> columnClass, int column){

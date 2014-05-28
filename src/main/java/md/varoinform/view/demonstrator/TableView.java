@@ -86,10 +86,11 @@ public class TableView extends JTable implements Demonstrator {
         List<Enterprise> enterprises = new ArrayList<>();
 
         for (int index : getSelectedRows()) {
+            int realIndex = convertRowIndexToModel(index);
 
-            if (isIndexOutOfBound(index)) continue;
+            if (isIndexOutOfBound(realIndex)) continue;
 
-            enterprises.add(getEnterpriseAt(index));
+            enterprises.add(getEnterpriseAt(realIndex));
         }
 
         return enterprises;
@@ -101,8 +102,7 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     private Enterprise getEnterpriseAt(int rowIndex) {
-
-        return getEnterpriseTableModel().getEnterpriseAt(convertRowIndexToModel(rowIndex));
+        return getEnterpriseTableModel().getEnterpriseAt(rowIndex);
     }
 
     private EnterpriseTableModel getEnterpriseTableModel() {

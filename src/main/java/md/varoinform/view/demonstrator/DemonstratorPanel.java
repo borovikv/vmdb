@@ -153,6 +153,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
             String name = listener.toString();
             JMenuItem menuItem = new JMenuItem(ResourceBundleHelper.getString(name, name));
             menuItem.addActionListener(listener);
+
             popupMenu.add(menuItem);
         }
 
