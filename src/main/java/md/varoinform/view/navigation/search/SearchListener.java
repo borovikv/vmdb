@@ -1,4 +1,4 @@
-package md.varoinform.view.search;
+package md.varoinform.view.navigation.search;
 
 import md.varoinform.model.entities.Enterprise;
 

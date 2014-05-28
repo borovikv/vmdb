@@ -19,8 +19,8 @@ import md.varoinform.view.historynavigator.ForwardButton;
 import md.varoinform.view.historynavigator.HomeButton;
 import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.tags.TagPanel;
-import md.varoinform.view.search.SearchListener;
-import md.varoinform.view.search.SearchPanel;
+import md.varoinform.view.navigation.search.SearchListener;
+import md.varoinform.view.navigation.search.SearchPanel;
 import md.varoinform.view.status.OutputLabel;
 import md.varoinform.view.status.StatusBar;
 
