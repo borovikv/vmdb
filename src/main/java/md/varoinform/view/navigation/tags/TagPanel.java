@@ -33,7 +33,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     public TagPanel() {
         setLayout(new BorderLayout());
-        textField = new AutoCompleteTextField();
+        textField = new AutoCompleteTextField("enter_tag");
         textField.getDocument().addDocumentListener(new FilteringDocumentListener(this));
         add(textField, BorderLayout.NORTH);
 

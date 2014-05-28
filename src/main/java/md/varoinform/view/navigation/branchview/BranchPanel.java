@@ -17,7 +17,7 @@ import java.util.List;
  * Time: 2:58 PM
  */
 public class BranchPanel extends JPanel implements Observable {
-    private final JTextField textField = new AutoCompleteTextField();
+    private final AutoCompleteTextField textField = new AutoCompleteTextField("filter_tree");
     private final BranchTree branchTree = new BranchTree();
     public BranchPanel() {
         textField.getDocument().addDocumentListener(new FilteringDocumentListener(branchTree));
@@ -37,6 +37,7 @@ public class BranchPanel extends JPanel implements Observable {
 
     public void updateDisplay() {
         branchTree.updateRoot();
+        textField.updateDisplay();
     }
 
     public void select(Object obj) {
