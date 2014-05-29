@@ -1,5 +1,6 @@
-package md.varoinform.view.navigation.tags;
+package md.varoinform.view.navigation;
 
+import md.varoinform.Settings;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
@@ -14,11 +15,13 @@ import java.awt.*;
 public class AutoCompleteTextField extends JTextField {
 
     private final String placeholder;
+    private final int padding;
 
     public AutoCompleteTextField(String placeholder) {
         this.placeholder = placeholder;
-        Font font = new Font("Serif", Font.PLAIN, 14);
-        setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        Font font = Settings.getDefaultFont(Settings.Fonts.SANS_SERIF);
+        padding = 5;
+        setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
         setFont(font);
     }
 
@@ -32,7 +35,7 @@ public class AutoCompleteTextField extends JTextField {
             g2.setFont(getFont().deriveFont(Font.ITALIC));
             FontMetrics fontMetrics = g2.getFontMetrics();
             int height = fontMetrics.getHeight();
-            g2.drawString(ResourceBundleHelper.getString(placeholder), 5, height);
+            g2.drawString(ResourceBundleHelper.getString(placeholder), padding, height);
             g2.dispose();
         }
     }

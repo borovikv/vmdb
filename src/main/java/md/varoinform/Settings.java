@@ -18,7 +18,19 @@ public class Settings {
     private static final String REGISTER_URL =  SERVER_URL + "registry/online/";
     private static final String UPDATE_URL = SERVER_URL + "manage/update/";
     private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
-   // {"defaultFieldPriority", "title;address;phones;faxes;emails;urls"},
+    public static enum Fonts {
+        SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
+
+        private final String name;
+
+        Fonts(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 
 
     public static String getRegisterUrl() {
@@ -33,7 +45,7 @@ public class Settings {
         return DEFAULT_COLUMNS;
     }
 
-    public static Font getDefaultFont(String name){
+    public static Font getDefaultFont(Fonts name){
         return getDefaultFont(name, 18);
     }
 
@@ -70,16 +82,7 @@ public class Settings {
         return path;
     }
 
-    public static Font getDefaultFont(String name, int size) {
-        switch (name){
-            case "SERIF":
-                return new Font(Font.SERIF, Font.PLAIN, size);
-            case "SANS_SERIF":
-                return new Font(Font.SANS_SERIF, Font.PLAIN, size);
-            case "MONOSPACED":
-                return new Font(Font.MONOSPACED, Font.PLAIN, size);
-            default:
-                return new Font(Font.SERIF, Font.PLAIN, size);
-        }
+    public static Font getDefaultFont(Fonts name, int size) {
+        return new Font(name.getName(), Font.PLAIN, size);
     }
 }

@@ -14,7 +14,7 @@ import java.awt.*;
  */
 public class SearchField extends JTextField {
     public SearchField() {
-        setFont(Settings.getDefaultFont("SANS_SERIF"));
+        setFont(Settings.getDefaultFont(Settings.Fonts.SANS_SERIF));
     }
 
     public int height() {

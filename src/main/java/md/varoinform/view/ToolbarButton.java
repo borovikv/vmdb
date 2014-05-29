@@ -25,7 +25,7 @@ public class ToolbarButton extends JButton {
         ImageIcon icon = ImageHelper.getScaledImageIcon(filename, width, height);
 
         setIcon(icon);
-        setFont(Settings.getDefaultFont("Serif", 14));
+        setFont(Settings.getDefaultFont(Settings.Fonts.SANS_SERIF, 14));
         //setOpaque(false);
         //setContentAreaFilled(false);
         updateDisplay();

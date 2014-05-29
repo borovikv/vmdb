@@ -4,7 +4,7 @@ import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.navigation.FilteringDocumentListener;
-import md.varoinform.view.navigation.tags.AutoCompleteTextField;
+import md.varoinform.view.navigation.AutoCompleteTextField;
 
 import javax.swing.*;
 import java.awt.BorderLayout;

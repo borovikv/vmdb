@@ -27,7 +27,7 @@ public class FormattedTextField extends JFormattedTextField {
                  return formatter(mask);
             }
         });
-        Font font = Settings.getDefaultFont("MONOSPACED");
+        Font font = Settings.getDefaultFont(Settings.Fonts.MONOSPACED);
         setFont(font);
 
         Dimension preferredSize = getFieldSize(font);

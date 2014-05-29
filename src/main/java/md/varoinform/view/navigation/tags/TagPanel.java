@@ -10,6 +10,7 @@ import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.demonstrator.EnterpriseTransferableHandler;
+import md.varoinform.view.navigation.AutoCompleteTextField;
 import md.varoinform.view.navigation.FilteringDocumentListener;
 import md.varoinform.view.navigation.FilteringNavigator;
 
@@ -96,7 +97,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
         tagList.setSelectedIndex(index);
         final Tag tag = tagList.getModel().getElementAt(index);
-        Font font = Settings.getDefaultFont("SERIF", 14);
+        Font font = Settings.getDefaultFont(Settings.Fonts.SANS_SERIF, 14);
 
         String deleteText = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag + "...";
         JMenuItem deleteItem = new JMenuItem(deleteText);
