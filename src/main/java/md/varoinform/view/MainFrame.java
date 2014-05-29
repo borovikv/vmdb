@@ -54,7 +54,6 @@ public class MainFrame extends JFrame implements Observer {
     private final SearchPanel searchPanel = new SearchPanel();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final HomeButton homeButton = new HomeButton(demonstrator);
-    private final SettingsDialog settingsDialog;
     private final TagListener tagListener = new TagListener();
     private final BackButton backButton = new BackButton();
     private final ForwardButton forwardButton = new ForwardButton();
@@ -78,7 +77,7 @@ public class MainFrame extends JFrame implements Observer {
         settingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                settingsDialog.setVisible(true);
+                SettingsDialog.showDialog(MainFrame.this);
             }
         });
         tagButton.addActionListener(new ActionListener() {
@@ -98,8 +97,6 @@ public class MainFrame extends JFrame implements Observer {
                 showResults(enterprises);
             }
         });
-        settingsDialog = new SettingsDialog();
-        settingsButton.setEnabled(false);
 
         branchPanel.addObserver(this);
         demonstrator.addObserver(tagListener);
@@ -111,7 +108,7 @@ public class MainFrame extends JFrame implements Observer {
         ImageIcon image = ImageHelper.getImageIcon("/external-resources/icons/V.png");
         setIconImage(image.getImage());
         setExtendedState(MAXIMIZED_BOTH);
-        setMinimumSize(new Dimension(400, 300));
+        setMinimumSize(new Dimension(400, 600));
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel();
@@ -142,20 +139,22 @@ public class MainFrame extends JFrame implements Observer {
         GroupLayout layout = new GroupLayout(panel);
         layout.setAutoCreateGaps(true);
         panel.setLayout(layout);
+        int minButtonWidth = ToolbarButton.getMinWith();
+        int gapWidth = 15;
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                        .addComponent(homeButton)
-                        .addComponent(backButton)
-                        .addComponent(forwardButton)
-                        .addGap(15)
-                        .addComponent(searchPanel.searchField)
+                        .addComponent(homeButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(backButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(forwardButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addGap(0, gapWidth, gapWidth)
+                        .addComponent(searchPanel.searchField, 100, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                         .addComponent(searchPanel.searcherCombo, 0, searchPanel.searcherCombo.getMaxWidth(), GroupLayout.PREFERRED_SIZE)
-                        .addComponent(searchPanel.searchButton)
-                        .addGap(15)
-                        .addComponent(tagButton)
-                        .addComponent(exportButton)
-                        .addComponent(mailButton)
-                        .addComponent(printButton)
-                        .addComponent(settingsButton)
+                        .addComponent(searchPanel.searchButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addGap(0, gapWidth, gapWidth)
+                        .addComponent(tagButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(exportButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(mailButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(printButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(settingsButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
         );
         int height = searchPanel.searchField.height();
         int padding = 5;
@@ -195,7 +194,7 @@ public class MainFrame extends JFrame implements Observer {
 
 
 
-    private void updateDisplay() {
+    public void updateDisplay() {
         Field[] declaredFields = MainFrame.class.getDeclaredFields();
         for (Field field : declaredFields) {
             try {

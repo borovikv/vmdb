@@ -12,7 +12,7 @@ import md.varoinform.util.observer.ObservableIml;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.fieldgroup.CheckBoxSelectionPerformer;
 import md.varoinform.view.dialogs.TagDialog;
-import md.varoinform.view.fieldgroup.ColumnCheckBox;
+import md.varoinform.view.I18nCheckBox;
 import md.varoinform.view.fieldgroup.FieldGroup;
 
 import javax.swing.*;
@@ -133,8 +133,8 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 demonstrator.fireViewStructureChanged();
             }
         });
-        List<ColumnCheckBox> group = fieldGroup.getGroup();
-        for (ColumnCheckBox columnCheckBox : group) {
+        List<I18nCheckBox> group = fieldGroup.getGroup();
+        for (I18nCheckBox columnCheckBox : group) {
             popupMenu.add(columnCheckBox);
         }
 

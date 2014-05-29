@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.util.ImageHelper;
+import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class ToolbarButton extends JButton {
         setIcon(icon);
         setFont(Settings.getDefaultFont("Serif", 14));
         //setOpaque(false);
-        //setContentAreaFilled(true);
+        //setContentAreaFilled(false);
         updateDisplay();
     }
 
@@ -40,9 +41,20 @@ public class ToolbarButton extends JButton {
         this(filename, iconWidth, iconHeight, text, toolTipText);
     }
 
+    public static int getMinWith() {
+        return iconWidth;
+    }
+
     public void updateDisplay(){
-        setToolTipText(ResourceBundleHelper.getString(toolTipText, toolTipText));
-        String text = ResourceBundleHelper.getString(this.text, this.text);
-        setText(text);
+        String i18nToolTipText = ResourceBundleHelper.getString(toolTipText, toolTipText);
+        setToolTipText(i18nToolTipText);
+        PreferencesHelper helper = new PreferencesHelper();
+
+        if (helper.getShowTextInButton()){
+            String text = ResourceBundleHelper.getString(this.text, this.text);
+            setText(text);
+        } else {
+            setText("");
+        }
     }
 }

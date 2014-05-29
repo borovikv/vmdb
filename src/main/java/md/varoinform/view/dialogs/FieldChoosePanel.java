@@ -1,6 +1,6 @@
 package md.varoinform.view.dialogs;
 
-import md.varoinform.view.fieldgroup.ColumnCheckBox;
+import md.varoinform.view.I18nCheckBox;
 import md.varoinform.view.fieldgroup.FieldGroup;
 
 import javax.swing.*;
@@ -11,10 +11,10 @@ public class FieldChoosePanel extends JPanel {
     private final FieldGroup fieldGroup = new FieldGroup();
 
     public FieldChoosePanel() {
-        List<ColumnCheckBox> group = fieldGroup.getGroup();
+        List<I18nCheckBox> group = fieldGroup.getGroup();
 
         setLayout(new GridLayout(group.size(), 1));
-        for (ColumnCheckBox checkBox : group) {
+        for (I18nCheckBox checkBox : group) {
             add(checkBox);
         }
 

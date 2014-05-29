@@ -3,6 +3,7 @@ package md.varoinform.view.fieldgroup;
 import md.varoinform.controller.comparators.TranslateComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.view.I18nCheckBox;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,16 +20,16 @@ import java.util.List;
  */
 public class FieldGroup {
     private final Set<String> selectedFields = new TreeSet<>();
-    private final List<ColumnCheckBox> checkBoxes = new ArrayList<>();
+    private final List<I18nCheckBox> checkBoxes = new ArrayList<>();
     private CheckBoxSelectionPerformer checkBoxPerformer;
-    private ColumnCheckBox selectAll = new ColumnCheckBox("select_all");
+    private I18nCheckBox selectAll = new I18nCheckBox("select_all");
 
     public FieldGroup() {
         List<String> userFields = new PreferencesHelper().getUserFields();
         for (String field : EnterpriseProxy.getFields()) {
             boolean selected = userFields.contains(field);
 
-            ColumnCheckBox checkBox = createCheckBox(field, selected);
+            I18nCheckBox checkBox = createCheckBox(field, selected);
             checkBoxes.add(checkBox);
 
             if (selected) {
@@ -44,7 +45,7 @@ public class FieldGroup {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (selectAll.isSelected()) {
-                    for (ColumnCheckBox checkBox : checkBoxes) {
+                    for (I18nCheckBox checkBox : checkBoxes) {
                         checkBox.setSelected(true);
                         performSelect(checkBox);
                     }
@@ -53,20 +54,20 @@ public class FieldGroup {
         });
     }
 
-    private ColumnCheckBox createCheckBox(String field, final boolean selected) {
-        ColumnCheckBox checkBox = new ColumnCheckBox(field);
+    private I18nCheckBox createCheckBox(String field, final boolean selected) {
+        I18nCheckBox checkBox = new I18nCheckBox(field);
         checkBox.setSelected(selected);
         checkBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectAll.setSelected(false);
-                performSelect((ColumnCheckBox) e.getSource());
+                performSelect((I18nCheckBox) e.getSource());
             }
         });
         return checkBox;
     }
 
-    public void performSelect(ColumnCheckBox checkBox) {
+    public void performSelect(I18nCheckBox checkBox) {
         if ( checkBox.isSelected() ) {
             selectedFields.add(checkBox.getName());
         } else {
@@ -82,15 +83,15 @@ public class FieldGroup {
         return new ArrayList<>(selectedFields);
     }
 
-    public List<ColumnCheckBox> getGroup() {
-        Collections.sort(checkBoxes, new Comparator<ColumnCheckBox>() {
+    public List<I18nCheckBox> getGroup() {
+        Collections.sort(checkBoxes, new Comparator<I18nCheckBox>() {
             @Override
-            public int compare(ColumnCheckBox o1, ColumnCheckBox o2) {
+            public int compare(I18nCheckBox o1, I18nCheckBox o2) {
                 TranslateComparator translateComparator = new TranslateComparator();
                 return translateComparator.compare(o1.getI18nName(), o2.getI18nName());
             }
         });
-        ArrayList<ColumnCheckBox> boxes = new ArrayList<>();
+        ArrayList<I18nCheckBox> boxes = new ArrayList<>();
         boxes.add(selectAll);
         boxes.addAll(checkBoxes);
         return boxes;
@@ -103,13 +104,13 @@ public class FieldGroup {
 
     public void setEnable(boolean enable){
         selectAll.setEnabled(enable);
-        for (ColumnCheckBox checkBox : checkBoxes) {
+        for (I18nCheckBox checkBox : checkBoxes) {
             checkBox.setEnabled(enable);
         }
     }
 
     public void updateDisplay(){
-        for (ColumnCheckBox checkBox : checkBoxes) {
+        for (I18nCheckBox checkBox : checkBoxes) {
             checkBox.updateDisplay();
         }
     }

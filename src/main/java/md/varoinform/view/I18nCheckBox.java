@@ -1,4 +1,4 @@
-package md.varoinform.view.fieldgroup;
+package md.varoinform.view;
 
 import md.varoinform.util.ResourceBundleHelper;
 
@@ -10,10 +10,10 @@ import javax.swing.*;
  * Date: 11/18/13
  * Time: 3:31 PM
  */
-public class ColumnCheckBox extends JCheckBox{
+public class I18nCheckBox extends JCheckBox{
     private String name;
 
-    public ColumnCheckBox(String text) {
+    public I18nCheckBox(String text) {
         super();
         this.name = text;
         updateDisplay();
