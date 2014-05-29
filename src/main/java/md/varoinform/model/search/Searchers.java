@@ -14,7 +14,6 @@ public class Searchers {
 
     public static List<Searcher> getSearchers() {
         if (!searchers.isEmpty()) return searchers;
-        searchers.add(new BranchSearcher());
         searchers.add(new BusinessEntityTypeSearcher());
         searchers.add(new ContactPersonSearcher());
         searchers.add(new CreationDateSearcher());
