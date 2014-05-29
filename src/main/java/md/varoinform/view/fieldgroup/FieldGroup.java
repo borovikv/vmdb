@@ -7,10 +7,7 @@ import md.varoinform.view.I18nCheckBox;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.*;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,14 +38,12 @@ public class FieldGroup {
             selectAll.setSelected(true);
         }
 
-        selectAll.addItemListener(new ItemListener() {
+        selectAll.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (selectAll.isSelected()) {
-                    for (I18nCheckBox checkBox : checkBoxes) {
-                        checkBox.setSelected(true);
-                        performSelect(checkBox);
-                    }
+            public void actionPerformed(ActionEvent e) {
+                for (I18nCheckBox checkBox : checkBoxes) {
+                    checkBox.setSelected(selectAll.isSelected());
+                    performSelect(checkBox);
                 }
             }
         });
