@@ -60,7 +60,7 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "ForeingCapital")
     public String getForeingCapital(){
         Boolean foreingCapital = enterprise.getForeignCapital();
-        return ResourceBundleHelper.getString(currentLanguage(), String.valueOf(foreingCapital), "");
+        return ResourceBundleHelper.getString(currentLanguage(), String.valueOf(foreingCapital), String.valueOf(foreingCapital));
     }
 
     @Property(name = "Workplaces")
