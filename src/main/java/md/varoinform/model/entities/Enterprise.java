@@ -25,7 +25,9 @@ import java.util.*;
                 @Parameter(name = "replacement", value = "")
         }),
         */
+
         filters = {
+                @TokenFilterDef(factory = ASCIIFoldingFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),
                 @TokenFilterDef(factory = StopFilterFactory.class, params = {@Parameter(name = "ignoreCase", value = "true"),
                         @Parameter(name = "words", value = "word.txt")}),

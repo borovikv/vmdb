@@ -1,6 +1,7 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.util.Normalizer;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Query;
 import java.util.List;
@@ -26,8 +27,10 @@ public class TitleSearcher extends Searcher {
 
     @Override
     public List<Enterprise> search(String q) {
-        String hql = "select distinct e from Enterprise e join e.titles titles where lower(titles.title) like :title";
-        Query query = SessionManager.getSession().createQuery(hql).setString("title", prefix + q.toLowerCase() + "%");
+        String field = "titles.title";
+        Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
+        String hql = "select distinct e from Enterprise e join e.titles titles where " + normalizer.getField() + ") like :title";
+        Query query = SessionManager.getSession().createQuery(hql).setString("title", prefix + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();
     }

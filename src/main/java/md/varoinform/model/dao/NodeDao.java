@@ -1,6 +1,7 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.TreeNode;
+import md.varoinform.model.util.Normalizer;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
@@ -31,17 +32,23 @@ public class NodeDao extends GenericDaoHibernateImpl<TreeNode, Long >{
         if (text == null || text.isEmpty()){
             return readWithParent(null);
         } else {
+            String field = "title.title";
+            Normalizer normalizer = new Normalizer(field, text, Normalizer.RO);
             Query query = getSession().createQuery("select distinct tn " +
                     "from TreeNode tn " +
                     "join tn.title.titles title " +
-                    "where lower(title.title) like :text");
-            query.setString("text", text.toLowerCase() + "%");
+                    "where " + normalizer.getField() +
+                    " like :text");
+
+            query.setString("text", normalizer.getString() + "%");
 
             @SuppressWarnings("unchecked")
             List<TreeNode> list = query.list();
             return list;
         }
     }
+
+
 
     public static void main(String[] args) {
         NodeDao nd = new NodeDao();
