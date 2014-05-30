@@ -5,7 +5,6 @@ import md.varoinform.controller.history.HistoryEvent;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -35,6 +34,7 @@ enum FilterListener {
     private final String regex;
     private final RowFilter.ComparisonType type;
     private final String name;
+    private static MyRowSorter<TableModel> sorter;
 
     FilterListener(String regex, String name) {
         this.regex = regex;
@@ -123,8 +123,9 @@ enum FilterListener {
 
     private void setRowSorter(TableView tableView) {
         RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableView.getModel());
+        sorter = new MyRowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
+        sorter.setColumns(new HashSet<>(filters.keySet()));
         tableView.setRowSorter(sorter);
         History.instance.add(new HistoryEvent(this, sorter));
     }
@@ -142,6 +143,8 @@ enum FilterListener {
 
             return RowFilter.dateFilter(type, date, column);
         } else {
+            text = text.replace("[", "\\[");
+            text = text.replace("]", "\\]");
             return RowFilter.regexFilter(String.format(regex, text), column);
         }
     }
@@ -166,5 +169,10 @@ enum FilterListener {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void clear() {
+        filters.clear();
+        filtersText.clear();
     }
 }

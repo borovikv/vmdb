@@ -18,6 +18,7 @@ import md.varoinform.view.fieldgroup.FieldGroup;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -52,8 +53,10 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 notifyObservers(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
             }
         });
-
-        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(demonstrator), new JScrollPane(browser));
+        //demonstrator.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                new JScrollPane(demonstrator, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+                new JScrollPane(browser));
         demonstrator.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -208,7 +211,9 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 && value instanceof HistoryEvent
                 && ((HistoryEvent) value).getSource() instanceof FilterListener) {
                 //noinspection unchecked
-                demonstrator.setRowSorter((RowSorter<? extends javax.swing.table.TableModel>) ((HistoryEvent) value).getState());
+            RowSorter<? extends TableModel> sorter = (RowSorter<? extends TableModel>) ((HistoryEvent) value).getState();
+            demonstrator.setModel(sorter.getModel());
+            demonstrator.setRowSorter(sorter);
         }
     }
 
