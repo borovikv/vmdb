@@ -149,7 +149,15 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(addTagItem);
         popupMenu.addSeparator();
-
+        JMenuItem removeFilter = new JMenuItem(ResourceBundleHelper.getString("remove_filter", "Remove filter"));
+        removeFilter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FilterListener.remove(demonstrator, column);
+            }
+        });
+        popupMenu.add(removeFilter);
+        popupMenu.addSeparator();
         Class<?> columnClass = demonstrator.getModel().getColumnClass(column);
         List<ActionListener> listeners = FilterListener.getListeners(columnClass, demonstrator, column, value);
         for (ActionListener listener : listeners) {

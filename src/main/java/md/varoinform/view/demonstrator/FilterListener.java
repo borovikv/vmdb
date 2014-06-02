@@ -1,5 +1,6 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.Settings;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 
@@ -9,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -27,7 +27,8 @@ enum FilterListener {
     EQUAL(RowFilter.ComparisonType.EQUAL, "equal"),
     NOT_EQUAL(RowFilter.ComparisonType.NOT_EQUAL, "not_equal"),
     EMPTY("^\\s*$", "empty"),
-    NOT_EMPTY("^.+$", "not_empty");
+    NOT_EMPTY("^.+$", "not_empty"),
+    REMOVE("", null);
 
     private static Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
     private static Map<Integer, String> filtersText = new HashMap<>();
@@ -77,6 +78,7 @@ enum FilterListener {
                 String filter = filtersText.get(column);
 
                 String result = JOptionPane.showInputDialog("filter by", filter == null ? value : filter);
+                System.out.println(result);
                 filter(result, columnClass, tableView, column);
             }
 
@@ -109,15 +111,14 @@ enum FilterListener {
 
 
     private void filter(String text, Class<?> columnClass, TableView tableView, int column) {
-        if (text == null || text.isEmpty() && filters.containsKey(column)) {
-            filters.remove(column);
-        } else {
-            RowFilter<Object, Object> rowFilter = getRowFilter(text, columnClass, column);
-            if (rowFilter == null) return;
+        if (text == null || text.isEmpty() ) return;
 
-            filters.put(column, rowFilter);
-            filtersText.put(column, text);
-        }
+        filters.remove(column);
+        RowFilter<Object, Object> rowFilter = getRowFilter(text, columnClass, column);
+        if (rowFilter == null) return;
+
+        filters.put(column, rowFilter);
+        filtersText.put(column, text);
         setRowSorter(tableView);
     }
 
@@ -160,7 +161,7 @@ enum FilterListener {
     }
 
     private Date parseDate(String text) {
-        DateFormat df = new SimpleDateFormat("dd/MM/yy");
+        DateFormat df = Settings.getDefaultDateFormat();
         try {
             return df.parse(text.trim());
         } catch (ParseException e) {
@@ -174,5 +175,11 @@ enum FilterListener {
     public static void clear() {
         filters.clear();
         filtersText.clear();
+    }
+
+    public static void remove(TableView demonstrator, int column) {
+        filters.remove(column);
+        filtersText.remove(column);
+        REMOVE.setRowSorter(demonstrator);
     }
 }
