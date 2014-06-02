@@ -2,7 +2,6 @@ package md.varoinform.controller.entityproxy;
 
 import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -82,8 +81,8 @@ public class EnterpriseProxy extends EntityProxy {
         return enterprise.getCheckDate();
     }
 
-    public String getLastChange(){
-        return getStringValueOrEmpty(enterprise.getLastChange());
+    public Date getLastChange(){
+        return enterprise.getLastChange();
     }
 
     public String getAdvertisement(){
