@@ -31,13 +31,14 @@ public class EnterpriseView  {
 
     private static String getTable(EnterpriseProxy enterpriseProxy) throws IOException {
         List<String> viewParts = EnterpriseProxy.getFields();
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> context = new HashMap<>();
         LinkedHashSet<String> set = new LinkedHashSet<>();
         set.add(enterpriseProxy.getCountry());
         set.add(enterpriseProxy.getSector());
         set.add(enterpriseProxy.getTown());
         set.addAll(enterpriseProxy.getStreetHouseOffice());
-        map.put("address", set);
+        context.put("address", set);
+        context.put("addressLabel", ResourceBundleHelper.getString("address", "address"));
 
         for (String viewPart : viewParts) {
             Object value = enterpriseProxy.get(viewPart);
@@ -46,17 +47,21 @@ public class EnterpriseView  {
                     || (value instanceof Collection && ((Collection) value).isEmpty())
                     || (value instanceof Map && ((Map) value).isEmpty()))  continue;
             String label = ResourceBundleHelper.getString(viewPart, viewPart);
-            map.put(viewPart + "Label", label);
-            map.put(viewPart, value);
+            context.put(viewPart + "Label", label);
+            context.put(viewPart, value);
         }
 
-        Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "templates", "EnterpriseTemplate.html");
-        byte[] bytes = Files.readAllBytes(path);
-        String template = new String(bytes);
+        String template = getTemplate();
         TemplateRenderer renderer = new TemplateRenderer(template);
-        String render = renderer.render(map);
+        String render = renderer.render(context);
         String regex = "<tr><th>[^<]*</th><td>(<ul></ul>)*</td></tr>";
         return render.replaceAll(regex, "");
+    }
+
+    private static String getTemplate() throws IOException {
+        Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "templates", "EnterpriseTemplate.html");
+        byte[] bytes = Files.readAllBytes(path);
+        return new String(bytes);
     }
 
 }
