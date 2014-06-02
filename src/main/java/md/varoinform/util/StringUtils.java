@@ -1,12 +1,11 @@
 package md.varoinform.util;
 
+import md.varoinform.Settings;
 import md.varoinform.model.entities.Language;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("ALL")
 public class StringUtils {
@@ -37,11 +36,14 @@ public class StringUtils {
         if (value == null) return "";
         if (value instanceof Map) {
             return valueOf(((Map<?, ?>) value).values());
-        } else if(value instanceof Collection<?>) {
-            return valueOf((Collection<?>)value);
-        } else {
-            return String.valueOf(value);
         }
+        if(value instanceof Collection<?>) {
+            return valueOf((Collection<?>)value);
+        }
+        if (value instanceof Date) {
+            return Settings.getDefaultDateFormat().format(value);
+        }
+        return String.valueOf(value);
     }
 
     public static Object objectOrString(Object value){
@@ -83,4 +85,5 @@ public class StringUtils {
             result.addAll(StringWrapper.wrap(line, fm, maxWidth));
         }
     }
+
 }

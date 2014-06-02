@@ -6,6 +6,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +20,8 @@ public class Settings {
     private static final String REGISTER_URL =  SERVER_URL + "registry/online/";
     private static final String UPDATE_URL = SERVER_URL + "manage/update/";
     private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
+    private static final DateFormat df = new SimpleDateFormat("dd/MM/yy");
+
     public static enum Fonts {
         SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
 
@@ -84,5 +88,9 @@ public class Settings {
 
     public static Font getDefaultFont(Fonts name, int size) {
         return new Font(name.getName(), Font.PLAIN, size);
+    }
+
+    public static DateFormat getDefaultDateFormat() {
+        return df;
     }
 }
