@@ -1,6 +1,7 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
+import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -8,6 +9,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -33,8 +36,21 @@ public class Browser extends JEditorPane {
         }
 
         setEditable(false);
-
+        setComponentPopupMenu(createPopupMenu());
         addHyperlinkListener(new BrowserHyperlinkListener());
+    }
+
+    private JPopupMenu createPopupMenu() {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem copy = new JMenuItem(ResourceBundleHelper.getString("copy", "Copy"));
+        copy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                copy();
+            }
+        });
+        menu.add(copy);
+        return menu;
     }
 
     private StyleSheet getStyleSheet() {
