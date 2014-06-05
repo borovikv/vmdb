@@ -91,7 +91,10 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 if (e.isPopupTrigger() && e.getComponent() instanceof JTable) {
                     int column = demonstrator.columnAtPoint(e.getPoint());
                     int row = demonstrator.rowAtPoint(e.getPoint());
-                    Object value = demonstrator.getValueAt(row, column);
+                    Object value = null;
+                    try {
+                        value = demonstrator.getValueAt(row, column);
+                    } catch (Exception ignored){}
                     JPopupMenu popup = createPopup(column, value);
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }

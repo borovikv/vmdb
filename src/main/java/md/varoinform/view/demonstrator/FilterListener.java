@@ -1,15 +1,13 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.Settings;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
+import md.varoinform.view.dialogs.InputDialog;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -31,7 +29,7 @@ enum FilterListener {
     REMOVE("", null);
 
     private static Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
-    private static Map<Integer, String> filtersText = new HashMap<>();
+    private static Map<Integer, Object> filtersText = new HashMap<>();
     private final String regex;
     private final RowFilter.ComparisonType type;
     private final String name;
@@ -51,17 +49,17 @@ enum FilterListener {
     public static List<ActionListener> getListeners(Class<?> columnClass, TableView tableView, int column, Object value){
         if (CharSequence.class.isAssignableFrom(columnClass)){
             return Arrays.asList(
-                    CONTAIN.getFilterListener(columnClass, tableView, column, value),
-                    NOT_CONTAIN.getFilterListener(columnClass, tableView, column, value),
+                    CONTAIN.getFilterListener(tableView, column, value),
+                    NOT_CONTAIN.getFilterListener(tableView, column, value),
                     EMPTY.getEmptyFilterListener(tableView, column),
                     NOT_EMPTY.getEmptyFilterListener(tableView, column)
             );
         } else if (Number.class.isAssignableFrom(columnClass) || Date.class.isAssignableFrom(columnClass)) {
             return Arrays.asList(
-                    AFTER.getFilterListener(columnClass, tableView, column, value),
-                    BEFORE.getFilterListener(columnClass, tableView, column, value),
-                    EQUAL.getFilterListener(columnClass, tableView, column, value),
-                    NOT_EQUAL.getFilterListener(columnClass, tableView, column, value),
+                    AFTER.getFilterListener(tableView, column, value),
+                    BEFORE.getFilterListener(tableView, column, value),
+                    EQUAL.getFilterListener(tableView, column, value),
+                    NOT_EQUAL.getFilterListener(tableView, column, value),
                     EMPTY.getEmptyFilterListener(tableView, column),
                     NOT_EMPTY.getEmptyFilterListener(tableView, column)
             );
@@ -69,17 +67,17 @@ enum FilterListener {
         return new ArrayList<>();
     }
 
-    public ActionListener getFilterListener(final Class<?> columnClass, final TableView tableView, final int column, final Object value){
+    public ActionListener getFilterListener(final TableView tableView, final int column, final Object value){
         return new ActionListener(){
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String filter = filtersText.get(column);
-
-                String result = JOptionPane.showInputDialog("filter by", filter == null ? value : filter);
-                System.out.println(result);
-                filter(result, columnClass, tableView, column);
+                Object filter = filtersText.get(column);
+                String columnName = tableView.getColumnName(column);
+                Object val = filter == null ? value : filter;
+                final Object result = InputDialog.showInputDialog(columnName, toString(), val);
+                filter(result, tableView, column);
             }
 
             @Override
@@ -89,36 +87,14 @@ enum FilterListener {
         };
     }
 
-    public ActionListener getEmptyFilterListener(final TableView tableView, final int column){
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (filters.containsKey(column)){
-                    filters.remove(column);
-                }
-                RowFilter<Object, Object> filter = RowFilter.regexFilter(regex, column);
-                filters.put(column, filter);
-                setRowSorter(tableView);
+    private void filter(Object value, TableView tableView, int column) {
+        if (value == null) return;
 
-            }
-
-            @Override
-            public String toString() {
-                return name;
-            }
-        };
-    }
-
-
-    private void filter(String text, Class<?> columnClass, TableView tableView, int column) {
-        if (text == null || text.isEmpty() ) return;
-
-        filters.remove(column);
-        RowFilter<Object, Object> rowFilter = getRowFilter(text, columnClass, column);
+        RowFilter<Object, Object> rowFilter = getRowFilter(value, column);
         if (rowFilter == null) return;
 
         filters.put(column, rowFilter);
-        filtersText.put(column, text);
+        filtersText.put(column, value);
         setRowSorter(tableView);
     }
 
@@ -132,42 +108,34 @@ enum FilterListener {
     }
 
 
-    private RowFilter<Object, Object> getRowFilter(String text, Class<?> columnClass, int column){
-        if (Number.class.isAssignableFrom(columnClass)){
-            Number number = parseNumber(text);
-            if (number == null) return null;
+    public ActionListener getEmptyFilterListener(final TableView tableView, final int column){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RowFilter<Object, Object> filter = RowFilter.regexFilter(regex, column);
+                filters.put(column, filter);
+                setRowSorter(tableView);
 
-            return RowFilter.numberFilter(type, number, column);
-        } else if (Date.class.isAssignableFrom(columnClass)) {
-            Date date = parseDate(text);
-            if (date == null) return null;
+            }
 
-            return RowFilter.dateFilter(type, date, column);
-        } else {
-            text = text.replace("[", "\\[");
-            text = text.replace("]", "\\]");
-            return RowFilter.regexFilter(String.format(regex, text), column);
-        }
+            @Override
+            public String toString() {
+                return name;
+            }
+        };
     }
 
-    private Number parseNumber(String text){
-        try{
-            return Integer.valueOf(text.trim());
-        } catch (NumberFormatException e){
-            String message = "error message";
-            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    private RowFilter<Object, Object> getRowFilter(Object value, int column){
+        if (value instanceof Number) {
+            return RowFilter.numberFilter(type, (Number) value, column);
         }
-        return null;
-    }
-
-    private Date parseDate(String text) {
-        DateFormat df = Settings.getDefaultDateFormat();
-        try {
-            return df.parse(text.trim());
-        } catch (ParseException e) {
-            String message = "error message";
-            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+        if (value instanceof Date) {
+            return RowFilter.dateFilter(type, (Date)value, column);
+        }
+        if (value instanceof CharSequence) {
+            String val = ((String)value).replace("[", "\\[");
+            value = val.replace("]", "\\]");
+            return RowFilter.regexFilter(String.format(regex, value), column);
         }
         return null;
     }
