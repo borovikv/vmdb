@@ -64,8 +64,7 @@ public class ExportDialog extends JDialog {
 
 
     private void save(List<String> fieldNames, List<Enterprise> enterprises){
-
-        JFileChooser saveDialog = new JFileChooser(System.getProperty("user.home"));
+        JFileChooser saveDialog = new JFileChooser();
         FileFilter csvFileFilter = new FileFilter() {
             @Override
             public boolean accept(File f) {
