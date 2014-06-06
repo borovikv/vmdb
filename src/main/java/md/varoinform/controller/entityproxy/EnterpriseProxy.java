@@ -71,11 +71,6 @@ public class EnterpriseProxy extends EntityProxy {
         return enterprise.getLogo();
     }
 
-    @Property(name = "YPUrl")
-    public String getYPUrl(){
-        return enterprise.getYpUrl();
-    }
-
     @Property(name = "CheckDate")
     public Date getCheckDate(){
         return enterprise.getCheckDate();

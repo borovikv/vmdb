@@ -48,7 +48,6 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private Boolean foreignCapital;
     private Integer workplaces;
     private String logo;
-    private String ypUrl;
     private Date checkDate;
     private Date lastChange;
     private List<Contact> contacts = new ArrayList<>();
@@ -103,15 +102,6 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     public void setLogo(String logo) {
         this.logo = logo;
-    }
-
-    @Column(name = "yp_url")
-    public String getYpUrl() {
-        return ypUrl;
-    }
-
-    public void setYpUrl(String ypUrl) {
-        this.ypUrl = ypUrl;
     }
 
     @Column(name = "check_date")
