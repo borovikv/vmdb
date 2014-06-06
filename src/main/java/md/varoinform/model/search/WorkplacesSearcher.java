@@ -4,6 +4,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,11 +36,15 @@ public class WorkplacesSearcher extends Searcher {
 
     @Override
     public List<Enterprise> search(String q) {
-        Integer amount = Integer.parseInt(q);
-        String hql = "Select distinct e from Enterprise e where e.workplaces " + type + " :amount";
-        Query query = SessionManager.getSession().createQuery(hql).setInteger("amount", amount);
-        //noinspection unchecked
-        return query.list();
+        try {
+            Integer amount = Integer.parseInt(q.trim());
+            String hql = "Select distinct e from Enterprise e where e.workplaces " + type + " :amount";
+            Query query = SessionManager.getSession().createQuery(hql).setInteger("amount", amount);
+            //noinspection unchecked
+            return query.list();
+        } catch (NumberFormatException e){
+            return new ArrayList<>();
+        }
     }
 
     @Override

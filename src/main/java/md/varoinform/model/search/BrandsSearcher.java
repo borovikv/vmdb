@@ -16,7 +16,7 @@ public class BrandsSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
         String hql = "Select distinct e from Enterprise e join e.brands bs where lower(bs.title) like :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + q.toLowerCase() + "%");
+        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + q.trim().toLowerCase() + "%");
         //noinspection unchecked
         return query.list();
     }

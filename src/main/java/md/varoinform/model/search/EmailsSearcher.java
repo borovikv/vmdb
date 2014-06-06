@@ -16,7 +16,7 @@ public class EmailsSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
         String hql = "Select distinct e from Enterprise e join e.contacts cs join cs.emails email where lower(email.email) = :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", q.toLowerCase());
+        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", q.trim().toLowerCase());
         //noinspection unchecked
         return query.list();
     }

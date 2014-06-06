@@ -18,8 +18,8 @@ public class CreationDateSearcher extends Searcher {
     @Override
     public List<Enterprise> search(String q) {
         String hql = "Select distinct e from Enterprise e where e.creation = :creation";
-        if (!Pattern.matches("[0-9]+", q))return new ArrayList<>();
-        int year = Integer.parseInt(q);
+        if (!Pattern.matches("^[0-9]+$", q.trim()))return new ArrayList<>();
+        int year = Integer.parseInt(q.trim());
         Query query = SessionManager.getSession().createQuery(hql).setInteger("creation", year);
         //noinspection unchecked
         return query.list();

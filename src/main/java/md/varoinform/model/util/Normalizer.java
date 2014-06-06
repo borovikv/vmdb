@@ -35,7 +35,7 @@ public class Normalizer {
     }
 
     private static String normalizeString(String string, List<NormalizerChar> chars) {
-        String result = string.toLowerCase();
+        String result = string.trim().toLowerCase();
         for (NormalizerChar aChar : chars) {
             result = result.replace(aChar.getOldChar(), aChar.getNewChar());
         }
