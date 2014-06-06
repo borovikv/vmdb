@@ -2,6 +2,7 @@ package md.varoinform.view.demonstrator;
 
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.InputDialog;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
 
@@ -105,8 +106,8 @@ enum FilterListener {
             protected MyRowSorter<TableModel> doInBackground() throws Exception {
                 return createSorter(tableView);
             }
-        }, "test");
-        
+        }, ResourceBundleHelper.getString("sorter-dialog-message"));
+        if (sorter == null) return;
         tableView.setRowSorter(sorter);
         History.instance.add(new HistoryEvent(this, sorter));
     }

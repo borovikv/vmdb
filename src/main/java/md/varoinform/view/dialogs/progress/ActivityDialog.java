@@ -1,5 +1,8 @@
 package md.varoinform.view.dialogs.progress;
 
+import md.varoinform.Settings;
+import md.varoinform.util.ResourceBundleHelper;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,17 +24,19 @@ public class ActivityDialog<T> extends JDialog {
     private T result = null;
 
     private ActivityDialog(String message, final SwingWorker<T, ?> activity) {
+        activity.execute();
+
         setModal(true);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
-        setTitle(message);
-        messageLabel = new JLabel(message);
+        setTitle(ResourceBundleHelper.getString("activity-dialog-title"));
+        setIconImage(Settings.getMainIcon());
 
+        messageLabel = new JLabel(message);
         progressBar = new JProgressBar(0, 100);
         progressBar.setIndeterminate(true);
-
         createLayout();
 
         cancelMonitor = new Timer(500, new ActionListener() {
@@ -51,7 +56,6 @@ public class ActivityDialog<T> extends JDialog {
         });
         cancelMonitor.start();
 
-        activity.execute();
     }
 
     private void createLayout() {

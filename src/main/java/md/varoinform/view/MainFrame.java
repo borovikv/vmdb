@@ -1,5 +1,6 @@
 package md.varoinform.view;
 
+import md.varoinform.Settings;
 import md.varoinform.view.mail.MailAction;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
@@ -105,8 +106,7 @@ public class MainFrame extends JFrame implements Observer {
 
         setTitle("Varo-Inform DATABASE");
         JFrame.setDefaultLookAndFeelDecorated(true);
-        ImageIcon image = ImageHelper.getImageIcon("/external-resources/icons/V.png");
-        setIconImage(image.getImage());
+        setIconImage(Settings.getMainIcon());
         setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(400, 600));
         setLocationRelativeTo(null);

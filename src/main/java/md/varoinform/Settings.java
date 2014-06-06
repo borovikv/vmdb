@@ -1,5 +1,7 @@
 package md.varoinform;
 
+import md.varoinform.util.ImageHelper;
+
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,6 +23,7 @@ public class Settings {
     private static final String UPDATE_URL = SERVER_URL + "manage/update/";
     private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
     private static final DateFormat df = new SimpleDateFormat("dd/MM/yy");
+    private static final Image MAIN_ICON = ImageHelper.getImageIcon("/external-resources/icons/V.png").getImage();
 
     public static enum Fonts {
         SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
@@ -92,5 +95,9 @@ public class Settings {
 
     public static DateFormat getDefaultDateFormat() {
         return df;
+    }
+
+    public static Image getMainIcon() {
+        return MAIN_ICON;
     }
 }
