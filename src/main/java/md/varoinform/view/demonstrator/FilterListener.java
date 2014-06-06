@@ -3,6 +3,7 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.view.dialogs.InputDialog;
+import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -29,11 +30,10 @@ enum FilterListener {
     REMOVE("", null);
 
     private static Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
-    private static Map<Integer, Object> filtersText = new HashMap<>();
+    private static Map<Integer, Object> filterValues = new HashMap<>();
     private final String regex;
     private final RowFilter.ComparisonType type;
     private final String name;
-    private static MyRowSorter<TableModel> sorter;
 
     FilterListener(String regex, String name) {
         this.regex = regex;
@@ -67,17 +67,18 @@ enum FilterListener {
         return new ArrayList<>();
     }
 
-    public ActionListener getFilterListener(final TableView tableView, final int column, final Object value){
+    public ActionListener getFilterListener(final TableView tableView, final int column, final Object colVal){
         return new ActionListener(){
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                Object filter = filtersText.get(column);
                 String columnName = tableView.getColumnName(column);
-                Object val = filter == null ? value : filter;
-                final Object result = InputDialog.showInputDialog(columnName, toString(), val);
-                filter(result, tableView, column);
+                Object initValue = colVal;
+                if (filterValues.containsKey(column)){
+                    initValue = filterValues.get(column);
+                }
+                Object value = InputDialog.showInputDialog(columnName, toString(), initValue);
+                filter(value, tableView, column);
             }
 
             @Override
@@ -94,17 +95,28 @@ enum FilterListener {
         if (rowFilter == null) return;
 
         filters.put(column, rowFilter);
-        filtersText.put(column, value);
+        filterValues.put(column, value);
         setRowSorter(tableView);
     }
 
-    private void setRowSorter(TableView tableView) {
-        RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
-        sorter = new MyRowSorter<>(tableView.getModel());
-        sorter.setRowFilter(andFilter);
-        sorter.setColumns(new HashSet<>(filters.keySet()));
+    private void setRowSorter(final TableView tableView) {
+        MyRowSorter<TableModel> sorter = ActivityDialog.start(new SwingWorker<MyRowSorter<TableModel>, Integer>(){
+            @Override
+            protected MyRowSorter<TableModel> doInBackground() throws Exception {
+                return createSorter(tableView);
+            }
+        }, "test");
+        
         tableView.setRowSorter(sorter);
         History.instance.add(new HistoryEvent(this, sorter));
+    }
+
+    private MyRowSorter<TableModel> createSorter(TableView tableView) {
+        RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
+        MyRowSorter<TableModel> sorter = new MyRowSorter<>(tableView.getModel());
+        sorter.setRowFilter(andFilter);
+        sorter.setColumns(new HashSet<>(filters.keySet()));
+        return sorter;
     }
 
 
@@ -142,12 +154,12 @@ enum FilterListener {
 
     public static void clear() {
         filters.clear();
-        filtersText.clear();
+        filterValues.clear();
     }
 
     public static void remove(TableView demonstrator, int column) {
         filters.remove(column);
-        filtersText.remove(column);
+        filterValues.remove(column);
         REMOVE.setRowSorter(demonstrator);
     }
 }
