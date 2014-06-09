@@ -36,6 +36,7 @@ public class Normalizer {
 
     private static String normalizeString(String string, List<NormalizerChar> chars) {
         String result = string.trim().toLowerCase();
+        result = result.replaceAll("\\s+", "%");
         for (NormalizerChar aChar : chars) {
             result = result.replace(aChar.getOldChar(), aChar.getNewChar());
         }
