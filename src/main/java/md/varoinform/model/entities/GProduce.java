@@ -1,28 +1,28 @@
-package md.varoinform.model.entities.convert;
+package md.varoinform.model.entities;
 
-import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.TreeNode;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 import javax.persistence.*;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
- * Date: 10/7/13
- * Time: 4:20 PM
+ * Date: 4/8/14
+ * Time: 9:26 AM
  */
-
 @SuppressWarnings("UnusedDeclaration")
 @Entity
-@Table(name = "EXPORTED_DB.DB_gproduce")
+@Table(name = "EXPORTED_DB.DB_GProduce")
 public class GProduce {
     private Long id;
     private Enterprise enterprise;
-    private Long good;
+    private Good good;
     private Boolean produce;
 
     public GProduce() {
     }
+
 
 
     @Id
@@ -47,12 +47,14 @@ public class GProduce {
         this.enterprise = enterprise;
     }
 
-    @Column(name = "good_id")
-    public Long getGood() {
+    @ManyToOne
+    @JoinColumn(name = "good_id")
+    @IndexedEmbedded
+    public Good getGood() {
         return good;
     }
 
-    public void setGood(Long good) {
+    public void setGood(Good good) {
         this.good = good;
     }
 
@@ -65,14 +67,14 @@ public class GProduce {
         this.produce = produce;
     }
 
-    public TreeNode branch(){
-        //return good.getTreeNodes();
-        return null;
+    @Override
+    public int hashCode() {
+        return good.getTitles().hashCode();
     }
 
     @Override
     public String toString() {
-        return "GProduce{" +
+        return "G2Produce{" +
                 "good=" + good +
                 ", produce=" + produce +
                 '}';

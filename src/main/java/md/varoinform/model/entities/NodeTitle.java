@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "EXPORTED_DB.DB_NodeTitle")
-public class NodeTitle extends Title<NodeTitleContainer>{
+public class NodeTitle extends Title<Node>{
     public NodeTitle() {
     }
 }

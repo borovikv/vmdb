@@ -1,10 +1,11 @@
 package md.varoinform.model.dao;
 
-import md.varoinform.model.entities.TreeNode;
+import md.varoinform.model.entities.Node;
 import md.varoinform.model.util.Normalizer;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,37 +14,42 @@ import java.util.List;
  * Date: 11/5/13
  * Time: 5:33 PM
  */
-public class NodeDao extends GenericDaoHibernateImpl<TreeNode, Long >{
+public class NodeDao extends GenericDaoHibernateImpl<Node, Long >{
     public NodeDao() {
-        super(TreeNode.class);
+        super(Node.class);
     }
 
     @SuppressWarnings("unchecked")
-    public List<TreeNode> readWithParent(TreeNode treeNode) {
-        if (treeNode == null){
-//            getSession().createCriteria(TreeNode.class).add(Restrictions.isNull())
-            return getSession().createCriteria(TreeNode.class).add(Restrictions.eq("parent", 1L)).list();
-        } else {
-            return getSession().createCriteria(TreeNode.class).add(Restrictions.eq("parent", treeNode)).list();
+    public List<Node> readWithParent(Node node) {
+        if (node == null) {
+            List nodes = getSession().createCriteria(Node.class).add(Restrictions.eq("id", 1L)).list();
+            if (nodes.isEmpty()) return new ArrayList<>();
+            node = (Node) nodes.get(0);
+            return node.getChildren();
         }
+
+
+        String hql = "select distinct a.head from Arc a where a.tail = :tail";
+        Query query = getSession().createQuery(hql).setParameter("tail", node);
+        return query.list();
     }
 
-    public List<TreeNode> startWith(String text) {
+    public List<Node> startWith(String text) {
         if (text == null || text.isEmpty()){
             return readWithParent(null);
         } else {
             String field = "title.title";
             Normalizer normalizer = new Normalizer(field, text, Normalizer.RO);
             Query query = getSession().createQuery("select distinct tn " +
-                    "from TreeNode tn " +
-                    "join tn.title.titles title " +
+                    "from Node tn " +
+                    "join tn.titles title " +
                     "where " + normalizer.getField() +
                     " like :text");
 
             query.setString("text", normalizer.getString() + "%");
 
             @SuppressWarnings("unchecked")
-            List<TreeNode> list = query.list();
+            List<Node> list = query.list();
             return list;
         }
     }
@@ -52,7 +58,7 @@ public class NodeDao extends GenericDaoHibernateImpl<TreeNode, Long >{
 
     public static void main(String[] args) {
         NodeDao nd = new NodeDao();
-        List<TreeNode> av = nd.startWith("ав");
+        List<Node> av = nd.startWith("ав");
         System.out.println(av);
     }
 }

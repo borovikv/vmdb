@@ -3,7 +3,8 @@ package md.varoinform.model;
 
 import md.varoinform.Settings;
 import md.varoinform.model.entities.*;
-import md.varoinform.model.entities.convert.*;
+import md.varoinform.model.entities.GProduce;
+import md.varoinform.model.entities.GoodTitle;
 import org.hibernate.cfg.Configuration;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ public class Configurator {
     public Configuration configure(){
         Configuration cfg = getConfiguration();
         showSql(cfg, false);
+        //setAuto(cfg, "update");
         return cfg;
     }
 
@@ -39,19 +41,13 @@ public class Configurator {
         Configuration cfg  = new Configuration();
         cfg.addAnnotatedClass(Advertisement.class);
         cfg.addAnnotatedClass(AdvertisementText.class);
-        cfg.addAnnotatedClass(TreeNode.class);
+        cfg.addAnnotatedClass(Arc.class);
+        cfg.addAnnotatedClass(Node.class);
         cfg.addAnnotatedClass(NodeTitle.class);
-        cfg.addAnnotatedClass(NodeTitleContainer.class);
-
-        cfg.addAnnotatedClass(BranchTitle.class);
-        cfg.addAnnotatedClass(Branch.class);
 
         cfg.addAnnotatedClass(Good.class);
         cfg.addAnnotatedClass(GoodTitle.class);
         cfg.addAnnotatedClass(GProduce.class);
-        cfg.addAnnotatedClass(G2Produce.class);
-        cfg.addAnnotatedClass(Good2.class);
-        cfg.addAnnotatedClass(Good2Title.class);
 
         cfg.addAnnotatedClass(Brand.class);
         cfg.addAnnotatedClass(BusinessEntityType.class);

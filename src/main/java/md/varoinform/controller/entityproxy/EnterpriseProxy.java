@@ -106,7 +106,7 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "Goods")
     public Collection<String> getGoods(){
         Set<String> goods = new TreeSet<>();
-        for (G2Produce gProduce : enterprise.getGoods()) {
+        for (GProduce gProduce : enterprise.getGoods()) {
             goods.add(getTitle(gProduce.getGood()));
         }
         return goods;

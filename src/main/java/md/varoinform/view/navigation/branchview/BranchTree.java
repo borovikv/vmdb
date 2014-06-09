@@ -3,7 +3,7 @@ package md.varoinform.view.navigation.branchview;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.NodeDao;
-import md.varoinform.model.entities.TreeNode;
+import md.varoinform.model.entities.Node;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
@@ -52,30 +52,30 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
 
     public void updateRoot(){
         needToProcess = false;
-        TreeNode treeNode = getBranchFromSelected();
+        Node treeNode = getBranchFromSelected();
         filter(text);
         scrollToBranch(treeNode);
         updateUI();
         needToProcess = true;
     }
 
-    private TreeNode getBranchFromSelected() {
+    private Node getBranchFromSelected() {
         BranchNode branchNode = ((BranchNode)getLastSelectedPathComponent());
         if(branchNode != null)
             return branchNode.getTreeNode();
         return null;
     }
 
-    private void createTree(List<TreeNode> nodes, BranchNode root) {
+    private void createTree(List<Node> nodes, BranchNode root) {
         if (nodes.isEmpty()) return;
-        for (TreeNode treeNode : nodes) {
+        for (Node treeNode : nodes) {
             BranchNode branchNode = new BranchNode(treeNode);
             root.add(branchNode);
             createTree(treeNode.getChildren(), branchNode);
         }
     }
 
-    private void scrollToBranch(TreeNode treeNode) {
+    private void scrollToBranch(Node treeNode) {
         if (treeNode != null){
             TreePath treePath = getTreePathForBranch(treeNode);
 
@@ -84,7 +84,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         }
     }
 
-    private TreePath getTreePathForBranch(TreeNode treeNode) {
+    private TreePath getTreePathForBranch(Node treeNode) {
         DefaultTreeModel defaultTreeModel = ( DefaultTreeModel ) treeModel;
         BranchNode node = findNode(treeNode, root );
         javax.swing.tree.TreeNode[] nodes = defaultTreeModel.getPathToRoot( node );
@@ -92,7 +92,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     }
 
 
-    private BranchNode findNode(TreeNode treeNode, BranchNode root) {
+    private BranchNode findNode(Node treeNode, BranchNode root) {
         if (treeNode.equals(root.getTreeNode())){
             return root;
         }
@@ -143,7 +143,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     public void filter(String text) {
         root.removeAllChildren();
         NodeDao nodeDao = new NodeDao();
-        List<TreeNode> topNodes =  nodeDao.startWith(text.trim());
+        List<Node> topNodes =  nodeDao.startWith(text.trim());
         createTree(topNodes, root);
 
         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) treeModel;

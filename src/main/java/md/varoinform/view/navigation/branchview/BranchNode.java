@@ -1,7 +1,7 @@
 package md.varoinform.view.navigation.branchview;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.TreeNode;
+import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Language;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -17,12 +17,12 @@ import java.util.List;
  * Time: 5:08 PM
  */
 public class BranchNode extends DefaultMutableTreeNode implements Comparable {
-    private TreeNode treeNode;
+    private Node treeNode;
     private List<Long> allChildrenId;
 
     public BranchNode(Object userObject) {
         super(userObject);
-        this.treeNode = (TreeNode)userObject;
+        this.treeNode = (Node)userObject;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
         return null;
     }
 
-    public TreeNode getTreeNode() {
+    public Node getTreeNode() {
         return treeNode;
     }
 
@@ -58,12 +58,12 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
         return allChildrenId;
     }
 
-    private void fillAllChildrenId(TreeNode treeNode, List<Long> result) {
+    private void fillAllChildrenId(Node treeNode, List<Long> result) {
         if (treeNode == null) return;
 
         result.add(treeNode.getId());
 
-        for (TreeNode child : treeNode.getChildren()) {
+        for (Node child : treeNode.getChildren()) {
             fillAllChildrenId(child, result);
         }
     }
