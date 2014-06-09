@@ -1,4 +1,4 @@
-package md.varoinform.controller.comparators;
+package md.varoinform.controller.sorter;
 
 import md.varoinform.util.PreferencesHelper;
 import java.util.Comparator;

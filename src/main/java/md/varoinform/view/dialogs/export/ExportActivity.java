@@ -1,7 +1,7 @@
 package md.varoinform.view.dialogs.export;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import md.varoinform.controller.comparators.ColumnPriorityComparator;
+import md.varoinform.controller.sorter.ColumnPriorityComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;

@@ -1,6 +1,7 @@
 package md.varoinform.view;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.sorter.Sorter;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
@@ -223,7 +224,9 @@ public class MainFrame extends JFrame implements Observer {
         switch (event.getType()){
             case BRANCH_SELECTED:
                 Node node = branchPanel.getNode();
-                showResults(node.getEnterprises());
+                List<Enterprise> enterprises = node.getEnterprises();
+                Sorter.sortEnterprises(enterprises);
+                showResults(enterprises);
                 break;
 
             case LANGUAGE_CHANGED:
