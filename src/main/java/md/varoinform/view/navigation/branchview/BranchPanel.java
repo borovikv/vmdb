@@ -1,14 +1,14 @@
 package md.varoinform.view.navigation.branchview;
 
+import md.varoinform.model.entities.Node;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
-import md.varoinform.view.navigation.FilteringDocumentListener;
 import md.varoinform.view.navigation.AutoCompleteTextField;
+import md.varoinform.view.navigation.FilteringDocumentListener;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.util.List;
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,11 +44,12 @@ public class BranchPanel extends JPanel implements Observable {
         branchTree.select(obj);
     }
 
-    public List<Long> getNodes(){
-        return branchTree.getAllChildrenId();
-    }
 
     public void clearSelection() {
         branchTree.clearSelection();
+    }
+
+    public Node getNode() {
+        return ((BranchNode)branchTree.getLastSelectedPathComponent()).getTreeNode();
     }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 @Table(name = "EXPORTED_DB.DB_Node")
 public class Node extends TitleContainer<NodeTitle>  implements Serializable{
     private List<Node> children = new ArrayList<>();
+    private List<Enterprise> enterprises = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "EXPORTED_DB.DB_Arc", joinColumns = @JoinColumn(name = "tail_id"), inverseJoinColumns = @JoinColumn(name = "head_id"))
@@ -25,5 +26,15 @@ public class Node extends TitleContainer<NodeTitle>  implements Serializable{
 
     public void setChildren(List<Node> children) {
         this.children = children;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "EXPORTED_DB.DB_Node_Enterprise", joinColumns = @JoinColumn(name = "node_id"), inverseJoinColumns = @JoinColumn(name = "enterprise_id"))
+    public List<Enterprise> getEnterprises() {
+        return enterprises;
+    }
+
+    public void setEnterprises(List<Enterprise> enterprises) {
+        this.enterprises = enterprises;
     }
 }

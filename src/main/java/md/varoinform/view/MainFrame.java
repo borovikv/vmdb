@@ -1,27 +1,27 @@
 package md.varoinform.view;
 
 import md.varoinform.Settings;
-import md.varoinform.view.mail.MailAction;
 import md.varoinform.model.dao.DAOTag;
-import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ImageHelper;
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
-import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
-import md.varoinform.view.dialogs.export.ExportDialog;
-import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.dialogs.SettingsDialog;
 import md.varoinform.view.dialogs.TagDialog;
+import md.varoinform.view.dialogs.export.ExportDialog;
+import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.historynavigator.BackButton;
 import md.varoinform.view.historynavigator.ForwardButton;
 import md.varoinform.view.historynavigator.HomeButton;
+import md.varoinform.view.mail.MailAction;
 import md.varoinform.view.navigation.branchview.BranchPanel;
-import md.varoinform.view.navigation.tags.TagPanel;
 import md.varoinform.view.navigation.search.SearchListener;
 import md.varoinform.view.navigation.search.SearchPanel;
+import md.varoinform.view.navigation.tags.TagPanel;
 import md.varoinform.view.status.OutputLabel;
 import md.varoinform.view.status.StatusBar;
 
@@ -61,6 +61,13 @@ public class MainFrame extends JFrame implements Observer {
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
+        homeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                homeButton.home();
+                branchPanel.clearSelection();
+            }
+        });
         exportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -215,11 +222,8 @@ public class MainFrame extends JFrame implements Observer {
     public void update(ObservableEvent event) {
         switch (event.getType()){
             case BRANCH_SELECTED:
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                List<Long> allChildren = branchPanel.getNodes();
-                List<Enterprise> enterprises = EnterpriseDao.getEnterprisesByBranchId(allChildren);
-                showResults(enterprises);
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                Node node = branchPanel.getNode();
+                showResults(node.getEnterprises());
                 break;
 
             case LANGUAGE_CHANGED:

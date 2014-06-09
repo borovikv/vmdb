@@ -8,9 +8,6 @@ import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
 import md.varoinform.view.demonstrator.Demonstrator;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
@@ -24,12 +21,6 @@ public class HomeButton extends ToolbarButton implements Observer {
     public HomeButton(Demonstrator demonstrator) {
         super("/external-resources/icons/home.png", "home");
         this.demonstrator = demonstrator;
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                home();
-            }
-        });
         History.instance.addObserver(this);
     }
 

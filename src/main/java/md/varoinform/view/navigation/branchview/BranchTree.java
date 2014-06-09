@@ -120,14 +120,6 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         History.instance.add(new HistoryEvent(this, getSelectionPath()));
     }
 
-    public List<Long> getAllChildrenId() {
-        BranchNode node = (BranchNode) getLastSelectedPathComponent();
-        if (node == null) return null;
-
-        return node.getAllChildrenId();
-    }
-
-
     @Override
     public void addObserver(Observer observer) {
         observable.addObserver(observer);
