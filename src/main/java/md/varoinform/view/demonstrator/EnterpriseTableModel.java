@@ -24,7 +24,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
     }
 
     public EnterpriseTableModel(List<Enterprise> enterprises) {
-        this.enterprises = enterprises;
+        this.enterprises = new ArrayList<>(enterprises);
     }
 
 
