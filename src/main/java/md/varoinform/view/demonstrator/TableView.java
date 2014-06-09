@@ -110,7 +110,7 @@ public class TableView extends JTable implements Demonstrator {
         if (enterprises == null) {
             enterprises = new ArrayList<>();
         }
-
+        setRowSorter(null);
         EnterpriseTableModel dataModel = new EnterpriseTableModel(enterprises);
         setModel(dataModel);
 
