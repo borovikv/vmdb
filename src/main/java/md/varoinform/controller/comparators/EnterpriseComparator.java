@@ -1,4 +1,4 @@
-package md.varoinform.controller.sorter;
+package md.varoinform.controller.comparators;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Enterprise;

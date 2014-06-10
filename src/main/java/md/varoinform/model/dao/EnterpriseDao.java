@@ -1,6 +1,6 @@
 package md.varoinform.model.dao;
 
-import md.varoinform.controller.sorter.EnterpriseComparator;
+import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 

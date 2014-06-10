@@ -1,6 +1,6 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.controller.sorter.ColumnPriorityComparator;
+import md.varoinform.controller.comparators.ColumnPriorityComparator;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.dao.DAOTag;

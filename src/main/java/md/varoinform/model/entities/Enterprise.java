@@ -1,6 +1,6 @@
 package md.varoinform.model.entities;
 
-import md.varoinform.controller.sorter.EnterpriseComparator;
+import md.varoinform.controller.comparators.EnterpriseComparator;
 import org.apache.solr.analysis.*;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Parameter;

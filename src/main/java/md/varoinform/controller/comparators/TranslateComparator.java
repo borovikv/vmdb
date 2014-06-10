@@ -1,4 +1,4 @@
-package md.varoinform.controller.sorter;
+package md.varoinform.controller.comparators;
 
 import md.varoinform.util.ResourceBundleHelper;
 
