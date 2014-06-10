@@ -24,8 +24,6 @@ public class ActivityDialog<T> extends JDialog {
     private T result = null;
 
     private ActivityDialog(String message, final SwingWorker<T, ?> activity) {
-        activity.execute();
-
         setModal(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -78,7 +76,20 @@ public class ActivityDialog<T> extends JDialog {
         add(panel, BorderLayout.CENTER);
     }
 
-    public static <T> T start(SwingWorker<T, ?> activity, String message){
+    public static <T> T start(final SwingWorker<T, ?> activity, String message){
+        activity.execute();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (activity.isDone()) {
+            try {
+                return activity.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
         ActivityDialog<T> dialog = new ActivityDialog<>(message, activity);
         dialog.setVisible(true);
         dialog.dispose();

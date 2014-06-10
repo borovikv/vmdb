@@ -6,10 +6,13 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.search.Searcher;
 import md.varoinform.model.search.Searchers;
 import md.varoinform.util.Profiler;
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
+import md.varoinform.view.dialogs.progress.ActivityDialog;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -33,9 +36,18 @@ public class SearchPanel implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Profiler p = new Profiler();
-                Searcher searcher = searcherCombo.getSearcher();
-                searchText(searcher, searchField.getText());
+                List<Enterprise> enterprises = ActivityDialog.start(new SwingWorker<List<Enterprise>, Object>() {
+                    @Override
+                    protected List<Enterprise> doInBackground() throws Exception {
+                        Searcher searcher = searcherCombo.getSearcher();
+                        return searchText(searcher, searchField.getText());
+                    }
+                }, ResourceBundleHelper.getString("search-wait-dialog-message", "Wait..."));
                 p.end();
+
+                for (SearchListener listener : listeners) {
+                    listener.perform(enterprises);
+                }
             }
         };
 
@@ -50,21 +62,18 @@ public class SearchPanel implements Observer {
         History.instance.addObserver(this);
     }
 
-    private void searchText(Searcher searcher, String text) {
-        if (text == null) return;
+    private List<Enterprise> searchText(Searcher searcher, String text) {
+        if (text == null) return null;
         HistoryEvent event = new HistoryEvent(searcher, text);
         java.util.List<Enterprise> enterprises;
         if (cache.containsKey(event)) {
-            //enterprises = cache.get(event);
-            enterprises = searcher.search(text);
+            enterprises = cache.get(event);
         } else {
             enterprises = searcher.search(text);
         }
         History.instance.add(event);
         cache(event, enterprises);
-        for (SearchListener listener : listeners) {
-            listener.perform(enterprises);
-        }
+        return enterprises;
     }
 
     private void cache(HistoryEvent value, List<Enterprise> enterprises) {
