@@ -5,6 +5,7 @@ import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.search.Searcher;
 import md.varoinform.model.search.Searchers;
+import md.varoinform.util.Profiler;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
@@ -31,8 +32,10 @@ public class SearchPanel implements Observer {
         ActionListener searchAction = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Profiler p = new Profiler();
                 Searcher searcher = searcherCombo.getSearcher();
                 searchText(searcher, searchField.getText());
+                p.end();
             }
         };
 
