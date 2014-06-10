@@ -4,6 +4,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
+import org.hibernate.CacheMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
@@ -28,7 +29,6 @@ import java.util.List;
 public class FullTextSearcher extends Searcher {
 
     private final List<String> stopWords;
-
     public FullTextSearcher() {
         //createIndex(SessionManager.getSession());
         stopWords = getStopWords();
@@ -36,9 +36,16 @@ public class FullTextSearcher extends Searcher {
 
     @SuppressWarnings("UnusedDeclaration")
     public void createIndex(Session session) {
-        FullTextSession fullTextSession = Search.getFullTextSession(session);
         try {
-            fullTextSession.createIndexer().startAndWait();
+            Search.getFullTextSession(SessionManager.getSession())
+                    .createIndexer()
+                    .batchSizeToLoadObjects( 25 )
+                    .cacheMode( CacheMode.NORMAL )
+                    .threadsToLoadObjects( 5 )
+                    .idFetchSize( 150 )
+                    .threadsForSubsequentFetching(20)
+                    //.progressMonitor( monitor ) //a MassIndexerProgressMonitor implementation
+                    .startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
