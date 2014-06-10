@@ -8,7 +8,6 @@ import org.hibernate.search.annotations.Parameter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
