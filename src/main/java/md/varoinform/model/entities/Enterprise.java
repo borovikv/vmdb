@@ -1,5 +1,6 @@
 package md.varoinform.model.entities;
 
+import md.varoinform.controller.sorter.EnterpriseComparator;
 import org.apache.solr.analysis.*;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Parameter;
@@ -42,7 +43,7 @@ import java.util.*;
                 })
         })
 @Table(name = "EXPORTED_DB.DB_enterprise")
-public class Enterprise extends TitleContainer<EnterpriseTitle> implements Serializable {
+public class Enterprise extends TitleContainer<EnterpriseTitle> implements Serializable, Comparable<Enterprise> {
     private BusinessEntityType businessEntityType;
     private Integer creation;
     private Boolean foreignCapital;
@@ -55,6 +56,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
     private Set<GProduce> goods = new HashSet<>();
+    private static final EnterpriseComparator comparator = new EnterpriseComparator();
 
 
     @ManyToOne
@@ -182,5 +184,10 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
                 "title =" + getTitles() +
 
                 '}';
+    }
+
+    @Override
+    public int compareTo(Enterprise o) {
+        return comparator.compare(this, o);
     }
 }

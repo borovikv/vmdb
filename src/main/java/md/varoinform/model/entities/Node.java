@@ -2,8 +2,7 @@ package md.varoinform.model.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +15,7 @@ import java.util.List;
 @Table(name = "EXPORTED_DB.DB_Node")
 public class Node extends TitleContainer<NodeTitle>  implements Serializable{
     private List<Node> children = new ArrayList<>();
-    private List<Enterprise> enterprises = new ArrayList<>();
+    private Set<Enterprise> enterprises = new TreeSet<>();
 
     @ManyToMany
     @JoinTable(name = "EXPORTED_DB.DB_Arc", joinColumns = @JoinColumn(name = "tail_id"), inverseJoinColumns = @JoinColumn(name = "head_id"))
@@ -30,11 +29,11 @@ public class Node extends TitleContainer<NodeTitle>  implements Serializable{
 
     @ManyToMany
     @JoinTable(name = "EXPORTED_DB.DB_Node_Enterprise", joinColumns = @JoinColumn(name = "node_id"), inverseJoinColumns = @JoinColumn(name = "enterprise_id"))
-    public List<Enterprise> getEnterprises() {
+    public Set<Enterprise> getEnterprises() {
         return enterprises;
     }
 
-    public void setEnterprises(List<Enterprise> enterprises) {
+    public void setEnterprises(Set<Enterprise> enterprises) {
         this.enterprises = enterprises;
     }
 }
