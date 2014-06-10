@@ -60,7 +60,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @ManyToOne
     @JoinColumn(name = "business_entity_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = { "titles.title" })
     public BusinessEntityType getBusinessEntityType() {
         return businessEntityType;
     }
@@ -125,7 +125,10 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "enterprise_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = { "postalCode", "houseNumber", "officeNumber",
+            "street.titles.title", "sector.titles.title", "town.titles.title",
+            "region.titles.title",
+            "emails.email", "phones.phone", "urls.url" })
     public List<Contact> getContacts() {
         return contacts;
     }
@@ -146,7 +149,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "enterprise_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"person.titles.title", "phones.phone"})
     public List<ContactPerson> getContactPersons() {
         return contactPersons;
     }
@@ -157,7 +160,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @ManyToMany
     @JoinTable(name = "EXPORTED_DB.DB_enterprise_brand", joinColumns = @JoinColumn(name = "enterprise_id"), inverseJoinColumns = @JoinColumn(name = "brand_id"))
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"title"})
     public List<Brand> getBrands() {
         return brands;
     }
@@ -168,7 +171,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @OneToMany
     @JoinColumn(name = "enterprise_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"good.titles.title"})
     public Set<GProduce> getGoods() {
         return goods;
     }

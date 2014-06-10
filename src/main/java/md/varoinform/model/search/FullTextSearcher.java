@@ -6,7 +6,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
 import org.hibernate.CacheMode;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.BooleanJunction;
@@ -29,6 +28,13 @@ import java.util.List;
 public class FullTextSearcher extends Searcher {
 
     private final List<String> stopWords;
+    private static final QueryBuilder queryBuilder;
+    private static final FullTextSession fullTextSession;
+    static {
+        fullTextSession = Search.getFullTextSession(SessionManager.getSession());
+        queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
+    }
+
     public FullTextSearcher() {
         //createIndex(SessionManager.getSession());
         stopWords = getStopWords();
@@ -37,7 +43,7 @@ public class FullTextSearcher extends Searcher {
     @SuppressWarnings("UnusedDeclaration")
     public void createIndex(Session session) {
         try {
-            Search.getFullTextSession(SessionManager.getSession())
+            fullTextSession
                     .createIndexer()
                     .batchSizeToLoadObjects( 25 )
                     .cacheMode( CacheMode.NORMAL )
@@ -53,33 +59,33 @@ public class FullTextSearcher extends Searcher {
 
     @Override
     public List<Enterprise> search(String q) {
-        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.getSession());
-        Transaction tx = fullTextSession.beginTransaction();
+        //Transaction tx = fullTextSession.beginTransaction();
         try {
-            org.apache.lucene.search.Query query = getLuceneQuery(fullTextSession, q);
+            org.apache.lucene.search.Query query = getLuceneQuery(q);
             org.hibernate.Query hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
             @SuppressWarnings("unchecked")
             List<Enterprise> result = (List<Enterprise>)hibQuery.list();
-            tx.commit();
+            //System.out.println(result);
+            //tx.commit();
             return result;
         } catch (Exception ex) {
-            tx.rollback();
+           // tx.rollback();
+            ex.printStackTrace();
             return null;
         }
     }
 
-    private Query getLuceneQuery(FullTextSession fullTextSession, String q) throws ParseException {
-        QueryBuilder qb = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
+    private Query getLuceneQuery(String q) throws ParseException {
 
-        BooleanJunction<BooleanJunction> bool = qb.bool();
-        TermMatchingContext all = qb.keyword()
-                .onFields("titles.title", "goods.good.titles.title", "goods.good.nodes.titles.title", "brands.title",
+        BooleanJunction<BooleanJunction> bool = queryBuilder.bool();
+        TermMatchingContext all = queryBuilder.keyword()
+                .onFields("titles.title", "goods.good.titles.title","brands.title",
                         "contacts.postalCode", "contacts.houseNumber", "contacts.officeNumber",
                         "contacts.street.titles.title", "contacts.sector.titles.title", "contacts.town.titles.title",
                         "contacts.region.titles.title",
+                        "contacts.region.id",
                         "contacts.emails.email", "contacts.phones.phone", "contacts.urls.url",
                         "contactPersons.person.titles.title", "contactPersons.phones.phone");
-
         String[] split = q.split("\\s+");
         for (String s : split) {
             if (s == null || s.isEmpty() || stopWords.contains(s)) {

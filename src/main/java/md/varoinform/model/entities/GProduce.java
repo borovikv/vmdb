@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class GProduce {
 
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
+    @ContainedIn
     public Enterprise getEnterprise() {
         return enterprise;
     }
@@ -49,7 +51,7 @@ public class GProduce {
 
     @ManyToOne
     @JoinColumn(name = "good_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = "titles.title")
     public Good getGood() {
         return good;
     }

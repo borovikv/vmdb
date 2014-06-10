@@ -1,7 +1,5 @@
 package md.varoinform.model.entities;
 
-import org.hibernate.search.annotations.IndexedEmbedded;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +18,6 @@ public class Good extends TitleContainer<GoodTitle> {
 
     @ManyToMany
     @JoinTable(name = "EXPORTED_DB.DB_good_node", joinColumns = @JoinColumn(name = "good_id"), inverseJoinColumns = @JoinColumn(name = "node_id"))
-    @IndexedEmbedded
     public Set<Node> getNodes() {
         return nodes;
     }

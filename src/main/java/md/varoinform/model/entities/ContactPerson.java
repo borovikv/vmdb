@@ -13,6 +13,7 @@ import java.util.List;
  * Date: 10/7/13
  * Time: 4:34 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_contactperson")
 public class ContactPerson {
@@ -36,6 +37,7 @@ public class ContactPerson {
 
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
+    @ContainedIn
     public Enterprise getEnterprise() {
         return enterprise;
     }

@@ -48,6 +48,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
+    @ContainedIn
     public Enterprise getEnterprise() {
         return enterprise;
     }
@@ -88,7 +89,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "street_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"titles.title"})
     public Street getStreet() {
         return street;
     }
@@ -99,7 +100,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "sector_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"titles.title"})
     public Sector getSector() {
         return sector;
     }
@@ -110,7 +111,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "town_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"titles.title"})
     public Town getTown() {
         return town;
     }
@@ -121,7 +122,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "region_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"titles.title"})
     public Region getRegion() {
         return region;
     }
@@ -132,7 +133,7 @@ public class Contact {
 
     @OneToMany
     @JoinColumn(name = "contact_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"email"})
     public List<Email> getEmails() {
         return emails;
     }
@@ -143,7 +144,7 @@ public class Contact {
 
     @OneToMany
     @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"phone"})
     @Where(clause = "type=" + Phone.TEL + " or type=" + Phone.GSM + " or type=" + Phone.TELFAX)
     public List<Phone> getPhones() {
         return phones;
@@ -155,7 +156,7 @@ public class Contact {
 
     @OneToMany
     @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"phone"})
     @Where(clause = "type=" + Phone.FAX + "or type=" + Phone.TELFAX)
     public List<Phone> getFax() {
         return fax;
@@ -177,7 +178,7 @@ public class Contact {
 
     @OneToMany
     @JoinColumn(name = "contact_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"url"})
     public List<Url> getUrls() {
         return urls;
     }

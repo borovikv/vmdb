@@ -55,7 +55,8 @@ public class SearchPanel implements Observer {
         HistoryEvent event = new HistoryEvent(searcher, text);
         java.util.List<Enterprise> enterprises;
         if (cache.containsKey(event)) {
-            enterprises = cache.get(event);
+            //enterprises = cache.get(event);
+            enterprises = searcher.search(text);
         } else {
             enterprises = searcher.search(text);
         }

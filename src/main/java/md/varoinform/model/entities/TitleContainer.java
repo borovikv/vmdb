@@ -35,7 +35,7 @@ public class TitleContainer<T extends Title> {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "container_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"title"})
     public List<T> getTitles() {
         return titles;
     }
