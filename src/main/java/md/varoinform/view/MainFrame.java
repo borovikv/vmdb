@@ -16,7 +16,7 @@ import md.varoinform.view.dialogs.export.ExportDialog;
 import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.historynavigator.BackButton;
 import md.varoinform.view.historynavigator.ForwardButton;
-import md.varoinform.view.historynavigator.HomeButton;
+import md.varoinform.view.navigation.HomeButton;
 import md.varoinform.view.mail.MailAction;
 import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.search.SearchListener;

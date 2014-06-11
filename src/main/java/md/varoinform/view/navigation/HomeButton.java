@@ -1,8 +1,8 @@
-package md.varoinform.view.historynavigator;
+package md.varoinform.view.navigation;
 
+import md.varoinform.controller.EnterpriseCache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
-import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
@@ -25,7 +25,7 @@ public class HomeButton extends ToolbarButton implements Observer {
     }
 
     public void home(){
-        demonstrator.showResults(EnterpriseDao.getEnterprises());
+        demonstrator.showResults(EnterpriseCache.cache.getAll());
         if (!programatically) {
             History.instance.add(new HistoryEvent(HomeButton.this, null));
         }
