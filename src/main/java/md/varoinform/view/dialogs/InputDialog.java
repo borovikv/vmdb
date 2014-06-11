@@ -95,9 +95,7 @@ public class InputDialog extends JDialog {
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(messageLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(input, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+                .addComponent(input, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)) ;
 
         add(panel, BorderLayout.CENTER);
 
