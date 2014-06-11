@@ -18,7 +18,12 @@ public class TownSearcher extends Searcher {
     public List<Enterprise> search(String q) {
         String field = "titles.title";
         Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
-        String hql = "Select distinct e from Enterprise e join e.contacts cs join cs.town t join t.titles titles where " + normalizer.getField() + " like :pattern";
+        String hql = "Select distinct e " +
+                "from Enterprise e " +
+                "join e.contacts cs " +
+                "join cs.town t " +
+                "join t.titles titles " +
+                "where " + normalizer.getField() + " like :pattern";
         Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();

@@ -1,5 +1,6 @@
 package md.varoinform.model.search;
 
+import md.varoinform.controller.EnterpriseCache;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 import org.apache.lucene.queryParser.ParseException;
@@ -62,12 +63,15 @@ public class FullTextSearcher extends Searcher {
         //Transaction tx = fullTextSession.beginTransaction();
         try {
             org.apache.lucene.search.Query query = getLuceneQuery(q);
-            org.hibernate.Query hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
-            @SuppressWarnings("unchecked")
-            List<Enterprise> result = (List<Enterprise>)hibQuery.list();
-            //System.out.println(result);
-            //tx.commit();
-            return result;
+            org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
+            hibQuery.setProjection("id");
+            List list = hibQuery.list();
+            List<Long> result = new ArrayList<>();
+            for (Object o : list) {
+                Long id = (Long) ((Object[])o)[0];
+                result.add(id);
+            }
+            return EnterpriseCache.cache.get(result);
         } catch (Exception ex) {
            // tx.rollback();
             ex.printStackTrace();
@@ -79,7 +83,7 @@ public class FullTextSearcher extends Searcher {
 
         BooleanJunction<BooleanJunction> bool = queryBuilder.bool();
         TermMatchingContext all = queryBuilder.keyword()
-                .onFields("titles.title", "goods.good.titles.title","brands.title",
+                .onFields("titles.title", "goods.good.titles.title", "brands.title",
                         "contacts.postalCode", "contacts.houseNumber", "contacts.officeNumber",
                         "contacts.street.titles.title", "contacts.sector.titles.title", "contacts.town.titles.title",
                         "contacts.region.titles.title",
