@@ -34,7 +34,6 @@ public class Searchers {
         searchers.add(new WorkplacesSearcher(WorkplacesSearcher.ComparisonType.EQ));
         searchers.add(new WorkplacesSearcher(WorkplacesSearcher.ComparisonType.GTE));
         searchers.add(new WorkplacesSearcher(WorkplacesSearcher.ComparisonType.LTE));
-        searchers.add(new YpUrlSearcher());
         return searchers;
     }
 }
