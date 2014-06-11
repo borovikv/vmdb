@@ -171,7 +171,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @OneToMany
     @JoinColumn(name = "enterprise_id")
-    @IndexedEmbedded(includePaths = {"good.titles.title"})
+    @IndexedEmbedded(includePaths = {"good.titles.title", "good.nodes.titles.title"})
     public Set<GProduce> getGoods() {
         return goods;
     }

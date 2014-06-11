@@ -83,7 +83,8 @@ public class FullTextSearcher extends Searcher {
 
         BooleanJunction<BooleanJunction> bool = queryBuilder.bool();
         TermMatchingContext all = queryBuilder.keyword()
-                .onFields("titles.title", "goods.good.titles.title", "brands.title",
+                .onFields("titles.title",
+                        "goods.good.titles.title", "goods.good.nodes.titles.title", "brands.title",
                         "contacts.postalCode", "contacts.houseNumber", "contacts.officeNumber",
                         "contacts.street.titles.title", "contacts.sector.titles.title", "contacts.town.titles.title",
                         "contacts.region.titles.title",
