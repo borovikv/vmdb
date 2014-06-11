@@ -22,6 +22,7 @@ public class InputDialog extends JDialog {
 
     private static final int DEFAULT_HEIGHT = 200;
     private static final int DEFAULT_WIDTH = 400;
+    private static final int MAX_WIDTH = 800;
     private JLabel messageLabel;
     private JTextField input;
     private JButton okButton;
@@ -34,15 +35,15 @@ public class InputDialog extends JDialog {
         FontMetrics metrics = getFontMetrics(font);
         int messageWidth = metrics.stringWidth(message);
         int textWidth = metrics.stringWidth(text);
-        int w = Math.max(Math.max(messageWidth, DEFAULT_WIDTH), textWidth);
+        int w = Math.min(MAX_WIDTH, Math.max(Math.max(messageWidth, DEFAULT_WIDTH), textWidth));
         setSize(w, DEFAULT_HEIGHT);
         setLocationRelativeTo(null);
         setModal(true);
         setResizable(false);
+
         messageLabel = new JLabel(message);
-        input = getTextField(value);
-        okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {
+
+        ActionListener okAction = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (input instanceof JFormattedTextField) {
@@ -52,7 +53,13 @@ public class InputDialog extends JDialog {
                 }
                 setVisible(false);
             }
-        });
+        };
+
+        input = getTextField(value);
+        input.addActionListener(okAction);
+
+        okButton = new JButton("OK");
+        okButton.addActionListener(okAction);
         createLayout();
     }
 
