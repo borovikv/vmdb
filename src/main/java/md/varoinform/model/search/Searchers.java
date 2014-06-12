@@ -19,7 +19,7 @@ public class Searchers {
         searchers.add(new CreationDateSearcher());
         searchers.add(new EmailsSearcher());
         searchers.add(new ForeingCapitalSearcher());
-        searchers.add(new FullTextSearcher());
+        searchers.add(new FullTextSearcher(LuceneQueryBuilder.ALL_FIELDS, LuceneQueryBuilder.QueryType.Strict));
         searchers.add(new GoodsSearcher());
         searchers.add(new PhoneSearcher());
         searchers.add(new PostalCodeSearcher());
