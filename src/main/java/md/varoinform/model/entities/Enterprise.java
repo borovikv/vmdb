@@ -18,7 +18,7 @@ import java.util.*;
 @Entity
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
-        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class),
         /*
         charFilters = @CharFilterDef(factory = PatternReplaceCharFilterFactory.class, params = {
                 @Parameter(name = "pattern", value = "(мун\\.)"),
@@ -29,8 +29,21 @@ import java.util.*;
         filters = {
                 @TokenFilterDef(factory = ASCIIFoldingFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = RemoveDuplicatesTokenFilterFactory.class),
+                @TokenFilterDef(factory = WordDelimiterFilterFactory.class),
+                @TokenFilterDef(factory = EdgeNGramFilterFactory.class,
+                        params = {
+                                @Parameter(name = "minGramSize", value = "3"),
+                                @Parameter(name = "maxGramSize", value = "15"),
+                                @Parameter(name = "side", value = "front")
+                        } ),
                 @TokenFilterDef(factory = StopFilterFactory.class, params = {@Parameter(name = "ignoreCase", value = "true"),
                         @Parameter(name = "words", value = "word.txt")}),
+                @TokenFilterDef(factory = SynonymFilterFactory.class,
+                        params = {
+                            @Parameter(name = "ignoreCase", value = "true"),
+                            @Parameter(name = "synonyms", value = "synonyms.txt")
+                        }),
                 @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
                         @Parameter(name = "language", value = "Russian"),
                 }),
@@ -171,7 +184,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @OneToMany
     @JoinColumn(name = "enterprise_id")
-    @IndexedEmbedded(includePaths = {"good.titles.title", "good.nodes.titles.title"})
+    @IndexedEmbedded(includePaths = {"good.titles.title"})
     public Set<GProduce> getGoods() {
         return goods;
     }
