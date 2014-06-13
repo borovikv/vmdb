@@ -4,13 +4,16 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.TermContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +33,7 @@ public class LuceneQueryBuilder {
             "contacts.emails.email", "contacts.phones.phone", "contacts.urls.url",
             "contactPersons.person.titles.title", "contactPersons.phones.phone"};
 
+    private final Set<String> NOT_ANALYZED_FIELD = new HashSet<>(Arrays.asList("contacts.emails.email"));
 
     public enum QueryType {
         Strict
@@ -54,21 +58,40 @@ public class LuceneQueryBuilder {
     }
 
     public Query createStrictQuery(String q) throws ParseException {
-        List<String> stopWords = getStopWords();
+        Set<String> stopWords = getStopWords();
         BooleanJunction<BooleanJunction> bool = queryBuilder.bool();
-        TermMatchingContext all = queryBuilder.keyword().onFields(fields);
+
+        TermMatchingContext matchingContext = getTermMatchingContext();
 
         String[] split = q.split("\\s+");
         for (String s : split) {
             if (s == null || s.isEmpty() || stopWords.contains(s)) continue;
-            Query query = all.matching(s).createQuery();
-            bool.must(query);
+            try {
+                Query query = matchingContext.matching(s).createQuery();
+                bool.must(query);
+            } catch (Exception ignored){}
         }
         return bool.createQuery();
     }
 
-    private List<String> getStopWords(){
-        List<String> stopWords = new ArrayList<>();
+    public TermMatchingContext getTermMatchingContext() {
+        TermContext context = queryBuilder.keyword();
+        TermMatchingContext matchingContext = null;
+        for (String field : fields) {
+            if (matchingContext == null){
+                matchingContext = context.onField(field);
+            } else {
+                matchingContext.andField(field);
+            }
+            if (NOT_ANALYZED_FIELD.contains(field)) {
+                matchingContext.ignoreAnalyzer();
+            }
+        }
+        return matchingContext;
+    }
+
+    private Set<String> getStopWords(){
+        Set<String> stopWords = new HashSet<>();
         InputStream resource = getClass().getResourceAsStream("/word.txt");
         if (resource == null) return stopWords;
         try(InputStreamReader inputStreamReader = new InputStreamReader(resource); BufferedReader reader = new BufferedReader(inputStreamReader)) {
