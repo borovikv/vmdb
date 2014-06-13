@@ -4,7 +4,7 @@ import md.varoinform.Settings;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.view.status.OutputLabel;
+import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -116,7 +116,8 @@ public class TableView extends JTable implements Demonstrator {
 
         FilterListener.clear();
         //doLayout();
-        OutputLabel.instance.setResultCount(getRowCount());
+        StatusBar.instance.setTotal(getRowCount());
+        StatusBar.instance.setRow(0);
     }
 
     @Override
@@ -132,7 +133,7 @@ public class TableView extends JTable implements Demonstrator {
                 setFilterIcon(column);
             }
         }
-        OutputLabel.instance.setResultCount(getRowCount());
+        StatusBar.instance.setTotal(getRowCount());
     }
 
     public void setFilterIcon(int column){
@@ -175,8 +176,16 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public List<Enterprise> getALL() {
+        List<Enterprise> enterprises = new ArrayList<>();
+        for (int i = 0; i < getRowCount(); i++) {
+            int realIndex = convertRowIndexToModel(i);
 
-        return getEnterpriseTableModel().getEnterprises();
+            if (isIndexOutOfBound(realIndex)) continue;
+
+            enterprises.add(getEnterpriseAt(realIndex));
+
+        }
+        return enterprises;
     }
 
 
