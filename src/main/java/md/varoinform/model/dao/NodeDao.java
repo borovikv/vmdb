@@ -4,6 +4,7 @@ import md.varoinform.model.entities.Node;
 import md.varoinform.model.util.Normalizer;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.LongType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,12 @@ public class NodeDao extends GenericDaoHibernateImpl<Node, Long >{
         }
     }
 
+    public List<Long> getEnterpriseIds(Node node){
+        String sql = "select distinct enterprise_id from EXPORTED_DB.DB_Node_Enterprise where node_id = :node";
+        Query query = getSession().createSQLQuery(sql).addScalar("enterprise_id", LongType.INSTANCE).setLong("node", node.getId());
+        //noinspection unchecked
+        return query.list();
+    }
 
 
     public static void main(String[] args) {

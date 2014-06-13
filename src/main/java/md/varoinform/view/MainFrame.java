@@ -1,7 +1,9 @@
 package md.varoinform.view;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.EnterpriseCache;
 import md.varoinform.model.dao.DAOTag;
+import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
@@ -16,8 +18,8 @@ import md.varoinform.view.dialogs.export.ExportDialog;
 import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.historynavigator.BackButton;
 import md.varoinform.view.historynavigator.ForwardButton;
-import md.varoinform.view.navigation.HomeButton;
 import md.varoinform.view.mail.MailAction;
+import md.varoinform.view.navigation.HomeButton;
 import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.search.SearchListener;
 import md.varoinform.view.navigation.search.SearchPanel;
@@ -223,7 +225,8 @@ public class MainFrame extends JFrame implements Observer {
         switch (event.getType()){
             case BRANCH_SELECTED:
                 Node node = branchPanel.getNode();
-                showResults(new ArrayList<>(node.getEnterprises()));
+                List<Enterprise> enterprises = EnterpriseCache.cache.get(new NodeDao().getEnterpriseIds(node));
+                showResults(enterprises);
                 break;
 
             case LANGUAGE_CHANGED:
