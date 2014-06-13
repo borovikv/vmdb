@@ -19,13 +19,6 @@ import java.util.*;
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
         tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class),
-        /*
-        charFilters = @CharFilterDef(factory = PatternReplaceCharFilterFactory.class, params = {
-                @Parameter(name = "pattern", value = "(мун\\.)"),
-                @Parameter(name = "replacement", value = "")
-        }),
-        */
-
         filters = {
                 @TokenFilterDef(factory = ASCIIFoldingFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),
