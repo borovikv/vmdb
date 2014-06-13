@@ -24,7 +24,6 @@ import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.search.SearchListener;
 import md.varoinform.view.navigation.search.SearchPanel;
 import md.varoinform.view.navigation.tags.TagPanel;
-import md.varoinform.view.status.OutputLabel;
 import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
@@ -217,7 +216,7 @@ public class MainFrame extends JFrame implements Observer {
         navigationPane.setTitleAt(0, ResourceBundleHelper.getString("tree", "Tree"));
         navigationPane.setTitleAt(1, ResourceBundleHelper.getString("tag", "Tag"));
 
-        OutputLabel.instance.updateDisplay();
+        StatusBar.instance.updateDisplay();
     }
 
     @Override

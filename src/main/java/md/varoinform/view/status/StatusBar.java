@@ -23,11 +23,13 @@ public enum StatusBar  implements Observable {
     private ObservableIml observable = new ObservableIml();
 
     private JPanel statusBar;
+    private OutputLabel totalLabel;
 
     StatusBar() {
         statusBar = new JPanel();
         statusBar.setLayout(new BorderLayout());
-        statusBar.add(OutputLabel.instance.getLabel(), BorderLayout.WEST);
+        totalLabel = new OutputLabel();
+        statusBar.add(totalLabel, BorderLayout.WEST);
 
         final LanguageComboBox languageCombo = new LanguageComboBox();
         languageCombo.addActionListener(new AbstractAction() {
@@ -45,6 +47,14 @@ public enum StatusBar  implements Observable {
         return statusBar;
     }
 
+    public void setTotal(int total){
+        totalLabel.setTotal(total);
+    }
+
+    public void setRow(int row) {
+        totalLabel.setRow(row);
+    }
+
     @Override
     public void addObserver(Observer observer) {
         observable.addObserver(observer);
@@ -55,4 +65,7 @@ public enum StatusBar  implements Observable {
         observable.notifyObservers(event);
     }
 
+    public void updateDisplay() {
+          totalLabel.updateDisplay();
+    }
 }

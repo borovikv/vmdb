@@ -14,6 +14,7 @@ import md.varoinform.view.fieldgroup.CheckBoxSelectionPerformer;
 import md.varoinform.view.dialogs.TagDialog;
 import md.varoinform.view.I18nCheckBox;
 import md.varoinform.view.fieldgroup.FieldGroup;
+import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -63,6 +64,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
                 if (!e.getValueIsAdjusting()) {
                     Enterprise enterprise = demonstrator.getSelectedEnterprise();
                     showEnterprise(enterprise);
+                    StatusBar.instance.setRow(demonstrator.getSelectedRow() + 1);
                 }
             }
         });
