@@ -1,19 +1,16 @@
 package md.varoinform.model.search;
 
+import md.varoinform.model.util.SessionManager;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-import org.hibernate.search.query.dsl.BooleanJunction;
-import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.search.query.dsl.TermContext;
-import org.hibernate.search.query.dsl.TermMatchingContext;
+import org.apache.lucene.util.Version;
+import org.hibernate.search.*;
+import org.hibernate.search.query.dsl.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,14 +30,9 @@ public class LuceneQueryBuilder {
             "contacts.emails.email", "contacts.phones.phone", "contacts.urls.url",
             "contactPersons.person.titles.title", "contactPersons.phones.phone"};
 
-    private final Set<String> NOT_ANALYZED_FIELD = new HashSet<>(Arrays.asList("contacts.emails.email"));
-
-    public enum QueryType {
-        Strict
-    }
-
     private final QueryBuilder queryBuilder;
     private final String[] fields;
+    @SuppressWarnings("UnusedDeclaration")
     private QueryType type;
 
     public LuceneQueryBuilder(QueryBuilder queryBuilder, String[] fields, QueryType type) {
@@ -50,58 +42,62 @@ public class LuceneQueryBuilder {
     }
 
     public Query createQuery(String q) throws ParseException {
-        switch (type){
-            case Strict:
-                return createStrictQuery(q);
-        }
-        return null;
+        return createStrictQuery(q);
     }
 
-    public Query createStrictQuery(String q) throws ParseException {
-        Set<String> stopWords = getStopWords();
+    public Query createStrictQuery(String searchString) throws ParseException {
         BooleanJunction<BooleanJunction> bool = queryBuilder.bool();
-
         TermMatchingContext matchingContext = getTermMatchingContext();
-
-        String[] split = q.split("\\s+");
-        for (String s : split) {
-            if (s == null || s.isEmpty() || stopWords.contains(s)) continue;
+        List<String> tokenized = getTokenized(searchString);
+        for (String s : tokenized) {
+            if (s == null || s.isEmpty()) continue;
             try {
                 Query query = matchingContext.matching(s).createQuery();
                 bool.must(query);
-            } catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         }
         return bool.createQuery();
+    }
+
+    public List<String> getTokenized(String searchString) {
+        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.getSession());
+        Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("customanalyzer");
+        QueryParser parser = new QueryParser(Version.LUCENE_35, "title", analyzer);
+        List<String> tokenized = new ArrayList<>();
+
+        try {
+            Query query = parser.parse(searchString);
+            String cleanedText = query.toString("title");
+            Pattern pattern = Pattern.compile("\\({0,1}(\\w+\\s)*(\\w+)\\){0,1}", Pattern.UNICODE_CHARACTER_CLASS);
+            Matcher matcher = pattern.matcher(cleanedText);
+            while (matcher.find()) {
+                String word = matcher.group(2);
+                tokenized.add(word.trim());
+            }
+
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return tokenized;
     }
 
     public TermMatchingContext getTermMatchingContext() {
         TermContext context = queryBuilder.keyword();
         TermMatchingContext matchingContext = null;
         for (String field : fields) {
-            if (matchingContext == null){
+            if (matchingContext == null) {
                 matchingContext = context.onField(field);
             } else {
                 matchingContext.andField(field);
             }
-            if (NOT_ANALYZED_FIELD.contains(field)) {
-                matchingContext.ignoreAnalyzer();
-            }
+            matchingContext.ignoreAnalyzer();
         }
         return matchingContext;
     }
 
-    private Set<String> getStopWords(){
-        Set<String> stopWords = new HashSet<>();
-        InputStream resource = getClass().getResourceAsStream("/word.txt");
-        if (resource == null) return stopWords;
-        try(InputStreamReader inputStreamReader = new InputStreamReader(resource); BufferedReader reader = new BufferedReader(inputStreamReader)) {
-            String line;
-            while ((line = reader.readLine()) != null){
-                stopWords.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return stopWords;
+    public enum QueryType {
+        Strict
     }
 }
