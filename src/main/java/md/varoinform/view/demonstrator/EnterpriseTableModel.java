@@ -4,10 +4,10 @@ import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringUtils;
+import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,14 +17,20 @@ import java.util.List;
  */
 public class EnterpriseTableModel extends AbstractTableModel {
     private List<Enterprise> enterprises;
+    private List<EnterpriseProxy> enterpriseProxies;
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
 
     public EnterpriseTableModel() {
         enterprises = new ArrayList<>();
+        enterpriseProxies = new ArrayList<>();
     }
 
     public EnterpriseTableModel(List<Enterprise> enterprises) {
         this.enterprises = new ArrayList<>(enterprises);
+        enterpriseProxies = new ArrayList<>();
+        for (Enterprise enterprise : enterprises) {
+            enterpriseProxies.add(new EnterpriseProxy(enterprise));
+        }
     }
 
 
@@ -54,7 +60,8 @@ public class EnterpriseTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         List<String> columns = getColumns();
         String name = columns.get(columnIndex);
-        EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
+        //EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
+        EnterpriseProxy proxy = enterpriseProxies.get(rowIndex);
         Object value = proxy.get(name);
         return StringUtils.objectOrString(value);
     }
@@ -82,5 +89,13 @@ public class EnterpriseTableModel extends AbstractTableModel {
         List<String> columns = getColumns();
         String name = columns.get(columnIndex);
         return EnterpriseProxy.getType(name);
+    }
+
+    public void sort(final int column, final boolean asc){
+        List<EnterpriseProxy> result = ActivityDialog.start(new RowSorterWorker(this, enterpriseProxies, column, asc), "");
+        if (result  != null && !result.isEmpty()){
+            enterpriseProxies = result;
+            fireTableDataChanged();
+        }
     }
 }

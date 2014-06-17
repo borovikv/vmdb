@@ -2,16 +2,12 @@ package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.util.ImageHelper;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
@@ -28,15 +24,11 @@ public class TableView extends JTable implements Demonstrator {
     public TableView() {
         super();
         setRowHeight(24);
-        setAutoCreateRowSorter(true);
         setAutoResizeMode(AUTO_RESIZE_OFF);
         setDefaultRenderer(Date.class, new DataCellRenderer());
         getTableHeader().setDefaultRenderer(new HeaderRenderer());
         setColumnModel(new EnterpriseColumnModel());
         setFillsViewportHeight(true);
-
-        getTableHeader().addMouseListener(new TableMouseAdapter());
-        getColumnModel().addColumnModelListener(new ColumnModelListener());
 
         setSelectionBackground(Settings.getDefaultColor("highlight"));
         setFont(Settings.getDefaultFont(Settings.Fonts.SANS_SERIF, 12));
@@ -55,8 +47,7 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     @Override
-    public void doLayout()
-    {
+    public void doLayout() {
         TableColumn resizingColumn = null;
 
         if (tableHeader != null)
@@ -64,22 +55,19 @@ public class TableView extends JTable implements Demonstrator {
 
         //  Viewport size changed. May need to increase columns widths
 
-        if (resizingColumn == null)
-        {
+        if (resizingColumn == null) {
             setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             super.doLayout();
         }
 
         //  Specific column resized. Reset preferred widths
 
-        else
-        {
+        else {
             TableColumnModel tcm = getColumnModel();
 
-            for (int i = 0; i < tcm.getColumnCount(); i++)
-            {
+            for (int i = 0; i < tcm.getColumnCount(); i++) {
                 TableColumn tc = tcm.getColumn(i);
-                tc.setPreferredWidth( tc.getWidth() );
+                tc.setPreferredWidth(tc.getWidth());
             }
 
             // Columns don't fill the viewport, invoke default layout
@@ -93,11 +81,10 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     public void fireViewStructureChanged() {
-
-        ((AbstractTableModel)getModel()).fireTableStructureChanged();
+        ((AbstractTableModel) getModel()).fireTableStructureChanged();
     }
 
-    public void addListSelectionListener(ListSelectionListener listener){
+    public void addListSelectionListener(ListSelectionListener listener) {
 
         ListSelectionModel selectionModel = getSelectionModel();
         selectionModel.addListSelectionListener(listener);
@@ -106,42 +93,31 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public void showResults(List<Enterprise> enterprises) {
-
         if (enterprises == null) {
             enterprises = new ArrayList<>();
         }
         setRowSorter(null);
         EnterpriseTableModel dataModel = new EnterpriseTableModel(enterprises);
         setModel(dataModel);
+        RowSorter<EnterpriseTableModel> sorter = new RowSorter<>(dataModel);
+        setRowSorter(sorter);
 
         FilterListener.clear();
-        //doLayout();
         StatusBar.instance.setTotal(getRowCount());
         StatusBar.instance.setRow(0);
     }
 
     @Override
-    public void setRowSorter(RowSorter<? extends TableModel> sorter) {
+    public void setRowSorter(javax.swing.RowSorter<? extends TableModel> sorter) {
+        HeaderRenderer renderer = (HeaderRenderer) getTableHeader().getDefaultRenderer();
+        if (sorter instanceof RowSorter) {
+            //noinspection unchecked
+            renderer.setFilteredColumns(((RowSorter) sorter).getFilteredColumns());
+        } else {
+            renderer.setFilteredColumns(new HashSet<Integer>());
+        }
         super.setRowSorter(sorter);
-        int columnCount = getModel().getColumnCount();
-        for (int i = 0; i < columnCount; i++) {
-            removeFilterIcon(i);
-        }
-        if (sorter instanceof MyRowSorter) {
-            @SuppressWarnings("unchecked") Set<Integer> columns = ((MyRowSorter) sorter).getColumns();
-            for (Integer column : columns) {
-                setFilterIcon(column);
-            }
-        }
         StatusBar.instance.setTotal(getRowCount());
-    }
-
-    public void setFilterIcon(int column){
-        ((HeaderRenderer)getTableHeader().getDefaultRenderer()).addIndex(column);
-    }
-
-    public void removeFilterIcon(int column){
-        ((HeaderRenderer)getTableHeader().getDefaultRenderer()).removeIndex(column);
     }
 
     @Override
@@ -160,7 +136,6 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     private boolean isIndexOutOfBound(int selectedRow) {
-
         return 0 > selectedRow || selectedRow > getEnterpriseTableModel().getRowCount();
     }
 
@@ -169,8 +144,7 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     private EnterpriseTableModel getEnterpriseTableModel() {
-
-        return ((EnterpriseTableModel)getModel());
+        return ((EnterpriseTableModel) getModel());
     }
 
 
@@ -191,17 +165,14 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public void clear() {
-
         setModel(new EnterpriseTableModel());
     }
 
 
     @Override
     public Enterprise getSelectedEnterprise() {
-
         int rowIndex = getRowIndex();
-        if ( isIndexOutOfBound(rowIndex) ) return null;
-
+        if (isIndexOutOfBound(rowIndex)) return null;
         return getEnterpriseAt(rowIndex);
     }
 
@@ -209,8 +180,8 @@ public class TableView extends JTable implements Demonstrator {
 
         int selectedRow = getSelectedRow();
 
-        if ( !isIndexOutOfBound( selectedRow ) ) {
-            return convertRowIndexToModel( selectedRow );
+        if (!isIndexOutOfBound(selectedRow)) {
+            return convertRowIndexToModel(selectedRow);
         }
 
         return -1;
@@ -229,85 +200,38 @@ public class TableView extends JTable implements Demonstrator {
         getTableHeader().repaint();
     }
 
-    private class TableMouseAdapter extends MouseAdapter {
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            if (dragComplete) {
-                columnOrderChanged();
-            }
-            dragComplete = false;
-        }
-
-        private void columnOrderChanged() {
+    public void columnOrderChanged() {
+        if (dragComplete) {
             PreferencesHelper helper = new PreferencesHelper();
             helper.putUserFields(getColumns());
 
             fireViewStructureChanged();
         }
+        dragComplete = false;
+    }
 
-        private List<String> getColumns() {
-            Enumeration<TableColumn> columns = getColumnModel().getColumns();
+    private List<String> getColumns() {
+        Enumeration<TableColumn> columns = getColumnModel().getColumns();
 
-            List<String> columnNames = new ArrayList<>();
-            while (columns.hasMoreElements()){
-                String columnIdentifier = (String) columns.nextElement().getIdentifier();
-                columnNames.add(columnIdentifier);
-            }
-
-            return columnNames;
+        List<String> columnNames = new ArrayList<>();
+        while (columns.hasMoreElements()) {
+            String columnIdentifier = (String) columns.nextElement().getIdentifier();
+            columnNames.add(columnIdentifier);
         }
+
+        return columnNames;
     }
 
 
-    private class ColumnModelListener implements TableColumnModelListener {
-        @Override
-        public void columnAdded(TableColumnModelEvent e) {
-        }
-
-        @Override
-        public void columnRemoved(TableColumnModelEvent e) {
-        }
-
-        @Override
-        public void columnMoved(TableColumnModelEvent e) {
-            dragComplete = true;
-        }
-
-        @Override
-        public void columnMarginChanged(ChangeEvent e) {
-        }
-
-        @Override
-        public void columnSelectionChanged(ListSelectionEvent e) {
-        }
+    public void columnMoved() {
+        dragComplete = true;
     }
 
-    private class HeaderRenderer implements TableCellRenderer {
-        private Set<Integer> indexes = new HashSet<>();
-
-        public void addIndex(int column){
-            indexes.add(column);
-            getTableHeader().updateUI();
-        }
-
-        public void removeIndex(int column){
-            indexes.remove(column);
-            getTableHeader().updateUI();
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel label = new JLabel(String.valueOf(value));
-            label.setFont(new Font(Settings.Fonts.SANS_SERIF.getName(), Font.BOLD, 14));
-            label.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-            label.setOpaque(true);
-            if (indexes.contains(column)) {
-                FontMetrics fontMetrics = getFontMetrics(getFont());
-                int size = fontMetrics.getHeight();
-                ImageIcon icon = ImageHelper.getScaledImageIcon("/external-resources/icons/filter.png", size, size);
-                label.setIcon(icon);
-            }
-            return label;
-        }
+    public void sort(int column, boolean asc) {
+        ((EnterpriseTableModel) getModel()).sort(column, asc);
+        HashSet<Integer> sortedColumns = new HashSet<>();
+        sortedColumns.add(column);
+        ((HeaderRenderer) getTableHeader().getDefaultRenderer()).setSortedColumns(sortedColumns);
     }
+
 }

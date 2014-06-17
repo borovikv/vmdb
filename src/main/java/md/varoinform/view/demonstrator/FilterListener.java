@@ -101,9 +101,9 @@ enum FilterListener {
     }
 
     private void setRowSorter(final TableView tableView) {
-        MyRowSorter<TableModel> sorter = ActivityDialog.start(new SwingWorker<MyRowSorter<TableModel>, Integer>(){
+        RowSorter<TableModel> sorter = ActivityDialog.start(new SwingWorker<RowSorter<TableModel>, Integer>(){
             @Override
-            protected MyRowSorter<TableModel> doInBackground() throws Exception {
+            protected RowSorter<TableModel> doInBackground() throws Exception {
                 return createSorter(tableView);
             }
         }, ResourceBundleHelper.getString("sorter-dialog-message"));
@@ -112,11 +112,11 @@ enum FilterListener {
         History.instance.add(new HistoryEvent(this, sorter));
     }
 
-    private MyRowSorter<TableModel> createSorter(TableView tableView) {
+    private RowSorter<TableModel> createSorter(TableView tableView) {
         RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
-        MyRowSorter<TableModel> sorter = new MyRowSorter<>(tableView.getModel());
+        RowSorter<TableModel> sorter = new RowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
-        sorter.setColumns(new HashSet<>(filters.keySet()));
+        sorter.setFilteredColumns(new HashSet<>(filters.keySet()));
         return sorter;
     }
 

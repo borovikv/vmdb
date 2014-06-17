@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -18,14 +20,17 @@ import java.util.concurrent.ExecutionException;
 public class ActivityDialog<T> extends JDialog {
     private static final int DEFAULT_HEIGHT = 150;
     private static final int DEFAULT_WIDTH = 350;
+    private final SwingWorker<T, ?> activity;
     private JProgressBar progressBar;
     private JLabel messageLabel;
+    private JButton cancelButton;
     private Timer cancelMonitor;
     private T result = null;
 
     private ActivityDialog(String message, final SwingWorker<T, ?> activity) {
+        this.activity = activity;
         setModal(true);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        //setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setResizable(false);
@@ -35,12 +40,19 @@ public class ActivityDialog<T> extends JDialog {
         messageLabel = new JLabel(message);
         progressBar = new JProgressBar(0, 100);
         progressBar.setIndeterminate(true);
+        cancelButton = new JButton(ResourceBundleHelper.getString("cancel", "Cancel"));
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cancel();
+            }
+        });
         createLayout();
 
         cancelMonitor = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (activity.isDone()){
+                if (activity.isDone() && !activity.isCancelled()){
                     try {
                         result = activity.get();
                     } catch (InterruptedException | ExecutionException e1) {
@@ -54,6 +66,18 @@ public class ActivityDialog<T> extends JDialog {
         });
         cancelMonitor.start();
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cancel();
+                super.windowClosing(e);
+            }
+        });
+    }
+
+    private void cancel(){
+        activity.cancel(true);
+        setVisible(false);
     }
 
     private void createLayout() {
@@ -64,12 +88,16 @@ public class ActivityDialog<T> extends JDialog {
 
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addComponent(messageLabel)
-                .addComponent(progressBar));
+                .addComponent(progressBar)
+                .addComponent(cancelButton, GroupLayout.Alignment.CENTER)
+        );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-                .addComponent(messageLabel)
-                .addComponent(progressBar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+                        .addComponent(messageLabel)
+                        .addComponent(progressBar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cancelButton)
+        );
 
 
         panel.setLayout(layout);
