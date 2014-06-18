@@ -36,4 +36,19 @@ public class Node extends TitleContainer<NodeTitle>  implements Serializable{
     public void setEnterprises(Set<Enterprise> enterprises) {
         this.enterprises = enterprises;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Node node = (Node) o;
+
+        return id.equals(node.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

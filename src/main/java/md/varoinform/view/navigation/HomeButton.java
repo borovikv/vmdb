@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation;
 
-import md.varoinform.controller.EnterpriseCache;
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.util.observer.ObservableEvent;
@@ -25,7 +25,7 @@ public class HomeButton extends ToolbarButton implements Observer {
     }
 
     public void home(){
-        demonstrator.showResults(EnterpriseCache.cache.getAll());
+        demonstrator.showResults(Cache.instance.getAllEnterprises());
         if (!programatically) {
             History.instance.add(new HistoryEvent(HomeButton.this, null));
         }

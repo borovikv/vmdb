@@ -1,8 +1,10 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.Profiler;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
@@ -28,10 +30,9 @@ public class EnterpriseTableModel extends AbstractTableModel {
 
     public EnterpriseTableModel(List<Enterprise> enterprises) {
         this.enterprises = new ArrayList<>(enterprises);
-        enterpriseProxies = new ArrayList<>();
-        for (Enterprise enterprise : enterprises) {
-            enterpriseProxies.add(new EnterpriseProxy(enterprise));
-        }
+        Profiler p = new Profiler();
+        enterpriseProxies = Cache.instance.getProxys(this.enterprises);
+        p.end();
     }
 
 

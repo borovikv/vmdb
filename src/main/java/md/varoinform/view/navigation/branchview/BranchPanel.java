@@ -50,6 +50,6 @@ public class BranchPanel extends JPanel implements Observable {
     }
 
     public Node getNode() {
-        return ((BranchNode)branchTree.getLastSelectedPathComponent()).getTreeNode();
+        return ((BranchNode)branchTree.getLastSelectedPathComponent()).getNode();
     }
 }

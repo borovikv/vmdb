@@ -62,7 +62,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     private Node getBranchFromSelected() {
         BranchNode branchNode = ((BranchNode)getLastSelectedPathComponent());
         if(branchNode != null)
-            return branchNode.getTreeNode();
+            return branchNode.getNode();
         return null;
     }
 
@@ -93,7 +93,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
 
 
     private BranchNode findNode(Node treeNode, BranchNode root) {
-        if (treeNode.equals(root.getTreeNode())){
+        if (treeNode.equals(root.getNode())){
             return root;
         }
         BranchNode branchNode;

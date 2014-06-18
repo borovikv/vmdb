@@ -15,11 +15,11 @@ import java.util.Collections;
  * Time: 5:08 PM
  */
 public class BranchNode extends DefaultMutableTreeNode implements Comparable {
-    private Node treeNode;
+    private Node node;
 
     public BranchNode(Object userObject) {
         super(userObject);
-        this.treeNode = (Node)userObject;
+        this.node = (Node)userObject;
     }
 
     @Override
@@ -38,12 +38,12 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
 
     public String getTitle(){
         Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
-        if (treeNode != null)
-            return treeNode.title(currentLanguage);
+        if (node != null)
+            return node.title(currentLanguage);
         return null;
     }
 
-    public Node getTreeNode() {
-        return treeNode;
+    public Node getNode() {
+        return node;
     }
 }

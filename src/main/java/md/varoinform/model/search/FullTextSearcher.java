@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.controller.EnterpriseCache;
+import md.varoinform.controller.Cache;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.CacheMode;
@@ -58,7 +58,7 @@ public class FullTextSearcher extends Searcher {
             org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
             hibQuery.setProjection("id");
             List<Long> ids = getIds(hibQuery.list());
-            return EnterpriseCache.cache.get(ids);
+            return Cache.instance.getEnterprises(ids);
         } catch (Exception ex) {
            // tx.rollback();
             ex.printStackTrace();
