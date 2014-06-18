@@ -22,6 +22,7 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     private final ContactProxy contactProxy;
+    private final Map<String, Object> cache = new HashMap<>();
 
 
     public EnterpriseProxy(Enterprise enterprise) {
@@ -171,11 +172,15 @@ public class EnterpriseProxy extends EntityProxy {
 
 
     public Object get(String name){
+        if (cache.containsKey(name)) return cache.get(name);
         try {
             String key = name.toLowerCase();
             Method method = methods.get(key);
-            if (method != null)
-                return method.invoke(this);
+            if (method != null) {
+                Object result = method.invoke(this);
+                cache.put(name, result);
+                return result;
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
