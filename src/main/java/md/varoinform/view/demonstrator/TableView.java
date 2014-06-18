@@ -109,12 +109,16 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public void setRowSorter(javax.swing.RowSorter<? extends TableModel> sorter) {
-        HeaderRenderer renderer = (HeaderRenderer) getTableHeader().getDefaultRenderer();
+        TableCellRenderer renderer = getTableHeader().getDefaultRenderer();
+        if (!(renderer instanceof HeaderRenderer)){
+            renderer = new HeaderRenderer();
+            getTableHeader().setDefaultRenderer(renderer);
+        }
         if (sorter instanceof RowSorter) {
             //noinspection unchecked
-            renderer.setFilteredColumns(((RowSorter) sorter).getFilteredColumns());
+            ((HeaderRenderer)renderer).setFilteredColumns(((RowSorter) sorter).getFilteredColumns());
         } else {
-            renderer.setFilteredColumns(new HashSet<Integer>());
+            ((HeaderRenderer)renderer).setFilteredColumns(new HashSet<Integer>());
         }
         super.setRowSorter(sorter);
         StatusBar.instance.setTotal(getRowCount());

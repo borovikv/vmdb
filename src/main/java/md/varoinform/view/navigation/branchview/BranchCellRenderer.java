@@ -23,7 +23,7 @@ public class BranchCellRenderer extends DefaultTreeCellRenderer {
                                                   boolean sel, boolean expanded, boolean leaf, int row,
                                                   boolean hasFocus) {
 
-        rendererHelper.setBackground(sel, tree.getBackground());
+        rendererHelper.setBackground(sel, Color.WHITE);
 
         if (value instanceof BranchNode){
             BranchNode branchNode = (BranchNode) value;
