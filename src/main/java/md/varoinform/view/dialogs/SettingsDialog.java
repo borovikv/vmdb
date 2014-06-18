@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 public class SettingsDialog extends JDialog {
 
     private final I18nCheckBox showTextInButtonBox;
+    private JComboBox<UIManager.LookAndFeelInfo> styles = new JComboBox<>(UIManager.getInstalledLookAndFeels());
     private PreferencesHelper helper;
 
     public SettingsDialog(final MainFrame mainFrame) {
@@ -26,7 +27,7 @@ public class SettingsDialog extends JDialog {
         setModal(true);
         setLocationRelativeTo(null);
         setTitle(ResourceBundleHelper.getString("Settings", "Settings"));
-        setLayout(new BorderLayout());
+        setLayout(new GridLayout(20, 1));
 
         helper = new PreferencesHelper();
 
@@ -41,6 +42,19 @@ public class SettingsDialog extends JDialog {
         });
         add(showTextInButtonBox);
 
+        styles.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UIManager.LookAndFeelInfo item = (UIManager.LookAndFeelInfo) styles.getSelectedItem();
+                try {
+                    UIManager.setLookAndFeel(item.getClassName());
+                    SwingUtilities.updateComponentTreeUI(mainFrame);
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        add(styles);
 
         setModal(true);
     }
