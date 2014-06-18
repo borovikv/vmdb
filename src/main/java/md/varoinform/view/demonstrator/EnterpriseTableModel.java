@@ -3,6 +3,7 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
 
@@ -91,8 +92,9 @@ public class EnterpriseTableModel extends AbstractTableModel {
         return EnterpriseProxy.getType(name);
     }
 
-    public void sort(final int column, final boolean asc){
-        List<EnterpriseProxy> result = ActivityDialog.start(new RowSorterWorker(this, enterpriseProxies, column, asc), "");
+    public void sort(int column, RowSorterWorker.SortingType type){
+        String message = ResourceBundleHelper.getString("row_sorting_message", "Sorting...");
+        List<EnterpriseProxy> result = ActivityDialog.start(new RowSorterWorker(this, enterpriseProxies, column, type), message);
         if (result  != null && !result.isEmpty()){
             enterpriseProxies = result;
             fireTableDataChanged();

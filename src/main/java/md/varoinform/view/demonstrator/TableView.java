@@ -227,10 +227,10 @@ public class TableView extends JTable implements Demonstrator {
         dragComplete = true;
     }
 
-    public void sort(int column, boolean asc) {
-        ((EnterpriseTableModel) getModel()).sort(column, asc);
-        HashSet<Integer> sortedColumns = new HashSet<>();
-        sortedColumns.add(column);
+    public void sort(int column, RowSorterWorker.SortingType type) {
+        ((EnterpriseTableModel) getModel()).sort(column, type);
+        Map<Integer, RowSorterWorker.SortingType> sortedColumns = new HashMap<>();
+        sortedColumns.put(column, type);
         ((HeaderRenderer) getTableHeader().getDefaultRenderer()).setSortedColumns(sortedColumns);
     }
 

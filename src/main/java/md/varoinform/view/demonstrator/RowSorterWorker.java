@@ -19,10 +19,10 @@ class RowSorterWorker extends SwingWorker<List<EnterpriseProxy>, Void> {
     private final int column;
     private final boolean asc;
 
-    public RowSorterWorker(EnterpriseTableModel enterpriseTableModel, List<EnterpriseProxy> proxy, int column, boolean asc) {
+    public RowSorterWorker(EnterpriseTableModel enterpriseTableModel, List<EnterpriseProxy> proxy, int column, SortingType type) {
         this.enterpriseTableModel = enterpriseTableModel;
         this.column = column;
-        this.asc = asc;
+        this.asc = type.type.equals(SortingType.asc.type);
         this.proxy = new ArrayList<>(proxy);
     }
 
@@ -56,5 +56,19 @@ class RowSorterWorker extends SwingWorker<List<EnterpriseProxy>, Void> {
             }
         });
         return proxy;
+    }
+
+    public enum SortingType{
+        asc("ascending"), desc("descending");
+        private final String type;
+
+        SortingType(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type;
+        }
     }
 }

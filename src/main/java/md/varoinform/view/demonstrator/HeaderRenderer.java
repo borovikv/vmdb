@@ -7,7 +7,9 @@ import sun.swing.table.DefaultTableCellHeaderRenderer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,13 +20,13 @@ import java.util.Set;
 */
 class HeaderRenderer extends DefaultTableCellHeaderRenderer {
     private Set<Integer> filteredColumns = new HashSet<>();
-    private Set<Integer> sortedColumns = new HashSet<>();
+    private Map<Integer, RowSorterWorker.SortingType> sortedColumns = new HashMap<>();
 
     public void setFilteredColumns(Set<Integer> filteredColumns) {
         this.filteredColumns = filteredColumns;
     }
 
-    public void setSortedColumns(Set<Integer> sortedColumns) {
+    public void setSortedColumns(Map<Integer, RowSorterWorker.SortingType> sortedColumns) {
         this.sortedColumns = sortedColumns;
     }
 
@@ -48,8 +50,10 @@ class HeaderRenderer extends DefaultTableCellHeaderRenderer {
             graphics.drawImage(filterIcon.getImage(), 0, 0, null);
             hasIcon = true;
         }
-        if (sortedColumns.contains(column)) {
-            ImageIcon sortedIcon = ImageHelper.getScaledImageIcon("/external-resources/icons/x.png", size, size);
+        RowSorterWorker.SortingType type = sortedColumns.get(column);
+        if (type  != null) {
+            String filename = String.format("/external-resources/icons/sort_%s.png", type);
+            ImageIcon sortedIcon = ImageHelper.getScaledImageIcon(filename, size, size);
             graphics.drawImage(sortedIcon.getImage(), size, 0, null);
             hasIcon = true;
         }
