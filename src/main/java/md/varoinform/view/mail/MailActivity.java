@@ -1,6 +1,6 @@
 package md.varoinform.view.mail;
 
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.controller.Cache;
 import md.varoinform.model.entities.Email;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.view.dialogs.progress.Activity;
@@ -37,7 +37,7 @@ public class MailActivity extends Activity {
         StringBuilder builder = new StringBuilder(mailTo);
         for (Enterprise enterprise : enterprises) {
 
-            List<Email> emails = new EnterpriseProxy(enterprise).getEmails();
+            List<Email> emails = Cache.instance.getProxy(enterprise).getEmails();
             for (Email email : emails) {
 
                 String s = email.getEmail();

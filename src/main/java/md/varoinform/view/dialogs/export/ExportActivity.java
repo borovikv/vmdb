@@ -1,6 +1,7 @@
 package md.varoinform.view.dialogs.export;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.comparators.ColumnPriorityComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
@@ -57,7 +58,7 @@ public class ExportActivity extends Activity {
 
     private void writeLine(CSVWriter writer, List<String> selectedColumns, Enterprise enterprise) {
         String[] entries = new String[selectedColumns.size()];
-        EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
+        EnterpriseProxy proxy = Cache.instance.getProxy(enterprise);
         for (int i = 0; i < selectedColumns.size(); i++) {
             Object obj = proxy.get(selectedColumns.get(i));
             entries[i] = StringUtils.valueOf(obj);
