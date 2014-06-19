@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 public class PreferencesHelper implements Serializable {
-    private static final String DIVIDE_KEY = "divide";
     private static final String SHOW_TEXT_IN_BUTTONS = "show_text_in_buttons";
     private final String fieldKey = "columns";
     private final Preferences preferences;
@@ -107,16 +106,6 @@ public class PreferencesHelper implements Serializable {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void setDivideLocation(Double value){
-        preferences.putDouble(DIVIDE_KEY, value);
-    }
-
-    public double getDivideLocation(){
-        return preferences.getDouble(DIVIDE_KEY, .65d);
-    }
-
     public void setShowTextInButton(boolean showTextInButton) {
         preferences.putBoolean(SHOW_TEXT_IN_BUTTONS, showTextInButton);
     }

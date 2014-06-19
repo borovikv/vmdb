@@ -18,7 +18,7 @@ import java.util.*;
 * Date: 5/13/14
 * Time: 3:43 PM
 */
-enum FilterListener {
+enum Filter {
 
     CONTAIN("(?u)(?i).*%s.*", "contain"),
     NOT_CONTAIN("(?u)(?i)^((?!%s).)*$", "not_contain"),
@@ -32,17 +32,18 @@ enum FilterListener {
 
     private static Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
     private static Map<Integer, Object> filterValues = new HashMap<>();
+    private static Map<Integer, Filter> filterTypes = new HashMap<>();
     private final String regex;
     private final RowFilter.ComparisonType type;
     private final String name;
 
-    FilterListener(String regex, String name) {
+    Filter(String regex, String name) {
         this.regex = regex;
         this.name = name;
         type = null;
     }
 
-    FilterListener(RowFilter.ComparisonType type, String name) {
+    Filter(RowFilter.ComparisonType type, String name) {
         this.type = type;
         this.name = name;
         regex = "";
@@ -78,7 +79,7 @@ enum FilterListener {
                 if (filterValues.containsKey(column)){
                     initValue = filterValues.get(column);
                 }
-                Object value = InputDialog.showInputDialog(columnName, toString(), initValue);
+                Object value = InputDialog.showInputDialog(getMessage(column, columnName, false), initValue);
                 filter(value, tableView, column);
             }
 
@@ -89,6 +90,19 @@ enum FilterListener {
         };
     }
 
+    public static String getMessage(int col, String columnName, boolean withValue) {
+        Filter f = filterTypes.get(col);
+        if (f == null) return "";
+
+        String filterName = f.name;
+        String filter = ResourceBundleHelper.getString(filterName, filterName);
+        String column = ResourceBundleHelper.getString(columnName, columnName);
+        String format = ResourceBundleHelper.getString("filter-by");
+        String result = String.format(format, column, filter.toLowerCase());
+        if (!withValue) return result;
+        return result + " " + filterValues.get(col);
+    }
+
     private void filter(Object value, TableView tableView, int column) {
         if (value == null) return;
 
@@ -97,6 +111,7 @@ enum FilterListener {
 
         filters.put(column, rowFilter);
         filterValues.put(column, value);
+        filterTypes.put(column, this);
         setRowSorter(tableView);
     }
 
@@ -116,7 +131,7 @@ enum FilterListener {
         RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
         RowSorter<TableModel> sorter = new RowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
-        sorter.setFilteredColumns(new HashSet<>(filters.keySet()));
+        sorter.setFilteredColumns(filters.keySet());
         return sorter;
     }
 
@@ -127,6 +142,7 @@ enum FilterListener {
             public void actionPerformed(ActionEvent e) {
                 RowFilter<Object, Object> filter = RowFilter.regexFilter(regex, column);
                 filters.put(column, filter);
+                filterTypes.put(column, Filter.this);
                 setRowSorter(tableView);
 
             }
@@ -156,11 +172,13 @@ enum FilterListener {
     public static void clear() {
         filters.clear();
         filterValues.clear();
+        filterTypes.clear();
     }
 
     public static void remove(TableView demonstrator, int column) {
         filters.remove(column);
         filterValues.remove(column);
+        filterTypes.remove(column);
         REMOVE.setRowSorter(demonstrator);
     }
 }

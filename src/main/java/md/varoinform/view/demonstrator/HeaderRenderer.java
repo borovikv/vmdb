@@ -36,12 +36,20 @@ class HeaderRenderer extends DefaultTableCellHeaderRenderer {
         label.setFont(new Font(Settings.Fonts.SANS_SERIF.getName(), Font.BOLD, 14));
         FontMetrics fontMetrics = getFontMetrics(getFont());
         int size = fontMetrics.getHeight();
-        Icon icon = getIcon(column, size);
-        label.setIcon(icon);
+
+        String columnName = table.getModel().getColumnName(column);
+        setToolTip(label, column, columnName);
+
+        setIcon(label, column, size);
         return label;
     }
 
-    public ImageIcon getIcon(int column, int size) {
+    public void setToolTip(JLabel label, int column, String columnName) {
+        String message = Filter.getMessage(column, columnName, true);
+        label.setToolTipText(message);
+    }
+
+    public void setIcon(JLabel label, int column, int size) {
         boolean hasIcon = false;
         BufferedImage image = new BufferedImage(size*2, size, BufferedImage.TYPE_INT_ARGB);
         Graphics graphics = image.getGraphics();
@@ -58,8 +66,7 @@ class HeaderRenderer extends DefaultTableCellHeaderRenderer {
             hasIcon = true;
         }
         if (hasIcon){
-            return new ImageIcon(image);
+            label.setIcon(new ImageIcon(image));
         }
-        return null;
     }
 }

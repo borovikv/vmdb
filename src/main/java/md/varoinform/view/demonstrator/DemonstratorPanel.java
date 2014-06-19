@@ -3,7 +3,6 @@ package md.varoinform.view.demonstrator;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.util.*;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
@@ -11,9 +10,11 @@ import md.varoinform.util.observer.Observer;
 import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  */
 public class DemonstratorPanel extends JPanel implements Demonstrator, Observer, Observable {
 
-    private final Browser browser  = new Browser();
+    private final Browser browser = new Browser();
     private final TableView demonstrator = new TableView();
     private ObservableIml observable = new ObservableIml();
     private boolean painted = false;
@@ -110,7 +111,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         Object value = event.getValue();
         if ((event.getType() == ObservableEvent.Type.HISTORY_MOVE_BACK || event.getType() == ObservableEvent.Type.HISTORY_MOVE_FORWARD)
                 && value instanceof HistoryEvent
-                && ((HistoryEvent) value).getSource() instanceof FilterListener) {
+                && ((HistoryEvent) value).getSource() instanceof Filter) {
                 //noinspection unchecked
             RowSorter<EnterpriseTableModel> sorter = (RowSorter) ((HistoryEvent) value).getState();
             demonstrator.setModel(sorter.getModel());
@@ -134,8 +135,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
         if (!painted){
             painted = true;
-            PreferencesHelper helper = new PreferencesHelper();
-            double location = helper.getDivideLocation();
+            double location = 0.6;
             splitPane.setDividerLocation(location);
             splitPane.setResizeWeight(location);
         }

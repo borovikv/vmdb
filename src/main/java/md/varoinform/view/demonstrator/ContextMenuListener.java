@@ -52,14 +52,14 @@ class ContextMenuListener extends MouseAdapter {
         removeFilter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FilterListener.remove(demonstrator, column);
+                Filter.remove(demonstrator, column);
             }
         });
         popupMenu.add(removeFilter);
         popupMenu.addSeparator();
 
         Class<?> columnClass = demonstrator.getModel().getColumnClass(column);
-        List<ActionListener> listeners = FilterListener.getListeners(columnClass, demonstrator, column, value);
+        List<ActionListener> listeners = Filter.getListeners(columnClass, demonstrator, column, value);
         for (ActionListener listener : listeners) {
             String name = listener.toString();
             JMenuItem menuItem = new JMenuItem(ResourceBundleHelper.getString(name, name));

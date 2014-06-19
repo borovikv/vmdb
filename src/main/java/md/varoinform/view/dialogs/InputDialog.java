@@ -1,7 +1,6 @@
 package md.varoinform.view.dialogs;
 
 import md.varoinform.Settings;
-import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 
 import javax.swing.*;
@@ -104,20 +103,10 @@ public class InputDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    public static Object showInputDialog(String columnName, String filterType, Object value){
-        String message = getMessage(columnName, filterType);
+    public static Object showInputDialog(String message, Object value){
         InputDialog dialog = new InputDialog(message, value);
         dialog.setVisible(true);
         return dialog.value;
     }
-
-    public static String getMessage(String columnName, String filterType) {
-        String filter = ResourceBundleHelper.getString(filterType, filterType);
-        String column = ResourceBundleHelper.getString(columnName, columnName);
-        String format = ResourceBundleHelper.getString("filter-by");
-        return String.format(format, column, filter.toLowerCase());
-    }
-
-
 
 }
