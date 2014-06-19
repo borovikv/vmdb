@@ -27,14 +27,13 @@ class TableHeaderMouseAdapter extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1){
-            int column = demonstrator.getColumnModel().getColumnIndexAtX(e.getX());
-            int columnCount = demonstrator.getColumnCount();
-            if (column < 0) column = columnCount;
-            column = Math.min(column, columnCount - 1);
-            RowSorter rowSorter = (RowSorter) demonstrator.getRowSorter();
+        int column = demonstrator.getColumnModel().getColumnIndexAtX(e.getX());
+        int columnCount = demonstrator.getColumnCount();
+        if (column < 0) column = columnCount;
+        column = Math.min(column, columnCount - 1);
+        RowSorter rowSorter = (RowSorter) demonstrator.getRowSorter();
+        if (rowSorter != null)
             rowSorter.setSortable(column, false);
-        }
     }
 
     @Override
