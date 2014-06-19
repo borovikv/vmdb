@@ -47,7 +47,6 @@ public class StringUtils {
     }
 
     public static Object objectOrString(Object value){
-        if (value == null) return null;
         if (value instanceof Map) {
             return valueOf(((Map<?, ?>) value).values());
         } else if(value instanceof Collection<?>) {

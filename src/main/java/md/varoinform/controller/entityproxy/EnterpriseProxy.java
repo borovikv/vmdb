@@ -28,6 +28,9 @@ public class EnterpriseProxy extends EntityProxy {
     public EnterpriseProxy(Enterprise enterprise) {
         this.enterprise = enterprise;
         contactProxy = getContactProxy();
+        for (String s : getFields()) {
+            get(s);
+        }
     }
 
     private ContactProxy getContactProxy() {

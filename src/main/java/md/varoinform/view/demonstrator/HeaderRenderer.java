@@ -20,13 +20,13 @@ import java.util.Set;
 */
 class HeaderRenderer extends DefaultTableCellHeaderRenderer {
     private Set<Integer> filteredColumns = new HashSet<>();
-    private Map<Integer, RowSorterWorker.SortingType> sortedColumns = new HashMap<>();
+    private Map<Integer, SortOrder> sortedColumns = new HashMap<>();
 
     public void setFilteredColumns(Set<Integer> filteredColumns) {
         this.filteredColumns = filteredColumns;
     }
 
-    public void setSortedColumns(Map<Integer, RowSorterWorker.SortingType> sortedColumns) {
+    public void setSortedColumns(Map<Integer, SortOrder> sortedColumns) {
         this.sortedColumns = sortedColumns;
     }
 
@@ -50,9 +50,9 @@ class HeaderRenderer extends DefaultTableCellHeaderRenderer {
             graphics.drawImage(filterIcon.getImage(), 0, 0, null);
             hasIcon = true;
         }
-        RowSorterWorker.SortingType type = sortedColumns.get(column);
+        SortOrder type = sortedColumns.get(column);
         if (type  != null) {
-            String filename = String.format("/external-resources/icons/sort_%s.png", type);
+            String filename = String.format("/external-resources/icons/sort_%s.png", type.toString().toLowerCase());
             ImageIcon sortedIcon = ImageHelper.getScaledImageIcon(filename, size, size);
             graphics.drawImage(sortedIcon.getImage(), size, 0, null);
             hasIcon = true;

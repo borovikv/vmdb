@@ -4,13 +4,11 @@ import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.Profiler;
-import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
-import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,19 +18,14 @@ import java.util.*;
  */
 public class EnterpriseTableModel extends AbstractTableModel {
     private List<Enterprise> enterprises;
-    private List<EnterpriseProxy> enterpriseProxies;
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
 
     public EnterpriseTableModel() {
         enterprises = new ArrayList<>();
-        enterpriseProxies = new ArrayList<>();
     }
 
     public EnterpriseTableModel(List<Enterprise> enterprises) {
         this.enterprises = new ArrayList<>(enterprises);
-        Profiler p = new Profiler();
-        enterpriseProxies = Cache.instance.getProxys(this.enterprises);
-        p.end();
     }
 
 
@@ -60,10 +53,8 @@ public class EnterpriseTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        List<String> columns = getColumns();
-        String name = columns.get(columnIndex);
-        //EnterpriseProxy proxy = new EnterpriseProxy( enterprises.get(rowIndex) );
-        EnterpriseProxy proxy = enterpriseProxies.get(rowIndex);
+        String name = getColumnName(columnIndex);
+        EnterpriseProxy proxy = Cache.instance.getProxy(enterprises.get(rowIndex));
         Object value = proxy.get(name);
         return StringUtils.objectOrString(value);
     }
@@ -71,8 +62,9 @@ public class EnterpriseTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         String columnName = "";
-        if (column < getColumns().size())
-            columnName = getColumns().get( column );
+        List<String> columns = getColumns();
+        if (column < columns.size())
+            columnName = columns.get( column );
 
         return columnName;
     }
@@ -88,17 +80,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        List<String> columns = getColumns();
-        String name = columns.get(columnIndex);
+        String name = getColumnName(columnIndex);
         return EnterpriseProxy.getType(name);
-    }
-
-    public void sort(int column, RowSorterWorker.SortingType type){
-        String message = ResourceBundleHelper.getString("row_sorting_message", "Sorting...");
-        List<EnterpriseProxy> result = ActivityDialog.start(new RowSorterWorker(this, enterpriseProxies, column, type), message);
-        if (result  != null && !result.isEmpty()){
-            enterpriseProxies = result;
-            fireTableDataChanged();
-        }
     }
 }

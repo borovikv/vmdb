@@ -74,7 +74,7 @@ class ContextMenuListener extends MouseAdapter {
         sortColumnItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                demonstrator.sort(column, RowSorterWorker.SortingType.asc);
+                demonstrator.sort(column, SortOrder.ASCENDING);
             }
         });
         popupMenu.add(sortColumnItem);
@@ -83,7 +83,7 @@ class ContextMenuListener extends MouseAdapter {
         sortColumnDescItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                demonstrator.sort(column, RowSorterWorker.SortingType.desc);
+                demonstrator.sort(column, SortOrder.DESCENDING);
             }
         });
         popupMenu.add(sortColumnDescItem);

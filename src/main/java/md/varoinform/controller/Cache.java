@@ -5,7 +5,6 @@ import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
-import md.varoinform.util.Profiler;
 
 import java.util.*;
 
@@ -58,6 +57,7 @@ public enum Cache {
         return getEnterprises(ids);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public List<EnterpriseProxy> getProxys(List<Enterprise> enterprises){
         List<EnterpriseProxy> result = new ArrayList<>();
         for (Enterprise enterprise : enterprises) {
@@ -68,14 +68,9 @@ public enum Cache {
         }
         return result;
     }
-    public static void main(String[] args) {
-        List<Long> ids = new ArrayList<>();
-        for (long i = 0; i < 9000; i++) {
-            ids.add(i);
-        }
-        Profiler p = new Profiler();
-        List<Enterprise> enterprises = instance.getEnterprises(ids);
-        p.end();
-        System.out.println(enterprises.size());
+
+    public EnterpriseProxy getProxy(Enterprise enterprise){
+        return proxyCache.get(enterprise.getId());
     }
+
 }

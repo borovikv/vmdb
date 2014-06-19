@@ -6,10 +6,9 @@ import md.varoinform.util.PreferencesHelper;
 import md.varoinform.view.status.StatusBar;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -97,6 +96,10 @@ public class TableView extends JTable implements Demonstrator {
             enterprises = new ArrayList<>();
         }
         setRowSorter(null);
+
+        HeaderRenderer renderer = getTableHeaderRenderer();
+        renderer.setSortedColumns(new HashMap<Integer, SortOrder>());
+
         EnterpriseTableModel dataModel = new EnterpriseTableModel(enterprises);
         setModel(dataModel);
         RowSorter<EnterpriseTableModel> sorter = new RowSorter<>(dataModel);
@@ -109,19 +112,24 @@ public class TableView extends JTable implements Demonstrator {
 
     @Override
     public void setRowSorter(javax.swing.RowSorter<? extends TableModel> sorter) {
+        HeaderRenderer renderer = getTableHeaderRenderer();
+        if (sorter instanceof RowSorter) {
+            //noinspection unchecked
+            renderer.setFilteredColumns(((RowSorter) sorter).getFilteredColumns());
+        } else {
+            renderer.setFilteredColumns(new HashSet<Integer>());
+        }
+        super.setRowSorter(sorter);
+        StatusBar.instance.setTotal(getRowCount());
+    }
+
+    public HeaderRenderer getTableHeaderRenderer() {
         TableCellRenderer renderer = getTableHeader().getDefaultRenderer();
         if (!(renderer instanceof HeaderRenderer)){
             renderer = new HeaderRenderer();
             getTableHeader().setDefaultRenderer(renderer);
         }
-        if (sorter instanceof RowSorter) {
-            //noinspection unchecked
-            ((HeaderRenderer)renderer).setFilteredColumns(((RowSorter) sorter).getFilteredColumns());
-        } else {
-            ((HeaderRenderer)renderer).setFilteredColumns(new HashSet<Integer>());
-        }
-        super.setRowSorter(sorter);
-        StatusBar.instance.setTotal(getRowCount());
+        return (HeaderRenderer) renderer;
     }
 
     @Override
@@ -231,11 +239,12 @@ public class TableView extends JTable implements Demonstrator {
         dragComplete = true;
     }
 
-    public void sort(int column, RowSorterWorker.SortingType type) {
-        ((EnterpriseTableModel) getModel()).sort(column, type);
-        Map<Integer, RowSorterWorker.SortingType> sortedColumns = new HashMap<>();
-        sortedColumns.put(column, type);
-        ((HeaderRenderer) getTableHeader().getDefaultRenderer()).setSortedColumns(sortedColumns);
+    public void sort(int column, SortOrder order) {
+        TableRowSorter rowSorter = (TableRowSorter) getRowSorter();
+        rowSorter.setSortKeys(Arrays.asList(new javax.swing.RowSorter.SortKey(column, order)));
+        Map<Integer, SortOrder> sortedColumns = new HashMap<>();
+        sortedColumns.put(column, order);
+        getTableHeaderRenderer().setSortedColumns(sortedColumns);
     }
 
 }
