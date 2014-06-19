@@ -4,6 +4,7 @@ import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.Node;
 
 import java.util.*;
@@ -18,14 +19,19 @@ public enum Cache {
     instance;
     private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
     private final Map<Long, List<Long>> branchCache = new HashMap<>();
-    private final Map<Long, EnterpriseProxy> proxyCache = new HashMap<>();
+    private final Map<Long, List<EnterpriseProxy>> proxyCache = new HashMap<>();
 
     Cache() {
         List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
         for (Enterprise enterprise : enterprises) {
             Long id = enterprise.getId();
             enterpriseCache.put(id, enterprise);
-            proxyCache.put(id, new EnterpriseProxy(enterprise));
+            List<Language> languages = LanguageProxy.instance.getLanguages();
+            List<EnterpriseProxy> proxies = new ArrayList<>(languages.size());
+            for (Language language : languages) {
+                proxies.add(new EnterpriseProxy(enterprise, language));
+            }
+            proxyCache.put(id, proxies);
         }
         NodeDao nodeDao = new NodeDao();
         List<Node> nodes = nodeDao.getAll();
@@ -33,7 +39,6 @@ public enum Cache {
             List<Long> ids = nodeDao.getEnterpriseIds(node);
             branchCache.put(node.getId(), ids);
         }
-
     }
 
     public List<Enterprise> getEnterprises(List<Long> ids){
@@ -58,19 +63,29 @@ public enum Cache {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public List<EnterpriseProxy> getProxys(List<Enterprise> enterprises){
+    public List<EnterpriseProxy> getProxys(List<Enterprise> enterprises, Language language){
         List<EnterpriseProxy> result = new ArrayList<>();
+        int index = LanguageProxy.instance.getLanguages().indexOf(language);
         for (Enterprise enterprise : enterprises) {
-            EnterpriseProxy proxy = proxyCache.get(enterprise.getId());
-            if (proxy != null){
-                result.add(proxy);
+            List<EnterpriseProxy> proxies = proxyCache.get(enterprise.getId());
+            if (proxies != null){
+                result.add(proxies.get(index));
             }
         }
         return result;
     }
 
+    public EnterpriseProxy getProxy(Enterprise enterprise, Language language){
+        int index = LanguageProxy.instance.getLanguages().indexOf(language);
+        List<EnterpriseProxy> proxies = proxyCache.get(enterprise.getId());
+        if (proxies != null){
+            return proxies.get(index);
+        }
+        return null;
+    }
+
     public EnterpriseProxy getProxy(Enterprise enterprise){
-        return proxyCache.get(enterprise.getId());
+        return getProxy(enterprise, LanguageProxy.instance.getCurrentLanguage());
     }
 
 }
