@@ -92,4 +92,10 @@ public class Browser extends JEditorPane {
         }
 
     }
+
+    @Override
+    public void setText(String t) {
+        super.setText(t);
+        setCaretPosition(0);
+    }
 }
