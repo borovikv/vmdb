@@ -8,7 +8,9 @@ import md.varoinform.view.status.StatusBar;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -80,6 +82,7 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     public void fireViewStructureChanged() {
+        setRowSorter(null);
         ((AbstractTableModel) getModel()).fireTableStructureChanged();
     }
 
@@ -105,7 +108,6 @@ public class TableView extends JTable implements Demonstrator {
         RowSorter<EnterpriseTableModel> sorter = new RowSorter<>(dataModel);
         setRowSorter(sorter);
 
-        FilterListener.clear();
         StatusBar.instance.setTotal(getRowCount());
         StatusBar.instance.setRow(0);
     }
@@ -118,6 +120,12 @@ public class TableView extends JTable implements Demonstrator {
             renderer.setFilteredColumns(((RowSorter) sorter).getFilteredColumns());
         } else {
             renderer.setFilteredColumns(new HashSet<Integer>());
+        }
+
+        if (sorter == null){
+            Filter.clear();
+            renderer.setSortedColumns(new HashMap<Integer, SortOrder>());
+            sorter = new RowSorter<>((EnterpriseTableModel) getModel());
         }
         super.setRowSorter(sorter);
         StatusBar.instance.setTotal(getRowCount());
@@ -215,9 +223,10 @@ public class TableView extends JTable implements Demonstrator {
     public void columnOrderChanged() {
         if (dragComplete) {
             PreferencesHelper helper = new PreferencesHelper();
-            helper.putUserFields(getColumns());
-
-            fireViewStructureChanged();
+            if(!helper.getUserFields().equals(getColumns())){
+                helper.putUserFields(getColumns());
+                fireViewStructureChanged();
+            }
         }
         dragComplete = false;
     }
@@ -240,11 +249,14 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     public void sort(int column, SortOrder order) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TableRowSorter rowSorter = (TableRowSorter) getRowSorter();
+        rowSorter.setSortable(column, true);
         rowSorter.setSortKeys(Arrays.asList(new javax.swing.RowSorter.SortKey(column, order)));
         Map<Integer, SortOrder> sortedColumns = new HashMap<>();
         sortedColumns.put(column, order);
         getTableHeaderRenderer().setSortedColumns(sortedColumns);
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
 }
