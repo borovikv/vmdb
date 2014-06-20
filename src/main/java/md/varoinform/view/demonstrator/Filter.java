@@ -11,6 +11,7 @@ import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
 * Created with IntelliJ IDEA.
@@ -162,8 +163,7 @@ enum Filter {
             return RowFilter.dateFilter(type, (Date)value, column);
         }
         if (value instanceof CharSequence) {
-            String val = ((String)value).replace("[", "\\[");
-            value = val.replace("]", "\\]");
+            value = Pattern.quote((String) value);
             return RowFilter.regexFilter(String.format(regex, value), column);
         }
         return null;
