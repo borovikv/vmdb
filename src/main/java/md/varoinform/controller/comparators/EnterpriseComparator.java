@@ -15,11 +15,18 @@ import java.util.Locale;
 * Time: 9:18 AM
 */
 public class EnterpriseComparator implements Comparator<Enterprise> {
+
+    private Collator collator;
+    private final Language lang;
+
+    public EnterpriseComparator() {
+        lang = LanguageProxy.instance.getCurrentLanguage();
+        Locale locale = new Locale(LanguageProxy.getCurrentLanguageTitle());
+        collator = Collator.getInstance(locale);
+    }
+
     @Override
     public int compare(Enterprise o1, Enterprise o2) {
-        Language lang = LanguageProxy.instance.getCurrentLanguage();
-        Locale locale = new Locale(LanguageProxy.getCurrentLanguageTitle());
-        Collator collator = Collator.getInstance(locale);
         String titleO1 = o1.title(lang);
         String titleO2 = o2.title(lang);
         return collator.compare(titleO1, titleO2);

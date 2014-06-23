@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
+import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
@@ -34,6 +35,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -220,6 +222,7 @@ public class MainFrame extends JFrame implements Observer {
             case BRANCH_SELECTED:
                 Node node = branchPanel.getNode();
                 List<Enterprise> enterprises = Cache.instance.getEnterpriseByNode(node);
+                Collections.sort(enterprises, new EnterpriseComparator());
                 showResults(enterprises);
                 break;
 
