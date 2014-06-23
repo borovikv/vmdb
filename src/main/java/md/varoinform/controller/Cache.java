@@ -1,12 +1,15 @@
 package md.varoinform.controller;
 
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.Node;
+import md.varoinform.model.entities.Tag;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -20,6 +23,8 @@ public enum Cache {
     private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
     private final Map<Long, List<Long>> branchCache = new HashMap<>();
     private final Map<Long, List<EnterpriseProxy>> proxyCache = new HashMap<>();
+    private final Set<Tag> tags = new TreeSet<>();
+    private final DAOTag daoTag = new DAOTag();
 
     Cache() {
         List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
@@ -39,6 +44,8 @@ public enum Cache {
             List<Long> ids = nodeDao.getEnterpriseIds(node);
             branchCache.put(node.getId(), ids);
         }
+
+        tags.addAll(daoTag.getAll());
     }
 
     public List<Enterprise> getEnterprises(List<Long> ids){
@@ -88,4 +95,37 @@ public enum Cache {
         return getProxy(enterprise, LanguageProxy.instance.getCurrentLanguage());
     }
 
+    public List<Tag> getTags() {
+        return new ArrayList<>(tags);
+    }
+
+    public void saveTag(final Tag tag){
+        new SwingWorker<Void, Void>(){
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                daoTag.save(tag);
+                return null;
+            }
+        }.execute();
+    }
+
+    public void createTag(String title, List<Enterprise> enterprises) {
+        Tag tag = daoTag.createTag(title, enterprises);
+        if (tag == null) return;
+        tags.add(tag);
+        saveTag(tag);
+    }
+
+    public void delete(final Tag tag) {
+        tags.remove(tag);
+        new SwingWorker<Void, Void>(){
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                daoTag.delete(tag);
+                return null;
+            }
+        }.execute();
+    }
 }

@@ -3,6 +3,7 @@ package md.varoinform.view.navigation.tags;
 import md.varoinform.Settings;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.Observable;
@@ -19,6 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,9 +34,9 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
     private final TagList tagList = new TagList();
     private ObservableIml observable = new ObservableIml();
 
-    public TagPanel() {
+    public TagPanel(String placeholder) {
         setLayout(new BorderLayout());
-        textField = new AutoCompleteTextField("enter_tag");
+        textField = new AutoCompleteTextField(placeholder);
         textField.getDocument().addDocumentListener(new FilteringDocumentListener(this));
         add(textField, BorderLayout.NORTH);
 
@@ -139,7 +141,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     private void deleteTag(Tag tag) {
         tagList.deleteTag(tag);
-        notifyObservers(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
+        notifyObservers(new ObservableEvent(ObservableEvent.Type.CLEAR_DEMONSTRATOR));
     }
 
 
@@ -197,5 +199,9 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
     public void filter(String text) {
         tagList.setCurrentTagTitle(text);
         ((FilteringModel)tagList.getModel()).filter(text);
+    }
+
+    public void addTag(List<Enterprise> enterprises) {
+        tagList.addTag(-1, enterprises);
     }
 }

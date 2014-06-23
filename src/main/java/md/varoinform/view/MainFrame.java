@@ -12,7 +12,6 @@ import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.SettingsDialog;
-import md.varoinform.view.dialogs.TagDialog;
 import md.varoinform.view.dialogs.export.ExportDialog;
 import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.historynavigator.BackButton;
@@ -45,7 +44,7 @@ import java.util.List;
  */
 public class MainFrame extends JFrame implements Observer {
     private final JTabbedPane navigationPane;
-    private final TagPanel tagPanel = new TagPanel();
+    private final TagPanel tagPanel = new TagPanel("");
     private final BranchPanel branchPanel = new BranchPanel();
     private final ToolbarButton exportButton = new ToolbarButton("/external-resources/icons/export.png", "export", "export");
     private final ToolbarButton mailButton = new ToolbarButton("/external-resources/icons/mail.png", "mail", "mail");
@@ -91,10 +90,7 @@ public class MainFrame extends JFrame implements Observer {
         tagButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String tagTitle = TagDialog.getTag();
-                DAOTag daoTag = new DAOTag();
-                daoTag.createTag(tagTitle, demonstrator.getSelected());
-                tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
+                tagPanel.addTag(demonstrator.getSelected());
             }
         });
         searchPanel.addSearchAction(new SearchListener() {
@@ -257,6 +253,8 @@ public class MainFrame extends JFrame implements Observer {
                 case TAGS_CHANGED:
                     tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
                     break;
+                case CLEAR_DEMONSTRATOR:
+                    showResults(null);
             }
         }
 

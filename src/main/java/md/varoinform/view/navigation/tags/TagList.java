@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation.tags;
 
-import md.varoinform.model.dao.DAOTag;
+import md.varoinform.controller.Cache;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
@@ -21,11 +21,9 @@ import java.util.Set;
  */
 public class TagList extends JList<Tag> {
     private String currentTagTitle;
-    private final DAOTag daoTag = new DAOTag();
 
     public TagList() {
-        List<Tag> tags = daoTag.getAll();
-        FilteringModel<Tag> model = new FilteringModel<>(tags);
+        FilteringModel<Tag> model = new FilteringModel<>(Cache.instance.getTags());
         setModel(model);
 
         setCellRenderer(new TagListCellRenderer());
@@ -66,11 +64,11 @@ public class TagList extends JList<Tag> {
             Tag tag = getModel().getElementAt(index);
             Set<Enterprise> taggedEnterprises = tag.getEnterprises();
             taggedEnterprises.addAll(enterprises);
-            daoTag.save(tag);
+            Cache.instance.saveTag(tag);
             setSelectedIndex(index);
         } else {
             String title = TagDialog.getTag();
-            daoTag.createTag(title, enterprises);
+            Cache.instance.createTag(title, enterprises);
             updateModel();
         }
         return true;
@@ -83,7 +81,7 @@ public class TagList extends JList<Tag> {
         if (result == null || result.isEmpty() || result.equals(tag.getTitle())) return;
         tag.setTitle(result);
         ((FilteringModel<Tag>)getModel()).updateModel();
-        daoTag.save(tag);
+        Cache.instance.saveTag(tag);
 
     }
 
@@ -91,13 +89,13 @@ public class TagList extends JList<Tag> {
         return (String) JOptionPane.showInputDialog(null, message, "", JOptionPane.QUESTION_MESSAGE, null, null, tag.getTitle());
     }
 
-    public void deleteTag(Tag tag) {
+    public void deleteTag(final Tag tag) {
         if (tag == null) return;
 
         String message = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag.getTitle() + "?";
         if (JOptionPane.showConfirmDialog(null, message) == JOptionPane.OK_OPTION) {
             ((FilteringModel<Tag>)getModel()).removeElement(tag);
-            daoTag.delete(tag);
+            Cache.instance.delete(tag);
         }
     }
 
@@ -105,7 +103,7 @@ public class TagList extends JList<Tag> {
     public void updateModel(){
         FilteringModel<Tag> model = (FilteringModel<Tag>) getModel();
         model.clear();
-        model.addAll(daoTag.getAll());
+        model.addAll(Cache.instance.getTags());
     }
 
 

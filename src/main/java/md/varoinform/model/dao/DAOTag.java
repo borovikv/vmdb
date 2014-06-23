@@ -26,8 +26,8 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
         return tags.get(0);
     }
 
-    public void createTag(String title, List<Enterprise> enterprises) {
-        if (title == null || title.isEmpty()) return;
+    public Tag createTag(String title, List<Enterprise> enterprises) {
+        if (title == null || title.isEmpty()) return null;
 
         Tag tag = read(title);
         if (tag == null){
@@ -38,8 +38,7 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
         } else {
             tag.getEnterprises().addAll(enterprises);
         }
-
-        save(tag);
+        return tag;
     }
 
     public boolean removeTag(String title, List<Enterprise> enterprises){

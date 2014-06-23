@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "DB_tag")
-public class Tag {
+public class Tag implements Comparable<Tag>{
     private Long id;
     private String title;
     private Set<Enterprise> enterprises;
@@ -58,5 +58,11 @@ public class Tag {
 
     public void removeAll(Collection<Enterprise> collection){
         enterprises.removeAll(collection);
+    }
+
+    @Override
+    public int compareTo(Tag o) {
+        if (o == null) return 1;
+        return title.compareTo(o.title);
     }
 }
