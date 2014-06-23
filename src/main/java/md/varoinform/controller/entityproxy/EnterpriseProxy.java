@@ -1,5 +1,6 @@
 package md.varoinform.controller.entityproxy;
 
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
 import java.lang.reflect.InvocationTargetException;
@@ -8,7 +9,6 @@ import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
 public class EnterpriseProxy extends EntityProxy {
-    private final Enterprise enterprise;
     private static Map<String, Method> methods;
     static {
         EnterpriseProxy.methods = new HashMap<>();
@@ -21,28 +21,28 @@ public class EnterpriseProxy extends EntityProxy {
         }
     }
 
+    private final Enterprise enterprise;
     private final ContactProxy contactProxy;
-    private final Map<String, Object> cache = new HashMap<>();
+    private final Map<String, Object> cache;
 
-
-    public EnterpriseProxy(Enterprise enterprise) {
+    public EnterpriseProxy(Enterprise enterprise, Language language) {
+        super(language);
         this.enterprise = enterprise;
         contactProxy = getContactProxy();
+        cache = new HashMap<>();
         for (String s : getFields()) {
             get(s);
         }
+    }
+
+    public EnterpriseProxy(Enterprise enterprise) {
+        this(enterprise, LanguageProxy.instance.getCurrentLanguage());
     }
 
     private ContactProxy getContactProxy() {
         List<Contact> contacts = enterprise.getContacts();
         if (contacts.isEmpty()) return new ContactProxy(null, currentLanguage());
         return new ContactProxy(contacts.get(0), currentLanguage());
-    }
-
-    public EnterpriseProxy(Enterprise enterprise, Language language) {
-        super(language);
-        this.enterprise = enterprise;
-        contactProxy = getContactProxy();
     }
 
     @Property(name = "Title")

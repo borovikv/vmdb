@@ -4,7 +4,6 @@ import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.StringUtils;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -54,9 +53,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         String name = getColumnName(columnIndex);
-        EnterpriseProxy proxy = Cache.instance.getProxy(enterprises.get(rowIndex));
-        Object value = proxy.get(name);
-        return StringUtils.objectOrString(value);
+        return Cache.instance.getValue(enterprises.get(rowIndex), name);
     }
 
     @Override

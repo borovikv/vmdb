@@ -108,6 +108,7 @@ public class MainFrame extends JFrame implements Observer {
         demonstrator.addObserver(tagListener);
         tagPanel.addObserver(tagListener);
         StatusBar.instance.addObserver(this);
+        StatusBar.instance.addObserver(Cache.instance);
 
         setTitle("Varo-Inform DATABASE");
         JFrame.setDefaultLookAndFeelDecorated(true);

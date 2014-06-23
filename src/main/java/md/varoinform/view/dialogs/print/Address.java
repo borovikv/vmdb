@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
@@ -41,7 +40,7 @@ public class Address extends PrintableBase {
         int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
 
 
-        EnterpriseProxy enterpriseProxy = Cache.instance.getProxy(enterprise, language);
+        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
         String[] strings = new String[]{
                 enterpriseProxy.getTitle(),
                 StringUtils.valueOf(enterpriseProxy.getStreetHouseOffice()),

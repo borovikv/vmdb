@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
@@ -105,7 +104,7 @@ public class PagesActivity extends Activity {
     private Block getBlock(Enterprise enterprise, Language language) {
         Block block = new Block();
 
-        EnterpriseProxy enterpriseProxy = Cache.instance.getProxy(enterprise, language);
+        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
         for (String field : fields) {
             if (EnterpriseProxy.isAddress(field)) continue;
 
