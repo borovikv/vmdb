@@ -2,6 +2,7 @@ package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.HashSet;
@@ -41,19 +42,30 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
         return tag;
     }
 
-    public boolean removeTag(String title, List<Enterprise> enterprises){
-        if (enterprises.isEmpty()) return false;
 
-        Tag tag = read(title);
-        if (tag == null) return false;
+    public void delete(Set<Tag> tagsToDelete) {
+        if (tagsToDelete.isEmpty()) return;
+        try{
+            Transaction transaction = getSession().beginTransaction();
+            for (Tag tag : tagsToDelete) {
+                getSession().delete(tag);
+            }
+            transaction.commit();
+        } catch (RuntimeException e){
+            getSession().getTransaction().rollback();
+        }
+    }
 
-        tag.removeAll(enterprises);
-        if (tag.getEnterprises().isEmpty()){
-            delete(tag);
-            return false;
-        } else {
-            save(tag);
-            return true;
+    public void save(Set<Tag> tagsToSave) {
+        if (tagsToSave.isEmpty()) return;
+        try{
+            Transaction transaction = getSession().beginTransaction();
+            for (Tag tag : tagsToSave) {
+                getSession().save(tag);
+            }
+            transaction.commit();
+        } catch (RuntimeException e){
+            getSession().getTransaction().rollback();
         }
     }
 }

@@ -8,9 +8,8 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.StringUtils;
-import md.varoinform.util.observer.*;
+import md.varoinform.util.observer.ObservableEvent;
 
-import javax.swing.*;
 import java.util.*;
 
 /**
@@ -36,6 +35,8 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
 
     private final Set<Tag> tags = new TreeSet<>();
+    private final Set<Tag> tagsToSave = new HashSet<>();
+    private final Set<Tag> tagsToDelete = new HashSet<>();
     private final DAOTag daoTag = new DAOTag();
 
     private Cache() {
@@ -74,20 +75,13 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return new ArrayList<>(tags);
     }
 
-    public void saveTag(final Tag tag, List<Enterprise> enterprises){
+    public void saveTag(Tag tag, List<Enterprise> enterprises){
         tag.getEnterprises().addAll(enterprises);
         saveTag(tag);
     }
 
-    public void saveTag(final Tag tag){
-        new SwingWorker<Void, Void>(){
-
-            @Override
-            protected Void doInBackground() throws Exception {
-                daoTag.save(tag);
-                return null;
-            }
-        }.execute();
+    public void saveTag(Tag tag){
+        tagsToSave.add(tag);
     }
 
     public void createTag(String title, List<Enterprise> enterprises) {
@@ -97,16 +91,22 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         saveTag(tag);
     }
 
-    public void delete(final Tag tag) {
+    public void delete(Tag tag) {
         tags.remove(tag);
-        new SwingWorker<Void, Void>(){
+        tagsToSave.remove(tag);
+        tagsToDelete.add(tag);
+    }
 
-            @Override
-            protected Void doInBackground() throws Exception {
-                daoTag.delete(tag);
-                return null;
-            }
-        }.execute();
+    public boolean deleteFromTag(Tag tag, List<Long> enterpriseIds){
+        List<Enterprise> enterprises = new EnterpriseDao().read(enterpriseIds);
+        tag.removeAll(enterprises);
+        if (tag.getEnterprises().isEmpty()) {
+            delete(tag);
+            return true;
+        } else {
+            saveTag(tag);
+            return false;
+        }
     }
 
 
@@ -116,10 +116,14 @@ public enum Cache implements md.varoinform.util.observer.Observer {
             return StringUtils.objectOrString(proxy.get(field));
         }
         return null;
-        //return StringUtils.objectOrString(new EnterpriseProxy(enterprise).get(field));
     }
 
     public EnterpriseProxy getProxy(long id) {
         return enterpriseProxies.get(id);
+    }
+
+    public void shutDown(){
+        daoTag.delete(tagsToDelete);
+        daoTag.save(tagsToSave);
     }
 }

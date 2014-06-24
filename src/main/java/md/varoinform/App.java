@@ -1,6 +1,7 @@
 package md.varoinform;
 
 
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.view.MainFrame;
 
 import javax.swing.*;
@@ -24,9 +25,16 @@ public class App
                 PasswordDB passwordDB = new PasswordDB();
                 passwordDB.getPassword();
                 */
+
                 mainFrame = new MainFrame();
                 mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 mainFrame.setVisible(true);
+                Runtime.getRuntime().addShutdownHook(new Thread(){
+                    @Override
+                    public void run() {
+                        SessionManager.shutdownAll();
+                    }
+                });
             }
 
         });

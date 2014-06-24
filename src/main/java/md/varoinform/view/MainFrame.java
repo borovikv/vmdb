@@ -2,9 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
-import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ImageHelper;
@@ -15,6 +13,7 @@ import md.varoinform.view.demonstrator.DemonstratorPanel;
 import md.varoinform.view.dialogs.SettingsDialog;
 import md.varoinform.view.dialogs.export.ExportDialog;
 import md.varoinform.view.dialogs.print.PrintDialog;
+import md.varoinform.view.dialogs.progress.ActivityDialog;
 import md.varoinform.view.historynavigator.BackButton;
 import md.varoinform.view.historynavigator.ForwardButton;
 import md.varoinform.view.mail.MailAction;
@@ -31,6 +30,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -136,6 +137,21 @@ public class MainFrame extends JFrame implements Observer {
         updateDisplay();
 
         homeButton.home();
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ActivityDialog.start(new SwingWorker<Object, Object>() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        try {
+                            Cache.instance.shutDown();
+                        } catch (Exception ignored){}
+                        return null;
+                    }
+                }, ResourceBundleHelper.getString("close_window_message"));
+            }
+        });
     }
 
     private JPanel createToolBar() {
@@ -276,10 +292,7 @@ public class MainFrame extends JFrame implements Observer {
         }
 
         private boolean removeEnterprisesFromTag() {
-            DAOTag daoTag = new DAOTag();
-            List<Long> selected = demonstrator.getSelected();
-            List<Enterprise> enterprises = new EnterpriseDao().read(selected);
-            return daoTag.removeTag(tagPanel.getCurrentTagTitle(), enterprises);
+            return !Cache.instance.deleteFromTag(tagPanel.getSelectedTag(), demonstrator.getSelected());
         }
 
 
