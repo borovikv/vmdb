@@ -154,7 +154,7 @@ public class MainFrame extends JFrame implements Observer {
 
                         return null;
                     }
-                }, ResourceBundleHelper.getString("close_window_message"));
+                }, ResourceBundleHelper.getString("close_window_message", "Wait..."));
             }
         });
     }
