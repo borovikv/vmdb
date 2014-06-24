@@ -1,7 +1,5 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.model.entities.Enterprise;
-
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -15,10 +13,10 @@ import java.util.List;
  * Time: 5:18 PM
  */
 public class EnterpriseTransferable implements Transferable {
-    private final List<Enterprise> enterprises;
+    private final List<Long> enterprises;
     public final static DataFlavor ENTERPRISE_FLAVOR = new DataFlavor(Object.class, "Enterprise list");
 
-    public EnterpriseTransferable(List<Enterprise> enterprises) {
+    public EnterpriseTransferable(List<Long> enterprises) {
         this.enterprises = enterprises;
     }
 

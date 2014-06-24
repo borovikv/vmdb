@@ -1,8 +1,7 @@
 package md.varoinform.view.mail;
 
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.controller.Cache;
 import md.varoinform.model.entities.Email;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.view.dialogs.progress.Activity;
 
 import java.awt.*;
@@ -22,22 +21,22 @@ public class MailActivity extends Activity {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final Desktop desktop;
-    private final List<Enterprise> enterprises;
+    private final List<Long> enterpriseIds;
 
-    public MailActivity(Desktop desktop, List<Enterprise> enterprises) {
+    public MailActivity(Desktop desktop, List<Long> enterpriseIds) {
         this.desktop = desktop;
-        this.enterprises = enterprises;
+        this.enterpriseIds = enterpriseIds;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        if (enterprises.isEmpty()) return null;
+        if (enterpriseIds.isEmpty()) return null;
 
         String mailTo = "mailto:";
         StringBuilder builder = new StringBuilder(mailTo);
-        for (Enterprise enterprise : enterprises) {
+        for (Long id : enterpriseIds) {
 
-            List<Email> emails = new EnterpriseProxy(enterprise).getEmails();
+            List<Email> emails = Cache.instance.getProxy(id).getEmails();
             for (Email email : emails) {
 
                 String s = email.getEmail();

@@ -3,7 +3,6 @@ package md.varoinform.view.navigation.tags;
 import md.varoinform.Settings;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.Observable;
@@ -201,7 +200,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
         ((FilteringModel)tagList.getModel()).filter(text);
     }
 
-    public void addTag(List<Enterprise> enterprises) {
-        tagList.addTag(-1, enterprises);
+    public void addTag(List<Long> enterpriseIds) {
+        tagList.addTag(-1, enterpriseIds);
     }
 }

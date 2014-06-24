@@ -2,7 +2,6 @@ package md.varoinform.view.navigation.search;
 
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.search.Searcher;
 import md.varoinform.model.search.Searchers;
 import md.varoinform.util.ResourceBundleHelper;
@@ -30,7 +29,7 @@ public class SearchPanel implements Observer {
     public final FieldSearcherCombo searcherCombo;
     public final ToolbarButton searchButton;
     private final List<SearchListener> listeners = new ArrayList<>();
-    private final Map<HistoryEvent, List<Enterprise>> cache = new HashMap<>();
+    private final Map<HistoryEvent, List<Long>> cache = new HashMap<>();
 
     public SearchPanel() {
         ActionListener searchAction = new ActionListener() {
@@ -53,20 +52,20 @@ public class SearchPanel implements Observer {
 
     public void search(Searcher searcher, String text) {
         String message = ResourceBundleHelper.getString("search-wait-dialog-message", "Wait...");
-        List<Enterprise> enterprises = ActivityDialog.start(new SearchWorker(searcher, text), message);
+        List<Long> enterprises = ActivityDialog.start(new SearchWorker(searcher, text), message);
         fireSearchEnded(enterprises);
     }
 
-    public void fireSearchEnded(List<Enterprise> enterprises) {
+    public void fireSearchEnded(List<Long> enterprises) {
         for (SearchListener listener : listeners) {
             listener.perform(enterprises);
         }
     }
 
-    private List<Enterprise> searchText(Searcher searcher, String text) {
+    private List<Long> searchText(Searcher searcher, String text) {
         if (text == null) return null;
         HistoryEvent event = new HistoryEvent(searcher, text);
-        java.util.List<Enterprise> enterprises;
+        java.util.List<Long> enterprises;
         if (cache.containsKey(event)) {
             enterprises = cache.get(event);
         } else {
@@ -77,7 +76,7 @@ public class SearchPanel implements Observer {
         return enterprises;
     }
 
-    private void cache(HistoryEvent value, List<Enterprise> enterprises) {
+    private void cache(HistoryEvent value, List<Long> enterprises) {
         if (cache.containsKey(value)) return;
         cache.put(value, enterprises);
     }
@@ -113,7 +112,7 @@ public class SearchPanel implements Observer {
 
     }
 
-    private class SearchWorker extends SwingWorker<List<Enterprise>, Object> {
+    private class SearchWorker extends SwingWorker<List<Long>, Object> {
 
         private Searcher searcher;
         private String text;
@@ -124,8 +123,13 @@ public class SearchPanel implements Observer {
         }
 
         @Override
-        protected List<Enterprise> doInBackground() throws Exception {
-            return searchText(searcher, text);
+        protected List<Long> doInBackground() throws Exception {
+            try{
+                return searchText(searcher, text);
+            } catch (Exception ignored){
+                ignored.printStackTrace();
+                return new ArrayList<>();
+            }
         }
     }
 }

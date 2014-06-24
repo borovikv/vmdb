@@ -1,7 +1,6 @@
 package md.varoinform.model.search;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.util.ResourceBundleHelper;
@@ -18,8 +17,8 @@ import java.util.List;
  */
 public class ForeingCapitalSearcher extends Searcher {
     @Override
-    public List<Enterprise> search(String q) {
-        String hql = "Select distinct e from Enterprise e where e.foreignCapital = :hasForeingCapital";
+    public List<Long> search(String q) {
+        String hql = "Select distinct e.id from Enterprise e where e.foreignCapital = :hasForeingCapital";
         try{
             boolean has = convertToBoolean(q);
             Query query = SessionManager.getSession().createQuery(hql).setBoolean("hasForeingCapital", has);

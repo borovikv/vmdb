@@ -1,11 +1,10 @@
 package md.varoinform.view.dialogs.export;
 
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.demonstrator.Demonstrator;
 import md.varoinform.view.dialogs.FieldChoosePanel;
-import md.varoinform.view.dialogs.progress.ProgressDialog;
 import md.varoinform.view.dialogs.RowsChoosePanel;
+import md.varoinform.view.dialogs.progress.ProgressDialog;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
@@ -63,7 +62,7 @@ public class ExportDialog extends JDialog {
     }
 
 
-    private void save(List<String> fieldNames, List<Enterprise> enterprises){
+    private void save(List<String> fieldNames, List<Long> enterprises){
         JFileChooser saveDialog = new JFileChooser();
         FileFilter csvFileFilter = new FileFilter() {
             @Override
@@ -92,7 +91,7 @@ public class ExportDialog extends JDialog {
         }
     }
 
-    private List<Enterprise> getEnterprises() {
+    private List<Long> getEnterprises() {
         if (rowsChoosePanel.getChoose() == RowsChoosePanel.ALL){
             return demonstrator.getALL();
         }

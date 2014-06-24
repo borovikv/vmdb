@@ -1,7 +1,5 @@
 package md.varoinform.view.navigation.search;
 
-import md.varoinform.model.entities.Enterprise;
-
 import java.util.List;
 
 /**
@@ -11,5 +9,5 @@ import java.util.List;
  * Time: 11:57 AM
  */
 public interface SearchListener {
-    public void perform(List<Enterprise> enterprises);
+    public void perform(List<Long> enterprises);
 }

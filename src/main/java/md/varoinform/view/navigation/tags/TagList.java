@@ -1,6 +1,7 @@
 package md.varoinform.view.navigation.tags;
 
 import md.varoinform.controller.Cache;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
@@ -11,7 +12,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,14 +57,12 @@ public class TagList extends JList<Tag> {
         return index;
     }
 
-    public boolean addTag(int index, List<Enterprise> enterprises) {
-        if (enterprises.isEmpty()) return false;
-
+    public boolean addTag(int index, List<Long> enterpriseIds) {
+        if (enterpriseIds.isEmpty()) return false;
+        List<Enterprise> enterprises = new EnterpriseDao().read(enterpriseIds);
         if (index >= 0) {
             Tag tag = getModel().getElementAt(index);
-            Set<Enterprise> taggedEnterprises = tag.getEnterprises();
-            taggedEnterprises.addAll(enterprises);
-            Cache.instance.saveTag(tag);
+            Cache.instance.saveTag(tag, enterprises);
             setSelectedIndex(index);
         } else {
             String title = TagDialog.getTag();

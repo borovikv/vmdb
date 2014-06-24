@@ -1,7 +1,6 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.view.status.StatusBar;
 
@@ -94,7 +93,7 @@ public class TableView extends JTable implements Demonstrator {
 
 
     @Override
-    public void showResults(List<Enterprise> enterprises) {
+    public void showResults(List<Long> enterprises) {
         if (enterprises == null) {
             enterprises = new ArrayList<>();
         }
@@ -141,8 +140,8 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     @Override
-    public List<Enterprise> getSelected() {
-        List<Enterprise> enterprises = new ArrayList<>();
+    public List<Long> getSelected() {
+        List<Long> enterprises = new ArrayList<>();
 
         for (int index : getSelectedRows()) {
             int realIndex = convertRowIndexToModel(index);
@@ -159,7 +158,7 @@ public class TableView extends JTable implements Demonstrator {
         return 0 > selectedRow || selectedRow > getEnterpriseTableModel().getRowCount();
     }
 
-    private Enterprise getEnterpriseAt(int rowIndex) {
+    private Long getEnterpriseAt(int rowIndex) {
         return getEnterpriseTableModel().getEnterpriseAt(rowIndex);
     }
 
@@ -169,8 +168,8 @@ public class TableView extends JTable implements Demonstrator {
 
 
     @Override
-    public List<Enterprise> getALL() {
-        List<Enterprise> enterprises = new ArrayList<>();
+    public List<Long> getALL() {
+        List<Long> enterprises = new ArrayList<>();
         for (int i = 0; i < getRowCount(); i++) {
             int realIndex = convertRowIndexToModel(i);
 
@@ -183,14 +182,7 @@ public class TableView extends JTable implements Demonstrator {
     }
 
 
-    @Override
-    public void clear() {
-        setModel(new EnterpriseTableModel());
-    }
-
-
-    @Override
-    public Enterprise getSelectedEnterprise() {
+    public Long getSelectedEnterprise() {
         int rowIndex = getRowIndex();
         if (isIndexOutOfBound(rowIndex)) return null;
         return getEnterpriseAt(rowIndex);

@@ -1,6 +1,5 @@
 package md.varoinform.model.search;
 
-import md.varoinform.controller.Cache;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.CacheMode;
@@ -50,15 +49,14 @@ public class FullTextSearcher extends Searcher {
     }
 
     @Override
-    public List<Enterprise> search(String q) {
+    public List<Long> search(String q) {
         //Transaction tx = fullTextSession.beginTransaction();
         try {
             org.apache.lucene.search.Query query = builder.createQuery(q);
             if (query == null) return new ArrayList<>();
             org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
             hibQuery.setProjection("id");
-            List<Long> ids = getIds(hibQuery.list());
-            return Cache.instance.getEnterprises(ids);
+            return getIds(hibQuery.list());
         } catch (Exception ex) {
            // tx.rollback();
             ex.printStackTrace();

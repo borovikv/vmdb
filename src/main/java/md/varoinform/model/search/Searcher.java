@@ -1,7 +1,5 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.entities.Enterprise;
-
 import java.util.List;
 
 /**
@@ -11,7 +9,7 @@ import java.util.List;
  * Time: 9:45 AM
  */
 public abstract class Searcher implements Comparable<Searcher>{
-    public abstract List<Enterprise> search(String q);
+    public abstract List<Long> search(String q);
 
     public String getName(){
         return this.getClass().getSimpleName().replace("Searcher", "").toLowerCase();

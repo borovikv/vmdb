@@ -25,13 +25,13 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     @Override
     public void update(ObservableEvent event) {
         enterpriseProxies.clear();
-        for (Enterprise enterprise : enterpriseCache.values()) {
+        List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
+        for (Enterprise enterprise : enterprises) {
             enterpriseProxies.put(enterprise.getId(), new EnterpriseProxy(enterprise));
         }
     }
 
-    private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
-    private final Map<Long, EnterpriseProxy> enterpriseProxies = new HashMap<>();
+    private final Map<Long, EnterpriseProxy> enterpriseProxies = new LinkedHashMap<>();
     private final Map<Long, List<Long>> branchCache = new HashMap<>();
 
 
@@ -43,7 +43,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
         for (Enterprise enterprise : enterprises) {
             Long id = enterprise.getId();
-            enterpriseCache.put(id, enterprise);
+            //enterpriseCache.put(id, enterprise);
             enterpriseProxies.put(id, new EnterpriseProxy(enterprise));
         }
         createBranchCache();
@@ -60,29 +60,23 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         }
     }
 
-    public List<Enterprise> getEnterprises(List<Long> ids){
-        List<Enterprise> result = new ArrayList<>();
-        for (Long id : ids) {
-            Enterprise enterprise = enterpriseCache.get(id);
-            if (enterprise != null){
-                result.add(enterprise);
-            }
-        }
-        return result;
+    public List<Long> getAllEnterpriseIds(){
+        return new ArrayList<>(enterpriseProxies.keySet());
     }
 
-    public List<Enterprise> getAllEnterprises(){
-        return new ArrayList<>(enterpriseCache.values());
-    }
-
-    public List<Enterprise> getEnterpriseByNode(Node node){
+    public List<Long> getEnterpriseIdByNode(Node node){
         List<Long> ids = branchCache.get(node.getId());
         if (ids == null) return new ArrayList<>();
-        return getEnterprises(ids);
+        return ids;
     }
 
     public List<Tag> getTags() {
         return new ArrayList<>(tags);
+    }
+
+    public void saveTag(final Tag tag, List<Enterprise> enterprises){
+        tag.getEnterprises().addAll(enterprises);
+        saveTag(tag);
     }
 
     public void saveTag(final Tag tag){
@@ -116,12 +110,16 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     }
 
 
-    public Object getValue(Enterprise enterprise, String field){
-        EnterpriseProxy proxy = enterpriseProxies.get(enterprise.getId());
+    public Object getValue(Long enterprise, String field){
+        EnterpriseProxy proxy = enterpriseProxies.get(enterprise);
         if (proxy != null){
             return StringUtils.objectOrString(proxy.get(field));
         }
         return null;
         //return StringUtils.objectOrString(new EnterpriseProxy(enterprise).get(field));
+    }
+
+    public EnterpriseProxy getProxy(long id) {
+        return enterpriseProxies.get(id);
     }
 }

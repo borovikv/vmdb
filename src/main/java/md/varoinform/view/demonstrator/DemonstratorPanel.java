@@ -2,7 +2,7 @@ package md.varoinform.view.demonstrator;
 
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
-import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
@@ -43,8 +43,8 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    Enterprise enterprise = demonstrator.getSelectedEnterprise();
-                    showEnterprise(enterprise);
+                    Long enterpriseId = demonstrator.getSelectedEnterprise();
+                    showEnterprise(enterpriseId);
                     StatusBar.instance.setRow(demonstrator.getSelectedRow() + 1);
                 }
             }
@@ -68,39 +68,28 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
     }
 
     @Override
-    public void showResults(List<Enterprise> enterprises){
+    public void showResults(List<Long> enterprises){
         demonstrator.showResults(enterprises);
     }
 
     @Override
-    public List<Enterprise> getSelected(){
+    public List<Long> getSelected(){
         return demonstrator.getSelected();
     }
 
     @Override
-    public List<Enterprise> getALL() {
+    public List<Long> getALL() {
         return demonstrator.getALL();
     }
 
-    @Override
-    public void clear() {
-        demonstrator.clear();
-    }
-
-    @Override
-    public Enterprise getSelectedEnterprise() {
-        return demonstrator.getSelectedEnterprise();
-    }
-
-
     public void updateDisplay(){
         demonstrator.updateDisplay();
-        showEnterprise(getSelectedEnterprise());
+        showEnterprise(demonstrator.getSelectedEnterprise());
     }
 
-    private void showEnterprise(Enterprise enterprise) {
+    private void showEnterprise(Long enterprise) {
         if ( enterprise != null ) {
-            browser.setText(EnterpriseView.getView(enterprise));
+            browser.setText(EnterpriseView.getView(new EnterpriseDao().read(enterprise)));
         } else {
             browser.setText("");
         }

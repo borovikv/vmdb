@@ -1,7 +1,5 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.model.entities.Enterprise;
-
 import java.util.List;
 
 /**
@@ -12,13 +10,9 @@ import java.util.List;
  */
 public interface Demonstrator {
 
-    public void showResults(List<Enterprise> enterprises);
+    public void showResults(List<Long> enterprises);
 
-    public List<Enterprise> getSelected();
+    public List<Long> getSelected();
 
-    public List<Enterprise> getALL();
-
-    public Enterprise getSelectedEnterprise();
-
-    public void clear();
+    public List<Long> getALL();
 }

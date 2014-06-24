@@ -1,6 +1,7 @@
 package md.varoinform.view.dialogs.print;
 
 import md.varoinform.controller.LanguageProxy;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
@@ -15,7 +16,11 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.*;
+import java.awt.print.Book;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterJob;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -150,15 +155,15 @@ public class PrintDialog extends JDialog {
     }
 
     private List<Enterprise> getEnterprises() {
-        List<Enterprise> enterprises = null;
+        List<Long> enterpriseIds = new ArrayList<>();
         if (rowsChooser.getChoose() == RowsChoosePanel.ALL) {
-            enterprises = demonstrator.getALL();
+            enterpriseIds = demonstrator.getALL();
 
         } else if (rowsChooser.getChoose() == RowsChoosePanel.SELECTED) {
-            enterprises = demonstrator.getSelected();
+            enterpriseIds = demonstrator.getSelected();
         }
 
-        return enterprises;
+        return new EnterpriseDao().read(enterpriseIds);
     }
 
     private JPanel createRadioButtonGroup(String title, JRadioButton[] buttons) {

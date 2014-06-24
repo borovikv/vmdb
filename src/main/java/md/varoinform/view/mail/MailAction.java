@@ -1,6 +1,5 @@
 package md.varoinform.view.mail;
 
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.view.demonstrator.Demonstrator;
 
 import java.awt.*;
@@ -23,11 +22,11 @@ public class MailAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        List<Enterprise> enterprises = demonstrator.getSelected();
+        List<Long> enterprises = demonstrator.getSelected();
         mail(enterprises);
     }
 
-    public void mail(List<Enterprise> enterprises){
+    public void mail(List<Long> enterprises){
         Desktop desktop;
 
         if (Desktop.isDesktopSupported() && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)){

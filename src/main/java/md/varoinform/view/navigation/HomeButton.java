@@ -25,7 +25,7 @@ public class HomeButton extends ToolbarButton implements Observer {
     }
 
     public void home(){
-        demonstrator.showResults(Cache.instance.getAllEnterprises());
+        demonstrator.showResults(Cache.instance.getAllEnterpriseIds());
         if (!programatically) {
             History.instance.add(new HistoryEvent(HomeButton.this, null));
         }

@@ -1,9 +1,9 @@
 package md.varoinform.view.dialogs.export;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.comparators.ColumnPriorityComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import md.varoinform.view.dialogs.progress.Activity;
@@ -23,10 +23,10 @@ import java.util.List;
 public class ExportActivity extends Activity {
     private final File file;
     private final List<String> selectedColumns;
-    private final List<Enterprise> enterprises;
+    private final List<Long> enterprises;
     private String format;
 
-    public ExportActivity(File file, List<String> selectedColumns, List<Enterprise> enterprises) {
+    public ExportActivity(File file, List<String> selectedColumns, List<Long> enterprises) {
         this.file = file;
         this.selectedColumns = selectedColumns;
         this.enterprises = enterprises;
@@ -42,8 +42,7 @@ public class ExportActivity extends Activity {
             int size = enterprises.size();
             for (int i = 0; i < size; i++) {
                 Thread.sleep(millis);
-                Enterprise enterprise = enterprises.get(i);
-                writeLine(writer, selectedColumns, enterprise);
+                writeLine(writer, selectedColumns, Cache.instance.getProxy((long)i));
 
                 int progress = i * 100 / size;
                 setProgress(progress);
@@ -55,9 +54,8 @@ public class ExportActivity extends Activity {
         return null;
     }
 
-    private void writeLine(CSVWriter writer, List<String> selectedColumns, Enterprise enterprise) {
+    private void writeLine(CSVWriter writer, List<String> selectedColumns, EnterpriseProxy proxy) {
         String[] entries = new String[selectedColumns.size()];
-        EnterpriseProxy proxy = new EnterpriseProxy(enterprise);
         for (int i = 0; i < selectedColumns.size(); i++) {
             Object obj = proxy.get(selectedColumns.get(i));
             entries[i] = StringUtils.valueOf(obj);

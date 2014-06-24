@@ -1,6 +1,5 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.view.navigation.tags.TagList;
 
 import javax.swing.*;
@@ -26,7 +25,7 @@ public class EnterpriseTransferableHandler extends TransferHandler {
     @Override
     protected Transferable createTransferable(JComponent component) {
         TableView tableView = (TableView) component;
-        List<Enterprise> selected = tableView.getSelected();
+        List<Long> selected = tableView.getSelected();
         if (selected.size() <= 0) return null;
         return new EnterpriseTransferable(selected);
     }
@@ -44,7 +43,7 @@ public class EnterpriseTransferableHandler extends TransferHandler {
         }
         try {
             @SuppressWarnings("unchecked")
-            List<Enterprise> selected = (List<Enterprise>) t.getTransferData(EnterpriseTransferable.ENTERPRISE_FLAVOR);
+            List<Long> selected = (List<Long>) t.getTransferData(EnterpriseTransferable.ENTERPRISE_FLAVOR);
             JList.DropLocation dropLocation = list.getDropLocation();
             Point point = dropLocation.getDropPoint();
             int index = list.locationToIndex(point);

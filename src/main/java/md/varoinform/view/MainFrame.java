@@ -2,8 +2,8 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
-import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.model.dao.DAOTag;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
@@ -35,7 +35,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -97,7 +96,7 @@ public class MainFrame extends JFrame implements Observer {
         });
         searchPanel.addSearchAction(new SearchListener() {
             @Override
-            public void perform(List<Enterprise> enterprises) {
+            public void perform(List<Long> enterprises) {
                 tagPanel.clearSelection();
                 branchPanel.clearSelection();
                 showResults(enterprises);
@@ -222,9 +221,8 @@ public class MainFrame extends JFrame implements Observer {
         switch (event.getType()){
             case BRANCH_SELECTED:
                 Node node = branchPanel.getNode();
-                List<Enterprise> enterprises = Cache.instance.getEnterpriseByNode(node);
-                Collections.sort(enterprises, new EnterpriseComparator());
-                showResults(enterprises);
+                List<Long> enterpriseIds = Cache.instance.getEnterpriseIdByNode(node);
+                showResults(enterpriseIds);
                 break;
 
             case LANGUAGE_CHANGED:
@@ -233,7 +231,7 @@ public class MainFrame extends JFrame implements Observer {
         }
     }
 
-    private void showResults(List<Enterprise> enterprises) {
+    private void showResults(List<Long> enterprises) {
         demonstrator.showResults(enterprises);
     }
 
@@ -248,7 +246,8 @@ public class MainFrame extends JFrame implements Observer {
                     if (tag == null) {
                         showResults(null);
                     } else {
-                        showResults(new ArrayList<>(tag.getEnterprises()));
+                        List<Long> enterprises = new EnterpriseDao().getEnterpriseIdsByTag(tag);
+                        showResults(enterprises);
                     }
                     break;
                 case DELETE:
@@ -278,16 +277,19 @@ public class MainFrame extends JFrame implements Observer {
 
         private boolean removeEnterprisesFromTag() {
             DAOTag daoTag = new DAOTag();
-            return daoTag.removeTag(tagPanel.getCurrentTagTitle(), demonstrator.getSelected());
+            List<Long> selected = demonstrator.getSelected();
+            List<Enterprise> enterprises = new EnterpriseDao().read(selected);
+            return daoTag.removeTag(tagPanel.getCurrentTagTitle(), enterprises);
         }
 
 
         private void updateDemonstrator() {
             Tag selectedTag = tagPanel.getSelectedTag();
             if (selectedTag != null){
-                showResults(new ArrayList<>(selectedTag.getEnterprises()));
+                List<Long> enterprises = new EnterpriseDao().getEnterpriseIdsByTag(selectedTag);
+                showResults(enterprises);
             } else {
-                showResults(new ArrayList<Enterprise>());
+                showResults(new ArrayList<Long>());
             }
         }
 
