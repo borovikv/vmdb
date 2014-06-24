@@ -10,6 +10,7 @@ import md.varoinform.model.entities.Tag;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.observer.ObservableEvent;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -24,32 +25,80 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     @Override
     public void update(ObservableEvent event) {
         enterpriseProxies.clear();
-        List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
+        Collection<Enterprise> enterprises;
+        if (enterpriseCache.isEmpty()){
+            enterprises = EnterpriseDao.getEnterprises();
+        } else {
+            enterprises = enterpriseCache.values();
+        }
         for (Enterprise enterprise : enterprises) {
             enterpriseProxies.put(enterprise.getId(), new EnterpriseProxy(enterprise));
         }
     }
 
+    private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
     private final Map<Long, EnterpriseProxy> enterpriseProxies = new LinkedHashMap<>();
     private final Map<Long, List<Long>> branchCache = new HashMap<>();
-
 
     private final Set<Tag> tags = new TreeSet<>();
     private final Set<Tag> tagsToSave = new HashSet<>();
     private final Set<Tag> tagsToDelete = new HashSet<>();
     private final DAOTag daoTag = new DAOTag();
+    private static final boolean isEnterpriseCached = true;
+    private static final boolean isBranchCached = false;
+
 
     private Cache() {
         List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
 
         for (Enterprise enterprise : enterprises) {
             Long id = enterprise.getId();
-            //enterpriseCache.put(id, enterprise);
+            enterpriseCache.put(id, enterprise);
             enterpriseProxies.put(id, new EnterpriseProxy(enterprise));
         }
-        createBranchCache();
 
         tags.addAll(daoTag.getAll());
+    }
+
+
+    public List<Long> getAllEnterpriseIds(){
+        return new ArrayList<>(enterpriseProxies.keySet());
+    }
+
+    public List<Long> getEnterpriseIdByNode(Node node){
+        if (isBranchCached){
+            return getCachedEnterpriseIdsByNode(node);
+        } else {
+            return new NodeDao().getEnterpriseIds(node);
+        }
+    }
+
+    public List<Long> getCachedEnterpriseIdsByNode(Node node) {
+        if (branchCache.isEmpty() && !Holder.isWait()) {
+
+            List<Long> ids = new NodeDao().getEnterpriseIds(node);
+
+            new SwingWorker<Void, Void>(){
+                @Override
+                protected Void doInBackground() throws Exception {
+
+                    try(Holder ignored = new Holder()){
+                        createBranchCache();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            }.execute();
+
+            return ids;
+        } else if (branchCache.containsKey(node.getId())){
+
+            return branchCache.get(node.getId());
+        } else {
+
+            return new NodeDao().getEnterpriseIds(node);
+        }
     }
 
     private void createBranchCache() {
@@ -59,16 +108,6 @@ public enum Cache implements md.varoinform.util.observer.Observer {
             List<Long> ids = nodeDao.getEnterpriseIds(node);
             branchCache.put(node.getId(), ids);
         }
-    }
-
-    public List<Long> getAllEnterpriseIds(){
-        return new ArrayList<>(enterpriseProxies.keySet());
-    }
-
-    public List<Long> getEnterpriseIdByNode(Node node){
-        List<Long> ids = branchCache.get(node.getId());
-        if (ids == null) return new ArrayList<>();
-        return ids;
     }
 
     public List<Tag> getTags() {
@@ -125,5 +164,24 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     public void shutDown(){
         daoTag.delete(tagsToDelete);
         daoTag.save(tagsToSave);
+    }
+
+    public Enterprise getEnterprise(Long id) {
+        return enterpriseCache.get(id);
+    }
+
+    public List<Enterprise> getEnterprises(List<Long> ids) {
+        List<Enterprise> result = new ArrayList<>();
+        for (Long id : ids) {
+            Enterprise e = enterpriseCache.get(id);
+            if (e != null){
+                result.add(e);
+            }
+        }
+        return result;
+    }
+
+    public boolean isEnterpriseCached(){
+        return isEnterpriseCached;
     }
 }

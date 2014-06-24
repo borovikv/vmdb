@@ -1,5 +1,6 @@
 package md.varoinform.model.dao;
 
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
@@ -23,10 +24,14 @@ public class EnterpriseDao extends GenericDaoHibernateImpl<Enterprise, Long>{
        return enterprises;
     }
 
-    public List<Enterprise> read(List<Long> selected) {
-        Criteria criteria = SessionManager.getSession().createCriteria(Enterprise.class).add(Restrictions.in("id", selected));
-        //noinspection unchecked
-        return criteria.list();
+    public List<Enterprise> read(List<Long> ids) {
+        if (Cache.instance.isEnterpriseCached()){
+            return Cache.instance.getEnterprises(ids);
+        } else {
+            Criteria criteria = SessionManager.getSession().createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
+            //noinspection unchecked
+            return criteria.list();
+        }
     }
 
     public List<Long> getEnterpriseIdsByTag(Tag tag) {

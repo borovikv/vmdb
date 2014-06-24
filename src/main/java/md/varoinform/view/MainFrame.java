@@ -2,6 +2,7 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
+import md.varoinform.controller.Holder;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
@@ -146,7 +147,11 @@ public class MainFrame extends JFrame implements Observer {
                     protected Object doInBackground() throws Exception {
                         try {
                             Cache.instance.shutDown();
+                            while (Holder.isWait()){
+                                Thread.sleep(500);
+                            }
                         } catch (Exception ignored){}
+
                         return null;
                     }
                 }, ResourceBundleHelper.getString("close_window_message"));

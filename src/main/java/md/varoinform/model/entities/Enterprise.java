@@ -198,4 +198,14 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     public int compareTo(Enterprise o) {
         return comparator.compare(this, o);
     }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Enterprise && id.equals(((Enterprise) obj).id);
+    }
 }
