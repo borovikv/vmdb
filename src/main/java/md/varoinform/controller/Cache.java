@@ -24,60 +24,40 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
     @Override
     public void update(ObservableEvent event) {
-        proxyCache = getEnterpriseProxies(enterpriseCache.values());
-        tableCache = getTableValues(proxyCache);
+        enterpriseProxies.clear();
+        for (Enterprise enterprise : enterpriseCache.values()) {
+            enterpriseProxies.put(enterprise.getId(), new EnterpriseProxy(enterprise));
+        }
     }
 
     private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
+    private final Map<Long, EnterpriseProxy> enterpriseProxies = new HashMap<>();
     private final Map<Long, List<Long>> branchCache = new HashMap<>();
 
-    private Map<Long, EnterpriseProxy> proxyCache = new HashMap<>();
-    private Map<Long, Map<String, Object>> tableCache = new HashMap<>();
 
     private final Set<Tag> tags = new TreeSet<>();
     private final DAOTag daoTag = new DAOTag();
 
     private Cache() {
         List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
+
         for (Enterprise enterprise : enterprises) {
             Long id = enterprise.getId();
             enterpriseCache.put(id, enterprise);
+            enterpriseProxies.put(id, new EnterpriseProxy(enterprise));
         }
+        createBranchCache();
 
-        proxyCache = getEnterpriseProxies(enterprises);
-        tableCache = getTableValues(proxyCache);
+        tags.addAll(daoTag.getAll());
+    }
 
+    private void createBranchCache() {
         NodeDao nodeDao = new NodeDao();
         List<Node> nodes = nodeDao.getAll();
         for (Node node : nodes) {
             List<Long> ids = nodeDao.getEnterpriseIds(node);
             branchCache.put(node.getId(), ids);
         }
-
-        tags.addAll(daoTag.getAll());
-    }
-
-    private Map<Long, Map<String, Object>> getTableValues(Map<Long, EnterpriseProxy> proxyCache) {
-        List<String> fields = EnterpriseProxy.getFields();
-        Map<Long, Map<String, Object>> tableCache = new HashMap<>();
-        for (Long id : proxyCache.keySet()) {
-            Map<String, Object> values = new HashMap<>();
-            for (String field : fields) {
-                Object value = proxyCache.get(id).get(field);
-                values.put(field, StringUtils.objectOrString(value));
-            }
-            tableCache.put(id, values);
-        }
-       return tableCache;
-    }
-
-    private Map<Long, EnterpriseProxy> getEnterpriseProxies(Collection<Enterprise> enterprises) {
-        Map<Long, EnterpriseProxy> proxies = new HashMap<>(enterprises.size());
-        for (Enterprise enterprise : enterprises) {
-            proxies.put(enterprise.getId(), new EnterpriseProxy(enterprise));
-
-        }
-        return proxies;
     }
 
     public List<Enterprise> getEnterprises(List<Long> ids){
@@ -99,14 +79,6 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         List<Long> ids = branchCache.get(node.getId());
         if (ids == null) return new ArrayList<>();
         return getEnterprises(ids);
-    }
-
-    public EnterpriseProxy getProxy(Enterprise enterprise){
-        EnterpriseProxy proxies = proxyCache.get(enterprise.getId());
-        if (proxies != null){
-            return proxies;
-        }
-        return null;
     }
 
     public List<Tag> getTags() {
@@ -145,10 +117,11 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
 
     public Object getValue(Enterprise enterprise, String field){
-        Map<String, Object> proxyValues = tableCache.get(enterprise.getId());
-        if (proxyValues != null){
-            return proxyValues.get(field);
+        EnterpriseProxy proxy = enterpriseProxies.get(enterprise.getId());
+        if (proxy != null){
+            return StringUtils.objectOrString(proxy.get(field));
         }
         return null;
+        //return StringUtils.objectOrString(new EnterpriseProxy(enterprise).get(field));
     }
 }
