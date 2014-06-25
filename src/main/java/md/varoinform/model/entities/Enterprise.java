@@ -18,7 +18,10 @@ import java.util.*;
 @Entity
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
-        tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class),
+        tokenizer = @TokenizerDef(factory = PatternTokenizerFactory.class,
+                params = {
+                    @Parameter(name = "pattern", value = "\\W")
+        }),
         filters = {
                 @TokenFilterDef(factory = ASCIIFoldingFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class),

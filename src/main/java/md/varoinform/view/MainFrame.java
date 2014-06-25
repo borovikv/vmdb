@@ -6,6 +6,7 @@ import md.varoinform.controller.Holder;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
@@ -151,6 +152,9 @@ public class MainFrame extends JFrame implements Observer {
                                 Thread.sleep(500);
                             }
                         } catch (Exception ignored){}
+                        finally {
+                            SessionManager.shutdownAll();
+                        }
 
                         return null;
                     }

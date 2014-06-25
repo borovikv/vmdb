@@ -1,7 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 
@@ -12,6 +12,7 @@ import javax.persistence.*;
  * Time: 2:04 PM
  */
 
+@SuppressWarnings("UnusedDeclaration")
 @Entity
 @Table(name = "EXPORTED_DB.DB_url")
 public class Url {
@@ -38,7 +39,8 @@ public class Url {
     }
 
     @Column(name = "url")
-    @Field
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Analyzer(definition = "customanalyzer")
     public String getUrl() {
         return url;
     }
