@@ -14,9 +14,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,7 +27,6 @@ public class SearchPanel implements Observer {
     public final FieldSearcherCombo searcherCombo;
     public final ToolbarButton searchButton;
     private final List<SearchListener> listeners = new ArrayList<>();
-    private final Map<HistoryEvent, List<Long>> cache = new HashMap<>();
 
     public SearchPanel() {
         ActionListener searchAction = new ActionListener() {
@@ -66,19 +63,9 @@ public class SearchPanel implements Observer {
         if (text == null) return null;
         HistoryEvent event = new HistoryEvent(searcher, text);
         java.util.List<Long> enterprises;
-        if (cache.containsKey(event)) {
-            enterprises = cache.get(event);
-        } else {
-            enterprises = searcher.search(text);
-        }
+        enterprises = searcher.search(text);
         History.instance.add(event);
-        cache(event, enterprises);
         return enterprises;
-    }
-
-    private void cache(HistoryEvent value, List<Long> enterprises) {
-        if (cache.containsKey(value)) return;
-        cache.put(value, enterprises);
     }
 
     public void addSearchAction(SearchListener listener){
