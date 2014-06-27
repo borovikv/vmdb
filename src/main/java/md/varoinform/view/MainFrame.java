@@ -148,7 +148,7 @@ public class MainFrame extends JFrame implements Observer {
                     protected Object doInBackground() throws Exception {
                         try {
                             Cache.instance.shutDown();
-                            while (Holder.isWait()){
+                            while (Holder.await()){
                                 Thread.sleep(500);
                             }
                         } catch (Exception ignored){}
