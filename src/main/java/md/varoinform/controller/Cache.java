@@ -38,14 +38,14 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
     private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
     private final Map<Long, EnterpriseProxy> enterpriseProxies = new LinkedHashMap<>();
-    private final Map<Long, List<Long>> branchCache = new HashMap<>();
+    private Map<Long, List<Long>> branchCache = new HashMap<>();
 
     private final Set<Tag> tags = new TreeSet<>();
     private final Set<Tag> tagsToSave = new HashSet<>();
     private final Set<Tag> tagsToDelete = new HashSet<>();
     private final DAOTag daoTag = new DAOTag();
     private static final boolean isEnterpriseCached = true;
-    private static final boolean isBranchCached = false;
+    private static final boolean isBranchCached = true;
 
 
     private Cache() {
@@ -74,22 +74,24 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     }
 
     public List<Long> getCachedEnterpriseIdsByNode(Node node) {
-        if (branchCache.isEmpty() && !Holder.isWait()) {
+        if (branchCache.isEmpty() && !Holder.await()) {
 
             List<Long> ids = new NodeDao().getEnterpriseIds(node);
 
-            new SwingWorker<Void, Void>(){
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
 
-                    try(Holder ignored = new Holder()){
-                        createBranchCache();
-                    } catch (Exception e){
+                    try (Holder ignored = new Holder()) {
+                        branchCache = createBranchCache();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return null;
                 }
-            }.execute();
+            };
+            worker.execute();
+
 
             return ids;
         } else if (branchCache.containsKey(node.getId())){
@@ -101,13 +103,15 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         }
     }
 
-    private void createBranchCache() {
+    private Map<Long, List<Long>> createBranchCache() {
         NodeDao nodeDao = new NodeDao();
         List<Node> nodes = nodeDao.getAll();
+        Map<Long, List<Long>> bc = new HashMap<>();
         for (Node node : nodes) {
             List<Long> ids = nodeDao.getEnterpriseIds(node);
-            branchCache.put(node.getId(), ids);
+            bc.put(node.getId(), ids);
         }
+        return bc;
     }
 
     public List<Tag> getTags() {
