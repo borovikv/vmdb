@@ -4,6 +4,8 @@ import md.varoinform.util.Profiler;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,21 +14,24 @@ import java.io.IOException;
  * Time: 4:25 PM
  */
 public class Holder implements Closeable {
-    private static boolean wait = false;
+    private static AtomicBoolean wait = new AtomicBoolean(false);
+    private static AtomicInteger counter = new AtomicInteger(0);
     private final Profiler p;
 
     public Holder() {
-        wait = true;
+        wait.set(true);
+        counter.addAndGet(1);
         p = new Profiler("hold");
     }
 
     @Override
     public void close() throws IOException {
-        wait = false;
+        int currentCounter = counter.decrementAndGet();
+        if (currentCounter == 0) wait.set(false);
         p.end();
     }
 
-    public static boolean isWait() {
-        return wait;
+    public static boolean await() {
+        return wait.get();
     }
 }
