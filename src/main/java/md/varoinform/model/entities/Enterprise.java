@@ -18,7 +18,7 @@ import java.util.*;
 @Entity
 @Indexed
 @AnalyzerDef(name = "customanalyzer",
-        tokenizer = @TokenizerDef(factory = PatternTokenizerFactory.class,
+        tokenizer = @TokenizerDef(factory = WhitespaceTokenizerFactory.class,
                 params = {
                     @Parameter(name = "pattern", value = "\\W")
         }),

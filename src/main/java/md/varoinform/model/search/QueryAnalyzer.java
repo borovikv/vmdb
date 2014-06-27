@@ -66,6 +66,6 @@ public class QueryAnalyzer {
                 result.append(" ");
             }
         }
-        return result.toString().replaceAll("[-\\.]", " ");
+        return result.toString().trim().replaceAll("[-\\.]", " ");
     }
 }
