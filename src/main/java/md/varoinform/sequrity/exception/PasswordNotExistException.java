@@ -1,4 +1,4 @@
-package md.varoinform.sequrity;
+package md.varoinform.sequrity.exception;
 
 /**
  * Created with IntelliJ IDEA.

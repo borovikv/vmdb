@@ -1,9 +1,12 @@
 package md.varoinform.view.dialogs.registration;
 
+import md.varoinform.Settings;
 import md.varoinform.sequrity.Registrar;
-import md.varoinform.sequrity.RegistrationException;
+import md.varoinform.sequrity.exception.RegistrationException;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,8 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +24,6 @@ import java.util.Observer;
 public class RegistrationDialog extends JDialog implements Observer{
 
     private final Registrar registrar = new Registrar();
-    private final RegisterByInternetPanel registerByInternetPanel = new RegisterByInternetPanel();
     private final RegisterByPhonePanel registerByPhonePanel = new RegisterByPhonePanel();
     private final JPanel card = new JPanel();
     private final List<CardPanel> cards = new ArrayList<>();
@@ -31,6 +31,7 @@ public class RegistrationDialog extends JDialog implements Observer{
 
     private final JButton backButton;
     private final JButton nextButton;
+    private final LicencePanel licencePanel;
 
     public RegistrationDialog() {
         setModal(true);
@@ -45,22 +46,12 @@ public class RegistrationDialog extends JDialog implements Observer{
         nextButton.setEnabled(false);
         nextButton.addActionListener(new NextAction());
 
-        registerByInternetPanel.setDocumentListener(nextButton);
         registerByPhonePanel.setDocumentListener(nextButton);
 
-        LicencePanel licencePanel = new LicencePanel();
+        licencePanel = new LicencePanel();
         licencePanel.addObserver(licencePanel);
-        licencePanel.addObserver(registerByInternetPanel);
         licencePanel.addObserver(registerByPhonePanel);
         licencePanel.addObserver(this);
-        licencePanel.addCheckBoxListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JCheckBox source = (JCheckBox) e.getSource();
-                nextButton.setEnabled(source.isSelected());
-            }
-        });
 
         backButton = new JButton();
         backButton.setVisible(false);
@@ -78,19 +69,18 @@ public class RegistrationDialog extends JDialog implements Observer{
 
         card.setLayout(new CardLayout());
         cards.add(licencePanel);
-        cards.add(registerByInternetPanel);
         cards.add(registerByPhonePanel);
         for (int i = 0; i < cards.size(); i++) {
             card.add(cards.get(i), "" + i);
         }
 
-        updateDisplay();
         add(card);
+        licencePanel.notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED, licencePanel.getCurrentLanguage()));
     }
 
 
     private void nextCard(){
-        if (currentCard < 2){
+        if (currentCard < cards.size() - 1){
             currentCard++;
             move(currentCard);
         }
@@ -122,13 +112,17 @@ public class RegistrationDialog extends JDialog implements Observer{
 
 
     @Override
-    public void update(Observable o, Object arg) {
-        updateDisplay();
+    public void update(ObservableEvent event) {
+        if (event.getType() == ObservableEvent.Type.LANGUAGE_CHANGED) {
+            updateDisplay();
+        } else {
+            nextButton.setEnabled(licencePanel.isInputValid());
+        }
     }
 
     private void updateDisplay() {
-        backButton.setText(TranslateHelper.instance.getText("back", "back"));
-        nextButton.setText(TranslateHelper.instance.getText("next", "next"));
+        backButton.setText(ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "back", "back"));
+        nextButton.setText(ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "next", "next"));
     }
 
 
@@ -136,58 +130,46 @@ public class RegistrationDialog extends JDialog implements Observer{
         @Override
         public void actionPerformed(ActionEvent e) {
             CardPanel cardPanel = cards.get(currentCard);
-            boolean valid = cardPanel.isInputValid();
-            if (!valid) return;
+            if (!cardPanel.isInputValid()) return;
 
-            switch (currentCard){
-                case 0:
+            String idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
+            if (licencePanel.getType() == RegistrationType.INTERNET){
+                try {
+                    tryRegisterByInternet(idDB);
+                } catch (RegistrationException rex){
                     nextCard();
-                    break;
+                }
 
-                case 1:
-                    chooseRegistrationType();
-                    break;
-
-                case 2:
-                    registerByPhone();
-                    break;
-            }
-
-        }
-
-        private void chooseRegistrationType() {
-
-            switch (registerByInternetPanel.getRegisterType()){
-                case RegisterByInternetPanel.INTERNET:
-                    registerByInternet();
-                    break;
-
-                case RegisterByInternetPanel.PHONE:
-                    setRegistrationCode();
-                    nextCard();
-                    break;
+            } else if (licencePanel.getType() == RegistrationType.PHONE && currentCard == 0){
+                nextCard();
+            } else if (licencePanel.getType() == RegistrationType.PHONE){
+                registerByPhone(idDB);
             }
         }
 
-        private void registerByInternet() {
-            String idDB = registerByInternetPanel.getIdDB();
+        private void tryRegisterByInternet(String idDB) throws RegistrationException {
             try {
                 registrar.registerByInternet(idDB);
                 setVisible(false);
             } catch (RegistrationException exception) {
-                showExceptionMessage(exception);
+                String text;
+                if (exception.getError() == RegistrationException.Error.CONNECTION_ERROR){
+                    text = ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "request_error_message", "");
+                } else if (exception.getError() == RegistrationException.Error.RESPONSE_ERROR){
+                    text = ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "response_error_message", "");
+                } else {
+                    showExceptionMessage(exception);
+                    setVisible(false);
+                    return;
+                }
+
+                if (JOptionPane.showConfirmDialog(null, text) == JOptionPane.NO_OPTION){
+                    setVisible(false);
+                }
             }
         }
 
-        private void setRegistrationCode() {
-            String idDB = registerByInternetPanel.getIdDB();
-            String registrationCode = registrar.getRegistrationCode(idDB);
-            registerByPhonePanel.setRegistrationCode(registrationCode);
-        }
-
-
-        private void registerByPhone() {
-            String idDB = registerByInternetPanel.getIdDB();
+        private void registerByPhone(String idDB) {
             String password = registerByPhonePanel.getPassword();
             try {
                 registrar.registerByPhone(idDB, password);
@@ -200,9 +182,15 @@ public class RegistrationDialog extends JDialog implements Observer{
         private void showExceptionMessage(RegistrationException exception) {
             exception.printStackTrace();
             String exceptionMessage = exception.getMessage();
-            String message = ResourceBundleHelper.getString(exceptionMessage, exceptionMessage);
+            String message = ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), exceptionMessage, exceptionMessage);
             JOptionPane.showMessageDialog(null, message);
         }
 
+    }
+
+    public static void main(String[] args) {
+        RegistrationDialog dialog = new RegistrationDialog();
+        dialog.setVisible(true);
+        dialog.dispose();
     }
 }

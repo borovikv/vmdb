@@ -24,6 +24,7 @@ public class Settings {
     private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
     private static final DateFormat df = new SimpleDateFormat("dd/MM/yy");
     private static final Image MAIN_ICON = ImageHelper.getImageIcon("/external-resources/icons/V.png").getImage();
+    private static final String CONFIG_BUNDLE_KEY = "varodb";
 
     public static enum Fonts {
         SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
@@ -99,5 +100,9 @@ public class Settings {
 
     public static Image getMainIcon() {
         return MAIN_ICON;
+    }
+
+    public static String getConfigBundleKey() {
+        return CONFIG_BUNDLE_KEY;
     }
 }

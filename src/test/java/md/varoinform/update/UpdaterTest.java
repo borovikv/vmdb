@@ -1,6 +1,6 @@
 package md.varoinform.update;
 
-import md.varoinform.sequrity.UnregisteredDBExertion;
+import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

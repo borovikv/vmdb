@@ -7,7 +7,7 @@ import md.varoinform.model.entities.Tag;
 import md.varoinform.model.entities.TagEnterprise;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
-import md.varoinform.sequrity.UnregisteredDBExertion;
+import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;

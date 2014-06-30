@@ -6,11 +6,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-public class MyDocumentListener implements DocumentListener {
+public class DocumentValidListener implements DocumentListener {
     private FormattedTextField field;
     private JButton button;
 
-    public MyDocumentListener(FormattedTextField field, JButton button) {
+    public DocumentValidListener(FormattedTextField field, JButton button) {
         this.field = field;
         this.button = button;
     }

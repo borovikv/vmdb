@@ -3,7 +3,6 @@ package md.varoinform.view;
 import md.varoinform.Settings;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
 
@@ -13,15 +12,12 @@ import javax.swing.*;
  * Date: 11/12/13
  * Time: 9:50 AM
  */
-public class ToolbarButton extends JButton {
+public class ToolbarButton extends I18nButton {
     private static final int iconHeight = 16;
     private static final int iconWidth = 16;
-    private final String text;
-    private final String toolTipText;
 
     private ToolbarButton(String filename, int width, int height, String text, String toolTipText) {
-        this.text = text;
-        this.toolTipText = toolTipText;
+        super(text, toolTipText);
         ImageIcon icon = ImageHelper.getScaledImageIcon(filename, width, height);
 
         setIcon(icon);
@@ -45,15 +41,11 @@ public class ToolbarButton extends JButton {
         return iconWidth;
     }
 
+    @Override
     public void updateDisplay(){
-        String i18nToolTipText = ResourceBundleHelper.getString(toolTipText, toolTipText);
-        setToolTipText(i18nToolTipText);
+        super.updateDisplay();
         PreferencesHelper helper = new PreferencesHelper();
-
-        if (helper.getShowTextInButton()){
-            String text = ResourceBundleHelper.getString(this.text, this.text);
-            setText(text);
-        } else {
+        if (!helper.getShowTextInButton()){
             setText("");
         }
     }

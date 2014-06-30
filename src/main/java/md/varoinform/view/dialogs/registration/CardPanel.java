@@ -1,8 +1,12 @@
 package md.varoinform.view.dialogs.registration;
 
+import md.varoinform.controller.DefaultLanguages;
+import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.observer.ObservableEvent;
+import md.varoinform.util.observer.Observer;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,39 +16,36 @@ import java.util.*;
  */
 public abstract class CardPanel extends JPanel implements Observer {
 
-    protected final JTextArea label = new JTextArea();
+    protected final JEditorPane label = new JEditorPane();
     private String labelKey;
+    protected DefaultLanguages language = DefaultLanguages.EN;
 
-
-    public CardPanel(String labelKey) {
-        this.labelKey = labelKey;
-
+    protected CardPanel() {
         label.setEditable(false);
-        label.setLineWrap(true);
-        label.setWrapStyleWord(true);
+        label.setContentType("text/html");
         label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        setLabelText(labelKey);
     }
 
-
-
-    private void setLabelText(String key){
-        String text = getText(key, "");
-        label.setText(text);
-    }
-
-    public String getText(String key, String def) {
-        return TranslateHelper.instance.getText(key, def);
+    public CardPanel(String labelKey) {
+        this();
+        this.labelKey = labelKey;
     }
 
     public abstract boolean isInputValid();
 
+
     @Override
-    public void update(Observable o, Object arg) {
-        setLabelText(labelKey);
-        updateDisplay();
+    public void update(ObservableEvent event) {
+        if (event.getType() == ObservableEvent.Type.LANGUAGE_CHANGED && event.getValue() instanceof DefaultLanguages) {
+            language = (DefaultLanguages) event.getValue();
+            updateDisplay();
+        }
+
     }
 
-    protected abstract void updateDisplay();
+    protected void updateDisplay(){
+        String text = ResourceBundleHelper.getString(language, labelKey, "");
+        label.setText(text);
+    }
 }

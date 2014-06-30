@@ -1,5 +1,8 @@
 package md.varoinform.view.dialogs.registration;
 
+import md.varoinform.Settings;
+import md.varoinform.util.ResourceBundleHelper;
+
 import javax.swing.*;
 
 /**
@@ -14,11 +17,15 @@ public class RegisterByPhonePanel extends CardPanel {
     private final JLabel codeLabel = new JLabel();
     private FormattedTextField passwordField = new FormattedTextField(8);
     private static final String REG_CODE_KEY =  "registrationCode";
+    private final String idDB;
 
 
     public RegisterByPhonePanel() {
         super("register_by_phone");
+        updateDisplay();
         setLayout(createLayout());
+        idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
+        codeLabel.setText(idDB);
     }
 
     private GroupLayout createLayout(){
@@ -40,18 +47,14 @@ public class RegisterByPhonePanel extends CardPanel {
         return layout;
     }
 
-    public void setRegistrationCode(String registrationCode) {
-        updateDisplay();
-        codeLabel.setText(registrationCode);
-    }
-
     public boolean isInputValid() {
         return passwordField.isValueValid();
     }
 
     @Override
     protected void updateDisplay() {
-         registrationTextLabel.setText(getText(REG_CODE_KEY, "registration code"));
+        super.updateDisplay();
+        registrationTextLabel.setText(ResourceBundleHelper.getString(language, REG_CODE_KEY, "registration code"));
     }
 
     public String getPassword() {
@@ -60,6 +63,6 @@ public class RegisterByPhonePanel extends CardPanel {
 
     public void setDocumentListener(JButton nextButton) {
         // if input valid enable button
-        passwordField.addDocumentListener(new MyDocumentListener(passwordField, nextButton));
+        passwordField.addDocumentListener(new DocumentValidListener(passwordField, nextButton));
     }
 }

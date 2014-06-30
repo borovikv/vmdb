@@ -1,6 +1,8 @@
 package md.varoinform.sequrity;
 
 import md.varoinform.Settings;
+import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.RegistrationException;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
 import md.varoinform.util.StringConverter;
@@ -44,7 +46,7 @@ public class Registrar {
         Map<String, String> responseMap = parseResponse(response);
         String value = responseMap.get("value");
         if (responseMap.get("status").equals("ERROR")){
-            throw new RegistrationException(value);
+            throw new RegistrationException(RegistrationException.Error.parseError(value));
         }
 
         return value;
@@ -65,7 +67,7 @@ public class Registrar {
         String[] strings = response.replaceAll("[\r\n\t\\s]*", "").split("[=:]");
 
         // response must be a string with format STATUS:value
-        if (strings.length != 2)  throw new RegistrationException(RegistrationException.RESPONSE_ERROR);
+        if (strings.length != 2)  throw new RegistrationException(RegistrationException.Error.RESPONSE_ERROR);
 
         result.put("status", strings[0]);
         result.put("value", strings[1]);
@@ -77,7 +79,7 @@ public class Registrar {
         try {
             return request.timesGet(1);
         } catch (IOException e) {
-            throw new RegistrationException(RegistrationException.CONNECTION_ERROR, e);
+            throw new RegistrationException(RegistrationException.Error.CONNECTION_ERROR, e);
         }
     }
 

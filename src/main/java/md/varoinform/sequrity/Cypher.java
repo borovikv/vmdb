@@ -1,5 +1,6 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.sequrity.exception.CryptographyException;
 import md.varoinform.util.StringConverter;
 import org.apache.commons.lang.ArrayUtils;
 import java.io.UnsupportedEncodingException;

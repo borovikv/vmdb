@@ -1,4 +1,4 @@
-package md.varoinform.sequrity;
+package md.varoinform.sequrity.exception;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,13 +8,10 @@ package md.varoinform.sequrity;
  */
 public class PasswordException extends Throwable {
     public static final String VALIDATION_ERROR = "validation error";
+    @SuppressWarnings("UnusedDeclaration")
     public static final String DECRYPTION_ERROR = "decryption error";
 
     public PasswordException(String message) {
         super(message);
-    }
-
-    public PasswordException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

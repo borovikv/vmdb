@@ -1,5 +1,8 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.sequrity.exception.CryptographyException;
+import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.PasswordNotExistException;
 import md.varoinform.util.StringConverter;
 import org.junit.After;
 import org.junit.Test;

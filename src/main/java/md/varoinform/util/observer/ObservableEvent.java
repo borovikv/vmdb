@@ -14,7 +14,7 @@ public class ObservableEvent {
         TAGS_CHANGED,
         BRANCH_SELECTED,
         TAG_SELECTED,
-        HISTORY_ADDED, CLEAR_DEMONSTRATOR, LANGUAGE_CHANGED
+        HISTORY_ADDED, CLEAR_DEMONSTRATOR, IS_VALID, LANGUAGE_CHANGED
     }
 
     private Type type;

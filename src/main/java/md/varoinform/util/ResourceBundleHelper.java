@@ -1,6 +1,7 @@
 package md.varoinform.util;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Language;
 
@@ -14,42 +15,31 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ResourceBundleHelper implements Serializable {
-    private static Map<String, ResourceBundle> bundleMap = new HashMap<>();
 
     private ResourceBundleHelper() {
     }
 
-    private static String getCurrentLanguage() {
-        String languageTitle = LanguageProxy.getCurrentLanguageTitle();
-        return getLanguageTitle(languageTitle);
+    private static ResourceBundle getResourceBundle(DefaultLanguages language) throws MalformedURLException {
+        String languageTitle = getLanguageTitle(language.getTitle());
+        Locale locale = new Locale(languageTitle);
+        String name = "i18n.Strings";
+        return getResourceBundle(name, locale);
     }
 
     private static String getLanguageTitle(String languageTitle) {
         return languageTitle.substring(0, 2);
     }
 
-    private static ResourceBundle getResourceBundle(String language) throws MalformedURLException {
-        language = getLanguageTitle(language);
-        if (bundleMap.containsKey(language)) {
-            return bundleMap.get(language);
-        }
-        Locale locale = new Locale(language);
-
+    private static ResourceBundle getResourceBundle(String name, Locale locale) throws MalformedURLException {
         Path path = Paths.get(Settings.getWorkFolder(), "external-resources");
         URL[] urls = { path.toUri().toURL()};
         ClassLoader classLoader = new URLClassLoader(urls);
 
-        ResourceBundle bundle = ResourceBundle.getBundle("i18n.Strings", locale, classLoader);
-
-        bundleMap.put(language, bundle);
-
-        return bundle;
+        return ResourceBundle.getBundle(name, locale, classLoader);
     }
 
 
-
-    public static String getString(String language, String key, String defaultValue){
-        language = getLanguageTitle(language);
+    public static String getString(DefaultLanguages language, String key, String defaultValue){
         ResourceBundle bundle;
         try {
             bundle = getResourceBundle(language);
@@ -70,17 +60,44 @@ public class ResourceBundleHelper implements Serializable {
         return defaultValue;
     }
 
-
+    /*
+    get string by key for current language
+    if key not found return defaultValue
+     */
     public static String getString(String key, String defaultValue){
         return getString(getCurrentLanguage(), key, defaultValue);
     }
 
+    private static DefaultLanguages getCurrentLanguage() {
+        String languageTitle = LanguageProxy.getCurrentLanguageTitle();
+        return DefaultLanguages.getLanguageByTitle(languageTitle);
+    }
 
+    /*
+    get string with empty default value
+     */
     public static String getString(String key){
         return getString(key, "");
     }
 
+    /*
+    get string by Language:language and key
+    if key not found return default value
+     */
     public static String getString(Language language, String key, String defaultValue) {
-        return getString(language.getTitle(), key, defaultValue);
+        return getString(DefaultLanguages.getLanguageByTitle(language.getTitle()), key, defaultValue);
+    }
+
+    /*
+    get string by key from bundle = bandleName
+     */
+    public static String getStringFromBundle(String bundleName, String key){
+        try {
+            ResourceBundle resourceBundle = getResourceBundle(bundleName, Locale.getDefault());
+            return resourceBundle.getString(key);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
