@@ -3,7 +3,8 @@ package md.varoinform.view.dialogs.registration;
 import md.varoinform.Settings;
 import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.sequrity.Registrar;
-import md.varoinform.sequrity.exception.RegistrationException;
+import md.varoinform.sequrity.exception.*;
+import md.varoinform.sequrity.exception.Error;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
@@ -156,9 +157,9 @@ public class RegistrationDialog extends JDialog implements Observer{
                 setVisible(false);
             } catch (RegistrationException exception) {
                 String text;
-                if (exception.getError() == RegistrationException.Error.CONNECTION_ERROR){
+                if (exception.getError() == Error.CONNECTION_ERROR){
                     text = ResourceBundleHelper.getString(language, "request_error_message", "");
-                } else if (exception.getError() == RegistrationException.Error.RESPONSE_ERROR){
+                } else if (exception.getError() == Error.RESPONSE_ERROR){
                     text = ResourceBundleHelper.getString(language, "response_error_message", "");
                 } else {
                     showExceptionMessage(exception);
@@ -169,6 +170,8 @@ public class RegistrationDialog extends JDialog implements Observer{
                 if (JOptionPane.showConfirmDialog(null, text) == JOptionPane.NO_OPTION){
                     setVisible(false);
                 }
+            } catch (PasswordException exception){
+                //ToDo: handle password exception
             }
         }
 
@@ -179,6 +182,8 @@ public class RegistrationDialog extends JDialog implements Observer{
                 setVisible(false);
             } catch (RegistrationException e) {
                 showExceptionMessage(e);
+            } catch (PasswordException exception) {
+                //ToDo: handle password exception
             }
         }
 

@@ -3,6 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.sequrity.exception.CryptographyException;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.PasswordNotExistException;
+import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
 import org.junit.After;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class TestGetKey {
     private byte[] encrypt(String aKey) {
         Cypher cypher = new Cypher();
         try {
-            return cypher.encrypt(aKey, new PasswordManager().getKey());
+            return cypher.encrypt(aKey, getKey());
         } catch (CryptographyException e) {
             return null;
         }
@@ -37,7 +38,16 @@ public class TestGetKey {
 
     private String decrypt(byte[] encryptedKey) {
         Cypher cypher = new Cypher();
-        return cypher.decrypt(encryptedKey, new PasswordManager().getKey());
+        return cypher.decrypt(encryptedKey, getKey());
+    }
+
+    private byte[] getKey() {
+        Cypher cypher = new Cypher();
+        return cypher.createKey(getUID());
+    }
+
+    private String getUID() {
+        return new PreferencesHelper().getUID();
     }
 
 
@@ -48,9 +58,9 @@ public class TestGetKey {
         PasswordManager passwordManager = new PasswordManager();
         byte[] encryptedKey = encrypt(aKey);
         assertNotNull(encryptedKey);
-        passwordManager.setDBPassword(encryptedKey);
+        passwordManager.setDBPassword(getUID(), encryptedKey);
 
-        String key = passwordManager.getDBPassword();
+        String key = passwordManager.getDBPassword(getUID());
         assertEquals(key, aKey);
     }
 
@@ -58,7 +68,7 @@ public class TestGetKey {
     @Test(expected = PasswordNotExistException.class)
     public void testNotExistKey() throws PasswordNotExistException, PasswordException {
         PasswordManager passwordManager = new PasswordManager();
-        passwordManager.getDBPassword();
+        passwordManager.getDBPassword(getUID());
     }
 
 
@@ -67,8 +77,8 @@ public class TestGetKey {
         PasswordManager passwordManager = new PasswordManager();
         byte[] encryptedKey = encrypt("password");
         assertNotNull(encryptedKey);
-        passwordManager.setDBPassword(encryptedKey);
-        passwordManager.getDBPassword();
+        passwordManager.setDBPassword(getUID(), encryptedKey);
+        passwordManager.getDBPassword(null);
     }
 
     @Test
@@ -77,7 +87,7 @@ public class TestGetKey {
         Cypher cypher = new Cypher();
         byte[] bytes = new byte[0];
         try {
-            bytes = cypher.encrypt(password, new PasswordManager().getKey());
+            bytes = cypher.encrypt(password, getKey());
         } catch (CryptographyException e) {
             e.printStackTrace();
             assertTrue(false);

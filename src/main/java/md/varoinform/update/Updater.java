@@ -65,7 +65,7 @@ public class Updater {
     //ToDo: replace return for getUserId
     private String getUserId() throws UnregisteredDBExertion {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
-        String idDb = preferencesHelper.getIdDb();
+        String idDb = preferencesHelper.getUID();
         if (idDb == null) throw new UnregisteredDBExertion();
         return "0";
     }

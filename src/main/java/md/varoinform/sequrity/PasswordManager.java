@@ -3,6 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.PasswordNotExistException;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.StringConverter;
 
 
 /**
@@ -14,9 +15,9 @@ import md.varoinform.util.PreferencesHelper;
 public class PasswordManager {
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
 
-    public String getDBPassword() throws PasswordNotExistException, PasswordException {
+    public String getDBPassword(String uid) throws PasswordNotExistException, PasswordException {
         Cypher cypher = new Cypher();
-        byte[] key = getKey();
+        byte[] key = cypher.createKey(uid);
         String password;
 
         byte[] encryptedPassword = getEncryptedPassword();
@@ -28,13 +29,6 @@ public class PasswordManager {
         return password;
     }
 
-    public byte[] getKey() {
-        Cypher cypher = new Cypher() ;
-        String keyString = getIdDb() + MAC.instance.getMacAddressAsString();
-        return cypher.createKey(keyString);
-    }
-
-
     //ToDo:real implementation testPassword (test connection to db)
     private boolean testPassword(String password) {
         return password.equals("secret");
@@ -44,10 +38,10 @@ public class PasswordManager {
         return preferencesHelper.getDBPassword();
     }
 
-    public void setDBPassword(byte[] encryptedPassword) throws PasswordException {
+    public void setDBPassword(String uid, byte[] encryptedPassword) throws PasswordException {
         preferencesHelper.setDBPassword(encryptedPassword);
         try {
-            getDBPassword();
+            getDBPassword(uid);
         } catch (PasswordNotExistException e) {
             e.printStackTrace();
         }
@@ -57,7 +51,10 @@ public class PasswordManager {
          preferencesHelper.removeDBPassword();
     }
 
-    private String getIdDb() {
-        return preferencesHelper.getIdDb();
+
+
+    public void setDBPassword(String uid, String encryptedPassword) throws PasswordException {
+        byte[] bytes = StringConverter.getBytesFromHexString(encryptedPassword);
+        setDBPassword(uid, bytes);
     }
 }

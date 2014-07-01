@@ -15,7 +15,7 @@ public class PreferencesHelper implements Serializable {
     private final Preferences preferences;
     private final String defaultDelimiter = ";";
     private String passwordKey = "password";
-    private String idDbKey = "idDB";
+    private String uidKey = "idDB";
     private static final String LANGUAGE_KEY = "language";
     private static List<String> userFields;
 
@@ -82,13 +82,12 @@ public class PreferencesHelper implements Serializable {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    public void setIdDb(String idDb) {
-        preferences.put(idDbKey, idDb);
+    public void setUID(String uid) {
+        preferences.put(uidKey, uid);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public String getIdDb(){
-        return preferences.get(idDbKey, null);
+    public String getUID(){
+        return preferences.get(uidKey, null);
     }
 
     //------------------------------------------------------------------------------------------------------------------

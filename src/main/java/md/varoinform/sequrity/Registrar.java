@@ -1,15 +1,15 @@
 package md.varoinform.sequrity;
 
 import md.varoinform.Settings;
-import md.varoinform.sequrity.exception.PasswordException;
-import md.varoinform.sequrity.exception.RegistrationException;
+import md.varoinform.model.dao.TransactionDaoHibernateImpl;
+import md.varoinform.model.entities.Database;
+import md.varoinform.sequrity.exception.*;
+import md.varoinform.sequrity.exception.Error;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
-import md.varoinform.util.StringConverter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,71 +21,56 @@ public class Registrar {
 
     PasswordManager passwordManager = new PasswordManager();
 
-    public void registerByPhone(String idDB, String encryptedPassword) throws RegistrationException {
-        setIdDB(idDB);
-        setPassword(encryptedPassword);
+    public void registerByPhone(String uid, String encryptedPassword) throws RegistrationException, PasswordException {
+        passwordManager.setDBPassword(uid, encryptedPassword);
+        setUID(uid);
     }
 
-    private void setIdDB(String idDB) {
+    private void setUID(String uid) {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
-        preferencesHelper.setIdDb(idDB);
+        preferencesHelper.setUID(uid);
+        Database record = new Database();
+        record.setUid(uid);
+        TransactionDaoHibernateImpl<Database, Long> dao = new TransactionDaoHibernateImpl<>(Database.class);
+        List<Database> all = dao.getAll();
+        if (all.size() > 0){
+            for (Database database : all) {
+                dao.delete(database);
+            }
+        }
+        dao.save(record);
     }
 
-    public void registerByInternet(String idDB) throws RegistrationException {
-        String encryptedPassword = getPassword(idDB);
-        setIdDB(idDB);
-        setPassword(encryptedPassword);
+    public void registerByInternet(String uid) throws RegistrationException, PasswordException {
+        String encryptedPassword = getPassword(uid);
+        passwordManager.setDBPassword(uid, encryptedPassword);
+        setUID(uid);
     }
 
     private String getPassword(String idDB) throws RegistrationException {
-
-        String url = Settings.getRegisterUrl() + "?code=" + getRegistrationCode(idDB);
-
+        String url = String.format("%s?id=%s", Settings.getRegisterUrl(), idDB);
         String response = request(url);
-
-        Map<String, String> responseMap = parseResponse(response);
-        String value = responseMap.get("value");
-        if (responseMap.get("status").equals("ERROR")){
-            throw new RegistrationException(RegistrationException.Error.parseError(value));
-        }
-
-        return value;
-    }
-
-    private void setPassword(String encryptedPassword) throws RegistrationException {
-        try {
-            byte[] bytes = StringConverter.getBytesFromHexString(encryptedPassword);
-            passwordManager.setDBPassword(bytes);
-        } catch (PasswordException e) {
-            throw new RegistrationException(e);
-        }
-    }
-
-
-    private Map<String, String> parseResponse(String response) throws RegistrationException {
-        Map<String, String> result = new HashMap<>();
-        String[] strings = response.replaceAll("[\r\n\t\\s]*", "").split("[=:]");
-
-        // response must be a string with format STATUS:value
-        if (strings.length != 2)  throw new RegistrationException(RegistrationException.Error.RESPONSE_ERROR);
-
-        result.put("status", strings[0]);
-        result.put("value", strings[1]);
-        return result;
+        return parseResponse(response);
     }
 
     private String request(String url) throws RegistrationException {
-         Request request = new Request(url);
+        Request request = new Request(url);
         try {
             return request.timesGet(1);
         } catch (IOException e) {
-            throw new RegistrationException(RegistrationException.Error.CONNECTION_ERROR, e);
+            throw new RegistrationException(md.varoinform.sequrity.exception.Error.CONNECTION_ERROR, e);
         }
     }
 
-    //ToDo: getRegistrationCode (call from register by phone) - encrypt registration code
-    public String getRegistrationCode(String idDB) {
-        String idComp = MAC.instance.getMacAddressAsString();
-        return idDB + idComp;
+    private String parseResponse(String response) throws RegistrationException {
+        String[] strings = response.replaceAll("[\r\n\t\\s]*", "").split("[=:]");
+
+        // response must be a string with format STATUS:value
+        if (strings.length != 2)  throw new RegistrationException(Error.RESPONSE_ERROR);
+        if (strings[0].equalsIgnoreCase("ERROR")) {
+            throw new RegistrationException(Error.parseError(strings[1]));
+        }
+
+        return strings[1];
     }
 }
