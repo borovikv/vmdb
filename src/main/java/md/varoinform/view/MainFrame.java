@@ -153,7 +153,7 @@ public class MainFrame extends JFrame implements Observer {
                             }
                         } catch (Exception ignored){}
                         finally {
-                            SessionManager.shutdownAll();
+                            SessionManager.instance.shutdownAll();
                         }
 
                         return null;

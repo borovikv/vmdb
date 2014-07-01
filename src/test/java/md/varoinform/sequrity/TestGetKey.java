@@ -1,12 +1,15 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.CryptographyException;
+import md.varoinform.sequrity.exception.Error;
 import md.varoinform.sequrity.exception.PasswordException;
-import md.varoinform.sequrity.exception.PasswordNotExistException;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -52,33 +55,40 @@ public class TestGetKey {
 
 
     @Test
-    public void testPassGetKey() throws PasswordNotExistException, PasswordException {
-        String aKey = "secret";
+    public void testPassGetKey() throws PasswordException {
+        String aKey = "password";
 
         PasswordManager passwordManager = new PasswordManager();
         byte[] encryptedKey = encrypt(aKey);
         assertNotNull(encryptedKey);
+        new PreferencesHelper().removeDBPassword();
+        System.out.println("password " + StringConverter.bytesToHex(encryptedKey));
         passwordManager.setDBPassword(getUID(), encryptedKey);
-
         String key = passwordManager.getDBPassword(getUID());
+
         assertEquals(key, aKey);
     }
 
 
-    @Test(expected = PasswordNotExistException.class)
-    public void testNotExistKey() throws PasswordNotExistException, PasswordException {
+    @Test
+    public void testNotExistKey(){
         PasswordManager passwordManager = new PasswordManager();
-        passwordManager.getDBPassword(getUID());
+        md.varoinform.sequrity.exception.Error type = null;
+        try {
+            passwordManager.getDBPassword(getUID());
+        } catch (PasswordException e) {
+            type = e.getType();
+        }
+        assertEquals(type, Error.PASSWORD_NOT_EXIST_ERROR);
     }
 
 
     @Test(expected = PasswordException.class)
-    public void testFailKey() throws PasswordNotExistException, PasswordException {
+    public void testFailKey() throws PasswordException {
         PasswordManager passwordManager = new PasswordManager();
-        byte[] encryptedKey = encrypt("password");
+        byte[] encryptedKey = encrypt("secret");
         assertNotNull(encryptedKey);
         passwordManager.setDBPassword(getUID(), encryptedKey);
-        passwordManager.getDBPassword(null);
     }
 
     @Test
@@ -95,10 +105,14 @@ public class TestGetKey {
         System.out.println(StringConverter.bytesToHex(bytes));
     }
 
+    @Before
+    public void before() {
+        new PreferencesHelper().removeDBPassword();
+    }
+
     @After
     public void after() {
-        PasswordManager passwordManager = new PasswordManager();
-        passwordManager.removeDBPassword();
+        SessionManager.instance.shutdownAll();
     }
 
     @Test

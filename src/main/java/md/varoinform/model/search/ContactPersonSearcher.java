@@ -19,7 +19,7 @@ public class ContactPersonSearcher extends Searcher {
         Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
         String hql = "Select distinct e.id from Enterprise e join e.contactPersons cp join cp.person p join p.titles t where "
                 + normalizer.getField() + " like :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
+        Query query = SessionManager.instance.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();
     }

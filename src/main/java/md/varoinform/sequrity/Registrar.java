@@ -21,7 +21,7 @@ public class Registrar {
 
     PasswordManager passwordManager = new PasswordManager();
 
-    public void registerByPhone(String uid, String encryptedPassword) throws RegistrationException, PasswordException {
+    public void register(String uid, String encryptedPassword) throws RegistrationException, PasswordException {
         passwordManager.setDBPassword(uid, encryptedPassword);
         setUID(uid);
     }
@@ -29,6 +29,7 @@ public class Registrar {
     private void setUID(String uid) {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
         preferencesHelper.setUID(uid);
+
         Database record = new Database();
         record.setUid(uid);
         TransactionDaoHibernateImpl<Database, Long> dao = new TransactionDaoHibernateImpl<>(Database.class);
@@ -43,8 +44,7 @@ public class Registrar {
 
     public void registerByInternet(String uid) throws RegistrationException, PasswordException {
         String encryptedPassword = getPassword(uid);
-        passwordManager.setDBPassword(uid, encryptedPassword);
-        setUID(uid);
+        register(uid, encryptedPassword);
     }
 
     private String getPassword(String idDB) throws RegistrationException {

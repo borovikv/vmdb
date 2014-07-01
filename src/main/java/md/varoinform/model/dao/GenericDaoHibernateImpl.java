@@ -48,7 +48,7 @@ public class GenericDaoHibernateImpl<T, PK extends Serializable> implements Gene
     }
 
     public Session getSession() {
-        return SessionManager.getSession();
+        return SessionManager.instance.getSession();
     }
 
 

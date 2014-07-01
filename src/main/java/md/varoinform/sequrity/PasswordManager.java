@@ -1,9 +1,11 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.model.util.SessionManager;
+import md.varoinform.sequrity.exception.Error;
 import md.varoinform.sequrity.exception.PasswordException;
-import md.varoinform.sequrity.exception.PasswordNotExistException;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
+import org.hibernate.Session;
 
 
 /**
@@ -14,47 +16,49 @@ import md.varoinform.util.StringConverter;
  */
 public class PasswordManager {
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
+    private static String password = "";
 
-    public String getDBPassword(String uid) throws PasswordNotExistException, PasswordException {
-        Cypher cypher = new Cypher();
-        byte[] key = cypher.createKey(uid);
-        String password;
+    public String getDBPassword(String uid) throws PasswordException {
+        byte[] encryptedPassword = preferencesHelper.getDBPassword();
+        if (encryptedPassword == null) throw new PasswordException(Error.PASSWORD_NOT_EXIST_ERROR);
 
-        byte[] encryptedPassword = getEncryptedPassword();
-        if (encryptedPassword == null) throw new PasswordNotExistException(PasswordNotExistException.PASSWORD_NOT_EXIST_EXCEPTION);
+        String password = decryptPassword(uid, encryptedPassword);
 
-        password = cypher.decrypt(encryptedPassword, key);
+        if( !testConnection(password)) throw new PasswordException(Error.VALIDATION_ERROR);
 
-        if( !testPassword(password)) throw new PasswordException(PasswordException.VALIDATION_ERROR);
         return password;
     }
 
-    //ToDo:real implementation testPassword (test connection to db)
-    private boolean testPassword(String password) {
-        return password.equals("secret");
+    public String decryptPassword(String uid, byte[] encryptedPassword) {
+        Cypher cypher = new Cypher();
+        byte[] key = cypher.createKey(uid);
+        return cypher.decrypt(encryptedPassword, key);
     }
 
-    private byte[] getEncryptedPassword() {
-        return preferencesHelper.getDBPassword();
-    }
-
-    public void setDBPassword(String uid, byte[] encryptedPassword) throws PasswordException {
-        preferencesHelper.setDBPassword(encryptedPassword);
+    //ToDo:real implementation testConnection (test connection to db)
+    private boolean testConnection(String password) {
+        PasswordManager.password = password;
         try {
-            getDBPassword(uid);
-        } catch (PasswordNotExistException e) {
-            e.printStackTrace();
+            Session session = SessionManager.instance.getSession();
+            session.beginTransaction().rollback();
+            return true;
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 
-    public void removeDBPassword() {
-         preferencesHelper.removeDBPassword();
+    public void setDBPassword(String uid, byte[] encryptedPassword) throws PasswordException {
+        String password = decryptPassword(uid, encryptedPassword);
+        if( !testConnection(password)) throw new PasswordException(Error.VALIDATION_ERROR);
+        preferencesHelper.setDBPassword(encryptedPassword);
     }
-
-
 
     public void setDBPassword(String uid, String encryptedPassword) throws PasswordException {
         byte[] bytes = StringConverter.getBytesFromHexString(encryptedPassword);
         setDBPassword(uid, bytes);
+    }
+
+    public static String getPassword() {
+        return password;
     }
 }

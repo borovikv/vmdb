@@ -31,7 +31,7 @@ public class QueryAnalyzer {
     }
 
     public List<String> getTokens() {
-        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.getSession());
+        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
         Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("customanalyzer");
         QueryParser parser = new QueryParser(Version.LUCENE_35, "title", analyzer);
         List<String> tokenized = new ArrayList<>();

@@ -18,7 +18,7 @@ public class StreetSearcher extends Searcher {
         String field = "titles.title";
         Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
         String hql = "Select distinct e.id from Enterprise e join e.contacts cs join cs.street s join s.titles titles where " + normalizer.getField() + " like :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
+        Query query = SessionManager.instance.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();
     }

@@ -3,9 +3,9 @@ package md.varoinform.model;
 
 import md.varoinform.Settings;
 import md.varoinform.model.entities.*;
-import md.varoinform.model.entities.GProduce;
-import md.varoinform.model.entities.GoodTitle;
+import md.varoinform.sequrity.PasswordManager;
 import org.hibernate.cfg.Configuration;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +18,7 @@ import java.nio.file.Paths;
  */
 public class Configurator {
     private final String pathToDb;
+    private final String password = PasswordManager.getPassword() + "";
 
     public Configurator() {
         pathToDb = Settings.pathToDB().toString();
@@ -30,7 +31,8 @@ public class Configurator {
         this.pathToDb = path.toString();
     }
 
-    public Configuration configure(){
+    public Configuration configure() {
+        System.out.println(password);
         Configuration cfg = getConfiguration();
         showSql(cfg, false);
         //setAuto(cfg, "update");
@@ -82,7 +84,7 @@ public class Configurator {
 
         cfg.setProperty("hibernate.connection.url", "jdbc:h2:file:" + pathToDb);
         cfg.setProperty("hibernate.connection.username", "admin");
-        cfg.setProperty("hibernate.connection.password", "password");
+        cfg.setProperty("hibernate.connection.password", password);
         cfg.setProperty("hibernate.connection.pool_size", "10");
         cfg.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         cfg.setProperty("hibernate.generate_statistics", "false");
@@ -95,6 +97,7 @@ public class Configurator {
         return cfg;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setAuto(Configuration cfg, String value){
         cfg.setProperty("hibernate.hbm2ddl.auto", value);
     }

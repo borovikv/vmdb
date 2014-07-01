@@ -7,6 +7,7 @@ import md.varoinform.model.entities.Tag;
 import md.varoinform.model.entities.TagEnterprise;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
+import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
@@ -57,9 +58,14 @@ public class Updater {
         URL source = creator.getUrl();
         File destination = new File(getDBFile(getTempDB()));
         FileUtils.copyURLToFile(source, destination);
-        copyUserData();
-        replaceDB();
-        confirm(5);
+        try {
+            copyUserData();
+            replaceDB();
+            confirm(5);
+        } catch (PasswordException e) {
+            e.printStackTrace();
+            //TODO: handle Password exception in update
+        }
     }
 
     //ToDo: replace return for getUserId
@@ -86,17 +92,17 @@ public class Updater {
         request.timesGet(tryCounter);
     }
 
-    private void copyUserData(){
-        Session from = SessionManager.getSession();
+    private void copyUserData() throws PasswordException {
+        Session from = SessionManager.instance.getSession();
         Configuration cfg = new Configurator(getTempDB()).configure();
-        Session to = SessionManager.getSession("updating", cfg);
+        Session to = SessionManager.instance.getSession("updating", cfg);
 
         for (Class c : new Class[] {Database.class, Tag.class, TagEnterprise.class}){
             Synchronizer.synchronize(c, from, to);
 
         }
 
-        SessionManager.shutdownAll();
+        SessionManager.instance.shutdownAll();
     }
 
     private void replaceDB() {

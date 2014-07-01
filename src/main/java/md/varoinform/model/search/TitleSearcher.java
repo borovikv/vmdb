@@ -30,7 +30,7 @@ public class TitleSearcher extends Searcher {
         String field = "titles.title";
         Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
         String hql = "select distinct e.id from Enterprise e join e.titles titles where " + normalizer.getField() + " like :title";
-        Query query = SessionManager.getSession().createQuery(hql).setString("title", prefix + normalizer.getString() + "%");
+        Query query = SessionManager.instance.getSession().createQuery(hql).setString("title", prefix + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();
     }

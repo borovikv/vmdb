@@ -25,7 +25,7 @@ public class FullTextSearcher extends Searcher {
 
 
     public FullTextSearcher(String[] fields, LuceneQueryBuilder.QueryType type) {
-        fullTextSession = Search.getFullTextSession(SessionManager.getSession());
+        fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
         builder = new LuceneQueryBuilder(queryBuilder, fields, type);
         //createIndex(SessionManager.getSession());

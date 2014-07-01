@@ -18,7 +18,7 @@ public class GoodsSearcher extends Searcher {
         String field = "t.title";
         Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
         String hql = "Select distinct e.id from Enterprise e join e.goods g2p join g2p.good g join g.titles t where " + normalizer.getField() + " like :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
+        Query query = SessionManager.instance.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();
     }

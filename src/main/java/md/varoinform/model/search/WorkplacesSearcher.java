@@ -38,7 +38,7 @@ public class WorkplacesSearcher extends Searcher {
         try {
             Integer amount = Integer.parseInt(q.trim());
             String hql = "Select distinct e.id from Enterprise e where e.workplaces " + type + " :amount";
-            Query query = SessionManager.getSession().createQuery(hql).setInteger("amount", amount);
+            Query query = SessionManager.instance.getSession().createQuery(hql).setInteger("amount", amount);
             //noinspection unchecked
             return query.list();
         } catch (NumberFormatException e){

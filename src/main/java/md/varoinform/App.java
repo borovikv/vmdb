@@ -2,6 +2,7 @@ package md.varoinform;
 
 
 import md.varoinform.model.util.SessionManager;
+import md.varoinform.sequrity.Guardian;
 import md.varoinform.view.MainFrame;
 
 import javax.swing.*;
@@ -19,12 +20,8 @@ public class App
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                //PreferencesHelper helper = new PreferencesHelper();
-                //helper.remove("password");
-                /*
-                PasswordDB passwordDB = new PasswordDB();
-                passwordDB.getPassword();
-                */
+                Guardian guardian = new Guardian();
+                guardian.check();
 
                 mainFrame = new MainFrame();
                 mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -32,7 +29,7 @@ public class App
                 Runtime.getRuntime().addShutdownHook(new Thread(){
                     @Override
                     public void run() {
-                        SessionManager.shutdownAll();
+                        SessionManager.instance.shutdownAll();
                     }
                 });
             }

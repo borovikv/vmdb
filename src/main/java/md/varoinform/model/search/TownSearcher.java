@@ -23,7 +23,7 @@ public class TownSearcher extends Searcher {
                 "join cs.town t " +
                 "join t.titles titles " +
                 "where " + normalizer.getField() + " like :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
+        Query query = SessionManager.instance.getSession().createQuery(hql).setString("pattern", "%" + normalizer.getString() + "%");
         //noinspection unchecked
         return query.list();
     }

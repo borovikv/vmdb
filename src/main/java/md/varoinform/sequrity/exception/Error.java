@@ -7,14 +7,17 @@ package md.varoinform.sequrity.exception;
 * Time: 11:05 AM
 */
 public enum Error {
-    CONNECTION_ERROR("CONNECTION ERROR"), RESPONSE_ERROR("SERVER ERROR");
+    CONNECTION_ERROR("CONNECTION ERROR"),
+    RESPONSE_ERROR("SERVER ERROR"),
+    VALIDATION_ERROR("validation error"),
+    PASSWORD_NOT_EXIST_ERROR("key not exit");
     private final String text;
 
     Error(String text) {
         this.text = text;
     }
 
-    public static Error parseError(String str){
+    public static Error parseError(@SuppressWarnings("UnusedParameters") String str){
         //ToDo: real empl
         return null;
     }

@@ -7,11 +7,14 @@ package md.varoinform.sequrity.exception;
  * Time: 5:14 PM
  */
 public class PasswordException extends Throwable {
-    public static final String VALIDATION_ERROR = "validation error";
-    @SuppressWarnings("UnusedDeclaration")
-    public static final String DECRYPTION_ERROR = "decryption error";
+    private final Error type;
 
-    public PasswordException(String message) {
-        super(message);
+    public PasswordException(Error type) {
+        super(type.getText());
+        this.type = type;
+    }
+
+    public Error getType() {
+        return type;
     }
 }

@@ -16,26 +16,28 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class SessionManager {
-    private static ConcurrentMap<String, Pair> sessions = new ConcurrentHashMap<>();
+public enum  SessionManager {
+    instance;
+
+    private ConcurrentMap<String, Pair> sessions = new ConcurrentHashMap<>();
     public static final String DEFAULT = "default";
 
-    private SessionManager(){}
-
-    public static Session getSession(){
-        Configuration config = new Configurator().configure();
+    public Session getSession() {
+        Configurator configurator = new Configurator();
+        Configuration config = configurator.configure();
         return  getSession(config);
     }
 
-    public static Session getSession(Configuration configuration){
+    public Session getSession(Configuration configuration){
         return getSession(DEFAULT, configuration);
     }
 
-    public static Session getSession(String name, Configuration configuration){
+    public Session getSession(String name, Configuration configuration){
         Pair pair = sessions.get(name);
         if(pair != null){
             return pair.session;
         }
+
         SessionFactory factory = buildSessionFactory(configuration);
         Session session = factory.openSession();
         sessions.put(name, new Pair(factory, session));
@@ -43,12 +45,11 @@ public class SessionManager {
 
     }
 
-    private static SessionFactory buildSessionFactory(Configuration configuration) {
+    private SessionFactory buildSessionFactory(Configuration configuration) {
         try {
             ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder();
             serviceRegistryBuilder.applySettings(configuration.getProperties());
             ServiceRegistry serviceRegistry = serviceRegistryBuilder.buildServiceRegistry();
-
             return configuration.buildSessionFactory(serviceRegistry);
         }
         catch (Throwable ex) {
@@ -58,36 +59,31 @@ public class SessionManager {
     }
 
 
-    @SuppressWarnings("UnusedDeclaration")
-    public static void shutdownAll(){
+    public void shutdownAll(){
         for (String s : sessions.keySet()) {
             shutdown(s);
         }
     }
 
-    public static void shutdown(){
-        shutdown(DEFAULT);
-    }
-
-    public static void shutdown(String name){
+    public void shutdown(String name){
         Pair pair = sessions.remove(name);
         if (pair != null) pair.shutdown();
     }
 
 
     @SuppressWarnings("UnusedDeclaration")
-    public static void closeAllSessions(){
+    public void closeAllSessions(){
         for (String s : sessions.keySet()) {
             closeSession(s);
         }
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public static void closeSession(){
+    public void closeSession(){
         closeSession(DEFAULT);
     }
 
-    public static void closeSession(String name){
+    public void closeSession(String name){
         Pair pair = sessions.get(name);
         if (pair != null) pair.closeSession();
     }

@@ -19,7 +19,7 @@ public class CreationDateSearcher extends Searcher {
         String hql = "Select distinct e.id from Enterprise e where e.creation = :creation";
         if (!Pattern.matches("^[0-9]+$", q.trim()))return new ArrayList<>();
         int year = Integer.parseInt(q.trim());
-        Query query = SessionManager.getSession().createQuery(hql).setInteger("creation", year);
+        Query query = SessionManager.instance.getSession().createQuery(hql).setInteger("creation", year);
         //noinspection unchecked
         return query.list();
     }

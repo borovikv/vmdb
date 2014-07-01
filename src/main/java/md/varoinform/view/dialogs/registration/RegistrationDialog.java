@@ -34,7 +34,7 @@ public class RegistrationDialog extends JDialog implements Observer{
     private final JButton backButton;
     private final JButton nextButton;
     private final LicencePanel licencePanel;
-    private DefaultLanguages language;
+    public static DefaultLanguages language;
 
     public RegistrationDialog() {
         setModal(true);
@@ -118,7 +118,7 @@ public class RegistrationDialog extends JDialog implements Observer{
     @Override
     public void update(ObservableEvent event) {
         if (event.getType() == ObservableEvent.Type.LANGUAGE_CHANGED) {
-            this.language = (DefaultLanguages) event.getValue();
+            RegistrationDialog.language = (DefaultLanguages) event.getValue();
             updateDisplay();
         } else {
             nextButton.setEnabled(licencePanel.isInputValid());
@@ -128,6 +128,12 @@ public class RegistrationDialog extends JDialog implements Observer{
     private void updateDisplay() {
         backButton.setText(ResourceBundleHelper.getString(language, "back", "back"));
         nextButton.setText(ResourceBundleHelper.getString(language, "next", "next"));
+    }
+
+    public static void register() {
+        RegistrationDialog dialog = new RegistrationDialog();
+        dialog.setVisible(true);
+        dialog.dispose();
     }
 
 
@@ -141,17 +147,13 @@ public class RegistrationDialog extends JDialog implements Observer{
             if (currentCard == 0){
                 nextCard();
             } else if(registerByPhonePanel.getType() == RegistrationType.INTERNET){
-                try {
-                    tryRegisterByInternet(idDB);
-                } catch (RegistrationException e1) {
-                    e1.printStackTrace();
-                }
+                tryRegisterByInternet(idDB);
             }else if (registerByPhonePanel.getType() == RegistrationType.PHONE){
                 registerByPhone(idDB);
             }
         }
 
-        private void tryRegisterByInternet(String idDB) throws RegistrationException {
+        private void tryRegisterByInternet(String idDB) {
             try {
                 registrar.registerByInternet(idDB);
                 setVisible(false);
@@ -159,8 +161,10 @@ public class RegistrationDialog extends JDialog implements Observer{
                 String text;
                 if (exception.getError() == Error.CONNECTION_ERROR){
                     text = ResourceBundleHelper.getString(language, "request_error_message", "");
+
                 } else if (exception.getError() == Error.RESPONSE_ERROR){
                     text = ResourceBundleHelper.getString(language, "response_error_message", "");
+
                 } else {
                     showExceptionMessage(exception);
                     setVisible(false);
@@ -178,7 +182,7 @@ public class RegistrationDialog extends JDialog implements Observer{
         private void registerByPhone(String idDB) {
             String password = registerByPhonePanel.getPassword();
             try {
-                registrar.registerByPhone(idDB, password);
+                registrar.register(idDB, password);
                 setVisible(false);
             } catch (RegistrationException e) {
                 showExceptionMessage(e);

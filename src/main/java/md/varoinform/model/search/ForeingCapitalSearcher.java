@@ -21,7 +21,7 @@ public class ForeingCapitalSearcher extends Searcher {
         String hql = "Select distinct e.id from Enterprise e where e.foreignCapital = :hasForeingCapital";
         try{
             boolean has = convertToBoolean(q);
-            Query query = SessionManager.getSession().createQuery(hql).setBoolean("hasForeingCapital", has);
+            Query query = SessionManager.instance.getSession().createQuery(hql).setBoolean("hasForeingCapital", has);
             //noinspection unchecked
             return query.list();
         } catch (IllegalArgumentException e){

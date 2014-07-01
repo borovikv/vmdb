@@ -15,7 +15,7 @@ public class PostalCodeSearcher extends Searcher {
     @Override
     public List<Long> search(String q) {
         String hql = "Select distinct e.id from Enterprise e join e.contacts cs where lower(cs.postalCode) = :pattern";
-        Query query = SessionManager.getSession().createQuery(hql).setString("pattern", getCode(q));
+        Query query = SessionManager.instance.getSession().createQuery(hql).setString("pattern", getCode(q));
         //noinspection unchecked
         return query.list();
     }

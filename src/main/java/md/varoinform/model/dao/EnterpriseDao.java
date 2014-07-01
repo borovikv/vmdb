@@ -19,7 +19,7 @@ public class EnterpriseDao extends GenericDaoHibernateImpl<Enterprise, Long>{
 
     public static List<Enterprise> getEnterprises(){
         //noinspection unchecked
-       List<Enterprise> enterprises = SessionManager.getSession().createCriteria(Enterprise.class).list();
+       List<Enterprise> enterprises = SessionManager.instance.getSession().createCriteria(Enterprise.class).list();
        Collections.sort(enterprises, new EnterpriseComparator());
        return enterprises;
     }
@@ -28,7 +28,7 @@ public class EnterpriseDao extends GenericDaoHibernateImpl<Enterprise, Long>{
         if (Cache.instance.isEnterpriseCached()){
             return Cache.instance.getEnterprises(ids);
         } else {
-            Criteria criteria = SessionManager.getSession().createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
+            Criteria criteria = SessionManager.instance.getSession().createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
             //noinspection unchecked
             return criteria.list();
         }
