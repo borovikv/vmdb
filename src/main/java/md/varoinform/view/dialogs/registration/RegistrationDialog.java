@@ -1,6 +1,7 @@
 package md.varoinform.view.dialogs.registration;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.sequrity.Registrar;
 import md.varoinform.sequrity.exception.RegistrationException;
 import md.varoinform.util.ImageHelper;
@@ -32,6 +33,7 @@ public class RegistrationDialog extends JDialog implements Observer{
     private final JButton backButton;
     private final JButton nextButton;
     private final LicencePanel licencePanel;
+    private DefaultLanguages language;
 
     public RegistrationDialog() {
         setModal(true);
@@ -75,7 +77,8 @@ public class RegistrationDialog extends JDialog implements Observer{
         }
 
         add(card);
-        licencePanel.notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED, licencePanel.getCurrentLanguage()));
+        language = DefaultLanguages.getDefault();
+        licencePanel.notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED, language));
     }
 
 
@@ -114,6 +117,7 @@ public class RegistrationDialog extends JDialog implements Observer{
     @Override
     public void update(ObservableEvent event) {
         if (event.getType() == ObservableEvent.Type.LANGUAGE_CHANGED) {
+            this.language = (DefaultLanguages) event.getValue();
             updateDisplay();
         } else {
             nextButton.setEnabled(licencePanel.isInputValid());
@@ -121,8 +125,8 @@ public class RegistrationDialog extends JDialog implements Observer{
     }
 
     private void updateDisplay() {
-        backButton.setText(ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "back", "back"));
-        nextButton.setText(ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "next", "next"));
+        backButton.setText(ResourceBundleHelper.getString(language, "back", "back"));
+        nextButton.setText(ResourceBundleHelper.getString(language, "next", "next"));
     }
 
 
@@ -133,16 +137,15 @@ public class RegistrationDialog extends JDialog implements Observer{
             if (!cardPanel.isInputValid()) return;
 
             String idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
-            if (licencePanel.getType() == RegistrationType.INTERNET){
+            if (currentCard == 0){
+                nextCard();
+            } else if(registerByPhonePanel.getType() == RegistrationType.INTERNET){
                 try {
                     tryRegisterByInternet(idDB);
-                } catch (RegistrationException rex){
-                    nextCard();
+                } catch (RegistrationException e1) {
+                    e1.printStackTrace();
                 }
-
-            } else if (licencePanel.getType() == RegistrationType.PHONE && currentCard == 0){
-                nextCard();
-            } else if (licencePanel.getType() == RegistrationType.PHONE){
+            }else if (registerByPhonePanel.getType() == RegistrationType.PHONE){
                 registerByPhone(idDB);
             }
         }
@@ -154,9 +157,9 @@ public class RegistrationDialog extends JDialog implements Observer{
             } catch (RegistrationException exception) {
                 String text;
                 if (exception.getError() == RegistrationException.Error.CONNECTION_ERROR){
-                    text = ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "request_error_message", "");
+                    text = ResourceBundleHelper.getString(language, "request_error_message", "");
                 } else if (exception.getError() == RegistrationException.Error.RESPONSE_ERROR){
-                    text = ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), "response_error_message", "");
+                    text = ResourceBundleHelper.getString(language, "response_error_message", "");
                 } else {
                     showExceptionMessage(exception);
                     setVisible(false);
@@ -182,7 +185,7 @@ public class RegistrationDialog extends JDialog implements Observer{
         private void showExceptionMessage(RegistrationException exception) {
             exception.printStackTrace();
             String exceptionMessage = exception.getMessage();
-            String message = ResourceBundleHelper.getString(licencePanel.getCurrentLanguage(), exceptionMessage, exceptionMessage);
+            String message = ResourceBundleHelper.getString(language, exceptionMessage, exceptionMessage);
             JOptionPane.showMessageDialog(null, message);
         }
 

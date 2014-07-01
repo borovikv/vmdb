@@ -23,42 +23,12 @@ import java.nio.file.Paths;
  * Time: 1:50 PM
  */
 public class LicencePanel extends CardPanel implements md.varoinform.util.observer.Observable {
-    private static final String REGISTRATION_TYPE_KEY = "registration";
-    private static final String CHECKBOX_KEY = "i_agree";
-
     private ObservableIml observableIml = new ObservableIml();
-
+    private static final String CHECKBOX_KEY = "i_agree";
     private final JCheckBox licenceAgreeBox;
     private final JComboBox<DefaultLanguages> languageCombo;
 
-    private RegistrationType type;
-    private final JRadioButton phoneButton;
-    private final JRadioButton internetButton;
-    private final JLabel registrLabel;
-
     public LicencePanel() {
-        type = RegistrationType.INTERNET;
-
-        registrLabel = new JLabel();
-        internetButton = new JRadioButton();
-        internetButton.setSelected(true);
-        internetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                type = RegistrationType.INTERNET;
-            }
-        });
-        phoneButton = new JRadioButton();
-        phoneButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                type = RegistrationType.PHONE;
-            }
-        });
-        ButtonGroup group = new ButtonGroup();
-        group.add(internetButton);
-        group.add(phoneButton);
-
         licenceAgreeBox = new JCheckBox();
         licenceAgreeBox.addActionListener(new ActionListener() {
             @Override
@@ -67,8 +37,8 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
             }
         });
 
-
         languageCombo = new  JComboBox<>(DefaultLanguages.values());
+        languageCombo.setSelectedItem(DefaultLanguages.getDefault());
         languageCombo.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,11 +53,6 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
     public void createLayout() {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        JPanel typePanel = new JPanel();
-        typePanel.add(registrLabel);
-        typePanel.add(internetButton);
-        typePanel.add(phoneButton);
-        add(typePanel, BorderLayout.NORTH);
         add(new JScrollPane(label));
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(licenceAgreeBox, BorderLayout.WEST);
@@ -102,10 +67,7 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
 
     @Override
     protected void updateDisplay() {
-        internetButton.setText(ResourceBundleHelper.getString(language, RegistrationType.INTERNET.getTitle(), "internet"));
-        phoneButton.setText(ResourceBundleHelper.getString(language, RegistrationType.PHONE.getTitle(), "phone"));
         licenceAgreeBox.setText(ResourceBundleHelper.getString(language, CHECKBOX_KEY, "i agree"));
-        registrLabel.setText(ResourceBundleHelper.getString(language, REGISTRATION_TYPE_KEY, "register by"));
         label.setText(getLicence());
     }
 
@@ -120,7 +82,6 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
         return "";
     }
 
-
     @Override
     public void addObserver(Observer observer) {
         observableIml.addObserver(observer);
@@ -130,13 +91,5 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
     public void notifyObservers(ObservableEvent event) {
         observableIml.notifyObservers(event);
 
-    }
-
-    public DefaultLanguages getCurrentLanguage(){
-        return (DefaultLanguages) languageCombo.getSelectedItem();
-    }
-
-    public RegistrationType getType() {
-        return type;
     }
 }

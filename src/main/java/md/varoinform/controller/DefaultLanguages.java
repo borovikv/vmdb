@@ -24,7 +24,12 @@ public enum DefaultLanguages {
                 return language;
             }
         }
-        return DefaultLanguages.EN;
+        return getDefault();
     }
+
+    public static DefaultLanguages getDefault() {
+        return DefaultLanguages.RU;
+    }
+
 
 }
