@@ -109,12 +109,10 @@ public class TestGetKey {
     public void before() {
         new PreferencesHelper().removeDBPassword();
     }
-
     @After
     public void after() {
         SessionManager.instance.shutdownAll();
     }
-
     @Test
     public void decryptPassword(){
         Cypher cypher = new Cypher();

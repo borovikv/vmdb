@@ -2,7 +2,6 @@ package md.varoinform.view.demonstrator;
 
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
-import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
@@ -89,7 +88,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
 
     private void showEnterprise(Long enterprise) {
         if ( enterprise != null ) {
-            browser.setText(EnterpriseView.getView(new EnterpriseDao().read(enterprise)));
+            browser.setText(EnterpriseView.getView(enterprise));
         } else {
             browser.setText("");
         }

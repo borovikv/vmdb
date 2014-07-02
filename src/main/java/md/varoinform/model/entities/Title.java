@@ -2,6 +2,7 @@ package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 

@@ -1,8 +1,8 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
 
 import java.io.IOException;
@@ -19,8 +19,8 @@ import java.util.*;
  */
 public class EnterpriseView  {
 
-    public static String getView(Enterprise enterprise) {
-        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise);
+    public static String getView(Long id) {
+        EnterpriseProxy enterpriseProxy = Cache.instance.getProxy(id);
         try {
             return  getTable(enterpriseProxy);
         } catch (IOException e) {

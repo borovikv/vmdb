@@ -32,7 +32,6 @@ public class Configurator {
     }
 
     public Configuration configure() {
-        System.out.println(password);
         Configuration cfg = getConfiguration();
         showSql(cfg, false);
         //setAuto(cfg, "update");
@@ -85,12 +84,13 @@ public class Configurator {
         cfg.setProperty("hibernate.connection.url", "jdbc:h2:file:" + pathToDb);
         cfg.setProperty("hibernate.connection.username", "admin");
         cfg.setProperty("hibernate.connection.password", password);
-        cfg.setProperty("hibernate.connection.pool_size", "10");
+        cfg.setProperty("hibernate.connection.pool_size", "1");
         cfg.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         cfg.setProperty("hibernate.generate_statistics", "false");
         cfg.setProperty("hibernate.use_sql_comments", "false");
         cfg.setProperty("hibernate.connection.autocommit", "false");
         cfg.setProperty("hibernate.current_session_context_class", "thread");
+        //cfg.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCacheProvider");
 
         cfg.setProperty("hibernate.search.default.directory_provider", "filesystem");
         cfg.setProperty("hibernate.search.default.indexBase", pathToDb + "/indexes");

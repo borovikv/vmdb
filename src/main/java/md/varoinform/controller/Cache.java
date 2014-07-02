@@ -7,6 +7,7 @@ import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.observer.ObservableEvent;
 
@@ -33,6 +34,9 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         }
         for (Enterprise enterprise : enterprises) {
             enterpriseProxies.put(enterprise.getId(), new EnterpriseProxy(enterprise));
+        }
+        if (isBranchCached){
+            branchCache.clear();
         }
     }
 
@@ -69,13 +73,12 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         if (isBranchCached){
             return getCachedEnterpriseIdsByNode(node);
         } else {
-            return new NodeDao().getEnterpriseIds(node);
+            return new NodeDao().threadSafeGetEntID(node);
         }
     }
 
     public List<Long> getCachedEnterpriseIdsByNode(Node node) {
         if (branchCache.isEmpty() && !Holder.await()) {
-
             List<Long> ids = new NodeDao().getEnterpriseIds(node);
 
             SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
@@ -108,7 +111,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         List<Node> nodes = nodeDao.getAll();
         Map<Long, List<Long>> bc = new HashMap<>();
         for (Node node : nodes) {
-            List<Long> ids = nodeDao.getEnterpriseIds(node);
+            List<Long> ids = nodeDao.threadSafeGetEntID(node);
             bc.put(node.getId(), ids);
         }
         return bc;
@@ -125,6 +128,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
     public void saveTag(Tag tag){
         tagsToSave.add(tag);
+        SessionManager.instance.getSession().evict(tag);
     }
 
     public void createTag(String title, List<Enterprise> enterprises) {
@@ -136,6 +140,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
     public void delete(Tag tag) {
         tags.remove(tag);
+        SessionManager.instance.getSession().evict(tag);
         tagsToSave.remove(tag);
         tagsToDelete.add(tag);
     }

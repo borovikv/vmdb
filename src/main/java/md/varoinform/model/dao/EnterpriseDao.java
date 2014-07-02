@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EnterpriseDao extends GenericDaoHibernateImpl<Enterprise, Long>{
+public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>{
     public EnterpriseDao() {
         super(Enterprise.class);
     }

@@ -64,7 +64,6 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
     private Set<GProduce> goods = new HashSet<>();
-    private static final EnterpriseComparator comparator = new EnterpriseComparator();
 
 
     @ManyToOne
@@ -199,6 +198,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
 
     @Override
     public int compareTo(Enterprise o) {
+        EnterpriseComparator comparator = new EnterpriseComparator();
         return comparator.compare(this, o);
     }
 

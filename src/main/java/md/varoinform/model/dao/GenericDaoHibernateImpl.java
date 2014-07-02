@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 10:28 AM
  */
 public class GenericDaoHibernateImpl<T, PK extends Serializable> implements GenericDao<T, PK>{
-    private final Class<T> type;
+    protected final Class<T> type;
 
     public GenericDaoHibernateImpl(Class<T> type) {
         this.type = type;

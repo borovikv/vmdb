@@ -1,8 +1,11 @@
 package md.varoinform.model.dao;
 
+import md.varoinform.model.util.SessionManager;
+import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,5 +44,35 @@ public class TransactionDaoHibernateImpl<T, PK extends Serializable> extends Gen
         Transaction transaction = getSession().beginTransaction();
         super.delete(persistentObject);
         transaction.commit();
+    }
+
+    @Override
+    public List<T> getAll() {
+        Session session = SessionManager.instance.getSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            @SuppressWarnings("unchecked") List<T> all = session.createCriteria(type).list();
+            if (!transaction.wasCommitted()) transaction.commit();
+            return all;
+        } catch (RuntimeException e){
+            if (transaction != null) transaction.rollback();
+            throw e;
+        }
+    }
+
+    @Override
+    public T read(PK id) {
+        Session session = SessionManager.instance.getSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            @SuppressWarnings("unchecked") T t = (T) session.get(type, id);
+            if (!transaction.wasCommitted()) transaction.commit();
+            return t;
+        } catch (RuntimeException e){
+            if (transaction != null) transaction.rollback();
+            throw e;
+        }
     }
 }

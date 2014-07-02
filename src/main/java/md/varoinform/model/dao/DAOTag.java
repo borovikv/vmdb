@@ -2,6 +2,8 @@ package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
+import org.hibernate.ReplicationMode;
+import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
@@ -52,20 +54,27 @@ public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
             }
             transaction.commit();
         } catch (RuntimeException e){
+            e.printStackTrace();
             getSession().getTransaction().rollback();
         }
     }
 
     public void save(Set<Tag> tagsToSave) {
         if (tagsToSave.isEmpty()) return;
+        Session session = getSession();
         try{
-            Transaction transaction = getSession().beginTransaction();
+            Transaction transaction = session.beginTransaction();
             for (Tag tag : tagsToSave) {
-                getSession().save(tag);
+                if (tag.getId() != null){
+                    session.replicate(tag, ReplicationMode.OVERWRITE);
+                } else {
+                    session.save(tag);
+                }
             }
             transaction.commit();
         } catch (RuntimeException e){
-            getSession().getTransaction().rollback();
+            e.printStackTrace();
+            session.getTransaction().rollback();
         }
     }
 }

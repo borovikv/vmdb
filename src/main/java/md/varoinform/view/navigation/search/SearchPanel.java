@@ -4,13 +4,12 @@ import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.search.Searcher;
 import md.varoinform.model.search.Searchers;
-import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.ToolbarButton;
-import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -48,8 +47,10 @@ public class SearchPanel implements Observer {
     }
 
     public void search(Searcher searcher, String text) {
-        String message = ResourceBundleHelper.getString("search-wait-dialog-message", "Wait...");
-        List<Long> enterprises = ActivityDialog.start(new SearchWorker(searcher, text), message);
+        Component rootPane = SwingUtilities.getRoot(searchField);
+        rootPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        List<Long> enterprises = searchText(searcher, text);
+        rootPane.setCursor(Cursor.getDefaultCursor());
         fireSearchEnded(enterprises);
     }
 
@@ -99,24 +100,4 @@ public class SearchPanel implements Observer {
 
     }
 
-    private class SearchWorker extends SwingWorker<List<Long>, Object> {
-
-        private Searcher searcher;
-        private String text;
-
-        private SearchWorker(Searcher searcher, String text) {
-            this.searcher = searcher;
-            this.text = text;
-        }
-
-        @Override
-        protected List<Long> doInBackground() throws Exception {
-            try{
-                return searchText(searcher, text);
-            } catch (Exception ignored){
-                ignored.printStackTrace();
-                return new ArrayList<>();
-            }
-        }
-    }
 }

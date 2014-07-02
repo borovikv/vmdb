@@ -9,9 +9,10 @@ package md.varoinform.model.util;
 import md.varoinform.model.Configurator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
+import org.hibernate.context.internal.ThreadLocalSessionContext;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 public enum  SessionManager {
     instance;
 
-    private ConcurrentMap<String, Pair> sessions = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, SessionFactory> sessions = new ConcurrentHashMap<>();
     public static final String DEFAULT = "default";
 
     public Session getSession() {
@@ -33,26 +34,33 @@ public enum  SessionManager {
     }
 
     public Session getSession(String name, Configuration configuration){
-        Pair pair = sessions.get(name);
-        if(pair != null){
-            return pair.session;
+        SessionFactory factory = sessions.get(name);
+        if(factory != null){
+            Session session = factory.getCurrentSession();
+            if(session.isOpen()) return session;
+            session = factory.openSession();
+            ThreadLocalSessionContext.bind(session);
+            return session;
         }
 
-        SessionFactory factory = buildSessionFactory(configuration);
+        factory = buildSessionFactory(configuration);
         Session session = factory.openSession();
-        sessions.put(name, new Pair(factory, session));
+        ThreadLocalSessionContext.bind(session);
+        sessions.put(name, factory);
         return session;
 
     }
 
     private SessionFactory buildSessionFactory(Configuration configuration) {
         try {
-            ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder();
-            serviceRegistryBuilder.applySettings(configuration.getProperties());
-            ServiceRegistry serviceRegistry = serviceRegistryBuilder.buildServiceRegistry();
-            return configuration.buildSessionFactory(serviceRegistry);
+            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                    .applySettings(
+                            configuration.getProperties()
+                    ).build();
+            return configuration.buildSessionFactory(registry);
         }
         catch (Throwable ex) {
+            // Make sure you log the exception, as it might be swallowed
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
@@ -66,8 +74,10 @@ public enum  SessionManager {
     }
 
     public void shutdown(String name){
-        Pair pair = sessions.remove(name);
-        if (pair != null) pair.shutdown();
+        SessionFactory factory = sessions.remove(name);
+        if (factory != null) {
+            factory.close();
+        }
     }
 
 
@@ -84,37 +94,10 @@ public enum  SessionManager {
     }
 
     public void closeSession(String name){
-        Pair pair = sessions.get(name);
-        if (pair != null) pair.closeSession();
-    }
-
-
-    private static class Pair{
-        public SessionFactory sessionFactory;
-        public Session session;
-
-        private Pair(SessionFactory sessionFactory, Session session) {
-            this.sessionFactory = sessionFactory;
-            this.session = session;
-        }
-
-        public void shutdown(){
-            closeSession();
-            closeSessionFactory();
-        }
-
-        public void closeSession(){
-            if (session != null && session.isOpen()) {
-                session.close();
-                session = null;
-            }
-        }
-
-        public void closeSessionFactory() {
-            if (sessionFactory != null) {
-                sessionFactory.close();
-                sessionFactory = null;
-            }
+        SessionFactory factory = sessions.get(name);
+        if (factory != null) {
+            Session session = factory.getCurrentSession();
+            if (session.isOpen()) session.close();
         }
     }
 
