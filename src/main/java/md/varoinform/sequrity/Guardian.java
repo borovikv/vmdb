@@ -1,5 +1,6 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.Settings;
 import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.util.PreferencesHelper;
@@ -7,6 +8,8 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.registration.RegistrationDialog;
 
 import javax.swing.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +18,9 @@ import javax.swing.*;
  * Time: 1:32 PM
  */
 public class Guardian {
-    public void check(){
+    public void check() throws Exception {
+        if (databaseAlreadyInUse()) throw new Exception();
+
         PasswordManager pm = new PasswordManager();
         String uid = new PreferencesHelper().getUID();
         try {
@@ -29,6 +34,11 @@ public class Guardian {
             register(pm, uid);
         }
 
+    }
+
+    private boolean databaseAlreadyInUse() {
+        String lockFile = Settings.pathToDB().toString() + ".lock.db";
+        return Files.exists(Paths.get(lockFile));
     }
 
     public void register(PasswordManager pm, String uid) {
