@@ -19,12 +19,12 @@ public class FormattedTextField extends JFormattedTextField {
     private final String mask;
     private boolean isInputValid = false;
 
-    public FormattedTextField (int length) {
+    public FormattedTextField(int length) {
         mask = getMask(length);
         setFormatterFactory(new AbstractFormatterFactory() {
             @Override
             public AbstractFormatter getFormatter(JFormattedTextField tf) {
-                 return formatter(mask);
+                return formatter(mask);
             }
         });
         Font font = Settings.getDefaultFont(Settings.Fonts.MONOSPACED);
@@ -43,7 +43,7 @@ public class FormattedTextField extends JFormattedTextField {
         int textFieldWidth = fontMetrics.stringWidth(mask);
         //Empty border width + EtchedBorderWidth
         int borderWidth = 5 + 3;
-        return new Dimension(textFieldWidth + borderWidth*2, fontMetrics.getHeight() + borderWidth*2);
+        return new Dimension(textFieldWidth + borderWidth * 2, fontMetrics.getHeight() + borderWidth * 2);
     }
 
 
@@ -51,7 +51,7 @@ public class FormattedTextField extends JFormattedTextField {
         return isInputValid;
     }
 
-    public void setInputValid(boolean b){
+    public void setInputValid(boolean b) {
         isInputValid = b;
     }
 
@@ -69,13 +69,13 @@ public class FormattedTextField extends JFormattedTextField {
 
     private String getMask(int length) {
         String mask = "HHHH";
-        for (int i = 0; i < length-1; i++) {
+        for (int i = 0; i < length - 1; i++) {
             mask += ".HHHH";
         }
         return mask;
     }
 
-    public void addDocumentListener(DocumentListener listener){
+    public void addDocumentListener(DocumentListener listener) {
         getDocument().addDocumentListener(listener);
     }
 }
