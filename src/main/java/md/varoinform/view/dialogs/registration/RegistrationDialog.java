@@ -158,22 +158,18 @@ public class RegistrationDialog extends JDialog implements Observer{
                 registrar.registerByInternet(idDB);
                 setVisible(false);
             } catch (RegistrationException exception) {
-                String text;
-                if (exception.getError() == Error.CONNECTION_ERROR){
-                    text = ResourceBundleHelper.getString(language, "request_error_message", "");
-
-                } else if (exception.getError() == Error.RESPONSE_ERROR){
-                    text = ResourceBundleHelper.getString(language, "response_error_message", "");
-
-                } else {
+                Error error = exception.getError();
+                if (error == null) {
                     showExceptionMessage(exception);
                     setVisible(false);
                     return;
                 }
-
+                String errorText = error.getText();
+                String text = ResourceBundleHelper.getString(language, errorText, errorText);
                 if (JOptionPane.showConfirmDialog(null, text) == JOptionPane.NO_OPTION){
                     setVisible(false);
                 }
+
             } catch (PasswordException exception){
                 showExceptionMessage(exception);
             }
