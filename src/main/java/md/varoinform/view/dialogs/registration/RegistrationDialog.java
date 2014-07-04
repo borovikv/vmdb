@@ -145,10 +145,8 @@ public class RegistrationDialog extends JDialog implements Observer{
 
             String idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
             if (currentCard == 0){
-                nextCard();
-            } else if(registerByPhonePanel.getType() == RegistrationType.INTERNET){
                 tryRegisterByInternet(idDB);
-            }else if (registerByPhonePanel.getType() == RegistrationType.PHONE){
+            } else {
                 registerByPhone(idDB);
             }
         }
@@ -169,6 +167,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                 if (JOptionPane.showConfirmDialog(null, text) == JOptionPane.NO_OPTION){
                     setVisible(false);
                 }
+                nextCard();
 
             } catch (PasswordException exception){
                 showExceptionMessage(exception);
