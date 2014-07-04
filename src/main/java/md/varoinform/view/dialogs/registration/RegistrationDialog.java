@@ -186,7 +186,6 @@ public class RegistrationDialog extends JDialog implements Observer{
         }
 
         private void showExceptionMessage(Throwable exception) {
-            exception.printStackTrace();
             String exceptionMessage = exception.getMessage();
             String message = ResourceBundleHelper.getString(language, exceptionMessage, exceptionMessage);
             JOptionPane.showMessageDialog(null, message);
