@@ -7,19 +7,22 @@ package md.varoinform.sequrity.exception;
 * Time: 11:05 AM
 */
 public enum Error {
-    CONNECTION_ERROR("CONNECTION ERROR"),
-    RESPONSE_ERROR("SERVER ERROR"),
-    VALIDATION_ERROR("validation error"),
-    PASSWORD_NOT_EXIST_ERROR("key not exit");
+    CONNECTION_ERROR("connection_error"),  // Registration exception
+    RESPONSE_ERROR("server_error"),         // Registration exception
+    VALIDATION_ERROR("validation_error"),
+    PASSWORD_NOT_EXIST_ERROR("key_not_exist"),
+    INVALID_UID("invalid_uid"); // Registration exception
     private final String text;
 
     Error(String text) {
         this.text = text;
     }
 
-    public static Error parseError(@SuppressWarnings("UnusedParameters") String str){
-        //ToDo: real empl
-        return null;
+    public static Error parseError(String error){
+        switch (error){
+            case "INVALID_UID": return INVALID_UID;
+            default: return RESPONSE_ERROR;
+        }
     }
 
     public String getText() {
