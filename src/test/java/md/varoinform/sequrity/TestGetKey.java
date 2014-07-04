@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class TestGetKey {
 
     @Test
-    public void testEncryptDecrypt(){
+    public void testEncryptDecrypt() throws CryptographyException {
         String key = "password";
         byte[] encryptedKey = encrypt(key);
         System.out.println("encrypted key = " + encryptedKey.length);
@@ -39,7 +39,7 @@ public class TestGetKey {
         }
     }
 
-    private String decrypt(byte[] encryptedKey) {
+    private String decrypt(byte[] encryptedKey) throws CryptographyException {
         Cypher cypher = new Cypher();
         return cypher.decrypt(encryptedKey, getKey());
     }
@@ -114,7 +114,7 @@ public class TestGetKey {
         SessionManager.instance.shutdownAll();
     }
     @Test
-    public void decryptPassword(){
+    public void decryptPassword() throws CryptographyException {
         Cypher cypher = new Cypher();
         String encryptedPassword = "d8ec883f50cb260478538d3f9508d083";
         String database_id = "1111111111111111";

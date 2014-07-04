@@ -11,6 +11,7 @@ public enum Error {
     RESPONSE_ERROR("server_error"),         // Registration exception
     VALIDATION_ERROR("validation_error"),
     PASSWORD_NOT_EXIST_ERROR("key_not_exist"),
+    DECRYPT_ERROR("decrypt_error"),
     INVALID_UID("invalid_uid"); // Registration exception
     private final String text;
 

@@ -75,7 +75,7 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
         Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "licence",
                 String.format("licence_%s.html", language.getTitle()));
         try {
-            return new String(Files.readAllBytes(path));
+            return new String(Files.readAllBytes(path), "utf-8");
         } catch (IOException e) {
             e.printStackTrace();
         }

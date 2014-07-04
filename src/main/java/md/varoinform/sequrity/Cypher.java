@@ -35,12 +35,16 @@ public class Cypher {
 
 
     public byte[] encrypt(String data, byte[] key) throws CryptographyException {
-        byte[] bytes = StringConverter.getBytesFromString(data);
-        if (bytes == null) return null;
+        try {
+            byte[] bytes = StringConverter.getBytesFromString(data);
+            if (bytes == null) return null;
 
-        bytes = ArrayUtils.addAll(bytes, getPadding(MAX_LENGTH - bytes.length));
+            bytes = ArrayUtils.addAll(bytes, getPadding(MAX_LENGTH - bytes.length));
 
-        return xor(key, bytes);
+            return xor(key, bytes);
+        } catch (Exception e){
+            throw new CryptographyException(e);
+        }
     }
 
     private byte[] getPadding(int length) {
@@ -53,13 +57,17 @@ public class Cypher {
     }
 
 
-    public String decrypt(byte[] encryptedData, byte[] key)  {
-        byte[] bytes = xor(key, encryptedData);
+    public String decrypt(byte[] encryptedData, byte[] key)  throws CryptographyException {
+        try {
+            byte[] bytes = xor(key, encryptedData);
 
-        int padding_length = bytes[bytes.length-1];
-        byte[] result = Arrays.copyOfRange(bytes, 0, bytes.length - padding_length);
+            int paddingLength = bytes[bytes.length - 1];
+            byte[] result = Arrays.copyOfRange(bytes, 0, bytes.length - paddingLength);
 
-        return new String(result);
+            return new String(result);
+        } catch (Exception e){
+            throw new CryptographyException(e);
+        }
     }
 
 
