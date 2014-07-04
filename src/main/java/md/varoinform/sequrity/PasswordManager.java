@@ -35,7 +35,6 @@ public class PasswordManager {
         return cypher.decrypt(encryptedPassword, key);
     }
 
-    //ToDo:real implementation testConnection (test connection to db)
     private boolean testConnection(String password) {
         PasswordManager.password = password;
         try {
