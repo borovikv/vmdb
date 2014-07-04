@@ -22,7 +22,7 @@ public abstract class CardPanel extends JPanel implements Observer {
 
     protected CardPanel() {
         label.setEditable(false);
-        label.setContentType("text/html");
+        label.setContentType("text/html;charset=UTF-8");
         label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
     }
