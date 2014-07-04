@@ -175,7 +175,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                     setVisible(false);
                 }
             } catch (PasswordException exception){
-                //ToDo: handle password exception
+                showExceptionMessage(exception);
             }
         }
 
@@ -184,14 +184,12 @@ public class RegistrationDialog extends JDialog implements Observer{
             try {
                 registrar.register(idDB, password);
                 setVisible(false);
-            } catch (RegistrationException e) {
+            } catch (RegistrationException | PasswordException e) {
                 showExceptionMessage(e);
-            } catch (PasswordException exception) {
-                //ToDo: handle password exception
             }
         }
 
-        private void showExceptionMessage(RegistrationException exception) {
+        private void showExceptionMessage(Throwable exception) {
             exception.printStackTrace();
             String exceptionMessage = exception.getMessage();
             String message = ResourceBundleHelper.getString(language, exceptionMessage, exceptionMessage);
