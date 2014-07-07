@@ -18,10 +18,11 @@ import java.nio.file.Paths;
  */
 public class Configurator {
     private final String pathToDb;
-    private final String password = PasswordManager.getPassword() + "";
+    private final String password;
 
     public Configurator() {
         pathToDb = Settings.pathToDB().toString();
+        password = PasswordManager.getPassword();
     }
 
     public Configurator(String pathToDb) {
@@ -29,6 +30,7 @@ public class Configurator {
         Path path = Paths.get(pathToDb);
         if (Files.notExists(path.getParent())) throw new RuntimeException("file " + path.toAbsolutePath().toString() + " not found");
         this.pathToDb = path.toString();
+        password = PasswordManager.getPassword();
     }
 
     public Configuration configure() {

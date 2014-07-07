@@ -17,7 +17,7 @@ import org.hibernate.Session;
  */
 public class PasswordManager {
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
-    private static String password = "";
+    private static String password = "password";
 
     public String getDBPassword(String uid) throws PasswordException {
         byte[] encryptedPassword = preferencesHelper.getDBPassword();

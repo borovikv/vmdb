@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ResourceBundleHelper implements Serializable {
-
+    private static final Map<Locale, ResourceBundle> bundels = new HashMap<>();
     private ResourceBundleHelper() {
     }
 
@@ -31,11 +31,14 @@ public class ResourceBundleHelper implements Serializable {
     }
 
     private static ResourceBundle getResourceBundle(String name, Locale locale) throws MalformedURLException {
+        if (bundels.containsKey(locale)) return bundels.get(locale);
         Path path = Paths.get(Settings.getWorkFolder(), "external-resources");
         URL[] urls = { path.toUri().toURL()};
         ClassLoader classLoader = new URLClassLoader(urls);
 
-        return ResourceBundle.getBundle(name, locale, classLoader);
+        ResourceBundle bundle = ResourceBundle.getBundle(name, locale, classLoader);
+        bundels.put(locale, bundle);
+        return bundle;
     }
 
 
