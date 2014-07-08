@@ -2,8 +2,8 @@ package md.varoinform.sequrity;
 
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.CryptographyException;
-import md.varoinform.sequrity.exception.Error;
 import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
 import org.junit.After;
@@ -55,7 +55,7 @@ public class TestGetKey {
 
 
     @Test
-    public void testPassGetKey() throws PasswordException {
+    public void testPassGetKey() throws PasswordException, UnregisteredDBExertion {
         String aKey = "password";
 
         PasswordManager passwordManager = new PasswordManager();
@@ -70,16 +70,10 @@ public class TestGetKey {
     }
 
 
-    @Test
-    public void testNotExistKey(){
+    @Test(expected = UnregisteredDBExertion.class)
+    public void testNotExistKey() throws UnregisteredDBExertion, PasswordException {
         PasswordManager passwordManager = new PasswordManager();
-        md.varoinform.sequrity.exception.Error type = null;
-        try {
-            passwordManager.getDBPassword(getUID());
-        } catch (PasswordException e) {
-            type = e.getType();
-        }
-        assertEquals(type, Error.UNREGISTERED_PROGRAM_ERROR);
+        passwordManager.getDBPassword(getUID());
     }
 
 

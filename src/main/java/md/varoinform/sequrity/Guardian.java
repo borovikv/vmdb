@@ -3,6 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.Settings;
 import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.registration.RegistrationDialog;
@@ -25,7 +26,7 @@ public class Guardian {
         String uid = new PreferencesHelper().getUID();
         try {
             pm.getDBPassword(uid);
-        } catch (PasswordException exception) {
+        } catch (PasswordException | UnregisteredDBExertion exception) {
             register(pm, uid);
         }
 
@@ -45,7 +46,7 @@ public class Guardian {
         RegistrationDialog.register();
         try {
             pm.getDBPassword(uid);
-        } catch (PasswordException e) {
+        } catch (PasswordException|UnregisteredDBExertion e) {
             String message = ResourceBundleHelper.getString(RegistrationDialog.language, e.getMessage(), e.getMessage());
             JOptionPane.showMessageDialog(null, message);
             System.exit(-1);

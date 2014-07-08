@@ -10,7 +10,6 @@ public enum Error {
     CONNECTION_ERROR("connection_error"),  // Registration exception
     RESPONSE_ERROR("server_error"),         // Registration exception
     VALIDATION_ERROR("validation_error"),
-    UNREGISTERED_PROGRAM_ERROR("unregistered_program_error"),
     DECRYPT_ERROR("decrypt_error"),
     INVALID_UID("invalid_uid"), // Registration exception
     EXPIRED_UID("expired_uid");

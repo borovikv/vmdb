@@ -4,6 +4,7 @@ import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.CryptographyException;
 import md.varoinform.sequrity.exception.Error;
 import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
 import org.hibernate.Session;
@@ -19,9 +20,9 @@ public class PasswordManager {
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
     private static String password = "password";
 
-    public String getDBPassword(String uid) throws PasswordException {
+    public String getDBPassword(String uid) throws PasswordException, UnregisteredDBExertion {
         byte[] encryptedPassword = preferencesHelper.getDBPassword();
-        if (encryptedPassword == null) throw new PasswordException(Error.UNREGISTERED_PROGRAM_ERROR);
+        if (encryptedPassword == null) throw new UnregisteredDBExertion();
 
         String password;
         try {
