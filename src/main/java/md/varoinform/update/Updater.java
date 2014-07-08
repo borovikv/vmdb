@@ -7,7 +7,6 @@ import md.varoinform.model.entities.Tag;
 import md.varoinform.model.entities.TagEnterprise;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
-import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
@@ -21,8 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -34,38 +33,53 @@ import java.util.regex.Pattern;
  */
 public class Updater {
 
-    public static void main(String[] args) throws UnregisteredDBExertion, IOException {
-        new Updater().update();
+    public static void main(String[] args) throws UnregisteredDBExertion, IOException, ExpiredException {
+        Updater updater = new Updater();
+        updater.update();
     }
 
-    public boolean checkUpdate() throws UnregisteredDBExertion, IOException {
-        UrlCreator creator = new UrlCreator(getUserId());
-        creator.setParam("check", "true");
-        String url = creator.getString();
-        Request request = new Request(url);
+    @SuppressWarnings("UnusedDeclaration")
+    public boolean checkUpdate(String uid) throws IOException, UnregisteredDBExertion, ExpiredException {
+        UrlCreator creator = new UrlCreator(uid, "check");
+        Request request = new Request(creator.getString());
         String content = request.timesGet(1);
         System.out.println(content);
         return parseContent(content);
     }
 
-    private boolean parseContent(String content) {
-        Pattern pattern = Pattern.compile("^value=(yes|true)$", Pattern.CASE_INSENSITIVE);
-        return content != null && pattern.matcher(content).matches();
+    private boolean parseContent(String content) throws IOException, ExpiredException, UnregisteredDBExertion {
+        Pattern pattern = Pattern.compile("^value=(\\w+)$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+        if (content == null) throw new IOException();
+
+        Matcher matcher = pattern.matcher(content);
+        if (!matcher.matches()) throw new IOException();
+
+        String group = matcher.group(1);
+        switch (group.toLowerCase()){
+            case "yes" : return true;
+            case "no" : return false;
+            case "invalid_uid": throw new IOException(group);
+            case "term_expired": throw new ExpiredException(group);
+            case "unregistered_db": throw new UnregisteredDBExertion();
+            default: throw new IOException(group);
+        }
     }
 
+
     public void update() throws UnregisteredDBExertion, IOException {
-        UrlCreator creator = new UrlCreator(getUserId());
+        String uid = getUserId();
+
+        UrlCreator creator = new UrlCreator(uid);
         URL source = creator.getUrl();
-        File destination = new File(getDBFile(getTempDB()));
+        File destination = getDBFile(getTempDB());
+
+        // if null_uid, unregistered_program, invalid_uid, term_expired or haven't updates
+        // throw IOException
         FileUtils.copyURLToFile(source, destination);
-        try {
-            copyUserData();
-            replaceDB();
-            confirm(5);
-        } catch (PasswordException e) {
-            e.printStackTrace();
-            //TODO: handle Password exception in update
-        }
+
+        copyUserData();
+        replaceDB();
+        confirm(uid, 5);
     }
 
     //ToDo: replace return for getUserId
@@ -76,45 +90,38 @@ public class Updater {
         return "0";
     }
 
-    private String getDBFile(String name) {
-        return name + ".h2.db";
-    }
-
     public String getTempDB() {
         return Settings.pathToDB().toString() + "Temp";
     }
 
-    private void confirm(int tryCounter) throws UnregisteredDBExertion, IOException {
-        UrlCreator creator = new UrlCreator(getUserId());
-        creator.setParam("confirm", "true");
-        String url = creator.getString();
-        Request request = new Request(url);
-        request.timesGet(tryCounter);
+    private File getDBFile(String name) {
+        return new File(String.format("%s.h2.db", name));
     }
 
-    private void copyUserData() throws PasswordException {
+
+    private void copyUserData() {
         Session from = SessionManager.instance.getSession();
         Configuration cfg = new Configurator(getTempDB()).configure();
         Session to = SessionManager.instance.getSession("updating", cfg);
 
         for (Class c : new Class[] {Database.class, Tag.class, TagEnterprise.class}){
             Synchronizer.synchronize(c, from, to);
-
         }
 
         SessionManager.instance.shutdownAll();
     }
 
-    private void replaceDB() {
-        try {
-            Path source = Paths.get(getDBFile(getTempDB()));
-            Path target = Paths.get(getDBFile(Settings.pathToDB().toString()));
-
-            Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void replaceDB() throws IOException {
+        Path source = getDBFile(getTempDB()).toPath();
+        Path target = getDBFile(Settings.pathToDB().toString()).toPath();
+        Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
     }
 
 
+    private void confirm(String uid, int tryCounter) throws IOException {
+        UrlCreator creator = new UrlCreator(uid, "confirm");
+        String url = creator.getString();
+        Request request = new Request(url);
+        request.timesGet(tryCounter);
+    }
 }

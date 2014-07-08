@@ -19,6 +19,8 @@ public class Request {
         try {
             Response execute = org.apache.http.client.fluent.Request.Get(url).execute();
             HttpResponse response = execute.returnResponse();
+            int statusCode = response.getStatusLine().getStatusCode();
+            if(statusCode == 404) return "404";
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             response.getEntity().writeTo(out);
             return out.toString();
@@ -27,4 +29,5 @@ public class Request {
             return timesGet(times - 1);
         }
     }
+
 }

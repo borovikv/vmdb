@@ -21,6 +21,15 @@ public class UrlCreator {
         url = Settings.getUpdateUrl() + "?user=" + uid;
     }
 
+    public UrlCreator(String uid, String... pathComponents) {
+        url = Settings.getUpdateUrl();
+        for (String pathComponent : pathComponents) {
+            url += String.format("%s/", pathComponent);
+        }
+        url += String.format("?user=%s", uid);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
     public void setParam(String name, String value) {
         params.put(name, value);
     }
