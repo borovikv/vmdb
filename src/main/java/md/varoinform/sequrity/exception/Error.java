@@ -10,9 +10,10 @@ public enum Error {
     CONNECTION_ERROR("connection_error"),  // Registration exception
     RESPONSE_ERROR("server_error"),         // Registration exception
     VALIDATION_ERROR("validation_error"),
-    PASSWORD_NOT_EXIST_ERROR("key_not_exist"),
+    UNREGISTERED_PROGRAM_ERROR("unregistered_program_error"),
     DECRYPT_ERROR("decrypt_error"),
-    INVALID_UID("invalid_uid"); // Registration exception
+    INVALID_UID("invalid_uid"), // Registration exception
+    EXPIRED_UID("expired_uid");
     private final String text;
 
     Error(String text) {
@@ -22,6 +23,7 @@ public enum Error {
     public static Error parseError(String error){
         switch (error){
             case "INVALID_UID": return INVALID_UID;
+            case "EXPIRED_UID": return EXPIRED_UID;
             default: return RESPONSE_ERROR;
         }
     }

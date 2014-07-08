@@ -157,7 +157,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                 setVisible(false);
             } catch (RegistrationException exception) {
                 Error error = exception.getError();
-                if (error == null) {
+                if (error == null || error == Error.EXPIRED_UID || error == Error.INVALID_UID) {
                     showExceptionMessage(exception);
                     setVisible(false);
                     return;

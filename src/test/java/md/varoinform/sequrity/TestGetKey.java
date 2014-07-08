@@ -79,7 +79,7 @@ public class TestGetKey {
         } catch (PasswordException e) {
             type = e.getType();
         }
-        assertEquals(type, Error.PASSWORD_NOT_EXIST_ERROR);
+        assertEquals(type, Error.UNREGISTERED_PROGRAM_ERROR);
     }
 
 

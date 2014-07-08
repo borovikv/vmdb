@@ -21,7 +21,7 @@ public class PasswordManager {
 
     public String getDBPassword(String uid) throws PasswordException {
         byte[] encryptedPassword = preferencesHelper.getDBPassword();
-        if (encryptedPassword == null) throw new PasswordException(Error.PASSWORD_NOT_EXIST_ERROR);
+        if (encryptedPassword == null) throw new PasswordException(Error.UNREGISTERED_PROGRAM_ERROR);
 
         String password;
         try {
