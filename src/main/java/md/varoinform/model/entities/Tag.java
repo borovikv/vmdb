@@ -42,7 +42,7 @@ public class Tag implements Comparable<Tag>{
     }
 
     @ManyToMany
-    @JoinTable(name = "EXPORTED_DB.DB_tag_enterprise", joinColumns = @JoinColumn(name = "tag_id"), inverseJoinColumns = @JoinColumn(name = "enterprise_id"))
+    @JoinTable(name = "DB_tag_enterprise", joinColumns = @JoinColumn(name = "tag_id"), inverseJoinColumns = @JoinColumn(name = "enterprise_id"))
     public Set<Enterprise> getEnterprises() {
         return enterprises;
     }
