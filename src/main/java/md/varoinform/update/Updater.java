@@ -5,14 +5,13 @@ import md.varoinform.model.Configurator;
 import md.varoinform.model.entities.Database;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.entities.TagEnterprise;
-import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.Profiler;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
 import org.apache.commons.io.FileUtils;
-import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
 
 import java.io.File;
@@ -32,10 +31,10 @@ import java.util.regex.Pattern;
  * Time: 2:06 PM
  */
 public class Updater {
-
     public static void main(String[] args) throws UnregisteredDBExertion, IOException, ExpiredException {
-        Updater updater = new Updater();
-        updater.update();
+        Profiler p = new Profiler("update");
+        new CheckUpdateWorker().execute();
+        p.end();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -100,21 +99,22 @@ public class Updater {
 
 
     private void copyUserData() {
-        Session from = SessionManager.instance.getSession();
         Configuration cfg = new Configurator(getTempDB()).configure();
-        Session to = SessionManager.instance.getSession("updating", cfg);
 
         for (Class c : new Class[] {Database.class, Tag.class, TagEnterprise.class}){
-            Synchronizer.synchronize(c, from, to);
+            Synchronizer.synchronize(c, cfg);
         }
 
-        SessionManager.instance.shutdownAll();
+        //ToDo: Create index
+        //ToDo: Close session
+        //SessionManager.instance.shutdownAll();
     }
 
     private void replaceDB() throws IOException {
         Path source = getDBFile(getTempDB()).toPath();
         Path target = getDBFile(Settings.pathToDB().toString()).toPath();
         Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
+
     }
 
 

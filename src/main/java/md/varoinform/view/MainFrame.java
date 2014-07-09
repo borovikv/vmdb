@@ -7,6 +7,7 @@ import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.SessionManager;
+import md.varoinform.update.CheckUpdateWorker;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
@@ -161,6 +162,7 @@ public class MainFrame extends JFrame implements Observer {
                 }, ResourceBundleHelper.getString("close_window_message", "Wait..."));
             }
         });
+        new CheckUpdateWorker().execute();
     }
 
     private JPanel createToolBar() {

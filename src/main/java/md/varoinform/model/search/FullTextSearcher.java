@@ -3,7 +3,6 @@ package md.varoinform.model.search;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.CacheMode;
-import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -28,11 +27,11 @@ public class FullTextSearcher extends Searcher {
         fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
         builder = new LuceneQueryBuilder(queryBuilder, fields, type);
-        //createIndex(SessionManager.getSession());
+        //createIndex();
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void createIndex(Session session) {
+    public static void createIndex() {
+        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
         try {
             fullTextSession
                     .createIndexer()
