@@ -30,7 +30,6 @@ public enum  SessionManager {
 
     public Session getSession(Configuration configuration){
         String path = configuration.getProperty("hibernate.connection.url");
-        System.out.println(path);
         SessionFactory factory = sessions.get(path);
         if(factory != null){
             Session session = factory.getCurrentSession();
@@ -39,7 +38,6 @@ public enum  SessionManager {
             ThreadLocalSessionContext.bind(session);
             return session;
         }
-        System.out.println("build factory");
         factory = buildSessionFactory(configuration);
         Session session = factory.openSession();
         ThreadLocalSessionContext.bind(session);
