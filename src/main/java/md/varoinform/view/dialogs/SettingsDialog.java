@@ -16,10 +16,10 @@ import java.awt.event.ActionListener;
  * Date: 11/18/13
  * Time: 2:28 PM
  */
+//ToDo: Proxy
 public class SettingsDialog extends JDialog {
 
     private final I18nCheckBox showTextInButtonBox;
-    private JComboBox<UIManager.LookAndFeelInfo> styles;
 
     private PreferencesHelper helper;
 
@@ -43,28 +43,7 @@ public class SettingsDialog extends JDialog {
         });
         add(showTextInButtonBox);
 
-        UIManager.LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
-        styles = new JComboBox<>(installedLookAndFeels);
-        styles.setRenderer(new DefaultListCellRenderer(){
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                String text = ((UIManager.LookAndFeelInfo)value).getName();
-                return super.getListCellRendererComponent(list, text, index, isSelected, cellHasFocus);
-            }
-        });
-        styles.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                UIManager.LookAndFeelInfo item = (UIManager.LookAndFeelInfo) styles.getSelectedItem();
-                try {
-                    UIManager.setLookAndFeel(item.getClassName());
-                    SwingUtilities.updateComponentTreeUI(mainFrame);
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-        add(styles);
+
 
         setModal(true);
     }
