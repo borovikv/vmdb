@@ -1,10 +1,12 @@
 package md.varoinform.update;
 
+import md.varoinform.Settings;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.*;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -18,7 +20,7 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         try {
-            return new Updater().checkUpdate("0");
+            return new Updater().checkUpdate();
         } catch (UnregisteredDBExertion | ExpiredException ignored) {
             return false;
         }
@@ -52,14 +54,28 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
     }
 
     private class UpdateWorker extends SwingWorker<Throwable, Object> {
+
+        private Long updated;
+
         @Override
         protected Throwable doInBackground() throws Exception {
             try {
-                new Updater().update();
+                updated = new Updater().update();
             } catch (Throwable e) {
                 return e;
             }
             return null;
+        }
+
+        @Override
+        protected void done() {
+            if (updated != null) {
+                String key = "updated-message";
+                String defaultValue = "%s updated %s enterprises";
+                String date = Settings.getDefaultDateFormat().format(new Date());
+                String message = String.format(ResourceBundleHelper.getString(key, defaultValue), date, updated);
+                JOptionPane.showMessageDialog(null, message);
+            }
         }
     }
 }

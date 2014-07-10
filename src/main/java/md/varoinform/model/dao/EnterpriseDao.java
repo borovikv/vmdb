@@ -6,26 +6,67 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
-public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>{
+public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long> {
     public EnterpriseDao() {
         super(Enterprise.class);
     }
 
-    public static List<Enterprise> getEnterprises(){
+    public static List<Enterprise> getEnterprises() {
         //noinspection unchecked
-       List<Enterprise> enterprises = SessionManager.instance.getSession().createCriteria(Enterprise.class).list();
-       Collections.sort(enterprises, new EnterpriseComparator());
-       return enterprises;
+        List<Enterprise> enterprises = SessionManager.instance.getSession().createCriteria(Enterprise.class).list();
+        Collections.sort(enterprises, new EnterpriseComparator());
+        return enterprises;
+    }
+
+    public static Date getMaxCheckDate() {
+        Session session = SessionManager.instance.getSession();
+        Transaction transaction = session.beginTransaction();
+        Criteria criteria = session
+                .createCriteria(Enterprise.class)
+                .setProjection(Projections.max("lastChange"));
+        Date date = (Date) criteria.uniqueResult();
+        transaction.commit();
+        return date;
+    }
+
+    public static Long countWhereLastChangeGTE(Configuration cfg, Date date) {
+        if (date == null) return 0L;
+
+        Session session;
+        if (cfg == null) {
+            session = SessionManager.instance.getSession();
+        } else {
+            session = SessionManager.instance.getSession(cfg);
+        }
+        try {
+            Transaction transaction = session.beginTransaction();
+            Criteria criteria = session
+                    .createCriteria(Enterprise.class)
+                    .add(Restrictions.gt("lastChange", date))
+                    .setProjection(Projections.rowCount());
+            Long result = (Long) criteria.uniqueResult();
+            transaction.commit();
+            return result;
+
+        } catch (RuntimeException ignored){
+            session.getTransaction().rollback();
+            return 0L;
+        }
     }
 
     public List<Enterprise> read(List<Long> ids) {
-        if (Cache.instance.isEnterpriseCached()){
+        if (Cache.instance.isEnterpriseCached()) {
             return Cache.instance.getEnterprises(ids);
         } else {
             Criteria criteria = SessionManager.instance.getSession().createCriteria(Enterprise.class).add(Restrictions.in("id", ids));

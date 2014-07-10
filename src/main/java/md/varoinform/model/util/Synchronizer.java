@@ -18,7 +18,7 @@ public class Synchronizer {
     public static void synchronize(Class hibernateClass, Configuration toCfg) throws HibernateException
     {
         Session from = SessionManager.instance.getSession();
-        Session to = SessionManager.instance.getSession("newSession", toCfg);
+        Session to = SessionManager.instance.getSession(toCfg);
         from.beginTransaction();
         Transaction trans = to.beginTransaction();
         List newData = from.createCriteria(hibernateClass).list();

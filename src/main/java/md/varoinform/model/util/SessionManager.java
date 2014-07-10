@@ -20,8 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 public enum  SessionManager {
     instance;
 
-    private ConcurrentMap<String, SessionFactory> sessions = new ConcurrentHashMap<>();
-    public static final String DEFAULT = "default";
+    private final ConcurrentMap<String, SessionFactory> sessions = new ConcurrentHashMap<>();
 
     public Session getSession() {
         Configurator configurator = new Configurator();
@@ -30,11 +29,9 @@ public enum  SessionManager {
     }
 
     public Session getSession(Configuration configuration){
-        return getSession(DEFAULT, configuration);
-    }
-
-    public Session getSession(String name, Configuration configuration){
-        SessionFactory factory = sessions.get(name);
+        String path = configuration.getProperty("hibernate.connection.url");
+        System.out.println(path);
+        SessionFactory factory = sessions.get(path);
         if(factory != null){
             Session session = factory.getCurrentSession();
             if(session.isOpen()) return session;
@@ -42,11 +39,11 @@ public enum  SessionManager {
             ThreadLocalSessionContext.bind(session);
             return session;
         }
-
+        System.out.println("build factory");
         factory = buildSessionFactory(configuration);
         Session session = factory.openSession();
         ThreadLocalSessionContext.bind(session);
-        sessions.put(name, factory);
+        sessions.put(path, factory);
         return session;
 
     }
@@ -73,6 +70,7 @@ public enum  SessionManager {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void shutdown(String name){
         SessionFactory factory = sessions.remove(name);
         if (factory != null) {
@@ -88,11 +86,8 @@ public enum  SessionManager {
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void closeSession(){
-        closeSession(DEFAULT);
-    }
 
+    @SuppressWarnings("WeakerAccess")
     public void closeSession(String name){
         SessionFactory factory = sessions.get(name);
         if (factory != null) {
