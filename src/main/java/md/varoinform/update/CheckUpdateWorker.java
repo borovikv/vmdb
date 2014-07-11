@@ -1,6 +1,7 @@
 package md.varoinform.update;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.Cache;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
@@ -74,6 +75,7 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
                 String defaultValue = "%s updated %s enterprises";
                 String date = Settings.getDefaultDateFormat().format(new Date());
                 String message = String.format(ResourceBundleHelper.getString(key, defaultValue), date, updated);
+                Cache.instance.update();
                 JOptionPane.showMessageDialog(null, message);
             }
         }

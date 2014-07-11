@@ -22,38 +22,31 @@ import java.util.*;
  */
 public enum Cache implements md.varoinform.util.observer.Observer {
     instance;
-
-    @Override
-    public void update(ObservableEvent event) {
-        enterpriseProxies.clear();
-        Collection<Enterprise> enterprises;
-        if (enterpriseCache.isEmpty()){
-            enterprises = EnterpriseDao.getEnterprises();
-        } else {
-            enterprises = enterpriseCache.values();
-        }
-        for (Enterprise enterprise : enterprises) {
-            enterpriseProxies.put(enterprise.getId(), new EnterpriseProxy(enterprise));
-        }
-        if (isBranchCached){
-            branchCache.clear();
-        }
-    }
-
+    private static final boolean isEnterpriseCached = true;
+    private static final boolean isBranchCached = true;
     private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
     private final Map<Long, EnterpriseProxy> enterpriseProxies = new LinkedHashMap<>();
-    private Map<Long, List<Long>> branchCache = new HashMap<>();
-
     private final Set<Tag> tags = new TreeSet<>();
     private final Set<Tag> tagsToSave = new HashSet<>();
     private final Set<Tag> tagsToDelete = new HashSet<>();
     private final DAOTag daoTag = new DAOTag();
-    private static final boolean isEnterpriseCached = true;
-    private static final boolean isBranchCached = true;
-
+    private Map<Long, List<Long>> branchCache = new HashMap<>();
 
     private Cache() {
-        List<Enterprise> enterprises = EnterpriseDao.getEnterprises();
+        update();
+    }
+
+    @Override
+    public void update(ObservableEvent event) {
+        updateFromCache();
+    }
+
+    public void update() {
+        enterpriseProxies.clear();
+        branchCache.clear();
+        tags.clear();
+
+        Collection<Enterprise> enterprises = EnterpriseDao.getEnterprises();
 
         for (Enterprise enterprise : enterprises) {
             Long id = enterprise.getId();
@@ -64,6 +57,15 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         tags.addAll(daoTag.getAll());
     }
 
+    public void updateFromCache(){
+        enterpriseProxies.clear();
+        branchCache.clear();
+
+        for (Enterprise enterprise : enterpriseCache.values()) {
+            Long id = enterprise.getId();
+            enterpriseProxies.put(id, new EnterpriseProxy(enterprise));
+        }
+    }
 
     public List<Long> getAllEnterpriseIds(){
         return new ArrayList<>(enterpriseProxies.keySet());
@@ -77,7 +79,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         }
     }
 
-    public List<Long> getCachedEnterpriseIdsByNode(Node node) {
+    private List<Long> getCachedEnterpriseIdsByNode(Node node) {
         if (branchCache.isEmpty() && !Holder.await()) {
             List<Long> ids = new NodeDao().getEnterpriseIds(node);
 

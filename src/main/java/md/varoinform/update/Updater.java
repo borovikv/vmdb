@@ -6,10 +6,11 @@ import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Database;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.entities.TagEnterprise;
+import md.varoinform.model.search.FullTextSearcher;
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.Profiler;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
 import org.apache.commons.io.FileUtils;
@@ -34,12 +35,6 @@ import java.util.regex.Pattern;
  */
 public class Updater {
     private static final String TEMP_DB = Settings.pathToDB().toString() + "Temp";
-
-    public static void main(String[] args) throws UnregisteredDBExertion, IOException, ExpiredException {
-        Profiler p = new Profiler("update");
-        new CheckUpdateWorker().execute();
-        p.end();
-    }
 
     public boolean checkUpdate() throws IOException, UnregisteredDBExertion, ExpiredException {
         String uid = getUserId();
@@ -84,7 +79,11 @@ public class Updater {
 
         copyUserData(cfg);
         replaceDB();
+
         //confirm(uid, 5);
+
+        FullTextSearcher.createIndex();
+        SessionManager.instance.shutdownAll();
 
         return updated;
     }
@@ -119,16 +118,13 @@ public class Updater {
             Synchronizer.synchronize(c, cfg);
         }
 
-        //ToDo: Create index
-        //ToDo: Close session
-        //SessionManager.instance.shutdownAll();
+        SessionManager.instance.shutdownAll();
     }
 
     private void replaceDB() throws IOException {
         Path source = getDBFile(TEMP_DB).toPath();
         Path target = getDBFile(Settings.pathToDB().toString()).toPath();
         Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
-
     }
 
 

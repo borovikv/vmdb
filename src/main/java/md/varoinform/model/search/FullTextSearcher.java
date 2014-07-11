@@ -2,7 +2,6 @@ package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.SessionManager;
-import org.hibernate.CacheMode;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -17,38 +16,28 @@ import java.util.List;
  * Time: 2:44 PM
  */
 public class FullTextSearcher extends Searcher {
+    private final String[] fields;
 
 
-    private final FullTextSession fullTextSession;
-    private final LuceneQueryBuilder builder;
-
-
-    public FullTextSearcher(String[] fields, LuceneQueryBuilder.QueryType type) {
-        fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
-        QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
-        builder = new LuceneQueryBuilder(queryBuilder, fields, type);
-        //createIndex();
+    public FullTextSearcher(String[] fields) {
+        this.fields = fields;
     }
 
     public static void createIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
         try {
-            fullTextSession
-                    .createIndexer()
-                    .batchSizeToLoadObjects( 25 )
-                    .cacheMode( CacheMode.NORMAL )
-                    .threadsToLoadObjects( 5 )
-                    .idFetchSize( 150 )
-                    .threadsForSubsequentFetching(20)
-                    //.progressMonitor( monitor ) //a MassIndexerProgressMonitor implementation
-                    .startAndWait();
+            fullTextSession.createIndexer().startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        fullTextSession.close();
     }
 
     @Override
     public List<Long> search(String q) {
+        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
+        QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
+        LuceneQueryBuilder builder = new LuceneQueryBuilder(queryBuilder, fields);
         //Transaction tx = fullTextSession.beginTransaction();
         try {
             org.apache.lucene.search.Query query = builder.createQuery(q);

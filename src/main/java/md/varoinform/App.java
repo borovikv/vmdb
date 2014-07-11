@@ -25,6 +25,7 @@ public class App {
                 try {
                     guardian.check();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     JOptionPane.showMessageDialog(null,
                             ResourceBundleHelper.getString(DefaultLanguages.RU, "database_in_use_message", "Database already in use"));
                     return;

@@ -28,13 +28,11 @@ public class LuceneQueryBuilder {
             "contactPersons.person.titles.title", "contactPersons.phones.phone"};
     private final QueryBuilder queryBuilder;
     private final String[] fields;
-    @SuppressWarnings("UnusedDeclaration")
-    private QueryType type;
 
-    public LuceneQueryBuilder(QueryBuilder queryBuilder, String[] fields, QueryType type) {
+
+    public LuceneQueryBuilder(QueryBuilder queryBuilder, String[] fields) {
         this.queryBuilder = queryBuilder;
         this.fields = fields;
-        this.type = type;
     }
 
     public Query createQuery(String q) throws ParseException {
@@ -75,7 +73,4 @@ public class LuceneQueryBuilder {
         return matchingContext;
     }
 
-    public enum QueryType {
-        Strict
-    }
 }
