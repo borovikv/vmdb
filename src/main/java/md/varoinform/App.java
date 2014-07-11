@@ -2,8 +2,10 @@ package md.varoinform;
 
 
 import md.varoinform.controller.DefaultLanguages;
+import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.Guardian;
+import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Profiler;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.MainFrame;
@@ -20,6 +22,7 @@ public class App {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+
                 Profiler pg = new Profiler("check");
                 Guardian guardian = new Guardian();
                 try {
@@ -31,6 +34,13 @@ public class App {
                     return;
                 }
                 pg.end();
+
+                PreferencesHelper preferences = new PreferencesHelper();
+                if(!preferences.getIsIndexed()) {
+                    if (FullTextSearcher.createIndex()) {
+                        preferences.setIsIndexed(true);
+                    }
+                }
 
                 Profiler p = new Profiler("create mainframe");
                 MainFrame mainFrame = new MainFrame();

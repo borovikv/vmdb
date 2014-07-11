@@ -23,14 +23,17 @@ public class FullTextSearcher extends Searcher {
         this.fields = fields;
     }
 
-    public static void createIndex() {
+    public static boolean createIndex() {
+        boolean success = false;
         FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
         try {
             fullTextSession.createIndexer().startAndWait();
+            success = true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         fullTextSession.close();
+        return success;
     }
 
     @Override

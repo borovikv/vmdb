@@ -11,6 +11,7 @@ import java.util.prefs.Preferences;
 
 public class PreferencesHelper implements Serializable {
     private static final String SHOW_TEXT_IN_BUTTONS = "show_text_in_buttons";
+    private static final String IS_INDEXED = "is_indexed";
     private final String fieldKey = "columns";
     private final Preferences preferences;
     private final String defaultDelimiter = ";";
@@ -111,5 +112,13 @@ public class PreferencesHelper implements Serializable {
 
     public boolean getShowTextInButton(){
         return preferences.getBoolean(SHOW_TEXT_IN_BUTTONS, true);
+    }
+
+    public boolean getIsIndexed() {
+        return preferences.getBoolean(IS_INDEXED, false);
+    }
+
+    public void setIsIndexed(boolean indexed){
+        preferences.putBoolean(IS_INDEXED, indexed);
     }
 }
