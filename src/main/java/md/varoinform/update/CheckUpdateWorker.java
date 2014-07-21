@@ -2,11 +2,13 @@ package md.varoinform.update;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -22,20 +24,27 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
     protected Boolean doInBackground() throws Exception {
         try {
             return new Updater().checkUpdate();
-        } catch (UnregisteredDBExertion | ExpiredException ignored) {
+        } catch (IOException| UnregisteredDBExertion | ExpiredException e) {
+            showMessageDialog(e);
             return false;
         }
     }
 
     @Override
     protected void done() {
-        try {
-            if(get()){
-                update();
-            }
-        } catch (InterruptedException | ExecutionException e ) {
-            showMessageDialog(e);
+        if(hasUpdate()){
+            update();
         }
+    }
+
+    private Boolean hasUpdate() {
+        Boolean hasUpdate = false;
+        try {
+            hasUpdate = get();
+        } catch (InterruptedException | ExecutionException ignored) {
+            ignored.printStackTrace();
+        }
+        return hasUpdate;
     }
 
     private void update() {
@@ -48,10 +57,11 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
         }
     }
 
-    //ToDo: process message for update fail
     private void showMessageDialog(Throwable e) {
-        JOptionPane.showMessageDialog(null, e.getMessage());
         e.printStackTrace();
+        String key = e.getMessage();
+        String message = ResourceBundleHelper.getString(key, key);
+        JOptionPane.showMessageDialog(null, message);
     }
 
     private class UpdateWorker extends SwingWorker<Throwable, Object> {
@@ -60,12 +70,13 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
 
         @Override
         protected Throwable doInBackground() throws Exception {
+            Throwable cause = null;
             try {
                 updated = new Updater().update();
             } catch (Throwable e) {
-                return e;
+                cause = e;
             }
-            return null;
+            return cause;
         }
 
         @Override
@@ -75,9 +86,10 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
                 String defaultValue = "%s updated %s enterprises";
                 String date = Settings.getDefaultDateFormat().format(new Date());
                 String message = String.format(ResourceBundleHelper.getString(key, defaultValue), date, updated);
-                Cache.instance.update();
                 JOptionPane.showMessageDialog(null, message);
             }
+            SessionManager.instance.shutdownAll();
+            Cache.instance.update();
         }
     }
 }

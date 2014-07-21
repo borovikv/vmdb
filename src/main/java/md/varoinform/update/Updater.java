@@ -51,14 +51,14 @@ public class Updater {
         Matcher matcher = pattern.matcher(content);
         if (!matcher.matches()) throw new IOException();
 
-        String group = matcher.group(1);
-        switch (group.toLowerCase()){
+        String message = matcher.group(1);
+        switch (message.toLowerCase()){
             case "yes" : return true;
             case "no" : return false;
-            case "invalid_uid": throw new IOException(group);
-            case "term_expired": throw new ExpiredException(group);
+            case "invalid_uid": throw new IOException(message);
+            case "term_expired": throw new ExpiredException(message);
             case "unregistered_db": throw new UnregisteredDBExertion();
-            default: throw new IOException(group);
+            default: throw new IOException(message);
         }
     }
 
@@ -80,10 +80,10 @@ public class Updater {
         copyUserData(cfg);
         replaceDB();
 
+        //ToDo: confirm update
         //confirm(uid, 5);
 
         FullTextSearcher.createIndex();
-        SessionManager.instance.shutdownAll();
 
         return updated;
     }
@@ -99,12 +99,11 @@ public class Updater {
         zipFile.renameTo(getDBFile(TEMP_DB));
     }
 
-    //ToDo: replace return for getUserId
     private String getUserId() throws UnregisteredDBExertion {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
         String idDb = preferencesHelper.getUID();
         if (idDb == null) throw new UnregisteredDBExertion();
-        return "0";
+        return idDb;
     }
 
 

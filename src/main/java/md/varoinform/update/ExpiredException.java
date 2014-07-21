@@ -7,7 +7,7 @@ package md.varoinform.update;
  * Time: 11:35 AM
  */
 public class ExpiredException extends Throwable {
-    public ExpiredException(String group) {
-        super(group);
+    public ExpiredException(String message) {
+        super(message);
     }
 }
