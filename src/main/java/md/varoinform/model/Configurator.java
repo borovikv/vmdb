@@ -59,8 +59,16 @@ public class Configurator {
 
     public Configuration configure() {
         Configuration cfg = getConfiguration();
+        setIndex(cfg);
         showSql(cfg, false);
         //setAuto(cfg, "update");
+        return cfg;
+    }
+
+    public Configuration configureWithoutIndex(){
+        Configuration cfg = getConfiguration();
+        showSql(cfg, false);
+        cfg.setProperty("hibernate.search.autoregister_listeners", "false");
         return cfg;
     }
 
@@ -85,9 +93,12 @@ public class Configurator {
         cfg.setProperty("hibernate.use_sql_comments", "false");
         cfg.setProperty("hibernate.connection.autocommit", "false");
 
+        return cfg;
+    }
+
+    public void setIndex(Configuration cfg) {
         cfg.setProperty("hibernate.search.default.directory_provider", "filesystem");
         cfg.setProperty("hibernate.search.default.indexBase", pathToDb + "/indexes");
-        return cfg;
     }
 
     @SuppressWarnings("UnusedDeclaration")

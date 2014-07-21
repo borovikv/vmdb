@@ -13,6 +13,7 @@ import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
+import md.varoinform.util.Zip;
 import org.apache.commons.io.FileUtils;
 import org.hibernate.cfg.Configuration;
 
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -34,14 +36,19 @@ import java.util.regex.Pattern;
  * Time: 2:06 PM
  */
 public class Updater {
-    private static final String TEMP_DB = Settings.pathToDB().toString() + "Temp";
-
     public boolean checkUpdate() throws IOException, UnregisteredDBExertion, ExpiredException {
         String uid = getUserId();
         UrlCreator creator = new UrlCreator(uid, "check");
         Request request = new Request(creator.getString());
         String content = request.timesGet(1);
         return parseContent(content);
+    }
+
+    private String getUserId() throws UnregisteredDBExertion {
+        PreferencesHelper preferencesHelper = new PreferencesHelper();
+        String idDb = preferencesHelper.getUID();
+        if (idDb == null) throw new UnregisteredDBExertion();
+        return idDb;
     }
 
     private boolean parseContent(String content) throws IOException, ExpiredException, UnregisteredDBExertion {
@@ -52,84 +59,90 @@ public class Updater {
         if (!matcher.matches()) throw new IOException();
 
         String message = matcher.group(1);
-        switch (message.toLowerCase()){
-            case "yes" : return true;
-            case "no" : return false;
-            case "invalid_uid": throw new IOException(message);
-            case "term_expired": throw new ExpiredException(message);
-            case "unregistered_db": throw new UnregisteredDBExertion();
-            default: throw new IOException(message);
+        switch (message.toLowerCase()) {
+            case "yes":
+                return true;
+            case "no":
+                return false;
+            case "invalid_uid":
+                throw new IOException(message);
+            case "term_expired":
+                throw new ExpiredException(message);
+            case "unregistered_db":
+                throw new UnregisteredDBExertion();
+            default:
+                throw new IOException(message);
         }
     }
 
     public Long update() throws UnregisteredDBExertion, IOException {
-        String uid = getUserId();
+        File zipFile = download();
+        File dbFile = getDBFile(Zip.unzip(zipFile));
+        try {
+            Files.delete(zipFile.toPath());
+        } catch (Throwable ignored) {
+        }
 
-        UrlCreator creator = new UrlCreator(uid);
-        URL source = creator.getUrl();
-        File destination = new File(TEMP_DB + ".zip");
+        Configuration cfg = getConfiguration(dbFile);
 
-        // if null_uid, unregistered_program, invalid_uid, term_expired or haven't updates
-        // throw IOException
-        FileUtils.copyURLToFile(source, destination);
-        unzip(destination);
-
-        Configuration cfg = new Configurator(TEMP_DB).configure();
         Long updated = getUpdatedEnterprises(cfg);
-
         copyUserData(cfg);
-        replaceDB();
+        replaceDB(dbFile);
 
-        //ToDo: confirm update
-        //confirm(uid, 5);
+        confirm(5);
 
         FullTextSearcher.createIndex();
 
         return updated;
     }
 
-    public Long getUpdatedEnterprises(Configuration cfg) {
+    public File download() throws UnregisteredDBExertion, IOException {
+        String uid = getUserId();
+
+        UrlCreator creator = new UrlCreator(uid);
+        URL source = creator.getUrl();
+        File destination = Paths.get(Settings.pathToDB().getParent().toString(), "Temp.zip").toFile();
+
+        // if null_uid, unregistered_program, invalid_uid, term_expired or haven't updates
+        // throw IOException
+        FileUtils.copyURLToFile(source, destination);
+        return destination;
+    }
+
+    private File getDBFile(Path tempFolderPath) throws IOException {
+        File[] files = tempFolderPath.toFile().listFiles();
+        if (files == null || files.length <= 0) throw new IOException("Has not db file");
+        return files[0];
+    }
+
+    private Configuration getConfiguration(File dbFile) {
+        String absPath = dbFile.getAbsolutePath();
+        String pathToDb = absPath.substring(0, absPath.lastIndexOf(".h2.db"));
+        return new Configurator(pathToDb).configureWithoutIndex();
+    }
+
+
+    private Long getUpdatedEnterprises(Configuration cfg) {
         Date maxDate = EnterpriseDao.getMaxCheckDate();
         return EnterpriseDao.countWhereLastChangeGTE(cfg, maxDate);
     }
 
-
-    //ToDo: unzip
-    private void unzip(File zipFile) {
-        zipFile.renameTo(getDBFile(TEMP_DB));
-    }
-
-    private String getUserId() throws UnregisteredDBExertion {
-        PreferencesHelper preferencesHelper = new PreferencesHelper();
-        String idDb = preferencesHelper.getUID();
-        if (idDb == null) throw new UnregisteredDBExertion();
-        return idDb;
-    }
-
-
-    private File getDBFile(String name) {
-        return new File(String.format("%s.h2.db", name));
-    }
-
     private void copyUserData(Configuration cfg) {
-
-        for (Class c : new Class[] {Database.class, Tag.class, TagEnterprise.class}){
+        for (Class c : new Class[]{Database.class, Tag.class, TagEnterprise.class}) {
             Synchronizer.synchronize(c, cfg);
         }
 
         SessionManager.instance.shutdownAll();
     }
 
-    private void replaceDB() throws IOException {
-        Path source = getDBFile(TEMP_DB).toPath();
-        Path target = getDBFile(Settings.pathToDB().toString()).toPath();
+    private void replaceDB(File newDB) throws IOException {
+        Path source = newDB.toPath();
+        Path target = new File(String.format("%s.h2.db", Settings.pathToDB().toString())).toPath();
         Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
     }
 
-
-    @SuppressWarnings("UnusedDeclaration")
-    private void confirm(String uid, int tryCounter) throws IOException {
-        UrlCreator creator = new UrlCreator(uid, "confirm");
+    private void confirm(int tryCounter) throws IOException, UnregisteredDBExertion {
+        UrlCreator creator = new UrlCreator(getUserId(), "confirm");
         String url = creator.getString();
         Request request = new Request(url);
         request.timesGet(tryCounter);

@@ -48,11 +48,11 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
     }
 
     private void update() {
-        String key = "";
-        String defaultValue = "install updates";
+        String key = "updates_exists_message";
+        String defaultValue = "Install updates?";
         String message = ResourceBundleHelper.getString(key, defaultValue);
         if (JOptionPane.showConfirmDialog(null, message) == JOptionPane.YES_OPTION){
-            Throwable result = ActivityDialog.start(new UpdateWorker(), "progress");
+            Throwable result = ActivityDialog.start(new UpdateWorker(), ResourceBundleHelper.getString("update_progress_message", "wait..."));
             if (result != null) showMessageDialog(result);
         }
     }
