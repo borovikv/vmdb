@@ -3,3 +3,4 @@ target
 .idea
 VaroDB.iml
 src/main/resources/icons
+src/test/resources
