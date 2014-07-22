@@ -29,8 +29,12 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         return enterprises;
     }
 
-    public static Date getMaxCheckDate() {
-        Session session = SessionManager.instance.getSession();
+    public static Date getMaxCheckDate(){
+        return getMaxCheckDate(null);
+    }
+
+    public static Date getMaxCheckDate(Configuration cfg) {
+        Session session = getSession(cfg);
         Transaction transaction = session.beginTransaction();
         Criteria criteria = session
                 .createCriteria(Enterprise.class)
@@ -43,12 +47,7 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
     public static Long countWhereLastChangeGTE(Configuration cfg, Date date) {
         if (date == null) return 0L;
 
-        Session session;
-        if (cfg == null) {
-            session = SessionManager.instance.getSession();
-        } else {
-            session = SessionManager.instance.getSession(cfg);
-        }
+        Session session = getSession(cfg);
         try {
             Transaction transaction = session.beginTransaction();
             Criteria criteria = session
@@ -63,6 +62,16 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
             session.getTransaction().rollback();
             return 0L;
         }
+    }
+
+    public static Session getSession(Configuration cfg) {
+        Session session;
+        if (cfg == null) {
+            session = SessionManager.instance.getSession();
+        } else {
+            session = SessionManager.instance.getSession(cfg);
+        }
+        return session;
     }
 
     public List<Enterprise> read(List<Long> ids) {
