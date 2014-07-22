@@ -21,40 +21,6 @@ import static org.junit.Assert.*;
 public class TestGetKey {
 
     @Test
-    public void testEncryptDecrypt() throws CryptographyException {
-        String key = "password";
-        byte[] encryptedKey = encrypt(key);
-        System.out.println("encrypted key = " + encryptedKey.length);
-        assertNotNull(encryptedKey);
-        String decryptedKey = decrypt(encryptedKey);
-        assertEquals(key, decryptedKey);
-    }
-
-    private byte[] encrypt(String aKey) {
-        Cypher cypher = new Cypher();
-        try {
-            return cypher.encrypt(aKey, getKey());
-        } catch (CryptographyException e) {
-            return null;
-        }
-    }
-
-    private String decrypt(byte[] encryptedKey) throws CryptographyException {
-        Cypher cypher = new Cypher();
-        return cypher.decrypt(encryptedKey, getKey());
-    }
-
-    private byte[] getKey() {
-        Cypher cypher = new Cypher();
-        return cypher.createKey(getUID());
-    }
-
-    private String getUID() {
-        return new PreferencesHelper().getUID();
-    }
-
-
-    @Test
     public void testPassGetKey() throws PasswordException, UnregisteredDBExertion {
         String aKey = "password";
 
@@ -67,6 +33,19 @@ public class TestGetKey {
         String key = passwordManager.getDBPassword(getUID());
 
         assertEquals(key, aKey);
+    }
+
+    private byte[] encrypt(String aKey) {
+        Cypher cypher = new Cypher();
+        try {
+            return cypher.encrypt(aKey, cypher.createKey(getUID()));
+        } catch (CryptographyException e) {
+            return null;
+        }
+    }
+
+    private String getUID() {
+        return new PreferencesHelper().getUID();
     }
 
 
@@ -85,19 +64,7 @@ public class TestGetKey {
         passwordManager.setDBPassword(getUID(), encryptedKey);
     }
 
-    @Test
-    public void testEncrypt(){
-        String password = "secret";
-        Cypher cypher = new Cypher();
-        byte[] bytes = new byte[0];
-        try {
-            bytes = cypher.encrypt(password, getKey());
-        } catch (CryptographyException e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-        System.out.println(StringConverter.bytesToHex(bytes));
-    }
+
 
     @Before
     public void before() {
@@ -106,17 +73,6 @@ public class TestGetKey {
     @After
     public void after() {
         SessionManager.instance.shutdownAll();
-    }
-    @Test
-    public void decryptPassword() throws CryptographyException {
-        Cypher cypher = new Cypher();
-        String encryptedPassword = "d8ec883f50cb260478538d3f9508d083";
-        String database_id = "1111111111111111";
-        String user_id = "000C299B664E";
-        byte[] key = cypher.createKey(database_id + user_id);
-        byte[] encryptedData = StringConverter.getBytesFromHexString(encryptedPassword);
-        String password = cypher.decrypt(encryptedData, key);
-        assertEquals("secret", password);
     }
 
 }
