@@ -10,7 +10,6 @@ import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.model.util.Synchronizer;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
-import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
 import md.varoinform.util.Zip;
@@ -36,19 +35,19 @@ import java.util.regex.Pattern;
  * Time: 2:06 PM
  */
 public class Updater {
+    private final String uid;
+    private final Path pathToDB;
+
+    public Updater(String uid) {
+        this.uid = uid;
+        pathToDB = Settings.pathToDB();
+    }
+
     public boolean checkUpdate() throws IOException, UnregisteredDBExertion, ExpiredException {
-        String uid = getUserId();
         UrlCreator creator = new UrlCreator(uid, "check");
         Request request = new Request(creator.getString());
         String content = request.timesGet(1);
         return parseContent(content);
-    }
-
-    private String getUserId() throws UnregisteredDBExertion {
-        PreferencesHelper preferencesHelper = new PreferencesHelper();
-        String idDb = preferencesHelper.getUID();
-        if (idDb == null) throw new UnregisteredDBExertion();
-        return idDb;
     }
 
     private boolean parseContent(String content) throws IOException, ExpiredException, UnregisteredDBExertion {
@@ -75,7 +74,7 @@ public class Updater {
         }
     }
 
-    public Long update() throws UnregisteredDBExertion, IOException {
+    public Long update() throws IOException {
         File zipFile = download();
         File dbFile = getDBFile(Zip.unzip(zipFile));
         try {
@@ -96,12 +95,10 @@ public class Updater {
         return updated;
     }
 
-    public File download() throws UnregisteredDBExertion, IOException {
-        String uid = getUserId();
-
+    public File download() throws IOException {
         UrlCreator creator = new UrlCreator(uid);
         URL source = creator.getUrl();
-        File destination = Paths.get(Settings.pathToDB().getParent().toString(), "Temp.zip").toFile();
+        File destination = Paths.get(pathToDB.getParent().toString(), "Temp.zip").toFile();
 
         // if null_uid, unregistered_program, invalid_uid, term_expired or haven't updates
         // throw IOException
@@ -137,12 +134,12 @@ public class Updater {
 
     private void replaceDB(File newDB) throws IOException {
         Path source = newDB.toPath();
-        Path target = new File(String.format("%s.h2.db", Settings.pathToDB().toString())).toPath();
+        Path target = new File(String.format("%s.h2.db", pathToDB.toString())).toPath();
         Files.move(source, target, StandardCopyOption.ATOMIC_MOVE);
     }
 
-    private void confirm(int tryCounter) throws IOException, UnregisteredDBExertion {
-        UrlCreator creator = new UrlCreator(getUserId(), "confirm");
+    private void confirm(int tryCounter) throws IOException {
+        UrlCreator creator = new UrlCreator(uid, "confirm");
         String url = creator.getString();
         Request request = new Request(url);
         request.timesGet(tryCounter);
