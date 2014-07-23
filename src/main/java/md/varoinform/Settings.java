@@ -78,7 +78,7 @@ public class Settings {
 
         }
 
-        if (path != null && path.endsWith(".jar")){
+        if (path != null && path.toString().endsWith(".jar")){
             return path.getParent().toString();
         }
         return System.getProperty("user.dir");
