@@ -21,6 +21,9 @@
                         <!--<manifestEntries>-->
                         <!--<Version>${buildNumber}</Version>-->
                         <!--</manifestEntries>-->
+                        <manifestEntries>
+                            <SplashScreen-Image>splash.gif</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -32,6 +35,9 @@
                         <manifest>
                             <mainClass>md.varoinform.App</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <SplashScreen-Image>splash.gif</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
