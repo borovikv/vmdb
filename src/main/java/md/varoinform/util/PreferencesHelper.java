@@ -12,13 +12,14 @@ import java.util.prefs.Preferences;
 public class PreferencesHelper implements Serializable {
     private static final String SHOW_TEXT_IN_BUTTONS = "show_text_in_buttons";
     private static final String IS_INDEXED = "is_indexed";
-    private final String fieldKey = "columns";
-    private final Preferences preferences;
-    private final String defaultDelimiter = ";";
-    private String passwordKey = "password";
-    private String uidKey = "idDB";
+    private static final String USE_PROXY = "use_proxy";
     private static final String LANGUAGE_KEY = "language";
     private static List<String> userFields;
+    private final String fieldKey = "columns";
+    private final String defaultDelimiter = ";";
+    private final Preferences preferences;
+    private String passwordKey = "password";
+    private String uidKey = "idDB";
 
     public PreferencesHelper() {
         preferences = Preferences.userNodeForPackage(App.class);
@@ -69,26 +70,26 @@ public class PreferencesHelper implements Serializable {
         preferences.put(fieldKey, value);
     }
 
+    public byte[] getDBPassword() {
+        return preferences.getByteArray(passwordKey, null);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     public void setDBPassword(byte[] encryptedPassword) {
         preferences.putByteArray(passwordKey, encryptedPassword);
-    }
-
-    public byte[] getDBPassword() {
-        return preferences.getByteArray(passwordKey, null);
     }
 
     public void removeDBPassword() {
         remove(passwordKey);
     }
 
+    public String getUID(){
+        return preferences.get(uidKey, null);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     public void setUID(String uid) {
         preferences.put(uidKey, uid);
-    }
-
-    public String getUID(){
-        return preferences.get(uidKey, null);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -97,21 +98,21 @@ public class PreferencesHelper implements Serializable {
     }
     //------------------------------------------------------------------------------------------------------------------
 
+    public String getCurrentLanguage(){
+        return preferences.get(LANGUAGE_KEY, "");
+    }
+
     public void setCurrentLanguage(String title){
         preferences.put(LANGUAGE_KEY, title);
     }
 
-    public String getCurrentLanguage(){
-        return preferences.get(LANGUAGE_KEY, "");
+    public boolean getShowTextInButton(){
+        return preferences.getBoolean(SHOW_TEXT_IN_BUTTONS, true);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     public void setShowTextInButton(boolean showTextInButton) {
         preferences.putBoolean(SHOW_TEXT_IN_BUTTONS, showTextInButton);
-    }
-
-    public boolean getShowTextInButton(){
-        return preferences.getBoolean(SHOW_TEXT_IN_BUTTONS, true);
     }
 
     public boolean getIsIndexed() {
@@ -120,5 +121,13 @@ public class PreferencesHelper implements Serializable {
 
     public void setIsIndexed(boolean indexed){
         preferences.putBoolean(IS_INDEXED, indexed);
+    }
+
+    public boolean getUseProxy() {
+        return preferences.getBoolean(USE_PROXY, false);
+    }
+
+    public void setUseProxy(boolean b) {
+        preferences.putBoolean(USE_PROXY, b);
     }
 }
