@@ -10,8 +10,7 @@ import javax.swing.*;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.InternationalFormatter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.text.NumberFormat;
 
 /**
@@ -20,12 +19,12 @@ import java.text.NumberFormat;
  * Date: 11/18/13
  * Time: 2:28 PM
  */
-//ToDo: Proxy
+
 public class SettingsDialog extends JDialog {
 
     private final I18nCheckBox showTextInButton;
     private final I18nCheckBox useProxyButton;
-    private final JFormattedTextField proxyField;
+    private final JTextField proxyField;
     private final JFormattedTextField portField;
     private final JTextField loginField;
     private final JTextField passwordField;
@@ -47,6 +46,7 @@ public class SettingsDialog extends JDialog {
 
         helper = new PreferencesHelper();
 
+
         showTextInButton = new I18nCheckBox("show_text_in_button");
         showTextInButton.setSelected(helper.getShowTextInButton());
         showTextInButton.addActionListener(new ActionListener() {
@@ -56,28 +56,47 @@ public class SettingsDialog extends JDialog {
                 mainFrame.updateDisplay();
             }
         });
-        add(showTextInButton, BorderLayout.NORTH);
+
+        JPanel interfacePanel = new JPanel();
+        interfacePanel.setLayout(new BorderLayout());
+        interfacePanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleHelper.getString("interface_settings", "Interface settings")));
+        interfacePanel.add(showTextInButton);
+        add(interfacePanel, BorderLayout.NORTH);
 
         passwordField = new JPasswordField();
         passwordField.setFont(fieldFont);
+        passwordField.setText(helper.getProxyPassword());
 
         loginField = new JTextField();
         loginField.setFont(fieldFont);
+        loginField.setText(helper.getProxyUser());
 
-        portField = new JFormattedTextField(new InternationalFormatter(NumberFormat.getIntegerInstance()){
+        NumberFormat intFormat = NumberFormat.getIntegerInstance();
+        intFormat.setGroupingUsed(false);
+        portField = new JFormattedTextField(new InternationalFormatter(intFormat) {
             private IntFilter intFilter = new IntFilter();
 
             @Override
             protected DocumentFilter getDocumentFilter() {
                 return intFilter;
             }
+
+        });
+        portField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (portField.getText().trim().isEmpty()){
+                    portField.setValue(null);
+                }
+            }
         });
         portField.setFont(fieldFont);
+        portField.setValue(helper.getProxyPort());
 
 
-        proxyField = new JFormattedTextField();
+        proxyField = new JTextField();
         proxyField.setFont(fieldFont);
-
+        proxyField.setText(helper.getProxyAddress());
 
         useProxyButton = new I18nCheckBox("use_proxy_label");
         boolean useProxy = helper.getUseProxy();
@@ -104,8 +123,21 @@ public class SettingsDialog extends JDialog {
         String title = ResourceBundleHelper.getString("proxy_settings_title");
         proxyPanel.setBorder(BorderFactory.createTitledBorder(title));
         enableProxyPanel(useProxy);
-        add(proxyPanel);
+        add(proxyPanel, BorderLayout.SOUTH);
+        addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (useProxyButton.isSelected()) {
+                    helper.setProxyAddress(proxyField.getText().trim());
+                    helper.setProxyPort(portField.getText().trim());
+                    helper.setProxyUser(loginField.getText().trim());
+                    helper.setProxyPassword(passwordField.getText());
+                }
+            }
+        });
     }
+
 
     public static void showDialog(MainFrame mainFrame) {
         SettingsDialog dialog = new SettingsDialog(mainFrame);

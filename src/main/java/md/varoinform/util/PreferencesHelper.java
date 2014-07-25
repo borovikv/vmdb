@@ -14,6 +14,10 @@ public class PreferencesHelper implements Serializable {
     private static final String IS_INDEXED = "is_indexed";
     private static final String USE_PROXY = "use_proxy";
     private static final String LANGUAGE_KEY = "language";
+    private static final String PROXY_ADDRESS = "proxy_address";
+    private static final String PROXY_PORT = "proxy_port";
+    private static final String PROXY_USER = "proxy_finder";
+    private static final String PROXY_PASSWORD = "proxy_password";
     private static List<String> userFields;
     private final String fieldKey = "columns";
     private final String defaultDelimiter = ";";
@@ -129,5 +133,47 @@ public class PreferencesHelper implements Serializable {
 
     public void setUseProxy(boolean b) {
         preferences.putBoolean(USE_PROXY, b);
+    }
+
+
+    public void setProxyAddress(String address) {
+        preferences.put(PROXY_ADDRESS, address);
+    }
+
+    public void setProxyPort(String port) {
+        int value = -1;
+        if (port != null){
+            try {
+                value = Integer.parseInt(port);
+            } catch (RuntimeException ignored){
+
+            }
+        }
+        preferences.putInt(PROXY_PORT, value);
+    }
+
+    public void setProxyUser(String user) {
+        preferences.put(PROXY_USER, user);
+    }
+
+    public void setProxyPassword(String password) {
+        preferences.put(PROXY_PASSWORD, password);
+    }
+
+    public String getProxyUser() {
+        return preferences.get(PROXY_USER, "");
+    }
+
+    public Integer getProxyPort() {
+        int value = preferences.getInt(PROXY_PORT, -1);
+        return value >= 0 ? value : null;
+    }
+
+    public String getProxyAddress() {
+        return preferences.get(PROXY_ADDRESS, "");
+    }
+
+    public String getProxyPassword() {
+        return preferences.get(PROXY_PASSWORD, "");
     }
 }

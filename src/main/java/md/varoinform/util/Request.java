@@ -6,6 +6,7 @@ import org.apache.http.client.fluent.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+//ToDo: Proxy
 public class Request {
 
     private String url;
