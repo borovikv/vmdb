@@ -4,7 +4,6 @@ import md.varoinform.Settings;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.I18nCheckBox;
-import md.varoinform.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.text.DocumentFilter;
@@ -16,13 +15,10 @@ import java.text.NumberFormat;
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
- * Date: 11/18/13
- * Time: 2:28 PM
+ * Date: 7/28/14
+ * Time: 9:42 AM
  */
-
-public class SettingsDialog extends JDialog {
-
-    private final I18nCheckBox showTextInButton;
+public class ProxySettingsDialog extends JDialog {
     private final I18nCheckBox useProxyButton;
     private final JTextField proxyField;
     private final JFormattedTextField portField;
@@ -34,34 +30,18 @@ public class SettingsDialog extends JDialog {
     private final JLabel portLabel;
     private final JLabel loginLabel;
     private final JLabel passwordLabel;
-    private PreferencesHelper helper;
+    private final PreferencesHelper helper;
     private final JPanel proxyPanel;
 
-    public SettingsDialog(final MainFrame mainFrame) {
+    public ProxySettingsDialog() {
         setSize(400, 450);
         setModal(true);
         setLocationRelativeTo(null);
-        setTitle(ResourceBundleHelper.getString("Settings", "Settings"));
+        setTitle(ResourceBundleHelper.getString("proxy_settings_title", "Proxy Settings"));
         setLayout(new BorderLayout());
 
         helper = new PreferencesHelper();
 
-
-        showTextInButton = new I18nCheckBox("show_text_in_button");
-        showTextInButton.setSelected(helper.getShowTextInButton());
-        showTextInButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                helper.setShowTextInButton(showTextInButton.isSelected());
-                mainFrame.updateDisplay();
-            }
-        });
-
-        JPanel interfacePanel = new JPanel();
-        interfacePanel.setLayout(new BorderLayout());
-        interfacePanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleHelper.getString("interface_settings", "Interface settings")));
-        interfacePanel.add(showTextInButton);
-        add(interfacePanel, BorderLayout.NORTH);
 
         passwordField = new JPasswordField();
         passwordField.setFont(fieldFont);
@@ -123,7 +103,7 @@ public class SettingsDialog extends JDialog {
         String title = ResourceBundleHelper.getString("proxy_settings_title");
         proxyPanel.setBorder(BorderFactory.createTitledBorder(title));
         enableProxyPanel(useProxy);
-        add(proxyPanel, BorderLayout.SOUTH);
+        add(proxyPanel);
         addWindowListener(new WindowAdapter() {
 
             @Override
@@ -136,13 +116,6 @@ public class SettingsDialog extends JDialog {
                 }
             }
         });
-    }
-
-
-    public static void showDialog(MainFrame mainFrame) {
-        SettingsDialog dialog = new SettingsDialog(mainFrame);
-        dialog.setVisible(true);
-        dialog.dispose();
     }
 
     private void enableProxyPanel(boolean enabled) {
@@ -213,7 +186,13 @@ public class SettingsDialog extends JDialog {
         return new JLabel(str);
     }
 
-    public void updateDisplay() {
+    public static void showDialog() {
+        ProxySettingsDialog dialog = new ProxySettingsDialog();
+        dialog.setVisible(true);
+        dialog.dispose();
+    }
 
+    public static void main(String[] args) {
+        showDialog();
     }
 }

@@ -13,7 +13,8 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
-import md.varoinform.view.dialogs.SettingsDialog;
+import md.varoinform.view.dialogs.ProxySettingsDialog;
+import md.varoinform.view.dialogs.ShowTextButton;
 import md.varoinform.view.dialogs.export.ExportDialog;
 import md.varoinform.view.dialogs.print.PrintDialog;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
@@ -86,10 +87,23 @@ public class MainFrame extends JFrame implements Observer {
                 PrintDialog.print(demonstrator);
             }
         });
+
         settingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SettingsDialog.showDialog(MainFrame.this);
+                JPopupMenu menu = new JPopupMenu();
+                menu.add(new ShowTextButton(MainFrame.this));
+                menu.addSeparator();
+
+                JMenuItem proxyItem = new JMenuItem(ResourceBundleHelper.getString("proxy_settings_title", "Proxy Settings"));
+                proxyItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ProxySettingsDialog.showDialog();
+                    }
+                });
+                menu.add(proxyItem);
+                menu.show(settingsButton, settingsButton.getX(), settingsButton.getY() + settingsButton.getHeight());
             }
         });
         tagButton.addActionListener(new ActionListener() {
