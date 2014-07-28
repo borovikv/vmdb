@@ -103,4 +103,10 @@ public class ResourceBundleHelper implements Serializable {
         }
         return null;
     }
+
+    public static String getStringFromBundle(String bundleName, String key, String def){
+        String result = getStringFromBundle(bundleName, key);
+        if (result == null) result = def;
+        return result;
+    }
 }

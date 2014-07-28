@@ -1,6 +1,7 @@
 package md.varoinform;
 
 import md.varoinform.util.ImageHelper;
+import md.varoinform.util.ResourceBundleHelper;
 
 import java.awt.*;
 import java.net.URI;
@@ -18,13 +19,10 @@ import java.text.SimpleDateFormat;
  * Time: 10:25 AM
  */
 public class Settings {
-    private static final String SERVER_URL = "http://localhost:8000/";
-    private static final String REGISTER_URL =  SERVER_URL + "registry/online/";
-    private static final String UPDATE_URL = SERVER_URL + "manage/update/";
-    private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
-    private static final DateFormat df = new SimpleDateFormat("dd/MM/yy");
-    private static final Image MAIN_ICON = ImageHelper.getImageIcon("/external-resources/icons/V.png").getImage();
     private static final String CONFIG_BUNDLE_KEY = "varodb";
+    private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
+    private static final DateFormat df = new SimpleDateFormat(ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "date_format", "dd/MM/yy"));
+    private static final Image MAIN_ICON = ImageHelper.getImageIcon("/external-resources/icons/V.png").getImage();
 
     public static enum Fonts {
         SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
@@ -42,11 +40,11 @@ public class Settings {
 
 
     public static String getRegisterUrl() {
-        return REGISTER_URL;
+        return ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "register_url");
     }
 
     public static String getUpdateUrl() {
-        return UPDATE_URL;
+        return ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "update_url");
     }
 
     public static String getDefaultColumns() {
