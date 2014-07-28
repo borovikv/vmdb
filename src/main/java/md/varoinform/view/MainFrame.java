@@ -3,6 +3,7 @@ package md.varoinform.view;
 import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
 import md.varoinform.controller.Holder;
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
@@ -13,6 +14,7 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
 import md.varoinform.view.demonstrator.DemonstratorPanel;
+import md.varoinform.view.dialogs.AboutDialog;
 import md.varoinform.view.dialogs.ProxySettingsDialog;
 import md.varoinform.view.dialogs.ShowTextButton;
 import md.varoinform.view.dialogs.export.ExportDialog;
@@ -36,9 +38,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +109,34 @@ public class MainFrame extends JFrame implements Observer {
                     }
                 });
                 menu.add(proxyItem);
+                menu.addSeparator();
+
+                JMenuItem helpItem = new JMenuItem(ResourceBundleHelper.getString("help", "Help"));
+                helpItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(!Desktop.isDesktopSupported()) return;
+
+                        try {
+                            Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "help", String.format("main_%s.html", LanguageProxy.getCurrentLanguageTitle().substring(0, 2)));
+                            URI uri = path.toUri();
+                            Desktop.getDesktop().browse(uri);
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                });
+                menu.add(helpItem);
+
+                JMenuItem aboutItem = new JMenuItem(ResourceBundleHelper.getString("about", "About"));
+                aboutItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        AboutDialog.showDialog();
+                    }
+                });
+                menu.add(aboutItem);
+
                 menu.show(settingsButton, settingsButton.getX(), settingsButton.getY() + settingsButton.getHeight());
             }
         });
