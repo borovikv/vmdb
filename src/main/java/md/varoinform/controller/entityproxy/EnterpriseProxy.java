@@ -45,6 +45,11 @@ public class EnterpriseProxy extends EntityProxy {
         return getTitle(enterprise);
     }
 
+    @Property(name = "IDNO")
+    public String getIDNO() {
+        return enterprise.getIdno();
+    }
+
     @Property(name = "BusinessEntityType")
     public String getBusinessEntityType(){
         return getTitle(enterprise.getBusinessEntityType());

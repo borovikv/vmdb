@@ -52,6 +52,7 @@ import java.util.*;
         })
 @Table(name = "EXPORTED_DB.DB_enterprise")
 public class Enterprise extends TitleContainer<EnterpriseTitle> implements Serializable, Comparable<Enterprise> {
+    private String idno;
     private BusinessEntityType businessEntityType;
     private Integer creation;
     private Boolean foreignCapital;
@@ -65,6 +66,15 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private List<Brand> brands = new ArrayList<>();
     private Set<GProduce> goods = new HashSet<>();
 
+    @Column(name = "idno")
+    @Field(analyze = Analyze.NO)
+    public String getIdno() {
+        return idno;
+    }
+
+    public void setIdno(String idno) {
+        this.idno = idno;
+    }
 
     @ManyToOne
     @JoinColumn(name = "business_entity_id")
