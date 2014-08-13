@@ -95,7 +95,7 @@ public enum  SessionManager {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
+
     public void shutdown(String name){
         SessionFactory factory = sessions.remove(name);
         if (factory != null) {
@@ -104,22 +104,7 @@ public enum  SessionManager {
     }
 
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void closeAllSessions(){
-        for (String s : sessions.keySet()) {
-            closeSession(s);
-        }
-    }
 
-
-    @SuppressWarnings("WeakerAccess")
-    public void closeSession(String name){
-        SessionFactory factory = sessions.get(name);
-        if (factory != null) {
-            Session session = factory.getCurrentSession();
-            if (session.isOpen()) session.close();
-        }
-    }
 
 
 }

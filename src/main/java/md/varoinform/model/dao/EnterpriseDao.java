@@ -4,9 +4,9 @@ import md.varoinform.controller.Cache;
 import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
+import md.varoinform.model.util.ClosableSession;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Projections;
@@ -34,45 +34,45 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
     }
 
     public static Date getMaxCheckDate(Configuration cfg) {
-        Session session = getSession(cfg);
-        Transaction transaction = session.beginTransaction();
-        Criteria criteria = session
-                .createCriteria(Enterprise.class)
-                .setProjection(Projections.max("lastChange"));
-        Date date = (Date) criteria.uniqueResult();
-        transaction.commit();
-        return date;
+        try (ClosableSession session = new ClosableSession(cfg)) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                Criteria criteria = session
+                        .createCriteria(Enterprise.class)
+                        .setProjection(Projections.max("lastChange"));
+                Date date = (Date) criteria.uniqueResult();
+                transaction.commit();
+                return date;
+            } catch (RuntimeException ignored) {
+                transaction.rollback();
+            }
+        }
+
+        return null;
     }
 
     public static Long countWhereLastChangeGTE(Configuration cfg, Date date) {
         if (date == null) return 0L;
 
-        Session session = getSession(cfg);
-        try {
-            Transaction transaction = session.beginTransaction();
-            Criteria criteria = session
-                    .createCriteria(Enterprise.class)
-                    .add(Restrictions.gt("lastChange", date))
-                    .setProjection(Projections.rowCount());
-            Long result = (Long) criteria.uniqueResult();
-            transaction.commit();
-            return result;
+        try (ClosableSession session = new ClosableSession(cfg)) {
+            try {
+                Transaction transaction = session.beginTransaction();
+                Criteria criteria = session
+                        .createCriteria(Enterprise.class)
+                        .add(Restrictions.gt("lastChange", date))
+                        .setProjection(Projections.rowCount());
+                Long result = (Long) criteria.uniqueResult();
+                transaction.commit();
+                return result;
 
-        } catch (RuntimeException ignored){
-            session.getTransaction().rollback();
-            return 0L;
+            } catch (RuntimeException ignored) {
+                session.getTransaction().rollback();
+            }
         }
+
+        return 0L;
     }
 
-    public static Session getSession(Configuration cfg) {
-        Session session;
-        if (cfg == null) {
-            session = SessionManager.instance.getSession();
-        } else {
-            session = SessionManager.instance.getSession(cfg);
-        }
-        return session;
-    }
 
     public List<Enterprise> read(List<Long> ids) {
         if (Cache.instance.isEnterpriseCached()) {
