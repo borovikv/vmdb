@@ -1,13 +1,10 @@
 package md.varoinform.controller;
 
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Node;
-import md.varoinform.model.entities.Tag;
-import md.varoinform.model.util.SessionManager;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.observer.ObservableEvent;
 
@@ -26,10 +23,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     private static final boolean isBranchCached = true;
     private final Map<Long, Enterprise> enterpriseCache = new LinkedHashMap<>();
     private final Map<Long, EnterpriseProxy> enterpriseProxies = new LinkedHashMap<>();
-    private final Set<Tag> tags = new TreeSet<>();
-    private final Set<Tag> tagsToSave = new HashSet<>();
-    private final Set<Tag> tagsToDelete = new HashSet<>();
-    private final DAOTag daoTag = new DAOTag();
+
     private Map<Long, List<Long>> branchCache = new HashMap<>();
 
     private Cache() {
@@ -44,7 +38,6 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     public void update() {
         enterpriseProxies.clear();
         branchCache.clear();
-        tags.clear();
 
         Collection<Enterprise> enterprises = EnterpriseDao.getEnterprises();
 
@@ -54,7 +47,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
             enterpriseProxies.put(id, new EnterpriseProxy(enterprise));
         }
 
-        tags.addAll(daoTag.getAll());
+
     }
 
     public void updateFromCache(){
@@ -119,47 +112,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return bc;
     }
 
-    public List<Tag> getTags() {
-        return new ArrayList<>(tags);
-    }
 
-    public void saveTag(Tag tag, List<Long> eids){
-        List<Enterprise> enterprises = new EnterpriseDao().read(eids);
-        tag.getEnterprises().addAll(enterprises);
-        saveTag(tag);
-    }
-
-    public void saveTag(Tag tag){
-        tagsToSave.add(tag);
-        SessionManager.instance.getSession().evict(tag);
-    }
-
-    public void createTag(String title, List<Long> eids) {
-        List<Enterprise> enterprises = new EnterpriseDao().read(eids);
-        Tag tag = daoTag.createTag(title, enterprises);
-        if (tag == null) return;
-        tags.add(tag);
-        saveTag(tag);
-    }
-
-    public void delete(Tag tag) {
-        tags.remove(tag);
-        SessionManager.instance.getSession().evict(tag);
-        tagsToSave.remove(tag);
-        tagsToDelete.add(tag);
-    }
-
-    public boolean deleteFromTag(Tag tag, List<Long> enterpriseIds){
-        List<Enterprise> enterprises = new EnterpriseDao().read(enterpriseIds);
-        tag.removeAll(enterprises);
-        if (tag.getEnterprises().isEmpty()) {
-            delete(tag);
-            return true;
-        } else {
-            saveTag(tag);
-            return false;
-        }
-    }
 
 
     public Object getValue(Long enterprise, String field){
@@ -178,10 +131,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return null;
     }
 
-    public void shutDown(){
-        daoTag.delete(tagsToDelete);
-        daoTag.save(tagsToSave);
-    }
+
 
     public Enterprise getEnterprise(Long id) {
         return enterpriseCache.get(id);

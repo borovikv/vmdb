@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation.tags;
 
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.TagCache;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.TagDialog;
@@ -21,7 +21,7 @@ public class TagList extends JList<Tag> {
     private String currentTagTitle;
 
     public TagList() {
-        FilteringModel<Tag> model = new FilteringModel<>(Cache.instance.getTags());
+        FilteringModel<Tag> model = new FilteringModel<>(TagCache.instance.getTags());
         setModel(model);
 
         setCellRenderer(new TagListCellRenderer());
@@ -59,11 +59,11 @@ public class TagList extends JList<Tag> {
         if (enterpriseIds.isEmpty()) return false;
         if (index >= 0) {
             Tag tag = getModel().getElementAt(index);
-            Cache.instance.saveTag(tag, enterpriseIds);
+            TagCache.instance.saveTag(tag, enterpriseIds);
             setSelectedIndex(index);
         } else {
             String title = TagDialog.getTag();
-            Cache.instance.createTag(title, enterpriseIds);
+            TagCache.instance.createTag(title, enterpriseIds);
             updateModel();
         }
         return true;
@@ -76,7 +76,7 @@ public class TagList extends JList<Tag> {
         if (result == null || result.isEmpty() || result.equals(tag.getTitle())) return;
         tag.setTitle(result);
         ((FilteringModel<Tag>)getModel()).updateModel();
-        Cache.instance.saveTag(tag);
+        TagCache.instance.saveTag(tag);
 
     }
 
@@ -90,7 +90,7 @@ public class TagList extends JList<Tag> {
         String message = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag.getTitle() + "?";
         if (JOptionPane.showConfirmDialog(null, message) == JOptionPane.OK_OPTION) {
             ((FilteringModel<Tag>)getModel()).removeElement(tag);
-            Cache.instance.delete(tag);
+            TagCache.instance.delete(tag);
         }
     }
 
@@ -98,7 +98,7 @@ public class TagList extends JList<Tag> {
     public void updateModel(){
         FilteringModel<Tag> model = (FilteringModel<Tag>) getModel();
         model.clear();
-        model.addAll(Cache.instance.getTags());
+        model.addAll(TagCache.instance.getTags());
     }
 
 

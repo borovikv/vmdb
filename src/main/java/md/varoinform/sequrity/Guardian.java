@@ -20,7 +20,7 @@ import java.nio.file.Paths;
  */
 public class Guardian {
     public void check() throws Exception {
-        if (databaseAlreadyInUse()) throw new Exception();
+//        if (databaseAlreadyInUse()) throw new Exception();
 
         PasswordManager pm = new PasswordManager();
         String uid = new PreferencesHelper().getUID();

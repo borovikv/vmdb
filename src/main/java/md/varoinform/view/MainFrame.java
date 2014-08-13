@@ -4,6 +4,7 @@ import md.varoinform.Settings;
 import md.varoinform.controller.Cache;
 import md.varoinform.controller.Holder;
 import md.varoinform.controller.LanguageProxy;
+import md.varoinform.controller.TagCache;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
@@ -160,7 +161,7 @@ public class MainFrame extends JFrame implements Observer {
                     @Override
                     protected Object doInBackground() throws Exception {
                         try {
-                            Cache.instance.shutDown();
+                            TagCache.instance.shutDown();
                             while (Holder.await()){
                                 Thread.sleep(500);
                             }
