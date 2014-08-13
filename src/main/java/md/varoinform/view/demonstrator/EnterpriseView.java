@@ -20,35 +20,36 @@ import java.util.*;
 public class EnterpriseView  {
 
     public static String getView(Long id) {
-        EnterpriseProxy enterpriseProxy = Cache.instance.getProxy(id);
         try {
-            return  getTable(enterpriseProxy);
+            return  getTable(id);
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    private static String getTable(EnterpriseProxy enterpriseProxy) throws IOException {
-        List<String> viewParts = EnterpriseProxy.getFields();
+    private static String getTable(Long id) throws IOException {
+
+
+        LinkedHashSet<String> address = new LinkedHashSet<>();
+        address.add((String) Cache.instance.getValue(id, "country"));
+        address.add((String) Cache.instance.getValue(id, "sector"));
+        address.add((String) Cache.instance.getValue(id, "town"));
+        address.add((String) Cache.instance.getValue(id, "StreetHouseOffice"));
+
         Map<String, Object> context = new HashMap<>();
-        LinkedHashSet<String> set = new LinkedHashSet<>();
-        set.add(enterpriseProxy.getCountry());
-        set.add(enterpriseProxy.getSector());
-        set.add(enterpriseProxy.getTown());
-        set.addAll(enterpriseProxy.getStreetHouseOffice());
-        context.put("address", set);
+        context.put("address", address);
         context.put("addressLabel", ResourceBundleHelper.getString("address", "address"));
 
-        for (String viewPart : viewParts) {
-            Object value = enterpriseProxy.get(viewPart);
+        for (String field : EnterpriseProxy.getFields()) {
+            Object value = Cache.instance.getValue(id, field);
             if (value == null
                     || (value instanceof String && ((String) value).isEmpty())
                     || (value instanceof Collection && ((Collection) value).isEmpty())
                     || (value instanceof Map && ((Map) value).isEmpty()))  continue;
-            String label = ResourceBundleHelper.getString(viewPart, viewPart);
-            context.put(viewPart + "Label", label);
-            context.put(viewPart, value);
+            String label = ResourceBundleHelper.getString(field, field);
+            context.put(field + "Label", label);
+            context.put(field, value);
         }
 
         String template = getTemplate();

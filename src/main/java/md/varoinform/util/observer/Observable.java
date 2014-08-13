@@ -8,5 +8,5 @@ package md.varoinform.util.observer;
  */
 public interface Observable {
     public void addObserver(Observer observer);
-    public void notifyObservers(ObservableEvent event);
+    public void notifyObservers(ObservableEvent<?> event);
 }

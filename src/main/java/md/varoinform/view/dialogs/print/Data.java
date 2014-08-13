@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ProgressDialog;
@@ -22,9 +21,9 @@ public class Data implements Printable {
     private final Language language;
 
 
-    public Data(PageFormat pageFormat, List<Enterprise> enterprises, List<String> selectedFields, Language language) {
+    public Data(PageFormat pageFormat, List<Long> eid, List<String> selectedFields, Language language) {
         this.language = language;
-        pagesActivity = new PagesActivity(enterprises, selectedFields, language, pageFormat);
+        pagesActivity = new PagesActivity(eid, selectedFields, language, pageFormat);
         ProgressDialog.start(pagesActivity, ResourceBundleHelper.getString("print_prepare_progress"));
     }
 

@@ -53,7 +53,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                    notifyObservers(new ObservableEvent(ObservableEvent.Type.DELETE));
+                    notifyObservers(new ObservableEvent<>(ObservableEvent.Type.DELETE, getSelected()));
                 }
             }
         });
@@ -113,7 +113,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
     }
 
     @Override
-    public void notifyObservers(ObservableEvent event) {
+    public void notifyObservers(ObservableEvent<?> event) {
         observable.notifyObservers(event);
     }
 

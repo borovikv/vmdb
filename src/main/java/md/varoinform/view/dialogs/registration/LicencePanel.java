@@ -42,7 +42,7 @@ public class LicencePanel extends CardPanel implements md.varoinform.util.observ
         languageCombo.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED,
+                notifyObservers(new ObservableEvent<>(ObservableEvent.Type.LANGUAGE_CHANGED,
                         languageCombo.getSelectedItem()));
             }
         });

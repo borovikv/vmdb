@@ -8,6 +8,6 @@ package md.varoinform.util.observer;
  */
 public interface Observer {
 
-    public void update(ObservableEvent event);
+    public void update(ObservableEvent<?> event);
 
 }

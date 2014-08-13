@@ -6,21 +6,20 @@ package md.varoinform.util.observer;
  * Date: 11/18/13
  * Time: 4:40 PM
  */
-public class ObservableEvent {
+public class ObservableEvent<T> {
     public static enum Type{
         HISTORY_MOVE_FORWARD,
         HISTORY_MOVE_BACK,
         DELETE,
-        TAGS_CHANGED,
         BRANCH_SELECTED,
         TAG_SELECTED,
-        HISTORY_ADDED, CLEAR_DEMONSTRATOR, IS_VALID, LANGUAGE_CHANGED
+        HISTORY_ADDED, IS_VALID, LANGUAGE_CHANGED
     }
 
     private Type type;
-    private Object value;
+    private T value;
 
-    public ObservableEvent(Type type, Object value) {
+    public ObservableEvent(Type type, T value) {
         this.type = type;
         this.value = value;
     }
@@ -33,11 +32,11 @@ public class ObservableEvent {
         return type;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(T value) {
         this.value = value;
     }
 }

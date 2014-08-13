@@ -1,7 +1,7 @@
 package md.varoinform.view.dialogs.print;
 
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
@@ -23,7 +23,7 @@ public class PagesActivity extends Activity {
     private final double canvasWidth;
     private final double canvasHeight;
     private List<Page> pages = new ArrayList<>();
-    private final List<Enterprise> enterprises;
+    private final List<Long> idEnterprises;
     private final Language language;
     private static final Font DEFAULT_FONT = new Font("SanSerif", Font.PLAIN, 10);
     private List<String> fields;
@@ -36,8 +36,8 @@ public class PagesActivity extends Activity {
     private String format;
 
 
-    public PagesActivity(List<Enterprise> enterprises, List<String> fields, Language language, PageFormat pageFormat) {
-        this.enterprises = enterprises;
+    public PagesActivity(List<Long> idEnterprises, List<String> fields, Language language, PageFormat pageFormat) {
+        this.idEnterprises = idEnterprises;
         this.language = language;
         this.fields = fields;
         Canvas canvas = new Canvas();
@@ -61,10 +61,10 @@ public class PagesActivity extends Activity {
         double canvasArea = calculateEffectiveArea(blockWidth, canvasWidth, canvasHeight);
 
         int usedArea = 0;
-        int size = enterprises.size();
+        int size = idEnterprises.size();
         for (int i = 0; i < size; i++) {
 
-            Block block = getBlock(enterprises.get(i), language);
+            Block block = getBlock(idEnterprises.get(i), language);
             double blockArea = (block.height() + verticalPadding) * (blockWidth + horizontalPadding);
             usedArea += blockArea;
 
@@ -101,10 +101,10 @@ public class PagesActivity extends Activity {
         return (width + horizontalPadding) * 2 > canvasWidth ? canvasWidth : width;
     }
 
-    private Block getBlock(Enterprise enterprise, Language language) {
+    private Block getBlock(Long eid, Language language) {
         Block block = new Block();
 
-        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
+        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(Cache.instance.getEnterprise(eid), language);
         for (String field : fields) {
             if (EnterpriseProxy.isAddress(field)) continue;
 

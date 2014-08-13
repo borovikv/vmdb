@@ -1,7 +1,7 @@
 package md.varoinform.view.dialogs.print;
 
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.StringUtils;
 
@@ -18,14 +18,14 @@ import java.util.List;
 public class Address extends PrintableBase {
     private final BasicStroke dashedStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f}, 0.0f);
 
-    public Address(List<Enterprise> enterprises, Language language) {
+    public Address(List<Long> enterprises, Language language) {
         super(enterprises, language);
         width = (int)(3.0 * inchToPTCoefficient);
         height = (int) (1.5 * inchToPTCoefficient);
     }
 
     @Override
-    protected void drawItem(float x, float y, Graphics2D g2, Enterprise enterprise) {
+    protected void drawItem(float x, float y, Graphics2D g2, Long eid) {
         Rectangle2D rectangle = new Rectangle2D.Double(x, y, width, height);
         g2.setStroke(dashedStroke);
         g2.draw(rectangle);
@@ -40,7 +40,7 @@ public class Address extends PrintableBase {
         int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
 
 
-        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(enterprise, language);
+        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(Cache.instance.getEnterprise(eid), language);
         String[] strings = new String[]{
                 enterpriseProxy.getTitle(),
                 StringUtils.valueOf(enterpriseProxy.getStreetHouseOffice()),

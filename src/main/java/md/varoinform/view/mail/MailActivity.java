@@ -36,7 +36,7 @@ public class MailActivity extends Activity {
         StringBuilder builder = new StringBuilder(mailTo);
         for (Long id : enterpriseIds) {
 
-            List<Email> emails = Cache.instance.getProxy(id).getEmails();
+            @SuppressWarnings("unchecked") Iterable<Email> emails = (Iterable<Email>) Cache.instance.getFieldValue(id, "emails");
             for (Email email : emails) {
 
                 String s = email.getEmail();

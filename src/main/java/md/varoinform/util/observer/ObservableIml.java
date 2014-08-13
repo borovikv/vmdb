@@ -16,7 +16,7 @@ public class ObservableIml implements Observable {
     }
 
     @Override
-    public void notifyObservers(ObservableEvent event) {
+    public void notifyObservers(ObservableEvent<?> event) {
         for (Observer observer : observers) {
             observer.update(event);
         }

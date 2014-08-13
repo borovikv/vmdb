@@ -1,8 +1,6 @@
 package md.varoinform.view.dialogs.print;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.LanguageComboBox;
@@ -137,16 +135,15 @@ public class PrintDialog extends JDialog {
             pageFormat = job.defaultPage();
         }
 
-        List<Enterprise> enterprises = getEnterprises();
         Book book = new Book();
         Printable painter = null;
         int numPages = 0;
         if (mode == DATA_MODE){
-            painter = new Data(pageFormat, enterprises, getSelectedFields(), (Language) languageCombo.getSelectedItem());
+            painter = new Data(pageFormat, getEnterprises(), getSelectedFields(), (Language) languageCombo.getSelectedItem());
             numPages = ((Data)painter).getNumPages();
 
         } else if (mode == ADDRESS_MODE){
-            painter = new Address(enterprises, (Language) languageCombo.getSelectedItem());
+            painter = new Address(getEnterprises(), (Language) languageCombo.getSelectedItem());
             numPages = ((Address)painter).getNumPages(pageFormat);
         }
         if (painter != null)
@@ -154,7 +151,7 @@ public class PrintDialog extends JDialog {
         return book;
     }
 
-    private List<Enterprise> getEnterprises() {
+    private List<Long> getEnterprises() {
         List<Long> enterpriseIds = new ArrayList<>();
         if (rowsChooser.getChoose() == RowsChoosePanel.ALL) {
             enterpriseIds = demonstrator.getALL();
@@ -163,7 +160,7 @@ public class PrintDialog extends JDialog {
             enterpriseIds = demonstrator.getSelected();
         }
 
-        return new EnterpriseDao().read(enterpriseIds);
+        return enterpriseIds;
     }
 
     private JPanel createRadioButtonGroup(String title, JRadioButton[] buttons) {

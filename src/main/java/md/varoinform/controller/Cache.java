@@ -123,7 +123,8 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return new ArrayList<>(tags);
     }
 
-    public void saveTag(Tag tag, List<Enterprise> enterprises){
+    public void saveTag(Tag tag, List<Long> eids){
+        List<Enterprise> enterprises = new EnterpriseDao().read(eids);
         tag.getEnterprises().addAll(enterprises);
         saveTag(tag);
     }
@@ -133,7 +134,8 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         SessionManager.instance.getSession().evict(tag);
     }
 
-    public void createTag(String title, List<Enterprise> enterprises) {
+    public void createTag(String title, List<Long> eids) {
+        List<Enterprise> enterprises = new EnterpriseDao().read(eids);
         Tag tag = daoTag.createTag(title, enterprises);
         if (tag == null) return;
         tags.add(tag);
@@ -168,8 +170,12 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return null;
     }
 
-    public EnterpriseProxy getProxy(long id) {
-        return enterpriseProxies.get(id);
+    public Object getFieldValue(Long eid, String field){
+        EnterpriseProxy proxy = enterpriseProxies.get(eid);
+        if (proxy != null){
+            return proxy.get(field);
+        }
+        return null;
     }
 
     public void shutDown(){

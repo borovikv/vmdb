@@ -86,8 +86,10 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
 
     public List<Long> getEnterpriseIdsByTag(Tag tag) {
         ArrayList<Long> ids = new ArrayList<>();
-        for (Enterprise enterprise : tag.getEnterprises()) {
-            ids.add(enterprise.getId());
+        if (tag != null) {
+            for (Enterprise enterprise : tag.getEnterprises()) {
+                ids.add(enterprise.getId());
+            }
         }
         return ids;
     }

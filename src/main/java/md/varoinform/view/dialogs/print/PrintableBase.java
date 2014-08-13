@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 
 import java.awt.Graphics2D;
@@ -19,14 +18,14 @@ import java.util.*;
 public abstract class PrintableBase implements Printable {
     protected final int inchToPTCoefficient = 72;
     protected int offset;
-    protected java.util.List<Enterprise> enterprises;
+    protected List<Long> enterprises;
     protected Language language;
     protected int width;
     protected int height;
     protected Graphics2D graphics2D;
     //protected PageFormat pageFormat;
 
-    public PrintableBase(List<Enterprise> enterprises, Language language) {
+    public PrintableBase(List<Long> enterprises, Language language) {
         this.enterprises = enterprises;
         this.language = language;
     }
@@ -40,7 +39,7 @@ public abstract class PrintableBase implements Printable {
         return PAGE_EXISTS;
     }
 
-    private List<Enterprise> getEnterprisesForPage(List<Enterprise> enterprises, int pageIndex, PageFormat pageFormat) {
+    private List<Long> getEnterprisesForPage(List<Long> enterprises, int pageIndex, PageFormat pageFormat) {
         int perPage = perPage(pageFormat);
         int fromIndex = pageIndex * perPage;
         int toIndex = (pageIndex + 1) * perPage;
@@ -49,7 +48,7 @@ public abstract class PrintableBase implements Printable {
         return enterprises.subList(fromIndex, toIndex);
     }
 
-    private void draw(Graphics2D graphics2D, PageFormat pageFormat, List<Enterprise> enterprises){
+    private void draw(Graphics2D graphics2D, PageFormat pageFormat, List<Long> enterprises){
         float y = (float) pageFormat.getImageableY();
         float x = (float) pageFormat.getImageableX();
         int columnsNumber = countCols(pageFormat);
@@ -68,7 +67,7 @@ public abstract class PrintableBase implements Printable {
     }
 
 
-    protected abstract void drawItem(float x, float y, Graphics2D g2, Enterprise enterprise);
+    protected abstract void drawItem(float x, float y, Graphics2D g2, Long enterprise);
 
     private int countCols(PageFormat pageFormat){
          return (int) (

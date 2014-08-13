@@ -44,7 +44,7 @@ public enum History implements Observable{
         if (hasBack()){
             currentIndex--;
             HistoryEvent historyEvent = history.get(currentIndex);
-            notifyObservers(new ObservableEvent(ObservableEvent.Type.HISTORY_MOVE_BACK, historyEvent));
+            notifyObservers(new ObservableEvent<>(ObservableEvent.Type.HISTORY_MOVE_BACK, historyEvent));
         }
     }
 
@@ -56,7 +56,7 @@ public enum History implements Observable{
         if (hasForward()){
             currentIndex++;
             HistoryEvent historyEvent = history.get(currentIndex);
-            notifyObservers(new ObservableEvent(ObservableEvent.Type.HISTORY_MOVE_FORWARD, historyEvent));
+            notifyObservers(new ObservableEvent<>(ObservableEvent.Type.HISTORY_MOVE_FORWARD, historyEvent));
         }
     }
 
@@ -70,7 +70,7 @@ public enum History implements Observable{
     }
 
     @Override
-    public void notifyObservers(ObservableEvent event) {
+    public void notifyObservers(ObservableEvent<?> event) {
         observable.notifyObservers(event);
     }
 }

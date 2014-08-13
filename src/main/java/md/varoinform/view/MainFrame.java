@@ -45,7 +45,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,9 +65,9 @@ public class MainFrame extends JFrame implements Observer {
     private final SearchPanel searchPanel = new SearchPanel();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
     private final HomeButton homeButton = new HomeButton(demonstrator);
-    private final TagListener tagListener = new TagListener();
     private final BackButton backButton = new BackButton();
     private final ForwardButton forwardButton = new ForwardButton();
+    private boolean enableDeleting = false;
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
@@ -97,46 +96,7 @@ public class MainFrame extends JFrame implements Observer {
         settingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JPopupMenu menu = new JPopupMenu();
-                menu.add(new ShowTextButton(MainFrame.this));
-                menu.addSeparator();
-
-                JMenuItem proxyItem = new JMenuItem(ResourceBundleHelper.getString("proxy_settings_title", "Proxy Settings"));
-                proxyItem.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ProxySettingsDialog.showDialog();
-                    }
-                });
-                menu.add(proxyItem);
-                menu.addSeparator();
-
-                JMenuItem helpItem = new JMenuItem(ResourceBundleHelper.getString("help", "Help"));
-                helpItem.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if(!Desktop.isDesktopSupported()) return;
-
-                        try {
-                            Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "help", String.format("main_%s.html", LanguageProxy.getCurrentLanguageTitle().substring(0, 2)));
-                            URI uri = path.toUri();
-                            Desktop.getDesktop().browse(uri);
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
-                        }
-                    }
-                });
-                menu.add(helpItem);
-
-                JMenuItem aboutItem = new JMenuItem(ResourceBundleHelper.getString("about", "About"));
-                aboutItem.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        AboutDialog.showDialog();
-                    }
-                });
-                menu.add(aboutItem);
-
+                JPopupMenu menu = getSettingsMenu();
                 menu.show(settingsButton, settingsButton.getX(), settingsButton.getY() + settingsButton.getHeight());
             }
         });
@@ -155,9 +115,13 @@ public class MainFrame extends JFrame implements Observer {
             }
         });
 
+        // BRANCH_SELECTED
         branchPanel.addObserver(this);
-        demonstrator.addObserver(tagListener);
-        tagPanel.addObserver(tagListener);
+        // DELETE
+        demonstrator.addObserver(this);
+        // TAG_SELECTED,
+        tagPanel.addObserver(this);
+        // LANGUAGE_CHANGED
         StatusBar.instance.addObserver(this);
         StatusBar.instance.addObserver(Cache.instance);
 
@@ -213,6 +177,49 @@ public class MainFrame extends JFrame implements Observer {
         new CheckUpdateWorker().execute();
     }
 
+    public JPopupMenu getSettingsMenu() {
+        JPopupMenu menu = new JPopupMenu();
+        menu.add(new ShowTextButton(this));
+        menu.addSeparator();
+
+        JMenuItem proxyItem = new JMenuItem(ResourceBundleHelper.getString("proxy_settings_title", "Proxy Settings"));
+        proxyItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProxySettingsDialog.showDialog();
+            }
+        });
+        menu.add(proxyItem);
+        menu.addSeparator();
+
+        JMenuItem helpItem = new JMenuItem(ResourceBundleHelper.getString("help", "Help"));
+        helpItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!Desktop.isDesktopSupported()) return;
+
+                try {
+                    Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "help", String.format("main_%s.html", LanguageProxy.getCurrentLanguageTitle().substring(0, 2)));
+                    URI uri = path.toUri();
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
+        menu.add(helpItem);
+
+        JMenuItem aboutItem = new JMenuItem(ResourceBundleHelper.getString("about", "About"));
+        aboutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AboutDialog.showDialog();
+            }
+        });
+        menu.add(aboutItem);
+        return menu;
+    }
+
     private JPanel createToolBar() {
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder());
@@ -265,7 +272,7 @@ public class MainFrame extends JFrame implements Observer {
         navigationPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                tagListener.enableDeleting(false);
+                enableDeleting = false;
             }
         });
 
@@ -303,70 +310,33 @@ public class MainFrame extends JFrame implements Observer {
             case LANGUAGE_CHANGED:
                 updateDisplay();
                 break;
+
+
+            case TAG_SELECTED:
+                Tag tag = (Tag) event.getValue();
+                enableDeleting = tag != null;
+                List<Long> enterprises = new EnterpriseDao().getEnterpriseIdsByTag(tag);
+                showResults(enterprises);
+                break;
+
+            case DELETE:
+                if (enableDeleting && isTagSelected()) {
+                    @SuppressWarnings("unchecked")
+                    List<Long> eids = (List<Long>) event.getValue();
+                    tagPanel.deleteEnterpriseFromTag(eids);
+                }
+                break;
+
         }
     }
 
-    private void showResults(List<Long> enterprises) {
+    void showResults(List<Long> enterprises) {
         demonstrator.showResults(enterprises);
     }
 
-    private class TagListener implements Observer {
-        private boolean enableDeleting = false;
-        @Override
-        public void update(ObservableEvent event) {
-            switch (event.getType()){
-                case TAG_SELECTED:
-                    enableDeleting = true;
-                    Tag tag = tagPanel.getSelectedTag();
-                    if (tag == null) {
-                        showResults(null);
-                    } else {
-                        List<Long> enterprises = new EnterpriseDao().getEnterpriseIdsByTag(tag);
-                        showResults(enterprises);
-                    }
-                    break;
-                case DELETE:
-                    onTagDeleted();
-                    break;
-                case TAGS_CHANGED:
-                    tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED));
-                    break;
-                case CLEAR_DEMONSTRATOR:
-                    showResults(null);
-            }
-        }
-
-        private void onTagDeleted() {
-            if (!enableDeleting || !isTagSelected()) return;
-            boolean tagExist = removeEnterprisesFromTag();
-            tagPanel.update(new ObservableEvent(ObservableEvent.Type.TAGS_CHANGED, !tagExist));
-            updateDemonstrator();
-        }
-
-        private boolean isTagSelected() {
-            Component component = navigationPane.getSelectedComponent();
-            if (!(component instanceof TagPanel)) return false;
-            Tag tag = ((TagPanel) component).getSelectedTag();
-            return tag != null;
-        }
-
-        private boolean removeEnterprisesFromTag() {
-            return !Cache.instance.deleteFromTag(tagPanel.getSelectedTag(), demonstrator.getSelected());
-        }
-
-
-        private void updateDemonstrator() {
-            Tag selectedTag = tagPanel.getSelectedTag();
-            if (selectedTag != null){
-                List<Long> enterprises = new EnterpriseDao().getEnterpriseIdsByTag(selectedTag);
-                showResults(enterprises);
-            } else {
-                showResults(new ArrayList<Long>());
-            }
-        }
-
-        public void enableDeleting(boolean enableDeleting) {
-            this.enableDeleting = enableDeleting;
-        }
+    public boolean isTagSelected() {
+        Component component = navigationPane.getSelectedComponent();
+        return component instanceof TagPanel && ((TagPanel) component).getSelectedTag() != null;
     }
+
 }

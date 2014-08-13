@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
 
+//ToDo: close connections after request
 public class Request {
 
     private String url;

@@ -1,6 +1,7 @@
 package md.varoinform.view.navigation.tags;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.Cache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Tag;
@@ -49,7 +50,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
                 tagList.setCurrentTagTitle(tag.getTitle());
                 History.instance.add(new HistoryEvent(TagPanel.this, tag));
-                notifyObservers(new ObservableEvent(ObservableEvent.Type.TAG_SELECTED));
+                notifyObservers(new ObservableEvent<>(ObservableEvent.Type.TAG_SELECTED, tag));
             }
         });
 
@@ -140,7 +141,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
 
     private void deleteTag(Tag tag) {
         tagList.deleteTag(tag);
-        notifyObservers(new ObservableEvent(ObservableEvent.Type.CLEAR_DEMONSTRATOR));
+        notifyObservers(new ObservableEvent<Tag>(ObservableEvent.Type.TAG_SELECTED, null));
     }
 
 
@@ -148,14 +149,6 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
     public void update(ObservableEvent event) {
         Object value = event.getValue();
         switch (event.getType()){
-            case TAGS_CHANGED:
-            case DELETE:
-                tagList.updateModel();
-                boolean tagNotExist = value != null && (Boolean) value;
-                if (tagNotExist){
-                    clearSelection();
-                }
-                break;
             case HISTORY_MOVE_FORWARD:
             case HISTORY_MOVE_BACK:
                 if (value instanceof HistoryEvent && ((HistoryEvent) value).getSource() == this){
@@ -165,6 +158,16 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
                 }
                 break;
         }
+    }
+
+    public void deleteEnterpriseFromTag(List<Long> eids) {
+        Tag selectedTag = getSelectedTag();
+        boolean clearSelection = Cache.instance.deleteFromTag(selectedTag, eids);
+        tagList.updateModel();
+        if (clearSelection){
+            clearSelection();
+        }
+        notifyObservers(new ObservableEvent<>(ObservableEvent.Type.TAG_SELECTED, clearSelection? null: selectedTag));
     }
 
     public void clearSelection(){
