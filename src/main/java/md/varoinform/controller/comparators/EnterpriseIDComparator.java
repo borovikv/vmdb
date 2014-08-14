@@ -1,7 +1,10 @@
 package md.varoinform.controller.comparators;
 
 import md.varoinform.controller.Cache;
-import md.varoinform.model.entities.Enterprise;
+import md.varoinform.controller.LanguageProxy;
+
+import java.text.Collator;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,16 +13,18 @@ import md.varoinform.model.entities.Enterprise;
  * Time: 3:58 PM
  */
 public class EnterpriseIDComparator implements java.util.Comparator<Long> {
+    private final Collator collator;
+
+    public EnterpriseIDComparator() {
+        Locale locale = new Locale(LanguageProxy.getCurrentLanguageTitle());
+        collator = Collator.getInstance(locale);
+    }
+
     @Override
     public int compare(Long o1, Long o2) {
         if (o1 == null && o2 == null) return 0;
         if (o1 == null) return -1;
         if (o2 == null) return 1;
-        Enterprise e1 = Cache.instance.getEnterprise(o1);
-        Enterprise e2 = Cache.instance.getEnterprise(o2);
-        if (e1 == e2) return 0;
-        if (e1 == null) return -1;
-        if (e2 == null) return 1;
-        return e1.compareTo(e2);
+        return collator.compare(Cache.instance.getValue(o1, "title"), Cache.instance.getValue(o2, "title"));
     }
 }

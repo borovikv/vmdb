@@ -16,8 +16,6 @@ import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.context.internal.ThreadLocalSessionContext;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -25,7 +23,6 @@ public enum  SessionManager {
     instance;
 
     private final ConcurrentMap<String, SessionFactory> sessions = new ConcurrentHashMap<>();
-    private final List<Session> sessionList = new ArrayList<>();
     public Session getSession() {
         Configurator configurator = new Configurator();
         Configuration config = configurator.configure();
@@ -41,7 +38,6 @@ public enum  SessionManager {
                 session = factory.openSession();
                 ThreadLocalSessionContext.bind(session);
             }
-            sessionList.add(session);
             return session;
         }
         factory = buildSessionFactory(configuration);
@@ -82,29 +78,13 @@ public enum  SessionManager {
 
 
     public void shutdownAll(){
-        for (int i = 0; i < sessionList.size(); i++) {
-            Session session = sessionList.get(i);
-            if (session!=null && session.isOpen()) {
-                session.clear();
-                session.close();
-            }
-            sessionList.set(i, null);
-        }
         for (String s : sessions.keySet()) {
-            shutdown(s);
+            SessionFactory factory = sessions.remove(s);
+            if (factory != null) {
+                factory.close();
+            }
         }
     }
-
-
-    public void shutdown(String name){
-        SessionFactory factory = sessions.remove(name);
-        if (factory != null) {
-            factory.close();
-        }
-    }
-
-
-
 
 
 }

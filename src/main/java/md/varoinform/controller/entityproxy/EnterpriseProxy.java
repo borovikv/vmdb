@@ -103,8 +103,12 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "Brands")
-    public Collection<Brand> getBrands(){
-        return enterprise.getBrands();
+    public Collection<String> getBrands(){
+        List<String> brands = new ArrayList<>();
+        for (Brand brand : enterprise.getBrands()) {
+            brands.add(brand.toString());
+        }
+        return brands;
     }
 
     @Property(name = "Goods")
@@ -150,25 +154,25 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "Emails")
-    public List<Email> getEmails(){
+    public List<String> getEmails(){
 
         return contactProxy.getEmail();
     }
 
     @Property(name = "Phones")
-    public List<Phone> getPhones(){
+    public List<String> getPhones(){
 
         return contactProxy.getPhones();
     }
 
     @Property(name = "Urls")
-    public List<Url> getUrls(){
+    public List<String> getUrls(){
 
         return contactProxy.getUrls();
     }
 
     @Property(name = "Faxes")
-    public List<Phone> getFaxes() {
+    public List<String> getFaxes() {
 
         return contactProxy.getFax();
     }

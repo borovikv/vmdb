@@ -1,10 +1,7 @@
 package md.varoinform.view;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.Cache;
-import md.varoinform.controller.Holder;
-import md.varoinform.controller.LanguageProxy;
-import md.varoinform.controller.TagCache;
+import md.varoinform.controller.*;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;
@@ -304,7 +301,7 @@ public class MainFrame extends JFrame implements Observer {
         switch (event.getType()){
             case BRANCH_SELECTED:
                 Node node = branchPanel.getNode();
-                List<Long> enterpriseIds = Cache.instance.getEnterpriseIdByNode(node);
+                List<Long> enterpriseIds = BranchCache.instance.getEnterpriseIdByNode(node);
                 showResults(enterpriseIds);
                 break;
 

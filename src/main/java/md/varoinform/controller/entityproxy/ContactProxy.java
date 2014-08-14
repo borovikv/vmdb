@@ -3,6 +3,8 @@ package md.varoinform.controller.entityproxy;
 import md.varoinform.model.entities.*;
 import md.varoinform.util.ResourceBundleHelper;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -69,19 +71,35 @@ public class ContactProxy extends EntityProxy {
         return ResourceBundleHelper.getString(currentLanguage(), "moldova", "Republic Moldova");
     }
 
-    public List<Email> getEmail(){
-        return contact == null ? new ArrayList<Email>() : contact.getEmails();
+    public List<String> getEmail(){
+        return getStrings("getEmails");
     }
 
-    public List<Phone> getPhones(){
-        return contact == null ? new ArrayList<Phone>() : contact.getPhones();
+    public ArrayList<String> getStrings(String name) {
+        ArrayList<String> strings = new ArrayList<>();
+        if (contact != null) {
+            try {
+                Method method = Contact.class.getMethod(name);
+                List<?> objs = (List<?>) method.invoke(contact);
+                for (Object obj : objs) {
+                    strings.add(obj.toString());
+                }
+            } catch (InvocationTargetException|NoSuchMethodException|IllegalAccessException ignored){
+
+            }
+        }
+        return strings;
     }
 
-    public List<Url> getUrls(){
-        return contact == null ? new ArrayList<Url>() : contact.getUrls();
+    public List<String> getPhones(){
+        return getStrings("getPhones");
     }
 
-    public List<Phone> getFax() {
-       return contact == null ? new ArrayList<Phone>() : contact.getFax();
+    public List<String> getUrls(){
+        return getStrings("getUrls");
+    }
+
+    public List<String> getFax() {
+        return getStrings("getFax");
     }
 }
