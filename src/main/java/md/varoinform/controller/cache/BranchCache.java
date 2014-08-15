@@ -1,5 +1,6 @@
-package md.varoinform.controller;
+package md.varoinform.controller.cache;
 
+import md.varoinform.controller.Holder;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Node;
 

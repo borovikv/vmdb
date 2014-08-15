@@ -1,7 +1,8 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
@@ -62,9 +63,24 @@ public class PagesActivity extends Activity {
 
         int usedArea = 0;
         int size = idEnterprises.size();
-        for (int i = 0; i < size; i++) {
+        Map<Long, Map<String, Object>> enterprisesMap = null;
+        if (!language.equals(Cache.instance.getCachedLanguage())){
+            setProgress(1);
+            enterprisesMap = EnterpriseDao.getEnterprisesMap(idEnterprises, language);
+        }
 
-            Block block = getBlock(idEnterprises.get(i), language);
+        for (int i = 0; i < size; i++) {
+            Long eid = idEnterprises.get(i);
+
+            Map<String, Object> map;
+            if (enterprisesMap != null){
+                map = enterprisesMap.get(eid);
+            } else {
+                map = Cache.instance.getMap(eid);
+            }
+            if (map == null) continue;
+
+            Block block = getBlock(map, language);
             double blockArea = (block.height() + verticalPadding) * (blockWidth + horizontalPadding);
             usedArea += blockArea;
 
@@ -101,14 +117,14 @@ public class PagesActivity extends Activity {
         return (width + horizontalPadding) * 2 > canvasWidth ? canvasWidth : width;
     }
 
-    private Block getBlock(Long eid, Language language) {
+    private Block getBlock(Map<String, Object> enterpriseMap, Language language) {
         Block block = new Block();
 
-        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(Cache.instance.getEnterprise(eid), language);
+
         for (String field : fields) {
             if (EnterpriseProxy.isAddress(field)) continue;
 
-            String str = getLine(language, enterpriseProxy.get(field), field);
+            String str = getLine(language, enterpriseMap.get(field), field);
             if (str.isEmpty()) continue;
 
             FontMetrics fm;
@@ -129,7 +145,7 @@ public class PagesActivity extends Activity {
             }
         }
 
-        String address = getAddress(fields, enterpriseProxy, language);
+        String address = getAddress(fields, enterpriseMap, language);
         if (address.isEmpty()) return block;
         List<String> addressLines = StringWrapper.wrap(address, defaultFM, (int) blockWidth);
         block.addLines("address", addressLines, DEFAULT_FONT);
@@ -137,12 +153,12 @@ public class PagesActivity extends Activity {
         return block;
     }
 
-    private String getAddress(List<String> fields, EnterpriseProxy enterpriseProxy, Language language) {
+    private String getAddress(List<String> fields, Map<String, Object> enterpriseMap, Language language) {
         List<String> addressFields = EnterpriseProxy.getAddressFields();
         Set<Object> address = new LinkedHashSet<>();
         for (String field : addressFields) {
             if (fields.contains(field)){
-                Object o = enterpriseProxy.get(field);
+                Object o = enterpriseMap.get(field);
                 if (o instanceof Collection){
                     address.addAll((Collection<?>) o);
                 } else {

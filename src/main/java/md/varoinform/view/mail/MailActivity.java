@@ -1,7 +1,6 @@
 package md.varoinform.view.mail;
 
-import md.varoinform.controller.Cache;
-import md.varoinform.model.entities.Email;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.view.dialogs.progress.Activity;
 
 import java.awt.*;
@@ -36,12 +35,11 @@ public class MailActivity extends Activity {
         StringBuilder builder = new StringBuilder(mailTo);
         for (Long id : enterpriseIds) {
 
-            @SuppressWarnings("unchecked") Iterable<Email> emails = (Iterable<Email>) Cache.instance.getFieldValue(id, "emails");
-            for (Email email : emails) {
+            @SuppressWarnings("unchecked") Iterable<String> emails = (Iterable<String>) Cache.instance.getRawValue(id, "emails");
+            for (String email : emails) {
 
-                String s = email.getEmail();
-                if (VALID_EMAIL_ADDRESS_REGEX.matcher(s).find()){
-                    builder.append(s);
+                if (VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()){
+                    builder.append(email);
                     builder.append(";");
                 }
 

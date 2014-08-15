@@ -1,7 +1,8 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
+import md.varoinform.controller.cache.Field;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.util.ResourceBundleHelper;
 
@@ -32,10 +33,10 @@ public class EnterpriseView  {
 
 
         LinkedHashSet<String> address = new LinkedHashSet<>();
-        address.add((String) Cache.instance.getValue(id, "country"));
-        address.add((String) Cache.instance.getValue(id, "sector"));
-        address.add((String) Cache.instance.getValue(id, "town"));
-        address.add((String) Cache.instance.getValue(id, "StreetHouseOffice"));
+        address.add((String) Cache.instance.getValue(id, Field.country));
+        address.add((String) Cache.instance.getValue(id, Field.sector));
+        address.add((String) Cache.instance.getValue(id, Field.town));
+        address.add((String) Cache.instance.getValue(id, Field.streethouseoffice));
 
         Map<String, Object> context = new HashMap<>();
         context.put("address", address);

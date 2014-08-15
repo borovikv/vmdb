@@ -1,13 +1,15 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.Cache;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.controller.cache.Cache;
+import md.varoinform.controller.cache.Field;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Language;
 import md.varoinform.util.StringUtils;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,18 +42,37 @@ public class Address extends PrintableBase {
         int maxWriteAreaWidth = (int) rectangle.getWidth() - indent * 2;
 
 
-        EnterpriseProxy enterpriseProxy = new EnterpriseProxy(Cache.instance.getEnterprise(eid), language);
-        String[] strings = new String[]{
-                enterpriseProxy.getTitle(),
-                StringUtils.valueOf(enterpriseProxy.getStreetHouseOffice()),
-                enterpriseProxy.getPostalCode() + " " + enterpriseProxy.getTown(),
-                enterpriseProxy.getCountry().toUpperCase()
-        };
+        String[] strings;
+        if (language.equals(Cache.instance.getCachedLanguage())) {
+            strings = getAddressFromCache(eid);
+        } else {
+            Map<String, Object> map = EnterpriseDao.enterpriseAsMap(new EnterpriseDao().read(eid), language);
+            strings = getAddressFromMap(map);
+
+        }
         for (String string : strings) {
             lineHeight = drawString(y, g2, fontHeight, xoff, lineHeight, maxWriteAreaWidth, string);
         }
 
 
+    }
+
+    private String[] getAddressFromMap(Map<String, Object> map) {
+        return new String[]{
+                String.valueOf(map.get(Field.title.toString())),
+                StringUtils.valueOf(map.get(Field.streethouseoffice.toString())),
+                map.get(Field.postalcode.toString()) + " " + map.get(Field.town.toString()),
+                String.valueOf(map.get(Field.country.toString())).toUpperCase()
+        };
+    }
+
+    private String[] getAddressFromCache(Long eid) {
+        return new String[]{
+                    String.valueOf(Cache.instance.getValue(eid, Field.title)),
+                    StringUtils.valueOf(Cache.instance.getValue(eid, Field.streethouseoffice)),
+                    Cache.instance.getValue(eid, Field.postalcode) + " " + Cache.instance.getValue(eid, Field.town),
+                    String.valueOf(Cache.instance.getValue(eid, Field.country)).toUpperCase()
+            };
     }
 
     private int drawString(float y, Graphics2D g2, int fontHeight, float xoff, int lineHeight, int maxWriteAreaWidth, String value) {

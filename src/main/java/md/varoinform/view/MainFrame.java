@@ -2,6 +2,9 @@ package md.varoinform.view;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.*;
+import md.varoinform.controller.cache.BranchCache;
+import md.varoinform.controller.cache.Cache;
+import md.varoinform.controller.cache.TagCache;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.Tag;

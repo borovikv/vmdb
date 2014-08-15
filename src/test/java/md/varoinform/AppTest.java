@@ -3,7 +3,7 @@ package md.varoinform;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.util.Profiler;
 import md.varoinform.view.demonstrator.EnterpriseView;
 

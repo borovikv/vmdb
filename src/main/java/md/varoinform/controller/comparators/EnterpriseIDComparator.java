@@ -1,7 +1,8 @@
 package md.varoinform.controller.comparators;
 
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.LanguageProxy;
+import md.varoinform.controller.cache.Field;
 
 import java.text.Collator;
 import java.util.Locale;
@@ -25,6 +26,6 @@ public class EnterpriseIDComparator implements java.util.Comparator<Long> {
         if (o1 == null && o2 == null) return 0;
         if (o1 == null) return -1;
         if (o2 == null) return 1;
-        return collator.compare(Cache.instance.getValue(o1, "title"), Cache.instance.getValue(o2, "title"));
+        return collator.compare(Cache.instance.getValue(o1, Field.title), Cache.instance.getValue(o2, Field.title));
     }
 }

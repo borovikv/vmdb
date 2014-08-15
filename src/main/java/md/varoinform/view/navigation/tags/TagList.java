@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation.tags;
 
-import md.varoinform.controller.TagCache;
+import md.varoinform.controller.cache.TagCache;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.TagDialog;

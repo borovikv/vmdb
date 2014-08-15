@@ -1,6 +1,6 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.util.PreferencesHelper;
 

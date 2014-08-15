@@ -1,8 +1,7 @@
 package md.varoinform.view.navigation.tags;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.Cache;
-import md.varoinform.controller.TagCache;
+import md.varoinform.controller.cache.TagCache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Tag;

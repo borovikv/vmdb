@@ -16,11 +16,15 @@ import java.util.Locale;
 */
 public class EnterpriseComparator implements Comparator<Enterprise> {
 
-    private Collator collator;
+    private final Collator collator;
     private final Language lang;
 
     public EnterpriseComparator() {
-        lang = LanguageProxy.instance.getCurrentLanguage();
+        this(LanguageProxy.instance.getCurrentLanguage());
+    }
+
+    public EnterpriseComparator(Language lang) {
+        this.lang = lang;
         Locale locale = new Locale(LanguageProxy.getCurrentLanguageTitle());
         collator = Collator.getInstance(locale);
     }

@@ -1,7 +1,9 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.controller.comparators.EnterpriseComparator;
+import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.ClosableSession;
 import md.varoinform.model.util.SessionManager;
@@ -11,10 +13,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long> {
 
@@ -22,11 +21,44 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         super(Enterprise.class);
     }
 
-    public static List<Enterprise> getEnterprises(ClosableSession session) {
-        //noinspection unchecked
-        List<Enterprise> enterprises = session.createCriteria(Enterprise.class).list();
-        Collections.sort(enterprises, new EnterpriseComparator());
-        return enterprises;
+    public static Map<Long, Map<String, Object>> getEnterprisesMap(Language language) {
+        return getEnterprisesMap(null, language);
+    }
+
+    public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Language language) {
+        Map<Long, Map<String, Object>> enterprisesMap = new LinkedHashMap<>();
+        try(ClosableSession session = new ClosableSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                Criteria criteria = session.createCriteria(Enterprise.class);
+                if (idEnterprises != null) {
+                    criteria.add(Restrictions.in("id", idEnterprises));
+                }
+                //noinspection unchecked
+                List<Enterprise> enterprises = criteria.list();
+                Collections.sort(enterprises, new EnterpriseComparator(language));
+                for (Enterprise enterprise : enterprises) {
+                    Long id = enterprise.getId();
+                    Map<String, Object> cache = enterpriseAsMap(enterprise, language);
+                    enterprisesMap.put(id, cache);
+                }
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                transaction.rollback();
+            }
+
+        }
+        return enterprisesMap;
+    }
+
+    public static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Language language) {
+        Map<String, Object> map = new HashMap<>();
+        EnterpriseProxy proxy = new EnterpriseProxy(enterprise, language);
+        for (String field : EnterpriseProxy.getFields()) {
+            Object value = proxy.get(field);
+            map.put(field, value);
+        }
+        return map;
     }
 
     public static Date getMaxCheckDate(){
@@ -89,4 +121,5 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         }
         return ids;
     }
+
 }

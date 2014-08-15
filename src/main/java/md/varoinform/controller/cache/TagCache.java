@@ -1,4 +1,4 @@
-package md.varoinform.controller;
+package md.varoinform.controller.cache;
 
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.EnterpriseDao;

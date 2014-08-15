@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation;
 
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.util.observer.ObservableEvent;

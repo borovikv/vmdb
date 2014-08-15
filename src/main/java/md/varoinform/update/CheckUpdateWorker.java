@@ -1,7 +1,7 @@
 package md.varoinform.update;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.Cache;
+import md.varoinform.controller.cache.Cache;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
