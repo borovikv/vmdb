@@ -1,13 +1,12 @@
 package md.varoinform.sequrity;
 
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.util.ClosableSession;
 import md.varoinform.sequrity.exception.CryptographyException;
 import md.varoinform.sequrity.exception.Error;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
-import org.hibernate.Session;
 
 
 /**
@@ -44,8 +43,7 @@ public class PasswordManager {
 
     private boolean testConnection(String password) {
         PasswordManager.password = password;
-        try {
-            Session session = SessionManager.instance.getSession();
+        try (ClosableSession session = new ClosableSession()){
             session.beginTransaction().rollback();
             return true;
         } catch (Throwable ignored) {

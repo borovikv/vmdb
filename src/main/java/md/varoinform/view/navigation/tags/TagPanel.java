@@ -1,7 +1,6 @@
 package md.varoinform.view.navigation.tags;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.cache.TagCache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.model.entities.Tag;
@@ -161,13 +160,8 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
     }
 
     public void deleteEnterpriseFromTag(List<Long> eids) {
-        Tag selectedTag = getSelectedTag();
-        boolean clearSelection = TagCache.instance.deleteFromTag(selectedTag, eids);
-        tagList.updateModel();
-        if (clearSelection){
-            clearSelection();
-        }
-        notifyObservers(new ObservableEvent<>(ObservableEvent.Type.TAG_SELECTED, clearSelection? null: selectedTag));
+        Tag tag = tagList.deleteEnterpriseFromTag(eids);
+        notifyObservers(new ObservableEvent<>(ObservableEvent.Type.TAG_SELECTED, tag));
     }
 
     public void clearSelection(){

@@ -20,7 +20,6 @@ public enum TagCache {
     private final Set<Tag> tags = new TreeSet<>();
     private final Set<Tag> tagsToSave = new HashSet<>();
     private final Set<Tag> tagsToDelete = new HashSet<>();
-    private final DAOTag daoTag = new DAOTag();
 
     TagCache() {
         update();
@@ -28,7 +27,7 @@ public enum TagCache {
 
     public void update(){
         tags.clear();
-        tags.addAll(daoTag.getAll());
+        //tags.addAll(daoTag.getAll());
     }
 
     public List<Tag> getTags() {
@@ -48,7 +47,7 @@ public enum TagCache {
 
     public void createTag(String title, List<Long> eids) {
         List<Enterprise> enterprises = new EnterpriseDao().read(eids);
-        Tag tag = daoTag.createTag(title, enterprises);
+        Tag tag = new DAOTag().createTag(title, enterprises);
         if (tag == null) return;
         tags.add(tag);
         saveTag(tag);
@@ -74,6 +73,7 @@ public enum TagCache {
     }
 
     public void shutDown(){
+        DAOTag daoTag = new DAOTag();
         daoTag.delete(tagsToDelete);
         daoTag.save(tagsToSave);
     }

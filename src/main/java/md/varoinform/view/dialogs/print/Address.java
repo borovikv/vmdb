@@ -46,7 +46,7 @@ public class Address extends PrintableBase {
         if (language.equals(Cache.instance.getCachedLanguage())) {
             strings = getAddressFromCache(eid);
         } else {
-            Map<String, Object> map = EnterpriseDao.enterpriseAsMap(new EnterpriseDao().read(eid), language);
+            Map<String, Object> map = EnterpriseDao.enterpriseAsMap(eid, language);
             strings = getAddressFromMap(map);
 
         }

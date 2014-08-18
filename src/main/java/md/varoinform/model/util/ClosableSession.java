@@ -1,9 +1,6 @@
 package md.varoinform.model.util;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
 
@@ -50,5 +47,13 @@ public class ClosableSession implements AutoCloseable {
 
     public Query createQuery(String hql) {
         return session.createQuery(hql);
+    }
+
+    public void evict(Object o) {
+        session.evict(o);
+    }
+
+    public void replicate(Object o, ReplicationMode overwrite) {
+        session.replicate(o, overwrite);
     }
 }

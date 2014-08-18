@@ -102,4 +102,13 @@ public class TagList extends JList<Tag> {
     }
 
 
+    public Tag deleteEnterpriseFromTag(List<Long> eids) {
+        Tag selectedTag = getSelectedValue();
+        boolean clearSelection = TagCache.instance.deleteFromTag(selectedTag, eids);
+        updateModel();
+        if (clearSelection){
+            clearSelection();
+        }
+        return clearSelection? null: selectedTag;
+    }
 }

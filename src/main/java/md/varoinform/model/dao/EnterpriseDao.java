@@ -6,7 +6,6 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.ClosableSession;
-import md.varoinform.model.util.SessionManager;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
@@ -51,7 +50,7 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         return enterprisesMap;
     }
 
-    public static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Language language) {
+    private static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Language language) {
         Map<String, Object> map = new HashMap<>();
         EnterpriseProxy proxy = new EnterpriseProxy(enterprise, language);
         for (String field : EnterpriseProxy.getFields()) {
@@ -59,6 +58,15 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
             map.put(field, value);
         }
         return map;
+    }
+
+    public static Map<String, Object> enterpriseAsMap(Long eid, Language language) {
+        try (ClosableSession session = new ClosableSession()){
+            @SuppressWarnings("unchecked")
+            List<Enterprise> entList = session.createCriteria(Enterprise.class).add(Restrictions.eq("id", eid)).list();
+            if (entList.size() > 0) return enterpriseAsMap(entList.get(0), language);
+        }
+        return new HashMap<>();
     }
 
     public static Date getMaxCheckDate(){
@@ -107,19 +115,19 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
 
 
     public List<Enterprise> read(List<Long> ids) {
-        Criteria criteria = SessionManager.instance.getSession().createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
-        //noinspection unchecked
-        return criteria.list();
+        try(ClosableSession session = new ClosableSession()) {
+            Criteria criteria = session.createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
+            //noinspection unchecked
+            return criteria.list();
+        }
     }
 
     public List<Long> getEnterpriseIdsByTag(Tag tag) {
-        ArrayList<Long> ids = new ArrayList<>();
-        if (tag != null) {
-            for (Enterprise enterprise : tag.getEnterprises()) {
-                ids.add(enterprise.getId());
-            }
+        String hql = "Select distinct e.id from Tag t join t.enterprises e where t.id = " + tag.getId();
+        try (ClosableSession session = new ClosableSession()){
+            //noinspection unchecked
+            return session.createQuery(hql).setCacheable(false).list();
         }
-        return ids;
     }
 
 }
