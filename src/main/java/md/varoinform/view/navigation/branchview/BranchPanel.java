@@ -1,6 +1,5 @@
 package md.varoinform.view.navigation.branchview;
 
-import md.varoinform.model.entities.Node;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.Observer;
@@ -49,7 +48,7 @@ public class BranchPanel extends JPanel implements Observable {
         branchTree.clearSelection();
     }
 
-    public Node getNode() {
+    public Long getNode() {
         return ((BranchNode)branchTree.getLastSelectedPathComponent()).getNode();
     }
 }

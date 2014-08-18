@@ -1,13 +1,13 @@
 package md.varoinform.controller.cache;
 
-import md.varoinform.controller.Holder;
+import md.varoinform.controller.LanguageProxy;
+import md.varoinform.controller.comparators.EnterpriseIDComparator;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Node;
+import md.varoinform.model.entities.NodeTitle;
+import md.varoinform.model.util.ClosableSession;
 
-import javax.swing.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,59 +17,78 @@ import java.util.Map;
  */
 public enum BranchCache {
     instance;
-    private static final boolean isBranchCached = true;
+
     private Map<Long, List<Long>> branchCache = new HashMap<>();
+    private Map<Long, List<Long>> children = new HashMap<>();
+    private Map<Long, Map<String, String>> branchTitles = new HashMap<>();
+    private Set<Long> sorted = new HashSet<>();
 
-    public void update(){
-        branchCache.clear();
+
+    private BranchCache(){
+        createBranchCache();
     }
 
-    public List<Long> getEnterpriseIdByNode(Node node){
-        if (isBranchCached){
-            return getCachedEnterpriseIdsByNode(node);
-        } else {
-            return new NodeDao().threadSafeGetEntID(node);
+    public void update() {
+        sorted.clear();
+    }
+
+    public List<Long> getEnterpriseIdByNode(Long node){
+        List<Long> ids = branchCache.get(node);
+        if (!sorted.contains(node)) {
+            Collections.sort(ids, new EnterpriseIDComparator());
         }
+        return ids;
     }
 
-    private List<Long> getCachedEnterpriseIdsByNode(Node node) {
-        if (branchCache.isEmpty() && !Holder.await()) {
-            List<Long> ids = new NodeDao().getEnterpriseIds(node);
-
-            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-
-                    try (Holder ignored = new Holder()) {
-                        branchCache = createBranchCache();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            };
-            worker.execute();
-
-
-            return ids;
-        } else if (branchCache.containsKey(node.getId())){
-
-            return branchCache.get(node.getId());
-        } else {
-
-            return new NodeDao().getEnterpriseIds(node);
-        }
+    public String getTitle(Long id){
+        Map<String, String> map = branchTitles.get(id);
+        if (map == null) return "unnamed";
+        return map.get(LanguageProxy.getCurrentLanguageTitle());
     }
 
-    private Map<Long, List<Long>> createBranchCache() {
+    private void createBranchCache() {
         NodeDao nodeDao = new NodeDao();
-        List<Node> nodes = nodeDao.getAll();
-        Map<Long, List<Long>> bc = new HashMap<>();
-        for (Node node : nodes) {
-            List<Long> ids = nodeDao.threadSafeGetEntID(node);
-            bc.put(node.getId(), ids);
+        try (ClosableSession session = new ClosableSession()) {
+            List<Node> nodes = nodeDao.getAll(session);
+            for (Node node : nodes) {
+                Long nodeId = node.getId();
+
+                List<Long> entID = nodeDao.getEnterprisesID(node);
+                branchCache.put(nodeId, entID);
+
+                List<Long> childrenId = nodeDao.getChildrenID(nodeId);
+                children.put(nodeId, childrenId);
+
+                Map<String, String> titles = new HashMap<>();
+                for (NodeTitle title : node.getTitles()) {
+                    titles.put(title.getLanguage().getTitle(), title.getTitle());
+                }
+                branchTitles.put(nodeId, titles);
+            }
+        } catch (RuntimeException rex){
+            rex.printStackTrace();
         }
-        return bc;
     }
+
+
+    public List<Long> getChildren(Long id){
+        return children.get(id);
+    }
+
+    public List<Long> startWith(String text){
+        if (text == null || text.isEmpty()) return getChildren(1L);
+        List<Long> result = new ArrayList<>();
+        for (Long id : branchTitles.keySet()) {
+            Map<String, String> map = branchTitles.get(id);
+            if (map != null){
+                String title = map.get(LanguageProxy.getCurrentLanguageTitle());
+                if (title != null && title.toLowerCase().startsWith(text)){
+                    result.add(id);
+                }
+            }
+        }
+        return result;
+    }
+
 
 }

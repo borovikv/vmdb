@@ -1,8 +1,6 @@
 package md.varoinform.view.navigation.branchview;
 
-import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
-import md.varoinform.model.entities.Node;
+import md.varoinform.controller.cache.BranchCache;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
@@ -15,11 +13,18 @@ import java.util.Collections;
  * Time: 5:08 PM
  */
 public class BranchNode extends DefaultMutableTreeNode implements Comparable {
-    private Node node;
+    private final Long id;
+    private final String node;
 
-    public BranchNode(Object userObject) {
-        super(userObject);
-        this.node = (Node)userObject;
+    public BranchNode(Long id) {
+        super(id);
+        if (id != null) {
+            this.id = id;
+            this.node = BranchCache.instance.getTitle(id);
+        } else {
+            this.id = 1L;
+            node = "root";
+        }
     }
 
     @Override
@@ -37,13 +42,10 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
     }
 
     public String getTitle(){
-        Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
-        if (node != null)
-            return node.title(currentLanguage);
-        return null;
+        return node;
     }
 
-    public Node getNode() {
-        return node;
+    public Long getNode() {
+        return id;
     }
 }
