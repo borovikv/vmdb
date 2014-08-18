@@ -42,10 +42,10 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return new ArrayList<>(eCache.keySet());
     }
 
+
     public Object getValue(Long eid, Field f) {
         return getValue(eid, f.toString());
     }
-
 
     public Object getValue(Long eid, String field){
         return StringUtils.objectOrString(getRawValue(eid, field));
