@@ -47,7 +47,7 @@ public enum  LanguageProxy {
         if (title == null) return null;
         for (Long id : languageMap.keySet()) {
             String t = languageMap.get(id);
-            if (t != null && t.equalsIgnoreCase(title)) return id;
+            if (t != null && t.toLowerCase().startsWith(title.toLowerCase())) return id;
         }
         return null;
     }
