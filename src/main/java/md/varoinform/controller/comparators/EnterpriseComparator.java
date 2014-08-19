@@ -2,7 +2,6 @@ package md.varoinform.controller.comparators;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.Language;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -17,16 +16,18 @@ import java.util.Locale;
 public class EnterpriseComparator implements Comparator<Enterprise> {
 
     private final Collator collator;
-    private final Language lang;
+    private final String lang;
 
     public EnterpriseComparator() {
         this(LanguageProxy.instance.getCurrentLanguage());
     }
 
-    public EnterpriseComparator(Language lang) {
-        this.lang = lang;
+
+    public EnterpriseComparator(Long langID) {
+        lang = LanguageProxy.instance.getTitle(langID);
         Locale locale = new Locale(LanguageProxy.getCurrentLanguageTitle());
         collator = Collator.getInstance(locale);
+
     }
 
     @Override

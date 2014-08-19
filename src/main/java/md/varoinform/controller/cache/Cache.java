@@ -2,7 +2,6 @@ package md.varoinform.controller.cache;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.observer.ObservableEvent;
 
@@ -21,7 +20,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     instance;
 
     private Map<Long, Map<String, Object>> eCache = new LinkedHashMap<>();
-    private Language language;
+    private Long langID;
 
     private Cache() {
         update();
@@ -34,8 +33,8 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
     public void update() {
         eCache.clear();
-        language = LanguageProxy.instance.getCurrentLanguage();
-        eCache = EnterpriseDao.getEnterprisesMap(language);
+        langID = LanguageProxy.instance.getCurrentLanguage();
+        eCache = EnterpriseDao.getEnterprisesMap(langID);
     }
 
     public List<Long> getAllEnterpriseIds(){
@@ -59,8 +58,8 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return null;
     }
 
-    public Language getCachedLanguage() {
-        return language;
+    public Long getCachedLanguage() {
+        return langID;
     }
 
     public Map<String, Object> getMap(Long eid) {

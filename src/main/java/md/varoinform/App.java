@@ -44,6 +44,7 @@ public class App {
 
                 Profiler p = new Profiler("create mainframe");
                 MainFrame mainFrame = new MainFrame();
+                SessionManager.instance.shutdownAll();
                 p.end();
                 mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 mainFrame.setVisible(true);

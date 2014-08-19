@@ -3,7 +3,6 @@ package md.varoinform.model.dao;
 import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Criteria;
@@ -20,11 +19,11 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         super(Enterprise.class);
     }
 
-    public static Map<Long, Map<String, Object>> getEnterprisesMap(Language language) {
-        return getEnterprisesMap(null, language);
+    public static Map<Long, Map<String, Object>> getEnterprisesMap(Long langID) {
+        return getEnterprisesMap(null, langID);
     }
 
-    public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Language language) {
+    public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Long langID) {
         Map<Long, Map<String, Object>> enterprisesMap = new LinkedHashMap<>();
         try(ClosableSession session = new ClosableSession()) {
             Transaction transaction = session.beginTransaction();
@@ -35,10 +34,10 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
                 }
                 //noinspection unchecked
                 List<Enterprise> enterprises = criteria.list();
-                Collections.sort(enterprises, new EnterpriseComparator(language));
+                Collections.sort(enterprises, new EnterpriseComparator(langID));
                 for (Enterprise enterprise : enterprises) {
                     Long id = enterprise.getId();
-                    Map<String, Object> cache = enterpriseAsMap(enterprise, language);
+                    Map<String, Object> cache = enterpriseAsMap(enterprise, langID);
                     enterprisesMap.put(id, cache);
                 }
             } catch (RuntimeException e) {
@@ -50,9 +49,9 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         return enterprisesMap;
     }
 
-    private static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Language language) {
+    private static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Long langID) {
         Map<String, Object> map = new HashMap<>();
-        EnterpriseProxy proxy = new EnterpriseProxy(enterprise, language);
+        EnterpriseProxy proxy = new EnterpriseProxy(enterprise, langID);
         for (String field : EnterpriseProxy.getFields()) {
             Object value = proxy.get(field);
             map.put(field, value);
@@ -60,11 +59,11 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
         return map;
     }
 
-    public static Map<String, Object> enterpriseAsMap(Long eid, Language language) {
+    public static Map<String, Object> enterpriseAsMap(Long eid, Long langID) {
         try (ClosableSession session = new ClosableSession()){
             @SuppressWarnings("unchecked")
             List<Enterprise> entList = session.createCriteria(Enterprise.class).add(Restrictions.eq("id", eid)).list();
-            if (entList.size() > 0) return enterpriseAsMap(entList.get(0), language);
+            if (entList.size() > 0) return enterpriseAsMap(entList.get(0), langID);
         }
         return new HashMap<>();
     }

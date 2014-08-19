@@ -1,13 +1,11 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.model.entities.Language;
-
-import java.awt.Graphics2D;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,15 +17,15 @@ public abstract class PrintableBase implements Printable {
     protected final int inchToPTCoefficient = 72;
     protected int offset;
     protected List<Long> enterprises;
-    protected Language language;
+    protected Long langID;
     protected int width;
     protected int height;
     protected Graphics2D graphics2D;
     //protected PageFormat pageFormat;
 
-    public PrintableBase(List<Long> enterprises, Language language) {
+    public PrintableBase(List<Long> enterprises, Long langID) {
         this.enterprises = enterprises;
-        this.language = language;
+        this.langID = langID;
     }
 
     @Override

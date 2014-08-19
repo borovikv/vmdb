@@ -3,7 +3,6 @@ package md.varoinform.view.dialogs.print;
 import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.Field;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.StringUtils;
 
 import java.awt.*;
@@ -20,8 +19,8 @@ import java.util.Map;
 public class Address extends PrintableBase {
     private final BasicStroke dashedStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f}, 0.0f);
 
-    public Address(List<Long> enterprises, Language language) {
-        super(enterprises, language);
+    public Address(List<Long> enterprises, Long langID) {
+        super(enterprises, langID);
         width = (int)(3.0 * inchToPTCoefficient);
         height = (int) (1.5 * inchToPTCoefficient);
     }
@@ -43,10 +42,10 @@ public class Address extends PrintableBase {
 
 
         String[] strings;
-        if (language.equals(Cache.instance.getCachedLanguage())) {
+        if (langID.equals(Cache.instance.getCachedLanguage())) {
             strings = getAddressFromCache(eid);
         } else {
-            Map<String, Object> map = EnterpriseDao.enterpriseAsMap(eid, language);
+            Map<String, Object> map = EnterpriseDao.enterpriseAsMap(eid, langID);
             strings = getAddressFromMap(map);
 
         }

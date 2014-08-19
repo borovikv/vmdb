@@ -14,8 +14,8 @@ import java.util.Map;
 public class ContactPersonProxy extends EntityProxy{
     private final ContactPerson contactPerson;
 
-    public ContactPersonProxy(ContactPerson contactPerson, Language language) {
-        super(language);
+    public ContactPersonProxy(ContactPerson contactPerson, Long langID) {
+        super(langID);
         this.contactPerson = contactPerson;
     }
 

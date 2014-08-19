@@ -3,7 +3,6 @@ package md.varoinform.util;
 import md.varoinform.Settings;
 import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -87,8 +86,8 @@ public class ResourceBundleHelper implements Serializable {
     get string by Language:language and key
     if key not found return default value
      */
-    public static String getString(Language language, String key, String defaultValue) {
-        return getString(DefaultLanguages.getLanguageByTitle(language.getTitle()), key, defaultValue);
+    public static String getString(Long langID, String key, String defaultValue) {
+        return getString(DefaultLanguages.language(langID), key, defaultValue);
     }
 
     /*

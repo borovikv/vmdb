@@ -1,7 +1,6 @@
 package md.varoinform.view.dialogs.print;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.LanguageComboBox;
 import md.varoinform.view.demonstrator.Demonstrator;
@@ -139,11 +138,11 @@ public class PrintDialog extends JDialog {
         Printable painter = null;
         int numPages = 0;
         if (mode == DATA_MODE){
-            painter = new Data(pageFormat, getEnterprises(), getSelectedFields(), (Language) languageCombo.getSelectedItem());
+            painter = new Data(pageFormat, getEnterprises(), getSelectedFields(), (Long) languageCombo.getSelectedItem());
             numPages = ((Data)painter).getNumPages();
 
         } else if (mode == ADDRESS_MODE){
-            painter = new Address(getEnterprises(), (Language) languageCombo.getSelectedItem());
+            painter = new Address(getEnterprises(), (Long) languageCombo.getSelectedItem());
             numPages = ((Address)painter).getNumPages(pageFormat);
         }
         if (painter != null)
@@ -187,15 +186,6 @@ public class PrintDialog extends JDialog {
         return fieldChoosePanel.getSelectedFieldNames();
     }
 
-    public void updateDisplay() {
-        fieldChoosePanel.updateDisplay();
-        Language language = LanguageProxy.instance.getCurrentLanguage();
-        languageCombo.setSelectedItem(language);
-        updateTitle();
-
-    }
-
-
     private class PrintModeAction extends AbstractAction {
         private final int value;
         private final String ru = "ru";
@@ -207,7 +197,7 @@ public class PrintDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             mode = this.value;
-            Language lang = LanguageProxy.instance.getLanguage(ru);
+            Long lang = LanguageProxy.instance.getLanguage(ru);
             if (mode == ADDRESS_MODE){
                 fieldChoosePanel.setEnabled(false);
                 languageCombo.setEnableItem(lang, false);

@@ -24,8 +24,8 @@ public class EnterpriseProxy extends EntityProxy {
     private final Enterprise enterprise;
     private final ContactProxy contactProxy;
 
-    public EnterpriseProxy(Enterprise enterprise, Language language) {
-        super(language);
+    public EnterpriseProxy(Enterprise enterprise, Long langID) {
+        super(langID);
         this.enterprise = enterprise;
         contactProxy = getContactProxy();
     }
@@ -36,8 +36,8 @@ public class EnterpriseProxy extends EntityProxy {
 
     private ContactProxy getContactProxy() {
         List<Contact> contacts = enterprise.getContacts();
-        if (contacts.isEmpty()) return new ContactProxy(null, currentLanguage());
-        return new ContactProxy(contacts.get(0), currentLanguage());
+        if (contacts.isEmpty()) return new ContactProxy(null, getLangID());
+        return new ContactProxy(contacts.get(0), getLangID());
     }
 
     @Property(name = "Title")
@@ -63,7 +63,7 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "ForeingCapital")
     public String getForeingCapital(){
         Boolean foreingCapital = enterprise.getForeignCapital();
-        return ResourceBundleHelper.getString(currentLanguage(), String.valueOf(foreingCapital), String.valueOf(foreingCapital));
+        return ResourceBundleHelper.getString(getLangID(), String.valueOf(foreingCapital), String.valueOf(foreingCapital));
     }
 
     @Property(name = "Workplaces")
@@ -98,7 +98,7 @@ public class EnterpriseProxy extends EntityProxy {
     public Map<String, Object> getContactPerson(){
         List<ContactPerson> contactPersons = enterprise.getContactPersons();
         ContactPerson contactPerson = contactPersons.size() > 0 ? contactPersons.get(0) : null;
-        ContactPersonProxy proxy = new ContactPersonProxy(contactPerson, currentLanguage());
+        ContactPersonProxy proxy = new ContactPersonProxy(contactPerson, getLangID());
         return proxy.getPersonMap();
     }
 

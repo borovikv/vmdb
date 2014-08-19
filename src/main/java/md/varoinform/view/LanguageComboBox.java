@@ -1,10 +1,11 @@
 package md.varoinform.view;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 
 import javax.swing.*;
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,32 +13,42 @@ import java.util.*;
  * Date: 12/3/13
  * Time: 3:20 PM
  */
-public class LanguageComboBox extends JComboBox<Language> {
-    private final List<Language> languages;
-    private List<Language> disabledLanguages = new ArrayList<>();
-    private List<Language> currentLanguages = new ArrayList<>();
+public class LanguageComboBox extends JComboBox<Long> {
+    private final List<Long> languages;
+    private List<Long> disabledLanguages = new ArrayList<>();
+    private List<Long> currentLanguages = new ArrayList<>();
 
     public LanguageComboBox() {
         languages = LanguageProxy.instance.getLanguages();
+        setRenderer(new DefaultListCellRenderer(){
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                String langTitle = LanguageProxy.instance.getTitle((Long) value);
+                label.setText(langTitle);
+                return label;
+            }
+        });
         setCurrentLanguages();
 
     }
 
     public void setCurrentLanguages() {
         currentLanguages = new ArrayList<>(languages);
-        for (Language language : disabledLanguages) {
-            currentLanguages.remove(language);
+        for (Long langID : disabledLanguages) {
+            currentLanguages.remove(langID);
         }
-        DefaultComboBoxModel<Language> model = new DefaultComboBoxModel<>(currentLanguages.toArray(new Language[languages.size()]));
-        Language currentLanguage = LanguageProxy.instance.getCurrentLanguage();
-        if (currentLanguages.contains(currentLanguage)) {
-            model.setSelectedItem(currentLanguage);
+
+        DefaultComboBoxModel<Long> model = new DefaultComboBoxModel<>(currentLanguages.toArray(new Long[languages.size()]));
+        Long curLangID = LanguageProxy.instance.getCurrentLanguage();
+        if (currentLanguages.contains(curLangID)) {
+            model.setSelectedItem(curLangID);
         }
         removeAllItems();
         setModel(model);
     }
 
-    public void setEnableItem(Language language, boolean enable){
+    public void setEnableItem(Long language, boolean enable){
         if (language == null) return;
         if (languages.contains(language)){
             if (enable){

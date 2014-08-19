@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ProgressDialog;
 
@@ -18,12 +17,12 @@ import java.util.List;
  */
 public class Data implements Printable {
     private final PagesActivity pagesActivity;
-    private final Language language;
+    private final Long langID;
 
 
-    public Data(PageFormat pageFormat, List<Long> eid, List<String> selectedFields, Language language) {
-        this.language = language;
-        pagesActivity = new PagesActivity(eid, selectedFields, language, pageFormat);
+    public Data(PageFormat pageFormat, List<Long> eid, List<String> selectedFields, Long langID) {
+        this.langID = langID;
+        pagesActivity = new PagesActivity(eid, selectedFields, langID, pageFormat);
         ProgressDialog.start(pagesActivity, ResourceBundleHelper.getString("print_prepare_progress"));
     }
 
@@ -72,7 +71,7 @@ public class Data implements Printable {
     private void drawHeader(Graphics2D graphics2D, int pageIndex, PageFormat pageFormat) {
         float y = (float) pageFormat.getImageableY();
         float x = (float) pageFormat.getImageableX();
-        String page = " " + ResourceBundleHelper.getString(language, "page", "page: ") + (pageIndex + 1);
+        String page = " " + ResourceBundleHelper.getString(langID, "page", "page: ") + (pageIndex + 1);
         FontMetrics fm = graphics2D.getFontMetrics();
         double imageableWidth = pageFormat.getImageableWidth();
 
@@ -84,7 +83,7 @@ public class Data implements Printable {
     }
 
     private String getHeader(FontMetrics fm, double width) {
-        String header = ResourceBundleHelper.getString(language, "print_header", "VaroDB");
+        String header = ResourceBundleHelper.getString(langID, "print_header", "VaroDB");
 
         if (fm.stringWidth(header) > width ) {
             String ellipsis = "... ";

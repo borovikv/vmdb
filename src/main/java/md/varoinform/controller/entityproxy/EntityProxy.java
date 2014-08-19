@@ -1,7 +1,6 @@
 package md.varoinform.controller.entityproxy;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 import md.varoinform.model.entities.TitleContainer;
 /**
  * Created with IntelliJ IDEA.
@@ -11,22 +10,22 @@ import md.varoinform.model.entities.TitleContainer;
  */
 public class EntityProxy {
 
-    private Language language;
+    private final Long langID;
 
     public EntityProxy() {
+        langID = LanguageProxy.instance.getCurrentLanguage();
     }
 
-    public EntityProxy(Language language) {
-        this.language = language;
+    public EntityProxy(Long langID) {
+        this.langID = langID;
     }
 
     protected String getTitle(TitleContainer container){
         if ( container == null ) return "";
-        return container.title(currentLanguage());
+        return container.title(LanguageProxy.instance.getTitle(langID));
     }
 
-    protected Language currentLanguage() {
-        if (language != null) return language;
-        return LanguageProxy.instance.getCurrentLanguage();
+    public Long getLangID() {
+        return langID;
     }
 }

@@ -1,11 +1,11 @@
 package md.varoinform.controller;
 
-import md.varoinform.model.dao.GenericDaoHibernateImpl;
-import md.varoinform.model.entities.Language;
+import md.varoinform.model.dao.LanguageDao;
 import md.varoinform.util.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,60 +16,47 @@ import java.util.List;
 public enum  LanguageProxy {
     instance;
 
-    private Language currentLanguage;
-    private List<Language> languages;
+    private final Map<Long, String> languageMap;
+    private Long currentLanguage;
 
     private LanguageProxy() {
-        languages = getLanguages();
-        if (languages.size() > 0) {
-            currentLanguage = getPrefLanguage(languages);
-        }
+        languageMap = LanguageDao.getLanguageMap();
+        currentLanguage = new PreferencesHelper().getCurrentLanguage();
     }
 
-    private Language getPrefLanguage(List<Language> languages) {
-        PreferencesHelper preferences = new PreferencesHelper();
-        String prefLanguage = preferences.getCurrentLanguage();
-        for (Language language : languages) {
-            if (language.getTitle().startsWith(prefLanguage)){
-                return language;
-            }
-        }
-        return languages.get(0);
+
+    public List<Long> getLanguages(){
+        return new ArrayList<>(languageMap.keySet());
     }
 
-    public List<Language> getLanguages(){
-        if (languages != null)
-            return new ArrayList<>(languages);
-        GenericDaoHibernateImpl<Language, Long> languageDao = new GenericDaoHibernateImpl<>(Language.class);
-        languages = languageDao.getAll();
-        return new ArrayList<>(languages);
-    }
-
-    public Language getCurrentLanguage() {
+    public Long getCurrentLanguage() {
         return currentLanguage;
     }
 
     public static String getCurrentLanguageTitle() {
-        Language curLang = instance.getCurrentLanguage();
-        if (curLang != null)
-            return curLang.getTitle();
-        return "en";
+        return instance.languageMap.get(instance.currentLanguage);
     }
 
-    public void setCurrentLanguage(Language currentLanguage) {
+    public void setCurrentLanguage(Long currentLanguage) {
         this.currentLanguage = currentLanguage;
         PreferencesHelper preferences = new PreferencesHelper();
-        preferences.setCurrentLanguage(currentLanguage.getTitle());
+        preferences.setCurrentLanguage(currentLanguage);
     }
 
-    public Language getLanguage(String title) {
+    public Long getLanguage(String title) {
         if (title == null) return null;
-        List<Language> list = getLanguages();
-        for (Language language : list) {
-            if (language.getTitle().toLowerCase().startsWith(title.toLowerCase())){
-                return language;
-            }
+        for (Long id : languageMap.keySet()) {
+            String t = languageMap.get(id);
+            if (t != null && t.equalsIgnoreCase(title)) return id;
         }
         return null;
+    }
+
+    public String getTitle(Long langID) {
+        return languageMap.get(langID);
+    }
+
+    public List<String> getLangTitles() {
+        return new ArrayList<>(languageMap.values());
     }
 }

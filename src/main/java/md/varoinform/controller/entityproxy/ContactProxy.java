@@ -29,8 +29,8 @@ import java.util.*;
 public class ContactProxy extends EntityProxy {
     private Contact contact;
 
-    public ContactProxy(Contact contact, Language language) {
-        super(language);
+    public ContactProxy(Contact contact, Long langID) {
+        super(langID);
         this.contact = contact;
     }
 
@@ -68,7 +68,7 @@ public class ContactProxy extends EntityProxy {
 
 
     public String getCountry(){
-        return ResourceBundleHelper.getString(currentLanguage(), "moldova", "Republic Moldova");
+        return ResourceBundleHelper.getString(getLangID(), "moldova", "Republic Moldova");
     }
 
     public List<String> getEmail(){

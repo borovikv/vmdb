@@ -3,7 +3,6 @@ package md.varoinform.view.dialogs.print;
 import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.StringWrapper;
@@ -25,7 +24,7 @@ public class PagesActivity extends Activity {
     private final double canvasHeight;
     private List<Page> pages = new ArrayList<>();
     private final List<Long> idEnterprises;
-    private final Language language;
+    private final Long langID;
     private static final Font DEFAULT_FONT = new Font("SanSerif", Font.PLAIN, 10);
     private List<String> fields;
     private static final int horizontalPadding = 15;
@@ -37,9 +36,9 @@ public class PagesActivity extends Activity {
     private String format;
 
 
-    public PagesActivity(List<Long> idEnterprises, List<String> fields, Language language, PageFormat pageFormat) {
+    public PagesActivity(List<Long> idEnterprises, List<String> fields, Long langID, PageFormat pageFormat) {
         this.idEnterprises = idEnterprises;
-        this.language = language;
+        this.langID = langID;
         this.fields = fields;
         Canvas canvas = new Canvas();
         defaultFM = canvas.getFontMetrics(DEFAULT_FONT);
@@ -64,9 +63,9 @@ public class PagesActivity extends Activity {
         int usedArea = 0;
         int size = idEnterprises.size();
         Map<Long, Map<String, Object>> enterprisesMap = null;
-        if (!language.equals(Cache.instance.getCachedLanguage())){
+        if (!langID.equals(Cache.instance.getCachedLanguage())){
             setProgress(1);
-            enterprisesMap = EnterpriseDao.getEnterprisesMap(idEnterprises, language);
+            enterprisesMap = EnterpriseDao.getEnterprisesMap(idEnterprises, langID);
         }
 
         for (int i = 0; i < size; i++) {
@@ -80,7 +79,7 @@ public class PagesActivity extends Activity {
             }
             if (map == null) continue;
 
-            Block block = getBlock(map, language);
+            Block block = getBlock(map, langID);
             double blockArea = (block.height() + verticalPadding) * (blockWidth + horizontalPadding);
             usedArea += blockArea;
 
@@ -117,14 +116,14 @@ public class PagesActivity extends Activity {
         return (width + horizontalPadding) * 2 > canvasWidth ? canvasWidth : width;
     }
 
-    private Block getBlock(Map<String, Object> enterpriseMap, Language language) {
+    private Block getBlock(Map<String, Object> enterpriseMap, Long langID) {
         Block block = new Block();
 
 
         for (String field : fields) {
             if (EnterpriseProxy.isAddress(field)) continue;
 
-            String str = getLine(language, enterpriseMap.get(field), field);
+            String str = getLine(langID, enterpriseMap.get(field), field);
             if (str.isEmpty()) continue;
 
             FontMetrics fm;
@@ -145,7 +144,7 @@ public class PagesActivity extends Activity {
             }
         }
 
-        String address = getAddress(fields, enterpriseMap, language);
+        String address = getAddress(fields, enterpriseMap, langID);
         if (address.isEmpty()) return block;
         List<String> addressLines = StringWrapper.wrap(address, defaultFM, (int) blockWidth);
         block.addLines("address", addressLines, DEFAULT_FONT);
@@ -153,7 +152,7 @@ public class PagesActivity extends Activity {
         return block;
     }
 
-    private String getAddress(List<String> fields, Map<String, Object> enterpriseMap, Language language) {
+    private String getAddress(List<String> fields, Map<String, Object> enterpriseMap, Long langID) {
         List<String> addressFields = EnterpriseProxy.getAddressFields();
         Set<Object> address = new LinkedHashSet<>();
         for (String field : addressFields) {
@@ -167,16 +166,16 @@ public class PagesActivity extends Activity {
             }
         }
 
-        return getLine(language, address, "address");
+        return getLine(langID, address, "address");
     }
 
-    private String getLine(Language language, Object o, String field) {
+    private String getLine(Long langID, Object o, String field) {
         String value = StringUtils.valueOf(o);
         if (value.isEmpty()) return "";
 
         if (EnterpriseProxy.isTitle(field)) return value;
 
-        String label = ResourceBundleHelper.getString(language, field, field);
+        String label = ResourceBundleHelper.getString(langID, field, field);
         return label + ": " + value;
     }
 

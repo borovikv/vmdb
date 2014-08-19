@@ -1,7 +1,6 @@
 package md.varoinform.view.status;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
@@ -35,7 +34,7 @@ public enum StatusBar  implements Observable {
         languageCombo.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Language newLanguage = (Language)languageCombo.getSelectedItem();
+                Long newLanguage = (Long)languageCombo.getSelectedItem();
                 LanguageProxy.instance.setCurrentLanguage(newLanguage);
                 notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED));
             }

@@ -27,6 +27,11 @@ public enum DefaultLanguages {
         return getDefault();
     }
 
+    public static DefaultLanguages language(Long langID){
+        String title = LanguageProxy.instance.getTitle(langID);
+        return getLanguageByTitle(title);
+    }
+
     public static DefaultLanguages getDefault() {
         return DefaultLanguages.RU;
     }

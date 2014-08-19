@@ -1,7 +1,7 @@
 package md.varoinform.model.search;
 
+import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Language;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.util.ResourceBundleHelper;
 import org.hibernate.Query;
@@ -32,8 +32,10 @@ public class ForeingCapitalSearcher extends Searcher {
     private Boolean convertToBoolean(String q) {
         List<String> list = new ArrayList<>();
         List<String> all = new ArrayList<>();
-        List<Language> languages = LanguageProxy.instance.getLanguages();
-        for (Language language : languages) {
+        List<String> titles = LanguageProxy.instance.getLangTitles();
+
+        for (String title : titles) {
+            DefaultLanguages language = DefaultLanguages.getLanguageByTitle(title);
             String falseStr = ResourceBundleHelper.getString(language, "false", "no").toLowerCase();
             String trueStr = ResourceBundleHelper.getString(language, "true", "yes").toLowerCase();
             list.add(trueStr);
