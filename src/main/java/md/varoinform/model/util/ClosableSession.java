@@ -64,4 +64,8 @@ public class ClosableSession implements AutoCloseable {
     public void save(Object o) {
         session.save(o);
     }
+
+    public Session getSession() {
+        return session;
+    }
 }

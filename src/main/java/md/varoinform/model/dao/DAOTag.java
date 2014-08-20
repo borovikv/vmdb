@@ -4,6 +4,7 @@ import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
@@ -56,10 +57,13 @@ public class DAOTag {
         }
     }
 
+    public void synchronizeWithDB(Set<md.varoinform.controller.cache.Tag> tags){
+        synchronizeWithDB(tags, null);
+    }
 
-    public void synchronizeWithDB(Set<md.varoinform.controller.cache.Tag> tags) {
+    public void synchronizeWithDB(Set<md.varoinform.controller.cache.Tag> tags, Configuration cfg) {
         if (tags.isEmpty()) return;
-        try (ClosableSession session = new ClosableSession()) {
+        try (ClosableSession session = new ClosableSession(cfg)) {
             try {
                 Transaction transaction = session.beginTransaction();
                 for (md.varoinform.controller.cache.Tag tag : tags) {

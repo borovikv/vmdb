@@ -1,6 +1,7 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.util.ClosableSession;
 import md.varoinform.model.util.SessionManager;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -38,20 +39,22 @@ public class FullTextSearcher extends Searcher {
 
     @Override
     public List<Long> search(String q) {
-        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
-        QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
-        LuceneQueryBuilder builder = new LuceneQueryBuilder(queryBuilder, fields);
-        //Transaction tx = fullTextSession.beginTransaction();
-        try {
-            org.apache.lucene.search.Query query = builder.createQuery(q);
-            if (query == null) return new ArrayList<>();
-            org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
-            hibQuery.setProjection("id");
-            return getIds(hibQuery.list());
-        } catch (Exception ex) {
-           // tx.rollback();
-            ex.printStackTrace();
-            return new ArrayList<>();
+        try(ClosableSession session = new ClosableSession()) {
+            FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
+            QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
+            LuceneQueryBuilder builder = new LuceneQueryBuilder(queryBuilder, fields);
+            //Transaction tx = fullTextSession.beginTransaction();
+            try {
+                org.apache.lucene.search.Query query = builder.createQuery(q);
+                if (query == null) return new ArrayList<>();
+                org.hibernate.search.FullTextQuery hibQuery = fullTextSession.createFullTextQuery(query, Enterprise.class);
+                hibQuery.setProjection("id");
+                return getIds(hibQuery.list());
+            } catch (Exception ex) {
+                // tx.rollback();
+                ex.printStackTrace();
+                return new ArrayList<>();
+            }
         }
     }
 
