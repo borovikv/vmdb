@@ -41,6 +41,7 @@ public class Tag implements Comparable<Tag> {
         this.id = id;
     }
 
+
     public String getTitle() {
         return title;
     }
@@ -49,6 +50,7 @@ public class Tag implements Comparable<Tag> {
         this.title = title;
         isSynchronizedWithDB = false;
     }
+
 
     public List<Long> getEnterprises(){
         return enterprises;
@@ -68,6 +70,7 @@ public class Tag implements Comparable<Tag> {
         isSynchronizedWithDB = false;
     }
 
+
     public boolean isSynchronizedWithDB() {
         return isSynchronizedWithDB;
     }
@@ -75,6 +78,7 @@ public class Tag implements Comparable<Tag> {
     public void setSynchronizedWithDB(boolean isSynchronized) {
         this.isSynchronizedWithDB = isSynchronized;
     }
+
 
     @Override
     public int hashCode() {

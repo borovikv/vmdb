@@ -71,6 +71,7 @@ public class DAOTag {
                         Tag t = getOrCreateTag(tag, session);
                         session.save(t);
                         tag.setSynchronizedWithDB(true);
+                        tag.setId(t.getId());
                     }
                 }
                 transaction.commit();
