@@ -56,4 +56,12 @@ public class ClosableSession implements AutoCloseable {
     public void replicate(Object o, ReplicationMode overwrite) {
         session.replicate(o, overwrite);
     }
+
+    public void delete(Object o) {
+        session.delete(o);
+    }
+
+    public void save(Object o) {
+        session.save(o);
+    }
 }

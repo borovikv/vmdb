@@ -5,9 +5,7 @@ import md.varoinform.controller.Holder;
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.cache.BranchCache;
 import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.cache.TagCache;
-import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Tag;
+import md.varoinform.controller.cache.Tag;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.update.CheckUpdateWorker;
 import md.varoinform.util.ImageHelper;
@@ -161,7 +159,6 @@ public class MainFrame extends JFrame implements Observer {
                     @Override
                     protected Object doInBackground() throws Exception {
                         try {
-                            TagCache.instance.shutDown();
                             while (Holder.await()){
                                 Thread.sleep(500);
                             }
@@ -315,16 +312,20 @@ public class MainFrame extends JFrame implements Observer {
 
             case TAG_SELECTED:
                 Tag tag = (Tag) event.getValue();
-                enableDeleting = tag != null;
-                List<Long> enterprises = new EnterpriseDao().getEnterpriseIdsByTag(tag);
-                showResults(enterprises);
+                if (tag != null) {
+                    enableDeleting = true;
+                    showResults(tag.getEnterprises());
+                } else {
+                    showResults(null);
+                    enableDeleting = false;
+                }
                 break;
 
             case DELETE:
                 if (enableDeleting && isTagSelected()) {
                     @SuppressWarnings("unchecked")
                     List<Long> eids = (List<Long>) event.getValue();
-                    tagPanel.deleteEnterpriseFromTag(eids);
+                    tagPanel.removeFromCurrentTag(eids);
                 }
                 break;
 

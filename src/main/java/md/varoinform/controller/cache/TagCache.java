@@ -1,12 +1,12 @@
 package md.varoinform.controller.cache;
 
+import md.varoinform.controller.Holder;
 import md.varoinform.model.dao.DAOTag;
-import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.Tag;
-import md.varoinform.model.util.SessionManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,12 +14,10 @@ import java.util.*;
  * Date: 8/13/14
  * Time: 5:49 PM
  */
+
 public enum TagCache {
     instance;
-
-    private final Set<Tag> tags = new TreeSet<>();
-    private final Set<Tag> tagsToSave = new HashSet<>();
-    private final Set<Tag> tagsToDelete = new HashSet<>();
+    private final Set<Tag> tags = new ConcurrentSkipListSet<>();
 
     TagCache() {
         update();
@@ -27,54 +25,44 @@ public enum TagCache {
 
     public void update(){
         tags.clear();
-        //tags.addAll(daoTag.getAll());
+        tags.addAll(new DAOTag().getAll());
     }
 
     public List<Tag> getTags() {
         return new ArrayList<>(tags);
     }
 
-    public void saveTag(Tag tag, List<Long> eids){
-        List<Enterprise> enterprises = new EnterpriseDao().read(eids);
-        tag.getEnterprises().addAll(enterprises);
-        saveTag(tag);
-    }
 
-    public void saveTag(Tag tag){
-        tagsToSave.add(tag);
-        SessionManager.instance.getSession().evict(tag);
-    }
-
-    public void createTag(String title, List<Long> eids) {
-        List<Enterprise> enterprises = new EnterpriseDao().read(eids);
-        Tag tag = new DAOTag().createTag(title, enterprises);
-        if (tag == null) return;
-        tags.add(tag);
-        saveTag(tag);
+    public void addTag(String title, List<Long> enterpriseIds) {
+        for (Tag tag : tags) {
+            if (tag.getTitle().equals(title)){
+                tag.add(enterpriseIds);
+            } else {
+                Tag newTag = new Tag(title, enterpriseIds);
+                tags.add(newTag);
+            }
+        }
+        synchronizeWithDB();
     }
 
     public void delete(Tag tag) {
         tags.remove(tag);
-        SessionManager.instance.getSession().evict(tag);
-        tagsToSave.remove(tag);
-        tagsToDelete.add(tag);
+        new DAOTag().delete(tag);
     }
 
-    public boolean deleteFromTag(Tag tag, List<Long> enterpriseIds){
-        List<Enterprise> enterprises = new EnterpriseDao().read(enterpriseIds);
-        tag.removeAll(enterprises);
-        if (tag.getEnterprises().isEmpty()) {
-            delete(tag);
-            return true;
-        } else {
-            saveTag(tag);
-            return false;
+    public void synchronizeWithDB(){
+        try (Holder ignored = new Holder()){
+            for (Tag t : tags) {
+                if (t.getEnterprises().isEmpty()){
+                    delete(t);
+                }
+            }
+            new DAOTag().synchronizeWithDB(tags);
         }
     }
 
-    public void shutDown(){
-        DAOTag daoTag = new DAOTag();
-        daoTag.delete(tagsToDelete);
-        daoTag.save(tagsToSave);
+    @SuppressWarnings("UnusedParameters")
+    public void updateTag(Tag tag) {
+        synchronizeWithDB();
     }
 }

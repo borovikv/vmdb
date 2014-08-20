@@ -3,7 +3,6 @@ package md.varoinform.controller;
 import md.varoinform.util.Profiler;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,7 +24,7 @@ public class Holder implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public synchronized void close() {
         int currentCounter = counter.decrementAndGet();
         if (currentCounter == 0) wait.set(false);
         p.end();

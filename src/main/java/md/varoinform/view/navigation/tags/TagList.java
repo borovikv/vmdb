@@ -1,7 +1,7 @@
 package md.varoinform.view.navigation.tags;
 
+import md.varoinform.controller.cache.Tag;
 import md.varoinform.controller.cache.TagCache;
-import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.TagDialog;
 
@@ -59,11 +59,12 @@ public class TagList extends JList<Tag> {
         if (enterpriseIds.isEmpty()) return false;
         if (index >= 0) {
             Tag tag = getModel().getElementAt(index);
-            TagCache.instance.saveTag(tag, enterpriseIds);
+            tag.add(enterpriseIds);
+            TagCache.instance.updateTag(tag);
             setSelectedIndex(index);
         } else {
             String title = TagDialog.getTag();
-            TagCache.instance.createTag(title, enterpriseIds);
+            TagCache.instance.addTag(title, enterpriseIds);
             updateModel();
         }
         return true;
@@ -71,17 +72,14 @@ public class TagList extends JList<Tag> {
 
     public void renameTag(Tag tag) {
         if (tag == null) return;
+
         String message = ResourceBundleHelper.getString("rename_tag_message", "Insert new title");
-        String result = getNewTitle(tag, message);
-        if (result == null || result.isEmpty() || result.equals(tag.getTitle())) return;
-        tag.setTitle(result);
+        String newName = (String) JOptionPane.showInputDialog(null, message, "", JOptionPane.QUESTION_MESSAGE, null, null, tag.getTitle());
+        if (newName == null || newName.isEmpty() || newName.equals(tag.getTitle())) return;
+
+        tag.setTitle(newName);
+        TagCache.instance.updateTag(tag);
         ((FilteringModel<Tag>)getModel()).updateModel();
-        TagCache.instance.saveTag(tag);
-
-    }
-
-    public String getNewTitle(Tag tag, String message) {
-        return (String) JOptionPane.showInputDialog(null, message, "", JOptionPane.QUESTION_MESSAGE, null, null, tag.getTitle());
     }
 
     public void deleteTag(final Tag tag) {
@@ -94,21 +92,22 @@ public class TagList extends JList<Tag> {
         }
     }
 
+    public Tag removeFromCurrentTag(List<Long> eids) {
+        Tag selectedTag = getSelectedValue();
+        boolean clearSelection = selectedTag.remove(eids);
+        TagCache.instance.updateTag(selectedTag);
+        updateModel();
+        if (clearSelection){
+            clearSelection();
+        }
+
+        return clearSelection? null: selectedTag;
+    }
+
 
     public void updateModel(){
         FilteringModel<Tag> model = (FilteringModel<Tag>) getModel();
         model.clear();
         model.addAll(TagCache.instance.getTags());
-    }
-
-
-    public Tag deleteEnterpriseFromTag(List<Long> eids) {
-        Tag selectedTag = getSelectedValue();
-        boolean clearSelection = TagCache.instance.deleteFromTag(selectedTag, eids);
-        updateModel();
-        if (clearSelection){
-            clearSelection();
-        }
-        return clearSelection? null: selectedTag;
     }
 }

@@ -3,7 +3,6 @@ package md.varoinform.model.dao;
 import md.varoinform.controller.comparators.EnterpriseComparator;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.Tag;
 import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
@@ -113,20 +112,10 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
     }
 
 
-    public List<Enterprise> read(List<Long> ids) {
-        try(ClosableSession session = new ClosableSession()) {
-            Criteria criteria = session.createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
-            //noinspection unchecked
-            return criteria.list();
-        }
-    }
-
-    public List<Long> getEnterpriseIdsByTag(Tag tag) {
-        String hql = "Select distinct e.id from Tag t join t.enterprises e where t.id = " + tag.getId();
-        try (ClosableSession session = new ClosableSession()){
-            //noinspection unchecked
-            return session.createQuery(hql).setCacheable(false).list();
-        }
+    public List<Enterprise> read(ClosableSession session, List<Long> ids) {
+        Criteria criteria = session.createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
+        //noinspection unchecked
+        return criteria.list();
     }
 
 }

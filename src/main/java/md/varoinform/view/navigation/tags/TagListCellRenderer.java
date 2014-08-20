@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation.tags;
 
-import md.varoinform.model.entities.Tag;
+import md.varoinform.controller.cache.Tag;
 import md.varoinform.view.RendererHelper;
 
 import javax.swing.*;

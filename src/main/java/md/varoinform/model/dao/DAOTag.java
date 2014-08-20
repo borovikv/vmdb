@@ -2,11 +2,11 @@ package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.Tag;
-import org.hibernate.ReplicationMode;
-import org.hibernate.Session;
+import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,64 +17,87 @@ import java.util.Set;
  * Date: 11/29/13
  * Time: 11:08 AM
  */
-public class DAOTag extends TransactionDaoHibernateImpl<Tag, Long>{
-    public DAOTag() {
-        super(Tag.class);
-    }
-
-    public Tag read(String title) {
-        @SuppressWarnings("unchecked")
-        List<Tag> tags = getSession().createCriteria(Tag.class).add(Restrictions.eq("title", title)).list();
-        if (tags.isEmpty()) return null;
-        return tags.get(0);
-    }
-
-    public Tag createTag(String title, List<Enterprise> enterprises) {
-        if (title == null || title.isEmpty()) return null;
-
-        Tag tag = read(title);
-        if (tag == null){
-            tag = new Tag();
-            tag.setTitle(title);
-            Set<Enterprise> enterpriseSet = new HashSet<>(enterprises);
-            tag.setEnterprises(enterpriseSet);
-        } else {
-            tag.getEnterprises().addAll(enterprises);
+public class DAOTag {
+    public List<md.varoinform.controller.cache.Tag> getAll() {
+        List<md.varoinform.controller.cache.Tag> result = new ArrayList<>();
+        try (ClosableSession session = new ClosableSession()) {
+            try {
+                Transaction transaction = session.beginTransaction();
+                @SuppressWarnings("unchecked")
+                List<Tag> tags = session.createCriteria(Tag.class).list();
+                for (Tag tag : tags) {
+                    result.add(new md.varoinform.controller.cache.Tag(tag));
+                }
+                transaction.commit();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                session.getTransaction().rollback();
+            }
         }
+        return result;
+    }
+
+    public void delete(md.varoinform.controller.cache.Tag tag) {
+        if (tag == null || tag.getId() < 0) return;
+
+        try (ClosableSession session = new ClosableSession()) {
+            try {
+                Transaction transaction = session.beginTransaction();
+                @SuppressWarnings("unchecked")
+                List<Tag> tags = session.createCriteria(Tag.class).add(Restrictions.eq("id", tag.getId())).list();
+                for (Tag t : tags) {
+                    session.delete(t);
+                }
+                transaction.commit();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                session.getTransaction().rollback();
+            }
+        }
+    }
+
+
+    public void synchronizeWithDB(Set<md.varoinform.controller.cache.Tag> tags) {
+        if (tags.isEmpty()) return;
+        try (ClosableSession session = new ClosableSession()) {
+            try {
+                Transaction transaction = session.beginTransaction();
+                for (md.varoinform.controller.cache.Tag tag : tags) {
+                    if (!tag.isSynchronizedWithDB()) {
+                        Tag t = getOrCreateTag(tag, session);
+                        session.save(t);
+                        tag.setSynchronizedWithDB(true);
+                    }
+                }
+                transaction.commit();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                session.getTransaction().rollback();
+            }
+        }
+    }
+
+    private static Tag getOrCreateTag(md.varoinform.controller.cache.Tag t, ClosableSession session) {
+        if (t.getId() != null && t.getId() > 0) {
+            @SuppressWarnings("unchecked")
+            List<Tag> tags = session.createCriteria(Tag.class).add(Restrictions.eq("id", t.getId())).list();
+            if (!tags.isEmpty()) {
+                Tag tag = tags.get(0);
+                tag.setTitle(t.getTitle());
+                tag.setEnterprises(new HashSet<>(new EnterpriseDao().read(session, t.getEnterprises())));
+                return tag;
+            }
+        }
+
+        return createTag(t, session);
+    }
+
+    private static Tag createTag(md.varoinform.controller.cache.Tag t, ClosableSession session) {
+        Tag tag = new Tag();
+        tag.setTitle(t.getTitle());
+        Set<Enterprise> enterpriseSet = new HashSet<>(new EnterpriseDao().read(session, t.getEnterprises()));
+        tag.setEnterprises(enterpriseSet);
         return tag;
     }
 
-
-    public void delete(Set<Tag> tagsToDelete) {
-        if (tagsToDelete.isEmpty()) return;
-        try{
-            Transaction transaction = getSession().beginTransaction();
-            for (Tag tag : tagsToDelete) {
-                getSession().delete(tag);
-            }
-            transaction.commit();
-        } catch (RuntimeException e){
-            e.printStackTrace();
-            getSession().getTransaction().rollback();
-        }
-    }
-
-    public void save(Set<Tag> tagsToSave) {
-        if (tagsToSave.isEmpty()) return;
-        Session session = getSession();
-        try{
-            Transaction transaction = session.beginTransaction();
-            for (Tag tag : tagsToSave) {
-                if (tag.getId() != null){
-                    session.replicate(tag, ReplicationMode.OVERWRITE);
-                } else {
-                    session.save(tag);
-                }
-            }
-            transaction.commit();
-        } catch (RuntimeException e){
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
-    }
 }
