@@ -64,7 +64,8 @@ public class PagesActivity extends Activity {
         int size = idEnterprises.size();
         Map<Long, Map<String, Object>> enterprisesMap = null;
         if (!langID.equals(Cache.instance.getCachedLanguage())){
-            setProgress(1);
+            //ToDo: create real change in progress bar
+            setProgress(10);
             enterprisesMap = EnterpriseDao.getEnterprisesMap(idEnterprises, langID);
         }
 
