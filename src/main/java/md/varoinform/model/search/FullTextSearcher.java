@@ -2,7 +2,6 @@ package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.util.ClosableSession;
-import md.varoinform.model.util.SessionManager;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -26,14 +25,19 @@ public class FullTextSearcher extends Searcher {
 
     public static boolean createIndex() {
         boolean success = false;
-        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
-        try {
+        FullTextSession fullTextSession = null;
+        try (ClosableSession session = new ClosableSession()) {
+            fullTextSession = Search.getFullTextSession(session.getSession());
             fullTextSession.createIndexer().startAndWait();
             success = true;
+
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            if  (fullTextSession != null) {
+                fullTextSession.close();
+            }
         }
-        fullTextSession.close();
         return success;
     }
 

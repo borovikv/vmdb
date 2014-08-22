@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Query;
 
 import java.util.ArrayList;
@@ -35,10 +35,10 @@ public class WorkplacesSearcher extends Searcher {
 
     @Override
     public List<Long> search(String q) {
-        try {
+        try (ClosableSession session = new ClosableSession()) {
             Integer amount = Integer.parseInt(q.trim());
             String hql = "Select distinct e.id from Enterprise e where e.workplaces " + type + " :amount";
-            Query query = SessionManager.instance.getSession().createQuery(hql).setInteger("amount", amount);
+            Query query = session.createQuery(hql).setInteger("amount", amount);
             //noinspection unchecked
             return query.list();
         } catch (NumberFormatException e){

@@ -1,10 +1,8 @@
 package md.varoinform.util;
 
 import md.varoinform.model.Configurator;
-import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.util.ClosableSession;
 import md.varoinform.model.util.SessionManager;
-import org.hibernate.Session;
 import org.junit.Test;
 
 import java.io.File;
@@ -37,12 +35,10 @@ public class ZipTest {
 
         Path pathToDB = Paths.get(dbFile.getParent(), "DB");
         Configurator configurator = new Configurator(pathToDB.toString());
-        Session session = SessionManager.instance.getSession(configurator.configureWithoutIndex());
-        assertTrue(session.isOpen());
+        try (ClosableSession session = new ClosableSession(configurator.configureWithoutIndex())) {
+            assertTrue(session.isOpen());
+        }
 
-        EnterpriseDao edao = new EnterpriseDao();
-        Enterprise varo = edao.read(3083L);
-        assertEquals(varo.getId(), new Long(3083L));
 
         SessionManager.instance.shutdownAll();
     }

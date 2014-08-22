@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.util.ClosableSession;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -31,28 +31,30 @@ public class QueryAnalyzer {
     }
 
     public List<String> getTokens() {
-        FullTextSession fullTextSession = Search.getFullTextSession(SessionManager.instance.getSession());
-        Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("customanalyzer");
-        QueryParser parser = new QueryParser(Version.LUCENE_35, "title", analyzer);
-        List<String> tokenized = new ArrayList<>();
-        List<String> emails = new ArrayList<>();
-        String searchString = prepareString(query, emails);
-        tokenized.addAll(emails);
-        if (searchString.isEmpty()) return tokenized;
+        try (ClosableSession session = new ClosableSession()) {
+            FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
+            Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("customanalyzer");
+            QueryParser parser = new QueryParser(Version.LUCENE_35, "title", analyzer);
+            List<String> tokenized = new ArrayList<>();
+            List<String> emails = new ArrayList<>();
+            String searchString = prepareString(query, emails);
+            tokenized.addAll(emails);
+            if (searchString.isEmpty()) return tokenized;
 
-        try {
-            Query query = parser.parse(searchString);
-            String cleanedText = query.toString("title");
-            Matcher matcher = CLEANED_TEXT_PATTERN.matcher(cleanedText);
-            while (matcher.find()) {
-                String word = matcher.group(2);
-                tokenized.add(word.trim());
+            try {
+                Query query = parser.parse(searchString);
+                String cleanedText = query.toString("title");
+                Matcher matcher = CLEANED_TEXT_PATTERN.matcher(cleanedText);
+                while (matcher.find()) {
+                    String word = matcher.group(2);
+                    tokenized.add(word.trim());
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
+            return tokenized;
         }
-        return tokenized;
     }
 
     private String prepareString(String searchString, List<String> emails) {

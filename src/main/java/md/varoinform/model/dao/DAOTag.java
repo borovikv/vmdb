@@ -86,7 +86,7 @@ public class DAOTag {
             if (!tags.isEmpty()) {
                 Tag tag = tags.get(0);
                 tag.setTitle(t.getTitle());
-                tag.setEnterprises(new HashSet<>(new EnterpriseDao().read(session, t.getEnterprises())));
+                tag.setEnterprises(new HashSet<>(EnterpriseDao.read(session, t.getEnterprises())));
                 return tag;
             }
         }
@@ -96,7 +96,7 @@ public class DAOTag {
     private static Tag createTag(md.varoinform.controller.cache.Tag t, ClosableSession session) {
         Tag tag = new Tag();
         tag.setTitle(t.getTitle());
-        Set<Enterprise> enterpriseSet = new HashSet<>(new EnterpriseDao().read(session, t.getEnterprises()));
+        Set<Enterprise> enterpriseSet = new HashSet<>(EnterpriseDao.read(session, t.getEnterprises()));
         tag.setEnterprises(enterpriseSet);
         return tag;
     }

@@ -12,11 +12,8 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.*;
 
-public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long> {
+public class EnterpriseDao  {
 
-    public EnterpriseDao() {
-        super(Enterprise.class);
-    }
 
     public static Map<Long, Map<String, Object>> getEnterprisesMap(Long langID) {
         return getEnterprisesMap(null, langID);
@@ -112,7 +109,7 @@ public class EnterpriseDao extends TransactionDaoHibernateImpl<Enterprise, Long>
     }
 
 
-    public List<Enterprise> read(ClosableSession session, List<Long> ids) {
+    public static List<Enterprise> read(ClosableSession session, List<Long> ids) {
         Criteria criteria = session.createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
         //noinspection unchecked
         return criteria.list();

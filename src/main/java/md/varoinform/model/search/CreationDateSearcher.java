@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Query;
 
 import java.util.ArrayList;
@@ -16,11 +16,13 @@ import java.util.regex.Pattern;
 public class CreationDateSearcher extends Searcher {
     @Override
     public List<Long> search(String q) {
-        String hql = "Select distinct e.id from Enterprise e where e.creation = :creation";
-        if (!Pattern.matches("^[0-9]+$", q.trim()))return new ArrayList<>();
-        int year = Integer.parseInt(q.trim());
-        Query query = SessionManager.instance.getSession().createQuery(hql).setInteger("creation", year);
-        //noinspection unchecked
-        return query.list();
+        try (ClosableSession session = new ClosableSession()) {
+            String hql = "Select distinct e.id from Enterprise e where e.creation = :creation";
+            if (!Pattern.matches("^[0-9]+$", q.trim())) return new ArrayList<>();
+            int year = Integer.parseInt(q.trim());
+            Query query = session.createQuery(hql).setInteger("creation", year);
+            //noinspection unchecked
+            return query.list();
+        }
     }
 }

@@ -49,14 +49,6 @@ public class ClosableSession implements AutoCloseable {
         return session.createQuery(hql);
     }
 
-    public void evict(Object o) {
-        session.evict(o);
-    }
-
-    public void replicate(Object o, ReplicationMode overwrite) {
-        session.replicate(o, overwrite);
-    }
-
     public void delete(Object o) {
         session.delete(o);
     }
@@ -67,5 +59,9 @@ public class ClosableSession implements AutoCloseable {
 
     public Session getSession() {
         return session;
+    }
+
+    public boolean isOpen() {
+        return session.isOpen();
     }
 }
