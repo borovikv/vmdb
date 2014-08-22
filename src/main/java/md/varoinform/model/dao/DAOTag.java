@@ -7,10 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,17 +54,17 @@ public class DAOTag {
         }
     }
 
-    public void synchronizeWithDB(Set<md.varoinform.controller.cache.Tag> tags){
-        synchronizeWithDB(tags, null);
+    public static void synchronizeWithDB(Collection<md.varoinform.controller.cache.Tag> tags){
+        synchronizeWithDB(tags, null, true);
     }
 
-    public void synchronizeWithDB(Set<md.varoinform.controller.cache.Tag> tags, Configuration cfg) {
+    public static void synchronizeWithDB(Collection<md.varoinform.controller.cache.Tag> tags, Configuration cfg, boolean checkSynchronization) {
         if (tags.isEmpty()) return;
         try (ClosableSession session = new ClosableSession(cfg)) {
             try {
                 Transaction transaction = session.beginTransaction();
                 for (md.varoinform.controller.cache.Tag tag : tags) {
-                    if (!tag.isSynchronizedWithDB()) {
+                    if (!checkSynchronization || !tag.isSynchronizedWithDB()) {
                         Tag t = getOrCreateTag(tag, session);
                         session.save(t);
                         tag.setSynchronizedWithDB(true);
@@ -93,7 +90,6 @@ public class DAOTag {
                 return tag;
             }
         }
-
         return createTag(t, session);
     }
 
