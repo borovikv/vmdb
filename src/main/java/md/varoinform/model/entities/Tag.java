@@ -3,7 +3,6 @@ package md.varoinform.model.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -54,10 +53,6 @@ public class Tag implements Comparable<Tag>{
     @Override
     public String toString() {
         return title;
-    }
-
-    public void removeAll(Collection<Enterprise> collection){
-        enterprises.removeAll(collection);
     }
 
     @Override

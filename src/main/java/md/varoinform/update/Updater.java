@@ -1,14 +1,13 @@
 package md.varoinform.update;
 
 import md.varoinform.Settings;
+import md.varoinform.controller.cache.TagCache;
 import md.varoinform.model.Configurator;
+import md.varoinform.model.dao.DAOTag;
+import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.entities.Database;
-import md.varoinform.model.entities.Tag;
-import md.varoinform.model.entities.TagEnterprise;
 import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.util.SessionManager;
-import md.varoinform.model.util.Synchronizer;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
@@ -125,10 +124,8 @@ public class Updater {
     }
 
     private void copyUserData(Configuration cfg) {
-        for (Class c : new Class[]{Database.class, Tag.class, TagEnterprise.class}) {
-            Synchronizer.synchronize(c, cfg);
-        }
-
+        DAOTag.synchronizeWithDB(TagCache.instance.getTags(), cfg, false);
+        DatabaseDao.setUID(DatabaseDao.getUID(), cfg);
         SessionManager.instance.shutdownAll();
     }
 

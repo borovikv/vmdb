@@ -83,6 +83,10 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
             Throwable cause = null;
             try {
                 updated = new Updater(getUID()).update();
+                SessionManager.instance.shutdownAll();
+                Cache.instance.update();
+                BranchCache.instance.update();
+                TagCache.instance.update();
             } catch (Throwable e) {
                 cause = e;
             }
@@ -98,10 +102,6 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
                 String message = String.format(ResourceBundleHelper.getString(key, defaultValue), date, updated);
                 JOptionPane.showMessageDialog(null, message);
             }
-            SessionManager.instance.shutdownAll();
-            Cache.instance.update();
-            BranchCache.instance.update();
-            TagCache.instance.update();
         }
     }
 }

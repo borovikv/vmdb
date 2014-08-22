@@ -1,15 +1,14 @@
 package md.varoinform.sequrity;
 
 import md.varoinform.Settings;
-import md.varoinform.model.dao.TransactionDaoHibernateImpl;
-import md.varoinform.model.entities.Database;
-import md.varoinform.sequrity.exception.*;
+import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.sequrity.exception.Error;
+import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.RegistrationException;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,17 +28,8 @@ public class Registrar {
     private void setUID(String uid) {
         PreferencesHelper preferencesHelper = new PreferencesHelper();
         preferencesHelper.setUID(uid);
-
-        Database record = new Database();
-        record.setUid(uid);
-        TransactionDaoHibernateImpl<Database, Long> dao = new TransactionDaoHibernateImpl<>(Database.class);
-        List<Database> all = dao.getAll();
-        if (all.size() > 0){
-            for (Database database : all) {
-                dao.delete(database);
-            }
-        }
-        dao.save(record);
+        DatabaseDao.clear();
+        DatabaseDao.setUID(uid);
     }
 
     public void registerByInternet(String uid) throws RegistrationException, PasswordException {

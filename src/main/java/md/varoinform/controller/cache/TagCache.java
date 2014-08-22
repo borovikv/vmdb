@@ -34,12 +34,16 @@ public enum TagCache {
 
 
     public void addTag(String title, List<Long> enterpriseIds) {
-        for (Tag tag : tags) {
-            if (tag.getTitle().equals(title)){
-                tag.add(enterpriseIds);
-            } else {
-                Tag newTag = new Tag(title, enterpriseIds);
-                tags.add(newTag);
+        Tag newTag = new Tag(title, enterpriseIds);
+        if (tags.isEmpty()) {
+            tags.add(newTag);
+        } else {
+            for (Tag tag : tags) {
+                if (tag.getTitle().equals(title)) {
+                    tag.add(enterpriseIds);
+                } else {
+                    tags.add(newTag);
+                }
             }
         }
         synchronizeWithDB();
@@ -57,7 +61,7 @@ public enum TagCache {
                     delete(t);
                 }
             }
-            new DAOTag().synchronizeWithDB(tags);
+            DAOTag.synchronizeWithDB(tags);
         }
     }
 

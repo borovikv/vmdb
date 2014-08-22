@@ -30,13 +30,14 @@ public class Guardian {
             register(pm, uid);
         }
 
-        DatabaseDao dao = new DatabaseDao();
-        if (!dao.checkUID(uid)){
+        String dbUid = DatabaseDao.getUID();
+        if (dbUid == null || !dbUid.equalsIgnoreCase(uid)){
             register(pm, uid);
         }
 
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private boolean databaseAlreadyInUse() {
         String lockFile = Settings.pathToDB().toString() + ".lock.db";
         return Files.exists(Paths.get(lockFile));
