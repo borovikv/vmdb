@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class NodeDao {
 
-    public List<Long> getEnterprisesID(Node node){
+    public List<Long> getEnterprisesID(Long id){
         Transaction tx = null;
         try (ClosableSession session = new ClosableSession()) {
             tx = session.beginTransaction();
             String hql = "Select e.id from Node n join n.enterprises e where n.id = :id";
-            Query query = session.createQuery(hql).setLong("id", node.getId()).setCacheable(false);
+            Query query = session.createQuery(hql).setLong("id", id).setCacheable(false);
             //noinspection unchecked
             List<Long> enterpriseIds = query.list();
             tx.commit();

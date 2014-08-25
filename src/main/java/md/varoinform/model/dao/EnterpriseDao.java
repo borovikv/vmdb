@@ -1,12 +1,14 @@
 package md.varoinform.model.dao;
 
-import md.varoinform.controller.comparators.EnterpriseComparator;
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.EnterpriseTitle;
 import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -16,7 +18,28 @@ public class EnterpriseDao  {
 
 
     public static Map<Long, Map<String, Object>> getEnterprisesMap(Long langID) {
-        return getEnterprisesMap(null, langID);
+        return getEnterprisesMap((List<Long>)null, langID);
+    }
+
+    public static List<Long> getEIDs() {
+        try(ClosableSession session = new ClosableSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                @SuppressWarnings("unchecked")
+                List<Long> list = session.createCriteria(EnterpriseTitle.class)
+                        .add(Restrictions.eq("language.id", LanguageProxy.instance.getCurrentLanguage()))
+                        .addOrder(Order.asc("title"))
+                        .setProjection(Projections.property("container.id"))
+                        .list();
+                transaction.commit();
+                return list;
+
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                transaction.rollback();
+            }
+        }
+        return new ArrayList<>();
     }
 
     public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Long langID) {
@@ -30,16 +53,19 @@ public class EnterpriseDao  {
                 }
                 //noinspection unchecked
                 List<Enterprise> enterprises = criteria.list();
-                Collections.sort(enterprises, new EnterpriseComparator(langID));
                 for (Enterprise enterprise : enterprises) {
                     Long id = enterprise.getId();
                     Map<String, Object> cache = enterpriseAsMap(enterprise, langID);
                     enterprisesMap.put(id, cache);
                 }
+                transaction.commit();
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 transaction.rollback();
             }
+
+        } catch(RuntimeException e) {
+            e.printStackTrace();
 
         }
         return enterprisesMap;
@@ -115,4 +141,7 @@ public class EnterpriseDao  {
         return criteria.list();
     }
 
+    public static  Map<String, Object> getEnterprisesMap(Long eid, Long langID) {
+        return getEnterprisesMap(Arrays.asList(eid), langID).get(eid);
+    }
 }

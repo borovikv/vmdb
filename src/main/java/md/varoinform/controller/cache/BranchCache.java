@@ -21,21 +21,40 @@ public enum BranchCache {
     private Map<Long, List<Long>> branchCache = new HashMap<>();
     private Map<Long, List<Long>> children = new HashMap<>();
     private Map<Long, Map<String, String>> branchTitles = new HashMap<>();
-    private Set<Long> sorted = new HashSet<>();
-
 
     private BranchCache(){
-        createBranchCache();
+        createBranchTitleCache();
     }
 
+    private void createBranchTitleCache() {
+        NodeDao nodeDao = new NodeDao();
+        try (ClosableSession session = new ClosableSession()) {
+            List<Node> nodes = nodeDao.getAll(session);
+            for (Node node : nodes) {
+                Map<String, String> titles = new HashMap<>();
+                for (NodeTitle title : node.getTitles()) {
+                    titles.put(title.getLanguage().getTitle(), title.getTitle());
+                }
+                branchTitles.put(node.getId(), titles);
+            }
+        } catch (RuntimeException rex){
+            rex.printStackTrace();
+        }
+    }
+
+
     public void update() {
-        sorted.clear();
+        children.clear();
+        branchCache.clear();
+        createBranchTitleCache();
     }
 
     public List<Long> getEnterpriseIdByNode(Long node){
         List<Long> ids = branchCache.get(node);
-        if (!sorted.contains(node)) {
+        if (ids == null){
+            ids = new NodeDao().getEnterprisesID(node);
             Collections.sort(ids, new EnterpriseIDComparator());
+            branchCache.put(node, ids);
         }
         return ids;
     }
@@ -46,33 +65,13 @@ public enum BranchCache {
         return map.get(LanguageProxy.getCurrentLanguageTitle());
     }
 
-    private void createBranchCache() {
-        NodeDao nodeDao = new NodeDao();
-        try (ClosableSession session = new ClosableSession()) {
-            List<Node> nodes = nodeDao.getAll(session);
-            for (Node node : nodes) {
-                Long nodeId = node.getId();
-
-                List<Long> entID = nodeDao.getEnterprisesID(node);
-                branchCache.put(nodeId, entID);
-
-                List<Long> childrenId = nodeDao.getChildrenID(nodeId);
-                children.put(nodeId, childrenId);
-
-                Map<String, String> titles = new HashMap<>();
-                for (NodeTitle title : node.getTitles()) {
-                    titles.put(title.getLanguage().getTitle(), title.getTitle());
-                }
-                branchTitles.put(nodeId, titles);
-            }
-        } catch (RuntimeException rex){
-            rex.printStackTrace();
-        }
-    }
-
-
     public List<Long> getChildren(Long id){
-        return children.get(id);
+        List<Long> children = this.children.get(id);
+        if (children != null) return children;
+
+        List<Long> childrenId = new NodeDao().getChildrenID(id);
+        this.children.put(id, childrenId);
+        return childrenId;
     }
 
     public List<Long> startWith(String text){

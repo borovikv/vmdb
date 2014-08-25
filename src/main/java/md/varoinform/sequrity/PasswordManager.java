@@ -6,7 +6,10 @@ import md.varoinform.sequrity.exception.Error;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringConverter;
+
+import javax.swing.*;
 
 
 /**
@@ -46,9 +49,11 @@ public class PasswordManager {
         try (ClosableSession session = new ClosableSession()){
             session.beginTransaction().rollback();
             return true;
-        } catch (Throwable ignored) {
-            return false;
-        }
+        } catch (ExceptionInInitializerError e){
+            JOptionPane.showMessageDialog(null, ResourceBundleHelper.getString("JDBCConnectionException", "Cannot connect to database"));
+            System.exit(-1);
+        } catch (Throwable ignored) {}
+        return false;
     }
 
     public void setDBPassword(String uid, byte[] encryptedPassword) throws PasswordException {
