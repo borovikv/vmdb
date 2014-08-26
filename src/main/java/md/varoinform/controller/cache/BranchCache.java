@@ -6,10 +6,12 @@ import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.NodeTitle;
 import md.varoinform.model.util.ClosableSession;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,12 +22,24 @@ import java.util.Map;
 public enum BranchCache {
     instance;
 
-    private Map<Long, List<Long>> branchCache = new HashMap<>();
+    private Map<Long, List<Long>> branchCache = new ConcurrentHashMap<>();
     private Map<Long, List<Long>> children = new HashMap<>();
     private Map<Long, Map<String, String>> branchTitles = new HashMap<>();
 
     private BranchCache(){
         createBranchTitleCache();
+        new SwingWorker<Void, Void>(){
+            @Override
+            protected Void doInBackground() throws Exception {
+                Map<Long, List<Long>> cache = new HashMap<>();
+                for (Long nodeID : branchTitles.keySet()) {
+                    List<Long> eids = NodeDao.getEnterprisesID(nodeID);
+                    cache.put(nodeID, eids);
+                }
+                branchCache.putAll(cache);
+                return null;
+            }
+        }.execute();
     }
 
     private void createBranchTitleCache() {

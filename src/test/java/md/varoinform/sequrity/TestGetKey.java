@@ -8,6 +8,7 @@ import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.StringConverter;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -18,6 +19,7 @@ import static org.junit.Assert.*;
  * Date: 12/12/13
  * Time: 5:00 PM
  */
+@Ignore
 public class TestGetKey {
 
     @Test
