@@ -8,6 +8,7 @@ import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -17,20 +18,22 @@ import java.util.*;
 public class EnterpriseDao  {
 
 
-    public static Map<Long, Map<String, Object>> getEnterprisesMap(Long langID) {
-        return getEnterprisesMap((List<Long>)null, langID);
-    }
-
     public static List<Long> getEIDs() {
+        return getEIDs(null, LanguageProxy.instance.getCurrentLanguage());
+    }
+    public static List<Long> getEIDs(Criterion criterion, Long langID) {
         try(ClosableSession session = new ClosableSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                @SuppressWarnings("unchecked")
-                List<Long> list = session.createCriteria(EnterpriseTitle.class)
-                        .add(Restrictions.eq("language.id", LanguageProxy.instance.getCurrentLanguage()))
+                Criteria criteria = session.createCriteria(EnterpriseTitle.class)
+                        .add(Restrictions.eq("language.id", langID))
                         .addOrder(Order.asc("title"))
-                        .setProjection(Projections.property("container.id"))
-                        .list();
+                        .setProjection(Projections.property("container.id"));
+                if (criterion != null){
+                    criteria.add(criterion);
+                }
+                @SuppressWarnings("unchecked")
+                List<Long> list = criteria.list();
                 transaction.commit();
                 return list;
 
@@ -40,6 +43,11 @@ public class EnterpriseDao  {
             }
         }
         return new ArrayList<>();
+    }
+
+
+    public static Map<Long, Map<String, Object>> getEnterprisesMap(Long langID) {
+        return getEnterprisesMap((List<Long>)null, langID);
     }
 
     public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Long langID) {

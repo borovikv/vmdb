@@ -33,11 +33,8 @@ public enum  SessionManager {
         String path = configuration.getProperty("hibernate.connection.url");
         SessionFactory factory = sessions.get(path);
         if(factory != null){
-            Session session = factory.getCurrentSession();
-            if( !session.isOpen()) {
-                session = factory.openSession();
-                ThreadLocalSessionContext.bind(session);
-            }
+            Session session = factory.openSession();
+            ThreadLocalSessionContext.bind(session);
             return session;
         }
         factory = buildSessionFactory(configuration);

@@ -1,10 +1,12 @@
 package md.varoinform.model.dao;
 
+import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Query;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,14 +17,23 @@ import java.util.List;
  */
 public class NodeDao {
 
-    public List<Long> getEnterprisesID(Long id){
+    public static List<Long> getEnterprisesID(Long id){
         Transaction tx = null;
         try (ClosableSession session = new ClosableSession()) {
             tx = session.beginTransaction();
-            String hql = "Select e.id from Node n join n.enterprises e where n.id = :id";
-            Query query = session.createQuery(hql).setLong("id", id).setCacheable(false);
+            String hql = "Select distinct new list(e.id as id, t.title) " +
+                    "from Node n join n.enterprises e join e.titles t " +
+                    "where n.id = :id and t.language.id = :lang order by t.title";
+            Query query = session.createQuery(hql)
+                    .setLong("id", id)
+                    .setLong("lang", LanguageProxy.instance.getCurrentLanguage())
+                    .setCacheable(false);
             //noinspection unchecked
-            List<Long> enterpriseIds = query.list();
+            List<List<Object>> list = query.list();
+            List<Long> enterpriseIds = new ArrayList<>();
+            for (List<Object> objects : list) {
+                enterpriseIds.add((Long) objects.get(0));
+            }
             tx.commit();
             return enterpriseIds;
         } catch (RuntimeException rex){
@@ -31,7 +42,7 @@ public class NodeDao {
         }
     }
 
-    public List<Node> getAll(ClosableSession session) {
+    public static List<Node> getAll(ClosableSession session) {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -47,7 +58,7 @@ public class NodeDao {
         }
     }
 
-    public List<Long> getChildrenID(Long nodeId) {
+    public static List<Long> getChildrenID(Long nodeId) {
         try (ClosableSession session = new ClosableSession()){
             String hql = "Select arc.head.id from Arc arc where arc.tail.id = " + nodeId;
             //noinspection unchecked

@@ -1,13 +1,15 @@
 package md.varoinform.controller.cache;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.controller.comparators.EnterpriseIDComparator;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.NodeTitle;
 import md.varoinform.model.util.ClosableSession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,9 +29,8 @@ public enum BranchCache {
     }
 
     private void createBranchTitleCache() {
-        NodeDao nodeDao = new NodeDao();
         try (ClosableSession session = new ClosableSession()) {
-            List<Node> nodes = nodeDao.getAll(session);
+            List<Node> nodes = NodeDao.getAll(session);
             for (Node node : nodes) {
                 Map<String, String> titles = new HashMap<>();
                 for (NodeTitle title : node.getTitles()) {
@@ -52,8 +53,7 @@ public enum BranchCache {
     public List<Long> getEnterpriseIdByNode(Long node){
         List<Long> ids = branchCache.get(node);
         if (ids == null){
-            ids = new NodeDao().getEnterprisesID(node);
-            Collections.sort(ids, new EnterpriseIDComparator());
+            ids = NodeDao.getEnterprisesID(node);
             branchCache.put(node, ids);
         }
         return ids;
@@ -69,7 +69,7 @@ public enum BranchCache {
         List<Long> children = this.children.get(id);
         if (children != null) return children;
 
-        List<Long> childrenId = new NodeDao().getChildrenID(id);
+        List<Long> childrenId = NodeDao.getChildrenID(id);
         this.children.put(id, childrenId);
         return childrenId;
     }
