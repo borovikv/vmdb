@@ -83,5 +83,11 @@ public enum  SessionManager {
         }
     }
 
+    public void clearCache(){
+        for (String s : sessions.keySet()) {
+            SessionFactory factory = sessions.get(s);
+            factory.getCache().evictAllRegions();
+        }
+    }
 
 }

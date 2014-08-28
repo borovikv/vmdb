@@ -2,10 +2,9 @@ package md.varoinform.controller.cache;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.model.util.SessionManager;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.observer.ObservableEvent;
-import md.varoinform.view.dialogs.progress.ActivityDialog;
 
 import javax.swing.*;
 import java.util.List;
@@ -46,7 +45,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
             worker.cancel(true);
         }
         worker = new CacheUpdater();
-        ActivityDialog.start(worker, ResourceBundleHelper.getString("cache_update_message", "Wait..."));
+        worker.execute();
 
     }
 
@@ -92,6 +91,8 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         @Override
         protected Void doInBackground() throws Exception {
             eCache.putAll(EnterpriseDao.getEnterprisesMap(langID));
+            SessionManager.instance.clearCache();
+            System.gc();
             return null;
         }
     }
