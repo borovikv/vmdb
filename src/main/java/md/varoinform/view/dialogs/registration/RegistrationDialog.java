@@ -79,7 +79,8 @@ public class RegistrationDialog extends JDialog implements Observer{
 
         add(card);
         language = DefaultLanguages.getDefault();
-        licencePanel.notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED, language));
+        ObservableEvent event = new ObservableEvent<>(ObservableEvent.Type.LANGUAGE_CHANGED, language);
+        licencePanel.notifyObservers(event);
     }
 
 
@@ -169,7 +170,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                 }
                 nextCard();
 
-            } catch (PasswordException exception){
+            } catch (PasswordException | LockedException exception){
                 showExceptionMessage(exception);
             }
         }
@@ -179,7 +180,7 @@ public class RegistrationDialog extends JDialog implements Observer{
             try {
                 registrar.register(idDB, password);
                 setVisible(false);
-            } catch (RegistrationException | PasswordException e) {
+            } catch (RegistrationException | PasswordException | LockedException e) {
                 showExceptionMessage(e);
             }
         }

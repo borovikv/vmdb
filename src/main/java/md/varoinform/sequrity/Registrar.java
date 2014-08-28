@@ -3,6 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.Settings;
 import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.sequrity.exception.Error;
+import md.varoinform.sequrity.exception.LockedException;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.RegistrationException;
 import md.varoinform.util.PreferencesHelper;
@@ -20,7 +21,7 @@ public class Registrar {
 
     PasswordManager passwordManager = new PasswordManager();
 
-    public void register(String uid, String encryptedPassword) throws RegistrationException, PasswordException {
+    public void register(String uid, String encryptedPassword) throws RegistrationException, PasswordException, LockedException {
         passwordManager.setDBPassword(uid, encryptedPassword);
         setUID(uid);
     }
@@ -32,7 +33,7 @@ public class Registrar {
         DatabaseDao.setUID(uid);
     }
 
-    public void registerByInternet(String uid) throws RegistrationException, PasswordException {
+    public void registerByInternet(String uid) throws RegistrationException, PasswordException, LockedException {
         String encryptedPassword = getPassword(uid);
         register(uid, encryptedPassword);
     }

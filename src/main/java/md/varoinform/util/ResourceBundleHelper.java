@@ -75,6 +75,11 @@ public class ResourceBundleHelper implements Serializable {
         return DefaultLanguages.getLanguageByTitle(languageTitle);
     }
 
+    public static String getStringForUserLocale(String key, String defaultValue){
+        String userLanguage = System.getProperty("user.language");
+        return getString(DefaultLanguages.getLanguageByTitle(userLanguage), key, defaultValue);
+    }
+
     /*
     get string with empty default value
      */

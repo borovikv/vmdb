@@ -2,6 +2,7 @@ package md.varoinform.sequrity;
 
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.CryptographyException;
+import md.varoinform.sequrity.exception.LockedException;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
@@ -23,7 +24,7 @@ import static org.junit.Assert.*;
 public class TestGetKey {
 
     @Test
-    public void testPassGetKey() throws PasswordException, UnregisteredDBExertion {
+    public void testPassGetKey() throws PasswordException, UnregisteredDBExertion, LockedException {
         String aKey = "password";
 
         PasswordManager passwordManager = new PasswordManager();
@@ -52,14 +53,14 @@ public class TestGetKey {
 
 
     @Test(expected = UnregisteredDBExertion.class)
-    public void testNotExistKey() throws UnregisteredDBExertion, PasswordException {
+    public void testNotExistKey() throws UnregisteredDBExertion, PasswordException, LockedException {
         PasswordManager passwordManager = new PasswordManager();
         passwordManager.getDBPassword(getUID());
     }
 
 
     @Test(expected = PasswordException.class)
-    public void testFailKey() throws PasswordException {
+    public void testFailKey() throws PasswordException, LockedException {
         PasswordManager passwordManager = new PasswordManager();
         byte[] encryptedKey = encrypt("secret");
         assertNotNull(encryptedKey);

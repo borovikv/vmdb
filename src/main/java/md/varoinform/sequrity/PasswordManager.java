@@ -1,15 +1,10 @@
 package md.varoinform.sequrity;
 
 import md.varoinform.model.util.ClosableSession;
-import md.varoinform.sequrity.exception.CryptographyException;
+import md.varoinform.sequrity.exception.*;
 import md.varoinform.sequrity.exception.Error;
-import md.varoinform.sequrity.exception.PasswordException;
-import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringConverter;
-
-import javax.swing.*;
 
 
 /**
@@ -22,7 +17,7 @@ public class PasswordManager {
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
     private static String password = "password";
 
-    public String getDBPassword(String uid) throws PasswordException, UnregisteredDBExertion {
+    public String getDBPassword(String uid) throws PasswordException, UnregisteredDBExertion, LockedException {
         byte[] encryptedPassword = preferencesHelper.getDBPassword();
         if (encryptedPassword == null) throw new UnregisteredDBExertion();
 
@@ -33,7 +28,7 @@ public class PasswordManager {
             throw new PasswordException(Error.DECRYPT_ERROR);
         }
 
-        if( !testConnection(password)) throw new PasswordException(Error.VALIDATION_ERROR);
+        testConnection(password);
 
         return password;
     }
@@ -44,30 +39,37 @@ public class PasswordManager {
         return cypher.decrypt(encryptedPassword, key);
     }
 
-    private boolean testConnection(String password) {
+    private void testConnection(String password) throws PasswordException, LockedException {
         PasswordManager.password = password;
         try (ClosableSession session = new ClosableSession()){
             session.beginTransaction().rollback();
-            return true;
-        } catch (ExceptionInInitializerError e){
-            JOptionPane.showMessageDialog(null, ResourceBundleHelper.getString("JDBCConnectionException", "Cannot connect to database"));
+        } catch (Throwable e){
+            Throwable e1 = e;
+            while ((e1 = e1.getCause()) != null) {
+                String message = e1.getMessage();
+                System.out.println(message);
+                if (message.contains("Wrong user name or password [28000-173]")){
+                    throw new PasswordException(Error.VALIDATION_ERROR);
+                } else if (message.contains("Locked by another process")){
+                    throw new LockedException(Error.LOCKED_ERROR);
+                }
+            }
             System.exit(-1);
-        } catch (Throwable ignored) {}
-        return false;
+        }
     }
 
-    public void setDBPassword(String uid, byte[] encryptedPassword) throws PasswordException {
+    public void setDBPassword(String uid, byte[] encryptedPassword) throws PasswordException, LockedException {
         String password;
         try {
             password = decryptPassword(uid, encryptedPassword);
         } catch (CryptographyException e) {
             throw new PasswordException(Error.DECRYPT_ERROR);
         }
-        if( !testConnection(password)) throw new PasswordException(Error.VALIDATION_ERROR);
+        testConnection(password);
         preferencesHelper.setDBPassword(encryptedPassword);
     }
 
-    public void setDBPassword(String uid, String encryptedPassword) throws PasswordException {
+    public void setDBPassword(String uid, String encryptedPassword) throws PasswordException, LockedException {
         byte[] bytes = StringConverter.getBytesFromHexString(encryptedPassword);
         setDBPassword(uid, bytes);
     }

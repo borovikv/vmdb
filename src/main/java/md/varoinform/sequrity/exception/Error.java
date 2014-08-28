@@ -12,7 +12,8 @@ public enum Error {
     VALIDATION_ERROR("validation_error"),
     DECRYPT_ERROR("decrypt_error"),
     INVALID_UID("invalid_uid"), // Registration exception
-    EXPIRED_UID("expired_uid");
+    EXPIRED_UID("expired_uid"),
+    LOCKED_ERROR("database_may_be_already_in_use");
     private final String text;
 
     Error(String text) {
