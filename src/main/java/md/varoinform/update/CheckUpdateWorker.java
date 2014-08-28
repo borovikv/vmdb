@@ -68,7 +68,7 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
     }
 
     private void showMessageDialog(Throwable e) {
-        e.printStackTrace();
+        //e.printStackTrace();
         String key = e.getMessage();
         String message = ResourceBundleHelper.getString(key, key);
         JOptionPane.showMessageDialog(null, message);

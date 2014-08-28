@@ -6,8 +6,7 @@ import md.varoinform.model.util.ClosableSession;
 import org.hibernate.Query;
 import org.hibernate.Transaction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,30 +15,35 @@ import java.util.List;
  * Time: 5:33 PM
  */
 public class NodeDao {
-
-    public static List<Long> getEnterprisesID(Long id){
+    public static Map<Long, List<Long>> getNodeEnterpriseMap(){
         Transaction tx = null;
         try (ClosableSession session = new ClosableSession()) {
             tx = session.beginTransaction();
-            String hql = "Select distinct new list(e.id as id, t.title) " +
+            String hql2 = "Select distinct new list(n.id, e.id, t.title) " +
                     "from Node n join n.enterprises e join e.titles t " +
-                    "where n.id = :id and t.language.id = :lang order by t.title";
-            Query query = session.createQuery(hql)
-                    .setLong("id", id)
-                    .setLong("lang", LanguageProxy.instance.getCurrentLanguage())
-                    .setCacheable(false);
-            //noinspection unchecked
-            List<List<Object>> list = query.list();
-            List<Long> enterpriseIds = new ArrayList<>();
-            for (List<Object> objects : list) {
-                enterpriseIds.add((Long) objects.get(0));
+                    "where t.language.id = :langID order by t.title";
+            Query query1 = session.createQuery(hql2).setLong("langID", LanguageProxy.instance.getCurrentLanguage());
+            @SuppressWarnings("unchecked")
+            List<List<Object>> list1 = query1.list();
+
+            Map<Long, List<Long>> m = new HashMap<>();
+            for (List<Object> l : list1) {
+                Long i = (Long) l.get(0);
+                List<Long> longs = m.get(i);
+                if (longs == null){
+                    longs = new ArrayList<>();
+                    m.put(i, longs);
+                }
+                longs.add((Long) l.get(1));
             }
+
             tx.commit();
-            return enterpriseIds;
+            return m;
         } catch (RuntimeException rex){
             if (tx != null) tx.rollback();
             throw rex;
         }
+
     }
 
     public static List<Node> getAll(ClosableSession session) {
@@ -58,11 +62,28 @@ public class NodeDao {
         }
     }
 
-    public static List<Long> getChildrenID(Long nodeId) {
+    public static Map<Long, Set<Long>> getArcs(){
+        Map<Long, Set<Long>> m = new HashMap<>();
         try (ClosableSession session = new ClosableSession()){
-            String hql = "Select arc.head.id from Arc arc where arc.tail.id = " + nodeId;
-            //noinspection unchecked
-            return session.createQuery(hql).setCacheable(false).list();
+            session.beginTransaction();
+            try {
+                String hql = "Select arc.tail.id, arc.head.id from Arc arc";
+                List list = session.createQuery(hql).list();
+                for (Object objects : list) {
+                    Object[] ids = (Object[]) objects;
+                    Long id = (Long) ids[0];
+                    Set<Long> longs = m.get(id);
+                    if (longs == null){
+                        longs = new HashSet<>();
+                        m.put(id, longs);
+                    }
+                    longs.add((Long) ids[1]);
+                }
+                session.getTransaction().commit();
+            } catch (RuntimeException ignored){
+                ignored.printStackTrace();
+            }
         }
+        return m;
     }
 }
