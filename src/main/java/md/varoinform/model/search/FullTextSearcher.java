@@ -31,10 +31,10 @@ public class FullTextSearcher extends Searcher {
             fullTextSession.createIndexer().startAndWait();
             success = true;
 
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | RuntimeException e) {
             e.printStackTrace();
         } finally {
-            if  (fullTextSession != null) {
+            if  (fullTextSession != null && fullTextSession.isOpen()) {
                 fullTextSession.close();
             }
         }
