@@ -25,18 +25,12 @@ public class FullTextSearcher extends Searcher {
 
     public static boolean createIndex() {
         boolean success = false;
-        FullTextSession fullTextSession = null;
         try (ClosableSession session = new ClosableSession()) {
-            fullTextSession = Search.getFullTextSession(session.getSession());
+            FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
             fullTextSession.createIndexer().startAndWait();
             success = true;
-
-        } catch (InterruptedException | RuntimeException e) {
+        } catch (RuntimeException | InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            if  (fullTextSession != null && fullTextSession.isOpen()) {
-                fullTextSession.close();
-            }
         }
         return success;
     }
