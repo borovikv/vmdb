@@ -163,11 +163,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                     setVisible(false);
                     return;
                 }
-                String errorText = error.getText();
-                String text = ResourceBundleHelper.getString(language, errorText, errorText);
-                if (JOptionPane.showConfirmDialog(null, text) == JOptionPane.NO_OPTION){
-                    setVisible(false);
-                }
+
                 nextCard();
 
             } catch (PasswordException | LockedException exception){
