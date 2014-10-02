@@ -9,8 +9,8 @@ package md.varoinform.sequrity.exception;
 public enum Error {
     CONNECTION_ERROR("connection_error"),  // Registration exception
     RESPONSE_ERROR("server_error"),         // Registration exception
-    VALIDATION_ERROR("validation_error"),
-    DECRYPT_ERROR("decrypt_error"),
+    VALIDATION_ERROR("invalid_uid"),
+    DECRYPT_ERROR("invalid_uid"),
     INVALID_UID("invalid_uid"), // Registration exception
     EXPIRED_UID("expired_uid"),
     LOCKED_ERROR("database_may_be_already_in_use");

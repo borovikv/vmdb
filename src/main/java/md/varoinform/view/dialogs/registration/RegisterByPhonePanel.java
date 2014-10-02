@@ -13,7 +13,7 @@ import javax.swing.*;
  */
 
 public class RegisterByPhonePanel extends CardPanel {
-    private static final String REG_CODE_KEY =  "registrationCode";
+    private static final String REG_CODE_KEY = "registration_code";
     private final JLabel registrationTextLabel;
 
     private final String idDB;

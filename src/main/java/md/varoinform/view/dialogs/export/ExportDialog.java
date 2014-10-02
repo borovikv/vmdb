@@ -35,7 +35,7 @@ public class ExportDialog extends JDialog {
         setModal(true);
         setLocationRelativeTo(null);
 
-        rowsChoosePanel = new RowsChoosePanel("export-rows-choose", demonstrator.getSelected().size(), demonstrator.getALL().size());
+        rowsChoosePanel = new RowsChoosePanel("rows_choose_panel_title", demonstrator.getSelected().size(), demonstrator.getALL().size());
         add(rowsChoosePanel, BorderLayout.WEST);
 
         JScrollPane scrollPane = new JScrollPane(fieldChooser);

@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
  * Time: 9:56 AM
  */
 public class TagDialog extends JDialog {
-    private final TagPanel tagPanel = new TagPanel("enter_tag");
+    private final TagPanel tagPanel = new TagPanel("tag_placeholder");
     private static String tagTitle = "";
 
 
