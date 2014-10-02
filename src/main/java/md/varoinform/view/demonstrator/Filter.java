@@ -169,7 +169,6 @@ enum Filter {
     }
 
     private RowSorter<TableModel> createSorter(TableView tableView) {
-        System.out.println(filters.values());
         RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
         RowSorter<TableModel> sorter = new RowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
