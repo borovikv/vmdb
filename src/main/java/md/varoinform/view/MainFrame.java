@@ -22,7 +22,6 @@ import md.varoinform.view.dialogs.progress.ActivityDialog;
 import md.varoinform.view.historynavigator.BackButton;
 import md.varoinform.view.historynavigator.ForwardButton;
 import md.varoinform.view.mail.MailAction;
-import md.varoinform.view.navigation.HomeButton;
 import md.varoinform.view.navigation.branchview.BranchPanel;
 import md.varoinform.view.navigation.search.SearchListener;
 import md.varoinform.view.navigation.search.SearchPanel;
@@ -63,20 +62,12 @@ public class MainFrame extends JFrame implements Observer {
     private final ToolbarButton printButton = new ToolbarButton("/external-resources/icons/print.png", "print", "print");
     private final SearchPanel searchPanel = new SearchPanel();
     private final DemonstratorPanel demonstrator = new DemonstratorPanel();
-    private final HomeButton homeButton = new HomeButton(demonstrator);
     private final BackButton backButton = new BackButton();
     private final ForwardButton forwardButton = new ForwardButton();
     private boolean enableDeleting = false;
 
     //------------------------------------------------------------------------------------------------------------------
     public MainFrame() throws HeadlessException {
-        homeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                homeButton.home();
-                branchPanel.clearSelection();
-            }
-        });
         exportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -149,8 +140,6 @@ public class MainFrame extends JFrame implements Observer {
         setContentPane(mainPanel);
 
         updateDisplay();
-
-        homeButton.home();
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -227,7 +216,6 @@ public class MainFrame extends JFrame implements Observer {
         int minButtonWidth = ToolbarButton.getMinWith();
         int gapWidth = 15;
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                        .addComponent(homeButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                         .addComponent(backButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                         .addComponent(forwardButton, minButtonWidth, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                         .addGap(0, gapWidth, gapWidth)
@@ -246,7 +234,6 @@ public class MainFrame extends JFrame implements Observer {
         int gapHeight = height + padding*2;
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addGap(gapHeight, gapHeight, gapHeight)
-                        .addComponent(homeButton, height, height, height)
                         .addComponent(backButton, height, height, height)
                         .addComponent(forwardButton, height, height, height)
                         .addComponent(searchPanel.searchField, height, height, height)

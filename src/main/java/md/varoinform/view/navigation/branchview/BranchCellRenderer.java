@@ -1,5 +1,6 @@
 package md.varoinform.view.navigation.branchview;
 
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.RendererHelper;
 
 import javax.swing.*;
@@ -28,6 +29,9 @@ public class BranchCellRenderer extends DefaultTreeCellRenderer {
         if (value instanceof BranchNode){
             BranchNode branchNode = (BranchNode) value;
             String title = branchNode.getTitle();
+            if (branchNode.isRoot()) {
+                title = ResourceBundleHelper.getString(title, title);
+            }
             return RendererHelper.getPanel(title);
         }
 

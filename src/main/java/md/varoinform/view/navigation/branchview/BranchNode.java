@@ -15,6 +15,7 @@ import java.util.Collections;
 public class BranchNode extends DefaultMutableTreeNode implements Comparable {
     private final Long id;
     private final String node;
+    private final static long ROOT_ID = 1L;
 
     public BranchNode(Long id) {
         super(id);
@@ -22,9 +23,13 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
             this.id = id;
             this.node = BranchCache.instance.getTitle(id);
         } else {
-            this.id = 1L;
+            this.id = ROOT_ID;
             node = "root";
         }
+    }
+
+    public boolean isRoot(){
+        return id.equals(ROOT_ID);
     }
 
     @Override

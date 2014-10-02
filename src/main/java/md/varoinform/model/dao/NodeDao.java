@@ -21,7 +21,7 @@ public class NodeDao {
             tx = session.beginTransaction();
             String hql2 = "Select distinct new list(n.id, e.id, t.title) " +
                     "from Node n join n.enterprises e join e.titles t " +
-                    "where t.language.id = :langID order by t.title";
+                    "where t.language.id = :langID and n.id <> 1 order by t.title";
             Query query1 = session.createQuery(hql2).setLong("langID", LanguageProxy.instance.getCurrentLanguage());
             @SuppressWarnings("unchecked")
             List<List<Object>> list1 = query1.list();

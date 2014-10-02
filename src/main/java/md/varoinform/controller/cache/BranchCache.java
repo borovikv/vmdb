@@ -52,6 +52,9 @@ public enum BranchCache {
     }
 
     public List<Long> getEnterpriseIdByNode(Long node){
+        if  (node == 1L) {
+            return Cache.instance.getAllEnterpriseIds();
+        }
         return branchCache.get(node);
     }
 

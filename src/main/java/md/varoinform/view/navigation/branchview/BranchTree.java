@@ -31,7 +31,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
 
     public BranchTree() {
         setCellRenderer(new BranchCellRenderer());
-        setRootVisible(false);
+        setRootVisible(true);
         setShowsRootHandles(true);
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         addMouseListener(new MouseAdapter() {
@@ -63,15 +63,6 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         if(branchNode != null)
             return branchNode.getNode();
         return null;
-    }
-
-    private void createTree(List<Long> ids, BranchNode root) {
-        if (ids.isEmpty()) return;
-        for (Long id : ids) {
-            BranchNode branchNode = new BranchNode(id);
-            root.add(branchNode);
-            createTree(BranchCache.instance.getChildren(id), branchNode);
-        }
     }
 
     private void scrollToBranch(Long treeNode) {
@@ -133,14 +124,21 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     @Override
     public void filter(String text) {
         root.removeAllChildren();
-        //NodeDao nodeDao = new NodeDao();
-        //List<Node> topNodes =  nodeDao.startWith(text.trim());
         List<Long> ids = BranchCache.instance.startWith(text);
         createTree(ids, root);
 
         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) treeModel;
         defaultTreeModel.setRoot(root);
         this.text = text;
+    }
+
+    private void createTree(List<Long> ids, BranchNode root) {
+        if (ids.isEmpty()) return;
+        for (Long id : ids) {
+            BranchNode branchNode = new BranchNode(id);
+            root.add(branchNode);
+            createTree(BranchCache.instance.getChildren(id), branchNode);
+        }
     }
 
     @Override
