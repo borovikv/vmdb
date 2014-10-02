@@ -33,6 +33,7 @@ enum Filter {
 
     private static Map<Integer, RowFilter<Object, Object>> filters = new HashMap<>();
     private static Map<Integer, Object> filterValues = new HashMap<>();
+    //Tooltip text in header
     private static Map<Integer, Filter> filterTypes = new HashMap<>();
     private final String regex;
     private final RowFilter.ComparisonType type;
@@ -80,7 +81,7 @@ enum Filter {
                 if (filterValues.containsKey(column)){
                     initValue = filterValues.get(column);
                 }
-                Object value = InputDialog.showInputDialog(getMessage(column, columnName, false), initValue);
+                Object value = InputDialog.showInputDialog(getMessage(columnName, name), initValue);
                 filter(value, tableView, column);
             }
 
@@ -95,13 +96,17 @@ enum Filter {
         Filter f = filterTypes.get(col);
         if (f == null) return "";
 
-        String filterName = f.name;
-        String filter = ResourceBundleHelper.getString(filterName, filterName);
-        String column = ResourceBundleHelper.getString(columnName, columnName);
-        String format = ResourceBundleHelper.getString("filter-by");
-        String result = String.format(format, column, filter.toLowerCase());
+        String result = getMessage(columnName, f.name);
+
         if (!withValue) return result;
         return result + " " + filterValues.get(col);
+    }
+
+    private static String getMessage(String columnName, String filterName) {
+        String filter = ResourceBundleHelper.getString(filterName, filterName);
+        String column = ResourceBundleHelper.getString(columnName, columnName);
+        String format = ResourceBundleHelper.getString("filter_input_message_format");
+        return String.format(format, column, filter.toLowerCase());
     }
 
     private void filter(Object value, TableView tableView, int column) {
@@ -122,7 +127,7 @@ enum Filter {
             protected RowSorter<TableModel> doInBackground() throws Exception {
                 return createSorter(tableView);
             }
-        }, ResourceBundleHelper.getString("sorter-dialog-message"));
+        }, ResourceBundleHelper.getString("row_sorter_dialog_message"));
         if (sorter == null) return;
         tableView.setRowSorter(sorter);
         History.instance.add(new HistoryEvent(this, sorter));
