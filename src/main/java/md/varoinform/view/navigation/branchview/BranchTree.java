@@ -53,7 +53,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         needToProcess = false;
         Long treeNodeId = getBranchFromSelected();
         filter(text);
-        scrollToBranch(treeNodeId);
+        select(treeNodeId);
         updateUI();
         needToProcess = true;
     }
@@ -65,14 +65,6 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         return null;
     }
 
-    private void scrollToBranch(Long treeNode) {
-        if (treeNode != null){
-            TreePath treePath = getTreePathForBranch(treeNode);
-
-            scrollPathToVisible(treePath);
-            select(treePath);
-        }
-    }
 
     private TreePath getTreePathForBranch(Long treeNode) {
         DefaultTreeModel defaultTreeModel = ( DefaultTreeModel ) treeModel;
@@ -97,8 +89,20 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
 
 
     public void select(Object object){
-        if (object instanceof TreePath){
-            setSelectionPath((TreePath) object);
+        if (object == null) return;
+
+        TreePath path = null;
+        if (object instanceof BranchNode){
+            path = getTreePathForBranch(((BranchNode) object).getNode());
+        } else if (object instanceof Number){
+            path = getTreePathForBranch((Long) object);
+        }
+        else if (object instanceof TreePath){
+            path = (TreePath) object;
+        }
+        if (path != null) {
+            setSelectionPath(path);
+            scrollPathToVisible(path);
             performSelect();
         }
     }
