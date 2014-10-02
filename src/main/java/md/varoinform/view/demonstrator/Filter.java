@@ -1,5 +1,6 @@
 package md.varoinform.view.demonstrator;
 
+import md.varoinform.Settings;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
 import md.varoinform.util.ResourceBundleHelper;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -81,7 +83,7 @@ enum Filter {
                 if (filterValues.containsKey(column)){
                     initValue = filterValues.get(column);
                 }
-                Object value = InputDialog.showInputDialog(getMessage(columnName, name), initValue);
+                Object value = InputDialog.showInputDialog(getMessage(columnName, name), initValue, tableView.getColumnClass(column));
                 filter(value, tableView, column);
             }
 
@@ -112,14 +114,47 @@ enum Filter {
     private void filter(Object value, TableView tableView, int column) {
         if (value == null) return;
 
-        RowFilter<Object, Object> rowFilter = getRowFilter(value, column);
+        RowFilter<Object, Object> rowFilter = getRowFilter(tableView.getColumnClass(column), value, column);
         if (rowFilter == null) return;
-
         filters.put(column, rowFilter);
         filterValues.put(column, value);
         filterTypes.put(column, this);
         setRowSorter(tableView);
     }
+
+    private RowFilter<Object, Object> getRowFilter(Class<?> columnClass, Object value, int column){
+        if (Number.class.isAssignableFrom(columnClass)) {
+            Number n;
+            if (value instanceof CharSequence) {
+                try {
+                    n = Double.parseDouble((String) value);
+                } catch (NumberFormatException e){
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                n = (Number) value;
+            }
+            return RowFilter.numberFilter(type, n, column);
+        } else if (Date.class.isAssignableFrom(columnClass)) {
+            Date d;
+            if (value instanceof CharSequence){
+                try {
+                    d = Settings.getDefaultDateFormat().parse((String) value);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                d = (Date) value;
+            }
+            return RowFilter.dateFilter(type, d, column);
+        } else {
+            value = Pattern.quote((String) value);
+            return RowFilter.regexFilter(String.format(regex, value), column);
+        }
+    }
+
 
     private void setRowSorter(final TableView tableView) {
         RowSorter<TableModel> sorter = ActivityDialog.start(new SwingWorker<RowSorter<TableModel>, Integer>(){
@@ -134,6 +169,7 @@ enum Filter {
     }
 
     private RowSorter<TableModel> createSorter(TableView tableView) {
+        System.out.println(filters.values());
         RowFilter<TableModel, Object> andFilter = RowFilter.andFilter(filters.values());
         RowSorter<TableModel> sorter = new RowSorter<>(tableView.getModel());
         sorter.setRowFilter(andFilter);
@@ -160,19 +196,6 @@ enum Filter {
         };
     }
 
-    private RowFilter<Object, Object> getRowFilter(Object value, int column){
-        if (value instanceof Number) {
-            return RowFilter.numberFilter(type, (Number) value, column);
-        }
-        if (value instanceof Date) {
-            return RowFilter.dateFilter(type, (Date)value, column);
-        }
-        if (value instanceof CharSequence) {
-            value = Pattern.quote((String) value);
-            return RowFilter.regexFilter(String.format(regex, value), column);
-        }
-        return null;
-    }
 
     public static void clear() {
         filters.clear();

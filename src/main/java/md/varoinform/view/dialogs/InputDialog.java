@@ -27,7 +27,7 @@ public class InputDialog extends JDialog {
     private JButton okButton;
     private Object value;
 
-    public InputDialog(String message, Object value) {
+    public InputDialog(String message, Object value, Class<?> columnClass) {
         String text = StringUtils.valueOf(value);
 
         Font font = Settings.getDefaultFont(Settings.Fonts.SANS_SERIF);
@@ -54,7 +54,7 @@ public class InputDialog extends JDialog {
             }
         };
 
-        input = getTextField(value);
+        input = getTextField(value, columnClass);
         input.addActionListener(okAction);
 
         okButton = new JButton("OK");
@@ -62,13 +62,13 @@ public class InputDialog extends JDialog {
         createLayout();
     }
 
-    public JTextField getTextField(Object value) {
+    public JTextField getTextField(Object value, Class<?> columnClass) {
         JTextField field;
-        if (value instanceof Date){
+        if (Date.class.isAssignableFrom(columnClass)){
             DateFormat defaultDateFormat = Settings.getDefaultDateFormat();
             field = new JFormattedTextField(defaultDateFormat);
             ((JFormattedTextField)field).setValue(value);
-        } else if (value instanceof Number){
+        } else if (Number.class.isAssignableFrom(columnClass)){
             field = new JFormattedTextField(NumberFormat.getNumberInstance());
             ((JFormattedTextField)field).setValue(value);
         } else {
@@ -103,8 +103,8 @@ public class InputDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    public static Object showInputDialog(String message, Object value){
-        InputDialog dialog = new InputDialog(message, value);
+    public static Object showInputDialog(String message, Object value, Class<?> columnClass){
+        InputDialog dialog = new InputDialog(message, value, columnClass);
         dialog.setVisible(true);
         return dialog.value;
     }
