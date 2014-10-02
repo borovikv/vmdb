@@ -65,7 +65,7 @@ public class PrintDialog extends JDialog {
 
 
         JPanel languagePanel = new JPanel();
-        languagePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString("language-choose", "Choose language")));
+        languagePanel.setBorder(getTitledBorder(ResourceBundleHelper.getString("language_choose_panel_title", "Choose language")));
 
         languageCombo = new LanguageComboBox();
         languagePanel.add(languageCombo);
