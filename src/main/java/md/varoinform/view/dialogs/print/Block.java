@@ -18,6 +18,7 @@ public class Block implements Iterable<String>{
         parts = new HashMap<>();
         fields = new ArrayList<>();
         fields.add("title");
+        fields.add("idno");
         fields.add("creationdate");
         fields.add("workplaces");
         fields.add("phones");
@@ -28,7 +29,6 @@ public class Block implements Iterable<String>{
         fields.add("emails");
         fields.add("urls");
         fields.add("goods");
-        fields.add("branches");
         fields.add("contactperson");
         fields.add("checkdate");
 

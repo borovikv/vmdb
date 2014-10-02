@@ -148,7 +148,7 @@ public class EnterpriseProxy extends EntityProxy {
         return contactProxy.getRegion();
     }
 
-    @Property(name = "Country")
+    //@Property(name = "Country")
     public String getCountry(){
         return contactProxy.getCountry();
     }

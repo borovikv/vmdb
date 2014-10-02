@@ -3,6 +3,7 @@ package md.varoinform.view.dialogs.print;
 import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.Field;
 import md.varoinform.model.dao.EnterpriseDao;
+import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 
 import java.awt.*;
@@ -61,8 +62,14 @@ public class Address extends PrintableBase {
                 String.valueOf(map.get(Field.title.toString())),
                 StringUtils.valueOf(map.get(Field.streethouseoffice.toString())),
                 map.get(Field.postalcode.toString()) + " " + map.get(Field.town.toString()),
-                String.valueOf(map.get(Field.country.toString())).toUpperCase()
+                getCountry(map.get(Field.country.toString()))
         };
+    }
+
+    private String getCountry(Object country) {
+        if (country == null)
+            country =  ResourceBundleHelper.getString(langID, "moldova", "Republica Moldova");
+        return String.valueOf(country).toUpperCase();
     }
 
     private String[] getAddressFromCache(Long eid) {
@@ -70,7 +77,7 @@ public class Address extends PrintableBase {
                     String.valueOf(Cache.instance.getValue(eid, Field.title)),
                     StringUtils.valueOf(Cache.instance.getValue(eid, Field.streethouseoffice)),
                     Cache.instance.getValue(eid, Field.postalcode) + " " + Cache.instance.getValue(eid, Field.town),
-                    String.valueOf(Cache.instance.getValue(eid, Field.country)).toUpperCase()
+                    getCountry(Cache.instance.getValue(eid, Field.country))
             };
     }
 
