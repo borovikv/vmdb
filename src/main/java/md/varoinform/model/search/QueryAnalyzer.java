@@ -30,17 +30,36 @@ public class QueryAnalyzer {
         this.query = query;
     }
 
+    /*
+    return query tokens with maximum length
+    not analyze email
+    example:
+        if query = Samsung:
+            cleanText = sam sam samsu samsun samsung
+            return [samsung]
+
+        if query = samnsung phil phi:
+            cleanText = (sam samn samn samnsu samnsun samnsung) (phi phil) phi
+            return [samnsung, phil, phi]
+
+        if query = varo varo@varo-inform.com:
+            cleanText = var varo
+            return [varo@varo-inform.com, varo]
+     */
     public List<String> getTokens() {
         try (ClosableSession session = new ClosableSession()) {
             FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
             Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("customanalyzer");
             QueryParser parser = new QueryParser(Version.LUCENE_35, "title", analyzer);
+
             List<String> tokenized = new ArrayList<>();
+
             List<String> emails = new ArrayList<>();
             String searchString = prepareString(query, emails);
             tokenized.addAll(emails);
             if (searchString.isEmpty()) return tokenized;
 
+            // find tokens with maximum length
             try {
                 Query query = parser.parse(searchString);
                 String cleanedText = query.toString("title");
