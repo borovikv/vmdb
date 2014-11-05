@@ -6,6 +6,7 @@ import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.cache.BranchCache;
 import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.Tag;
+import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.update.CheckUpdateWorker;
 import md.varoinform.util.ImageHelper;
@@ -167,6 +168,16 @@ public class MainFrame extends JFrame implements Observer {
     public JPopupMenu getSettingsMenu() {
         JPopupMenu menu = new JPopupMenu();
         menu.add(new ShowTextButton(this));
+        menu.addSeparator();
+
+        JMenuItem reindexDBItem = new JMenuItem(ResourceBundleHelper.getString("reindexDB", "reindexDB"));
+        reindexDBItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FullTextSearcher.createIndex();
+            }
+        });
+        menu.add(reindexDBItem);
         menu.addSeparator();
 
         JMenuItem proxyItem = new JMenuItem(ResourceBundleHelper.getString("proxy_settings_title", "Proxy Settings"));
