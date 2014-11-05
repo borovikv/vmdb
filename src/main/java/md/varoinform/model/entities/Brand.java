@@ -1,6 +1,7 @@
 package md.varoinform.model.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -32,6 +33,7 @@ public class Brand {
 
     @Column(name = "title")
     @Field
+    @Analyzer(definition = "customanalyzer")
     public String getTitle() {
         return title;
     }
