@@ -20,10 +20,10 @@ public class LuceneQueryBuilder {
             "goods.good.titles.title",
             //"goods.good.nodes.titles.title",
             "brands.title",
-            "contacts.postalCode", "contacts.houseNumber", "contacts.officeNumber",
+            "contacts.postalCode",
+            //"contacts.houseNumber", "contacts.officeNumber",
             "contacts.street.titles.title", "contacts.sector.titles.title", "contacts.town.titles.title",
             "contacts.region.titles.title",
-            "contacts.region.id",
             "contacts.emails.email", "contacts.phones.phone", "contacts.urls.url",
             "contactPersons.person.titles.title", "contactPersons.phones.phone"};
     private final QueryBuilder queryBuilder;
