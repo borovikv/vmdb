@@ -140,7 +140,7 @@ public class MainFrame extends JFrame implements Observer {
         setContentPane(mainPanel);
 
         updateDisplay();
-        branchPanel.select(1l);
+        branchPanel.selectRoot();
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

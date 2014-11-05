@@ -39,10 +39,11 @@ public class BranchPanel extends JPanel implements Observable {
         textField.updateDisplay();
     }
 
-    public void select(Object obj) {
-        branchTree.select(obj);
-    }
 
+    public void selectRoot(){
+        branchTree.selectRoot();
+
+    }
 
     public void clearSelection() {
         branchTree.clearSelection();

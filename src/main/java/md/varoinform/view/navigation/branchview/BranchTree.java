@@ -157,4 +157,8 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
             }
         }
     }
+
+    public void selectRoot() {
+        select(root);
+    }
 }
