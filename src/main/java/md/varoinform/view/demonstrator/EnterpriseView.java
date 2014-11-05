@@ -39,11 +39,11 @@ public class EnterpriseView  {
         address.add((String) Cache.instance.getValue(id, Field.streethouseoffice));
 
         Map<String, Object> context = new HashMap<>();
-        context.put("address", address);
         context.put("addressLabel", ResourceBundleHelper.getString("address", "address"));
+        context.put("address", address);
 
         for (String field : EnterpriseProxy.getFields()) {
-            Object value = Cache.instance.getValue(id, field);
+            Object value = Cache.instance.getRawValue(id, field);
             if (value == null
                     || (value instanceof String && ((String) value).isEmpty())
                     || (value instanceof Collection && ((Collection) value).isEmpty())
@@ -52,7 +52,6 @@ public class EnterpriseView  {
             context.put(field + "Label", label);
             context.put(field, value);
         }
-
         String template = getTemplate();
         TemplateRenderer renderer = new TemplateRenderer(template);
         String render = renderer.render(context);
