@@ -17,7 +17,7 @@ import java.awt.*;
 public abstract class CardPanel extends JPanel implements Observer {
 
     protected final JEditorPane label = new JEditorPane();
-    private String labelKey;
+    protected String labelKey;
     protected DefaultLanguages language = DefaultLanguages.EN;
 
     protected CardPanel() {

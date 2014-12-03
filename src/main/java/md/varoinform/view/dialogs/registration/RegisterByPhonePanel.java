@@ -41,16 +41,16 @@ public class RegisterByPhonePanel extends CardPanel {
         layout.setHorizontalGroup(layout.createParallelGroup()
                         .addComponent(label)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(registrationTextLabel)
-                                .addComponent(codeLabel))
+                                .addComponent(registrationTextLabel))
+                                //.addComponent(codeLabel))
                         .addComponent(passwordField, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                         .addComponent(label, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup()
-                                .addComponent(registrationTextLabel)
-                                .addComponent(codeLabel))
+                                .addComponent(registrationTextLabel))
+                                //.addComponent(codeLabel))
                         .addComponent(passwordField, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
         );
         return layout;
@@ -65,6 +65,7 @@ public class RegisterByPhonePanel extends CardPanel {
     protected void updateDisplay() {
         super.updateDisplay();
         registrationTextLabel.setText(ResourceBundleHelper.getString(language, REG_CODE_KEY, "registration code"));
+        label.setText(String.format(ResourceBundleHelper.getString(language, labelKey, "%s"), idDB));
     }
 
     public String getPassword() {
@@ -72,7 +73,7 @@ public class RegisterByPhonePanel extends CardPanel {
     }
 
     public void setDocumentListener(final JButton nextButton) {
-        // if registration type is internet or input valid enable button
+        // if input valid enable button
         passwordField.addDocumentListener(new DocumentValidListener(passwordField, nextButton));
     }
 
