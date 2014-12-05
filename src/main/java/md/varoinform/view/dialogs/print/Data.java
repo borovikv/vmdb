@@ -83,7 +83,7 @@ public class Data implements Printable {
     }
 
     private String getHeader(FontMetrics fm, double width) {
-        String header = ResourceBundleHelper.getString(langID, "print_header", "VaroDB");
+        String header = ResourceBundleHelper.getString(langID, "print_header", "VMDB");
 
         if (fm.stringWidth(header) > width ) {
             String ellipsis = "... ";
