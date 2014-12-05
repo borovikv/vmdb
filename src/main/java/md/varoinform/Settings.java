@@ -19,10 +19,11 @@ import java.text.SimpleDateFormat;
  * Time: 10:25 AM
  */
 public class Settings {
-    private static final String CONFIG_BUNDLE_KEY = "varodb";
-    private static final String DEFAULT_COLUMNS = "title;town;StreetHouseOffice;phones;faxes;emails;urls";
+    private static final String CONFIG_BUNDLE_KEY = "vmdb";
+    private static final String DEFAULT_COLUMNS = ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "default_columns", "title");
     private static final DateFormat df = new SimpleDateFormat(ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "date_format", "dd/MM/yy"));
-    private static final Image MAIN_ICON = ImageHelper.getImageIcon("/external-resources/icons/V.png").getImage();
+    private static final Image MAIN_ICON = ImageHelper.getImageIcon(ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "main_icon", "/external-resources/icons/VMDB.png")).getImage();
+    private static final String VERSION = ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "version", "1.0");
 
     public static enum Fonts {
         SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
@@ -102,5 +103,9 @@ public class Settings {
 
     public static String getConfigBundleKey() {
         return CONFIG_BUNDLE_KEY;
+    }
+
+    public static String getVersion() {
+        return VERSION;
     }
 }

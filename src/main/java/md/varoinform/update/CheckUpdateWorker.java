@@ -6,7 +6,6 @@ import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.TagCache;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
-import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ActivityDialog;
 
@@ -26,18 +25,11 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         try {
-            return new Updater(getUID()).checkUpdate();
+            return new Updater().checkUpdate();
         } catch (IOException| UnregisteredDBExertion | ExpiredException e) {
             showMessageDialog(e);
             return false;
         }
-    }
-
-    private String getUID() throws UnregisteredDBExertion {
-        PreferencesHelper preferencesHelper = new PreferencesHelper();
-        String idDb = preferencesHelper.getUID();
-        if (idDb == null) throw new UnregisteredDBExertion();
-        return idDb;
     }
 
     @Override
@@ -82,7 +74,7 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
         protected Throwable doInBackground() throws Exception {
             Throwable cause = null;
             try {
-                updated = new Updater(getUID()).update();
+                updated = new Updater().update();
                 SessionManager.instance.shutdownAll();
                 Cache.instance.update();
                 BranchCache.instance.update();

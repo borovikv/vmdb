@@ -9,6 +9,7 @@ import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.util.SessionManager;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
+import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
 import md.varoinform.util.UrlCreator;
 import md.varoinform.util.Zip;
@@ -37,13 +38,25 @@ public class Updater {
     private final String uid;
     private final Path pathToDB;
 
-    public Updater(String uid) {
+    public Updater() throws UnregisteredDBExertion {
+        this(getUID());
+    }
+
+    public Updater(String uid){
         this.uid = uid;
         pathToDB = Settings.pathToDB();
     }
 
+    private static String getUID() throws UnregisteredDBExertion {
+        PreferencesHelper preferencesHelper = new PreferencesHelper();
+        String idDb = preferencesHelper.getUID();
+        if (idDb == null) throw new UnregisteredDBExertion();
+        return idDb;
+    }
+
     public boolean checkUpdate() throws IOException, UnregisteredDBExertion, ExpiredException {
         UrlCreator creator = new UrlCreator(uid, "check");
+        creator.setParam("version", Settings.getVersion());
         Request request = new Request(creator.getString());
         String content = request.timesGet(1);
         return parseContent(content);
@@ -96,6 +109,7 @@ public class Updater {
 
     public File download() throws IOException {
         UrlCreator creator = new UrlCreator(uid);
+        creator.setParam("version", Settings.getVersion());
         URL source = creator.getUrl();
         File destination = Paths.get(pathToDB.getParent().toString(), "Temp.zip").toFile();
 
