@@ -116,7 +116,7 @@ public class MainFrame extends JFrame implements Observer {
         StatusBar.instance.addObserver(this);
         StatusBar.instance.addObserver(Cache.instance);
 
-        setTitle("Varo-Inform DATABASE");
+        setTitle(ResourceBundleHelper.getString("main_frame_title", "VMDB"));
         JFrame.setDefaultLookAndFeelDecorated(true);
         setIconImage(Settings.getMainIcon());
         setExtendedState(MAXIMIZED_BOTH);
