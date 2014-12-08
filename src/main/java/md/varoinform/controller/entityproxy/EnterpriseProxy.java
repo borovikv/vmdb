@@ -112,13 +112,31 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     @Property(name = "Goods")
-    public Collection<String> getGoods(){
-        Set<String> goods = new TreeSet<>();
-        for (GProduce gProduce : enterprise.getGoods()) {
-            goods.add(getTitle(gProduce.getGood()));
+    public Map<String, Set<String>> getGoods(){
+        Map<String, Set<String>> goods = new HashMap<>();
+        for (GoodEnterprise g : enterprise.getGoods()) {
+            GoodType type = g.getGoodType();
+            String t = getTitle(type);
+            Set<String> goodSet = goods.get(t);
+            if (goodSet == null){
+                goodSet = new TreeSet<>();
+                goods.put(t, goodSet);
+            }
+            goodSet.add(getTitle(g.getGood()));
         }
         return goods;
 
+    }
+
+    @Property(name = "GoodTypes")
+    public Map<Long, String> getGoodTypes(){
+        Map<Long, String> types = new HashMap<>();
+        for (GoodEnterprise g : enterprise.getGoods()) {
+            GoodType type = g.getGoodType();
+            Long typeId = type.getId();
+            types.put(typeId, getTitle(type));
+        }
+        return types;
     }
 
     @Property(name = "PostalCode")

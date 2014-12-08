@@ -64,7 +64,7 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     private List<Advertisement> advertisements = new ArrayList<>();
     private List<ContactPerson> contactPersons = new ArrayList<>();
     private List<Brand> brands = new ArrayList<>();
-    private Set<GProduce> goods = new HashSet<>();
+    private Set<GoodEnterprise> goods = new HashSet<>();
 
     @Column(name = "idno")
     @Field(analyze = Analyze.NO)
@@ -190,11 +190,11 @@ public class Enterprise extends TitleContainer<EnterpriseTitle> implements Seria
     @OneToMany
     @JoinColumn(name = "enterprise_id")
     @IndexedEmbedded(includePaths = {"good.titles.title"})
-    public Set<GProduce> getGoods() {
+    public Set<GoodEnterprise> getGoods() {
         return goods;
     }
 
-    public void setGoods(Set<GProduce> goods) {
+    public void setGoods(Set<GoodEnterprise> goods) {
         this.goods = goods;
     }
 

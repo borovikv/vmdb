@@ -14,14 +14,14 @@ import javax.persistence.*;
  */
 @SuppressWarnings("UnusedDeclaration")
 @Entity
-@Table(name = "EXPORTED_DB.DB_GProduce")
-public class GProduce {
+@Table(name = "EXPORTED_DB.DB_Good_Enterprise")
+public class GoodEnterprise {
     private Long id;
     private Enterprise enterprise;
     private Good good;
-    private Boolean produce;
+    private GoodType goodType;
 
-    public GProduce() {
+    public GoodEnterprise() {
     }
 
 
@@ -60,13 +60,14 @@ public class GProduce {
         this.good = good;
     }
 
-    @Column(name = "is_produce")
-    public Boolean getProduce() {
-        return produce;
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    public GoodType getGoodType() {
+        return goodType;
     }
 
-    public void setProduce(Boolean produce) {
-        this.produce = produce;
+    public void setGoodType(GoodType goodType) {
+        this.goodType = goodType;
     }
 
     @Override
@@ -76,9 +77,11 @@ public class GProduce {
 
     @Override
     public String toString() {
-        return "G2Produce{" +
-                "good=" + good +
-                ", produce=" + produce +
+        return "GoodEnterprise{" +
+                "id=" + id +
+                ", enterprise=" + enterprise.getId() +
+                ", good=" + good +
+                ", type=" + goodType +
                 '}';
     }
 }

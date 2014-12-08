@@ -20,7 +20,7 @@ public class Configurator {
     private static final Class[] entities = {
             Advertisement.class, AdvertisementText.class,
             Arc.class, Node.class, NodeTitle.class,
-            Good.class, GoodTitle.class, GProduce.class,
+            Good.class, GoodTitle.class,  GoodEnterprise.class, GoodType.class, GoodTypeTitle.class,
             Brand.class,
             BusinessEntityType.class, BusinessEntityTypeTitle.class,
             Contact.class,
