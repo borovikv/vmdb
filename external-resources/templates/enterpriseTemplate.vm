@@ -1,0 +1,116 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{css">
+</head>
+<body>
+<!-- variables:    
+    address, brands, businessentitytype, checkdate,
+    contactperson, creationdate, emails, faxes,
+    foreingcapital, goods, phones, postalcode,
+    title, urls, workplaces
+-->
+
+<h1>$title</h1>
+<table>
+    #if( $idno )
+        <tr><th>$i18nHelper.getString("idno", "idno")</th><td>$idno</td></tr>
+    #end
+
+    #if( $postalcode )
+        <tr><th>$i18nHelper.getString("postalcode", "Postal code")</th><td>$postalcode</td></tr>
+    #end
+
+    #if( $sector || $town )
+        <tr><th>$i18nHelper.getString("address", "address")</th><td>
+            #if($sector)
+                $sector,
+            #end
+            #if($town)
+                $town,
+            #end
+            #if($streethouseoffice)
+                $StringUtils.valueOf( $streethouseoffice )
+            #end
+
+        </td></tr>
+    #end
+
+    #if( !$phones.isEmpty() )
+        <tr><th>$i18nHelper.getString("phones", "Phones")</th><td>
+        $StringUtils.valueOf($phones)
+        </td></tr>
+    #end
+
+    #if( !$faxes.isEmpty() )
+        <tr><th>$i18nHelper.getString("faxes", "Faxes")</th><td>
+            $StringUtils.valueOf($faxes)
+        </td></tr>
+    #end
+
+    #if( !$emails.isEmpty() )
+        <tr><th>$i18nHelper.getString("emails", "Emails")</th><td><ul>
+            #foreach( $email in $emails )
+                <li><a href="mailto:$email">$email</a></li>
+             #end
+        </ul></td></tr>
+    #end
+
+    #if( !$urls.isEmpty() )
+        <tr><th>$i18nHelper.getString("urls", "WWW")</th><td><ul>
+        #foreach( $url in $urls )
+            <li><a href="http://$url">$url</a></li>
+        #end
+        </ul></td></tr>
+    #end
+
+    #if( $contactperson && $contactperson.personTitle )
+        <tr><th>$i18nHelper.getString("contactperson", "Contact person")</th><td>
+            #if( $contactperson.personPosition )
+                $contactperson.personPosition,
+            #end
+            #if( $contactperson.personTitle )
+                $contactperson.personTitle
+            #end
+            #if( $contactperson.personPhones )
+                - $StringUtils.valueOf( $contactperson.personPhones )
+            #end
+        </td></tr>
+    #end
+
+    #if( !$brands.isEmpty() )
+        <tr><th>$i18nHelper.getString("brands", "Brands")</th><td>
+            $StringUtils.valueOf( $brands )
+        </td></tr>
+    #end
+
+    #if( $businessentitytype )
+        <tr><th>$i18nHelper.getString("businessentitytype", "Type of business entity")</th><td>$businessentitytype</td></tr>
+    #end
+
+    #if( $foreingcapital )
+        <tr><th>$i18nHelper.getString("foreingcapital")</th><td>$foreingcapital</td></tr>
+    #end
+
+
+    #if( $goods )
+        #foreach( $type in $goods.keySet() )
+        <tr><th>$type</th><td>$StringUtils.valueOf($goods.get($type))</td></tr>
+        #end
+    #end
+
+
+
+    #if( $workplaces )
+        <tr><th>$i18nHelper.getString("workplaces")</th><td>$workplaces</td></tr>
+    #end
+
+    #if( $creationdate )
+        <tr><th>$i18nHelper.getString("creationdate")</th><td>$creationdate</td></tr>
+    #end
+
+    #if( $creationdate )
+        <tr><th>$i18nHelper.getString("creationdate")</th><td>$checkdate</td></tr>
+    #end
+</table>
+</body>
+</html>

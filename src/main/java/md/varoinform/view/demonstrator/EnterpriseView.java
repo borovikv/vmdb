@@ -2,15 +2,16 @@ package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.cache.Field;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.util.StringUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.StringWriter;
 import java.nio.file.Paths;
-import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,49 +21,44 @@ import java.util.*;
  */
 public class EnterpriseView  {
 
-    public static String getView(Long id) {
+    private static final Template template = getTemplate();
+
+    private static Template getTemplate() {
         try {
-            return  getTable(id);
-        } catch (IOException e) {
+            VelocityEngine ve = new VelocityEngine();
+            ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
+            String path = Paths.get(Settings.getWorkFolder(), "external-resources", "templates").toAbsolutePath().toString();
+            ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, path);
+            ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true");
+            ve.init();
+            return ve.getTemplate("enterpriseTemplate.vm", "UTF-8");
+        } catch (RuntimeException e){
             e.printStackTrace();
-            return "";
+            return null;
         }
     }
 
-    private static String getTable(Long id) throws IOException {
+    public static String getView(Long id) {
+        if (template == null) return "";
 
+        StringWriter sw = new StringWriter();
+        template.merge(getContext(id), sw);
 
-        LinkedHashSet<String> address = new LinkedHashSet<>();
-        address.add((String) Cache.instance.getValue(id, Field.country));
-        address.add((String) Cache.instance.getValue(id, Field.sector));
-        address.add((String) Cache.instance.getValue(id, Field.town));
-        address.add((String) Cache.instance.getValue(id, Field.streethouseoffice));
+        return sw.toString();
+    }
 
-        Map<String, Object> context = new HashMap<>();
-        context.put("addressLabel", ResourceBundleHelper.getString("address", "address"));
-        context.put("address", address);
+    private static VelocityContext getContext(Long id) {
+        VelocityContext context = new VelocityContext();
+        context.put("i18nHelper", ResourceBundleHelper.class);
+        context.put("StringUtils", StringUtils.class);
 
         for (String field : EnterpriseProxy.getFields()) {
             Object value = Cache.instance.getRawValue(id, field);
-            if (value == null
-                    || (value instanceof String && ((String) value).isEmpty())
-                    || (value instanceof Collection && ((Collection) value).isEmpty())
-                    || (value instanceof Map && ((Map) value).isEmpty()))  continue;
-            String label = ResourceBundleHelper.getString(field, field);
-            context.put(field + "Label", label);
             context.put(field, value);
         }
-        String template = getTemplate();
-        TemplateRenderer renderer = new TemplateRenderer(template);
-        String render = renderer.render(context);
-        String regex = "<tr><th>[^<]*</th><td>(<ul></ul>)*</td></tr>";
-        return render.replaceAll(regex, "");
+        return context;
     }
 
-    private static String getTemplate() throws IOException {
-        Path path = Paths.get(Settings.getWorkFolder(), "external-resources", "templates", "EnterpriseTemplate.html");
-        byte[] bytes = Files.readAllBytes(path);
-        return new String(bytes);
-    }
+
 
 }
