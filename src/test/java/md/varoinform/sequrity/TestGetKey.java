@@ -1,12 +1,13 @@
 package md.varoinform.sequrity;
 
+import md.varoinform.cypher.CryptographyException;
+import md.varoinform.cypher.Cypher;
+import md.varoinform.cypher.util.StringConverter;
 import md.varoinform.model.util.SessionManager;
-import md.varoinform.sequrity.exception.CryptographyException;
 import md.varoinform.sequrity.exception.LockedException;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.StringConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
