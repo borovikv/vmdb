@@ -22,7 +22,6 @@ public class Settings {
     private static final String CONFIG_BUNDLE_KEY = "vmdb";
     private static final String DEFAULT_COLUMNS = ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "default_columns", "title");
     private static final DateFormat df = new SimpleDateFormat(ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "date_format", "dd/MM/yy"));
-    private static final Image MAIN_ICON = ImageHelper.getImageIcon(ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "main_icon", "/external-resources/icons/VMDB.png")).getImage();
     private static final String VERSION = ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "version", "1.0");
 
     public static enum Fonts {
@@ -98,7 +97,8 @@ public class Settings {
     }
 
     public static Image getMainIcon() {
-        return MAIN_ICON;
+        Path path = Paths.get(getWorkFolder(), "external-resources", "icons", "VMDB.png");
+        return ImageHelper.getImageIcon(path.toString()).getImage();
     }
 
     public static String getConfigBundleKey() {
