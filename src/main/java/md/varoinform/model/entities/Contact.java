@@ -32,6 +32,7 @@ public class Contact {
     private List<Phone> allPhones = new ArrayList<>();
     private List<Url> urls = new ArrayList<>();
     private List<Phone> fax = new ArrayList<>();
+    private List<Phone> gsm = new ArrayList<>();
 
 
     @Id
@@ -145,7 +146,7 @@ public class Contact {
     @OneToMany
     @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
     @IndexedEmbedded(includePaths = {"phone"})
-    @Where(clause = "type=" + Phone.TEL + " or type=" + Phone.GSM + " or type=" + Phone.TELFAX)
+    @Where(clause = "type=" + Phone.TEL + " or type=" + Phone.TELFAX)
     public List<Phone> getPhones() {
         return phones;
     }
@@ -164,6 +165,18 @@ public class Contact {
 
     public void setFax(List<Phone> fax) {
         this.fax = fax;
+    }
+
+    @OneToMany
+    @JoinTable(name = "EXPORTED_DB.DB_contact_phone", joinColumns = @JoinColumn(name = "contact_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @IndexedEmbedded(includePaths = {"phone"})
+    @Where(clause = "type="+ Phone.GSM)
+    public List<Phone> getGsm() {
+        return gsm;
+    }
+
+    public void setGsm(List<Phone> gsm) {
+        this.gsm = gsm;
     }
 
     @OneToMany

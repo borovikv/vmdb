@@ -22,14 +22,20 @@
 
     #if( $sector || $town )
         <tr><th>$i18nHelper.getString("address", "address")</th><td>
-            #if($sector)
+            #if($sector && $sector != $town)
                 $sector,
             #end
             #if($town)
                 $town,
             #end
-            #if($streethouseoffice)
-                $StringUtils.valueOf( $streethouseoffice )
+            #if($street)
+                $street
+            #end
+            #if($house)
+                $house
+            #end
+            #if($office)
+                $office
             #end
 
         </td></tr>
@@ -41,9 +47,15 @@
         </td></tr>
     #end
 
+    #if( !gsm.isEmpty() )
+        <tr><th>$i18nHelper.getString("gms", "GSM")</th><td>
+        $StringUtils.valueOf($gsm)
+        </td></tr>
+    #end
+
     #if( !$faxes.isEmpty() )
         <tr><th>$i18nHelper.getString("faxes", "Faxes")</th><td>
-            $StringUtils.valueOf($faxes)
+        $StringUtils.valueOf($faxes)
         </td></tr>
     #end
 

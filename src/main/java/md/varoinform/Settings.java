@@ -97,7 +97,7 @@ public class Settings {
     }
 
     public static Image getMainIcon() {
-        Path path = Paths.get(getWorkFolder(), "external-resources", "icons", "VMDB.png");
+        Path path = Paths.get("external-resources", "icons", "VMDB.png");
         return ImageHelper.getImageIcon(path.toString()).getImage();
     }
 

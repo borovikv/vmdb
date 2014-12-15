@@ -102,4 +102,8 @@ public class ContactProxy extends EntityProxy {
     public List<String> getFax() {
         return getStrings("getFax");
     }
+
+    public List<String> getGSM(){
+        return getStrings("getGSM");
+    }
 }

@@ -102,6 +102,16 @@ public class EnterpriseProxy extends EntityProxy {
         return proxy.getPersonMap();
     }
 
+    @Property(name = "PersonPhones")
+    public Collection<String> getContactPersonPhones(){
+        Object phones = getContactPerson().get("personPhones");
+        if (phones == null){
+            return new ArrayList<>();
+        }
+        //noinspection unchecked
+        return (Collection<String>) phones;
+    }
+
     @Property(name = "Brands")
     public Collection<String> getBrands(){
         List<String> brands = new ArrayList<>();
@@ -144,10 +154,21 @@ public class EnterpriseProxy extends EntityProxy {
         return contactProxy.getPostalCode();
     }
 
-    @Property(name = "StreetHouseOffice")
-    public List<String> getStreetHouseOffice(){
-        return Arrays.asList(contactProxy.getStreet(), contactProxy.getHouseNumber(), contactProxy.getOfficeNumber());
+    @Property(name = "office")
+    public String getOfficeNumber() {
+        return contactProxy.getOfficeNumber();
     }
+
+    @Property(name = "house")
+    public String getHouseNumber() {
+        return contactProxy.getHouseNumber();
+    }
+
+    @Property(name = "street")
+    public String getStreet() {
+        return contactProxy.getStreet();
+    }
+
 
     @Property(name = "Sector")
     public String getSector(){
@@ -191,8 +212,12 @@ public class EnterpriseProxy extends EntityProxy {
 
     @Property(name = "Faxes")
     public List<String> getFaxes() {
-
         return contactProxy.getFax();
+    }
+
+    @Property(name = "GSM")
+    public List<String> getGSM(){
+        return contactProxy.getGSM();
     }
 
 
@@ -232,6 +257,6 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     public static List<String> getAddressFields() {
-        return Arrays.asList("country", "postalcode", "sector", "region", "town", "streethouseoffice");
+        return Arrays.asList("country", "postalcode", "sector", "region", "town", "street", "house", "office");
     }
 }
