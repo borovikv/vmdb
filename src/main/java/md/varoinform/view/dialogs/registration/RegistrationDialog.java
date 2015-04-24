@@ -1,10 +1,11 @@
 package md.varoinform.view.dialogs.registration;
 
-import md.varoinform.Settings;
 import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.sequrity.Registrar;
-import md.varoinform.sequrity.exception.*;
 import md.varoinform.sequrity.exception.Error;
+import md.varoinform.sequrity.exception.LockedException;
+import md.varoinform.sequrity.exception.PasswordException;
+import md.varoinform.sequrity.exception.RegistrationException;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
@@ -51,6 +52,7 @@ public class RegistrationDialog extends JDialog implements Observer{
         nextButton.addActionListener(new NextAction());
 
         registerByPhonePanel.setDocumentListener(nextButton);
+        registerByInternetPanel.setDocumentListener(nextButton);
 
         licencePanel = new LicencePanel();
         licencePanel.addObserver(licencePanel);
@@ -73,8 +75,9 @@ public class RegistrationDialog extends JDialog implements Observer{
 
         card.setLayout(new CardLayout());
         cards.add(licencePanel);
-        card.add(registerByInternetPanel);
+        cards.add(registerByInternetPanel);
         cards.add(registerByPhonePanel);
+
         for (int i = 0; i < cards.size(); i++) {
             card.add(cards.get(i), "" + i);
         }
@@ -146,14 +149,18 @@ public class RegistrationDialog extends JDialog implements Observer{
             CardPanel cardPanel = cards.get(currentCard);
             if (!cardPanel.isInputValid()) return;
 
-            String idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
             if (currentCard == 0){
                 nextCard();
             } else if (currentCard == 1) {
-                tryRegisterByInternet(idDB);
+                tryRegisterByInternet(getIdDB());
             } else {
-                registerByPhone(idDB);
+                registerByPhone(getIdDB());
             }
+        }
+
+        private String getIdDB() {
+            //return ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
+            return registerByInternetPanel.getIdDB();
         }
 
         private void tryRegisterByInternet(String idDB) {
@@ -167,7 +174,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                     setVisible(false);
                     return;
                 }
-
+                registerByPhonePanel.setIdDB(getIdDB());
                 nextCard();
 
             } catch (PasswordException | LockedException exception){

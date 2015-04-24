@@ -1,6 +1,5 @@
 package md.varoinform.view.dialogs.registration;
 
-import md.varoinform.Settings;
 import md.varoinform.util.ResourceBundleHelper;
 
 import javax.swing.*;
@@ -17,13 +16,12 @@ public class RegisterByPhonePanel extends CardPanel {
     private final JLabel registrationTextLabel;
 
     private String idDB;
-    private final JLabel codeLabel;
 
     private FormattedTextField passwordField;
 
     public RegisterByPhonePanel() {
         super("register_by_phone");
-        codeLabel = new JLabel();
+        JLabel codeLabel = new JLabel();
         codeLabel.setText(idDB);
 
         passwordField = new FormattedTextField(8);
@@ -76,4 +74,8 @@ public class RegisterByPhonePanel extends CardPanel {
         passwordField.addDocumentListener(new DocumentValidListener(passwordField, nextButton));
     }
 
+    public void setIdDB(String idDB){
+        this.idDB = idDB;
+        updateDisplay();
+    }
 }
