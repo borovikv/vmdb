@@ -27,6 +27,7 @@ public class RegistrationDialog extends JDialog implements Observer{
 
     private final Registrar registrar = new Registrar();
     private final RegisterByPhonePanel registerByPhonePanel = new RegisterByPhonePanel();
+    private final RegisterByInternetPanel registerByInternetPanel = new RegisterByInternetPanel();
     private final JPanel card = new JPanel();
     private final List<CardPanel> cards = new ArrayList<>();
     private Integer currentCard = 0;
@@ -72,6 +73,7 @@ public class RegistrationDialog extends JDialog implements Observer{
 
         card.setLayout(new CardLayout());
         cards.add(licencePanel);
+        card.add(registerByInternetPanel);
         cards.add(registerByPhonePanel);
         for (int i = 0; i < cards.size(); i++) {
             card.add(cards.get(i), "" + i);
@@ -146,6 +148,8 @@ public class RegistrationDialog extends JDialog implements Observer{
 
             String idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
             if (currentCard == 0){
+                nextCard();
+            } else if (currentCard == 1) {
                 tryRegisterByInternet(idDB);
             } else {
                 registerByPhone(idDB);

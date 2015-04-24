@@ -101,6 +101,7 @@ public class ResourceBundleHelper implements Serializable {
     public static String getStringFromBundle(String bundleName, String key){
         try {
             ResourceBundle resourceBundle = getResourceBundle(bundleName, Locale.getDefault());
+
             return resourceBundle.getString(key);
         } catch (MalformedURLException e) {
             e.printStackTrace();

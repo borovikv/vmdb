@@ -16,14 +16,13 @@ public class RegisterByPhonePanel extends CardPanel {
     private static final String REG_CODE_KEY = "registration_code";
     private final JLabel registrationTextLabel;
 
-    private final String idDB;
+    private String idDB;
     private final JLabel codeLabel;
 
     private FormattedTextField passwordField;
 
     public RegisterByPhonePanel() {
         super("register_by_phone");
-        idDB = ResourceBundleHelper.getStringFromBundle(Settings.getConfigBundleKey(), "id");
         codeLabel = new JLabel();
         codeLabel.setText(idDB);
 
