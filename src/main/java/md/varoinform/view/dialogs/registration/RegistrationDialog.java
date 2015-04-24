@@ -57,6 +57,7 @@ public class RegistrationDialog extends JDialog implements Observer{
         licencePanel = new LicencePanel();
         licencePanel.addObserver(licencePanel);
         licencePanel.addObserver(registerByPhonePanel);
+        licencePanel.addObserver(registerByInternetPanel);
         licencePanel.addObserver(this);
 
         backButton = new JButton();
