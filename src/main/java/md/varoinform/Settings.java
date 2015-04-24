@@ -24,7 +24,7 @@ public class Settings {
     private static final DateFormat df = new SimpleDateFormat(ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "date_format", "dd/MM/yy"));
     private static final String VERSION = ResourceBundleHelper.getStringFromBundle(CONFIG_BUNDLE_KEY, "version", "1.0");
 
-    public static enum Fonts {
+    public enum Fonts {
         SANS_SERIF(Font.SANS_SERIF), MONOSPACED(Font.MONOSPACED);
 
         private final String name;
@@ -99,10 +99,6 @@ public class Settings {
     public static Image getMainIcon() {
         Path path = Paths.get("external-resources", "icons", "VMDB.png");
         return ImageHelper.getImageIcon(path.toString()).getImage();
-    }
-
-    public static String getConfigBundleKey() {
-        return CONFIG_BUNDLE_KEY;
     }
 
     public static String getVersion() {

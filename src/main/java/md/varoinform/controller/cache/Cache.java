@@ -24,7 +24,7 @@ public enum Cache implements md.varoinform.util.observer.Observer {
     private Long langID;
     private SwingWorker<Void, Void> worker;
 
-    private Cache() {
+    Cache() {
         eiDs = EnterpriseDao.getEIDs();
         langID = LanguageProxy.instance.getCurrentLanguage();
         worker = new CacheUpdater();

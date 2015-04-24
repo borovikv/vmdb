@@ -8,7 +8,6 @@ import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.Tag;
 import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.util.SessionManager;
-import md.varoinform.update.CheckUpdateWorker;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
