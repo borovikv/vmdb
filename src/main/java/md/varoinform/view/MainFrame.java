@@ -162,7 +162,6 @@ public class MainFrame extends JFrame implements Observer {
                 }, ResourceBundleHelper.getString("close_window_message", "Wait..."));
             }
         });
-        new CheckUpdateWorker().execute();
     }
 
     public JPopupMenu getSettingsMenu() {

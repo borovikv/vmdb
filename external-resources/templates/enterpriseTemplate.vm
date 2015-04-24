@@ -47,7 +47,7 @@
         </td></tr>
     #end
 
-    #if( !gsm.isEmpty() )
+    #if( !$gsm.isEmpty() )
         <tr><th>$i18nHelper.getString("gms", "GSM")</th><td>
         $StringUtils.valueOf($gsm)
         </td></tr>

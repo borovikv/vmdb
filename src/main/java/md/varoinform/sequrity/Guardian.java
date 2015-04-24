@@ -1,6 +1,5 @@
 package md.varoinform.sequrity;
 
-import md.varoinform.Settings;
 import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.sequrity.exception.LockedException;
 import md.varoinform.sequrity.exception.PasswordException;
@@ -10,8 +9,6 @@ import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.registration.RegistrationDialog;
 
 import javax.swing.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,11 +40,6 @@ public class Guardian {
 
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    private boolean databaseAlreadyInUse() {
-        String lockFile = Settings.pathToDB().toString() + ".lock.db";
-        return Files.exists(Paths.get(lockFile));
-    }
 
     public void register(PasswordManager pm, String uid) {
         RegistrationDialog.register();
