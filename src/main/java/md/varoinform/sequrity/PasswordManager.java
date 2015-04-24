@@ -3,7 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.cypher.CryptographyException;
 import md.varoinform.cypher.Cypher;
 import md.varoinform.cypher.util.StringConverter;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import md.varoinform.sequrity.exception.*;
 import md.varoinform.sequrity.exception.Error;
 import md.varoinform.util.PreferencesHelper;
@@ -43,7 +43,7 @@ public class PasswordManager {
 
     private void testConnection(String password) throws PasswordException, LockedException {
         PasswordManager.password = password;
-        try (ClosableSession session = new ClosableSession()){
+        try (DefaultClosableSession session = new DefaultClosableSession()){
             session.beginTransaction().rollback();
         } catch (Throwable e){
             Throwable e1 = e;

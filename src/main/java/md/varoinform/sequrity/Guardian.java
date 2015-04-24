@@ -31,6 +31,8 @@ public class Guardian {
             String message = ResourceBundleHelper.getStringForUserLocale(exceptionMessage, exceptionMessage);
             JOptionPane.showMessageDialog(null, message);
             System.exit(-1);
+        } catch (RuntimeException e){
+            System.exit(-1);
         }
 
         String dbUid = DatabaseDao.getUID();
@@ -42,14 +44,18 @@ public class Guardian {
 
 
     public void register(PasswordManager pm, String uid) {
-        RegistrationDialog.register();
+        try {
+            RegistrationDialog.register();
+        } catch (RuntimeException e){
+            System.exit(-1);
+        }
         try {
             pm.getDBPassword(uid);
         } catch (PasswordException|UnregisteredDBExertion e) {
             String message = ResourceBundleHelper.getString(RegistrationDialog.language, e.getMessage(), e.getMessage());
             JOptionPane.showMessageDialog(null, message);
             System.exit(-1);
-        } catch (LockedException e) {
+        } catch (LockedException|RuntimeException e) {
             System.exit(-1);
         }
     }

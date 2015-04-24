@@ -190,6 +190,7 @@ public class RegistrationDialog extends JDialog implements Observer{
                 setVisible(false);
             } catch (RegistrationException | PasswordException | LockedException e) {
                 showExceptionMessage(e);
+                throw new RuntimeException(e);
             }
         }
 

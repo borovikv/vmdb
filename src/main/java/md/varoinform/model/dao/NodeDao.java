@@ -2,7 +2,7 @@ package md.varoinform.model.dao;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.entities.Node;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Query;
 import org.hibernate.Transaction;
 
@@ -17,7 +17,7 @@ import java.util.*;
 public class NodeDao {
     public static Map<Long, List<Long>> getNodeEnterpriseMap(){
         Transaction tx = null;
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             tx = session.beginTransaction();
             String hql2 = "Select distinct new list(n.id, e.id, t.title) " +
                     "from Node n join n.enterprises e join e.titles t " +
@@ -46,7 +46,7 @@ public class NodeDao {
 
     }
 
-    public static List<Node> getAll(ClosableSession session) {
+    public static List<Node> getAll(DefaultClosableSession session) {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
@@ -64,7 +64,7 @@ public class NodeDao {
 
     public static Map<Long, Set<Long>> getArcs(){
         Map<Long, Set<Long>> m = new HashMap<>();
-        try (ClosableSession session = new ClosableSession()){
+        try (DefaultClosableSession session = new DefaultClosableSession()){
             session.beginTransaction();
             try {
                 String hql = "Select arc.tail.id, arc.head.id from Arc arc";

@@ -4,7 +4,7 @@ import md.varoinform.Settings;
 import md.varoinform.controller.cache.BranchCache;
 import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.TagCache;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.SessionManager;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.progress.ActivityDialog;

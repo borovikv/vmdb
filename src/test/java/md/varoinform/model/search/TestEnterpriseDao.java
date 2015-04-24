@@ -1,7 +1,8 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.Configurator;
 import md.varoinform.model.dao.EnterpriseDao;
+import md.varoinform.model.utils.Configurator;
+import md.varoinform.sequrity.PasswordManager;
 import md.varoinform.util.Profiler;
 import org.hibernate.cfg.Configuration;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,12 +26,13 @@ public class TestEnterpriseDao {
     public void testCount() {
         Profiler p = new Profiler("count by date test");
         Path path = Paths.get("src", "test", "resources", "updateTest", "DB");
-        Configurator configurator = new Configurator(path.toString());
+        Configurator configurator = new Configurator(path.toString(), PasswordManager.getPassword());
         Configuration cfg = configurator.configure();
 
         //Tue Jul 22 00:00:00 EEST 2014
         Date checkDate = new Date(1405976400000L);
         Date date = EnterpriseDao.getMaxCheckDate(cfg);
+        assertNotNull(date);
         assertEquals(checkDate,  date);
 
         Calendar calendar = Calendar.getInstance();

@@ -3,7 +3,7 @@ package md.varoinform.sequrity;
 import md.varoinform.cypher.CryptographyException;
 import md.varoinform.cypher.Cypher;
 import md.varoinform.cypher.util.StringConverter;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.SessionManager;
 import md.varoinform.sequrity.exception.LockedException;
 import md.varoinform.sequrity.exception.PasswordException;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;

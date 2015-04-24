@@ -3,7 +3,7 @@ package md.varoinform;
 
 import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.model.search.FullTextSearcher;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.SessionManager;
 import md.varoinform.sequrity.Guardian;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Profiler;

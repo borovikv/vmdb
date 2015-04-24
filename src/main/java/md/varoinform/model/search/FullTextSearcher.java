@@ -1,7 +1,7 @@
 package md.varoinform.model.search;
 
 import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -25,7 +25,7 @@ public class FullTextSearcher extends Searcher {
 
     public static boolean createIndex() {
         boolean success = false;
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
             fullTextSession.createIndexer().startAndWait();
             success = true;
@@ -37,7 +37,7 @@ public class FullTextSearcher extends Searcher {
 
     @Override
     public List<Long> search(String q) {
-        try(ClosableSession session = new ClosableSession()) {
+        try(DefaultClosableSession session = new DefaultClosableSession()) {
             FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
             QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
             LuceneQueryBuilder builder = new LuceneQueryBuilder(queryBuilder, fields);

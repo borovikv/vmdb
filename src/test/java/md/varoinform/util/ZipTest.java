@@ -1,8 +1,9 @@
 package md.varoinform.util;
 
-import md.varoinform.model.Configurator;
-import md.varoinform.model.util.ClosableSession;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.Configurator;
+import md.varoinform.model.utils.DefaultClosableSession;
+import md.varoinform.model.utils.SessionManager;
+import md.varoinform.sequrity.PasswordManager;
 import org.junit.Test;
 
 import java.io.File;
@@ -34,8 +35,8 @@ public class ZipTest {
         assertEquals(dbFile.getName(), "DB.h2.db");
 
         Path pathToDB = Paths.get(dbFile.getParent(), "DB");
-        Configurator configurator = new Configurator(pathToDB.toString());
-        try (ClosableSession session = new ClosableSession(configurator.configureWithoutIndex())) {
+        Configurator configurator = new Configurator(pathToDB.toString(), PasswordManager.getPassword());
+        try (DefaultClosableSession session = new DefaultClosableSession(configurator.configureWithoutIndex())) {
             assertTrue(session.isOpen());
         }
 

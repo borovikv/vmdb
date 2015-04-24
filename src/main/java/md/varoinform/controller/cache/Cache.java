@@ -2,7 +2,7 @@ package md.varoinform.controller.cache;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.dao.EnterpriseDao;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.SessionManager;
 import md.varoinform.util.StringUtils;
 import md.varoinform.util.observer.ObservableEvent;
 

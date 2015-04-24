@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Query;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class CreationDateSearcher extends Searcher {
     @Override
     public List<Long> search(String q) {
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             String hql = "Select distinct e.id from Enterprise e where e.creation = :creation";
             if (!Pattern.matches("^[0-9]+$", q.trim())) return new ArrayList<>();
             int year = Integer.parseInt(q.trim());

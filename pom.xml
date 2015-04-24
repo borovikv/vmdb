@@ -150,6 +150,11 @@
           <artifactId>cypher</artifactId>
           <version>1.0</version>
       </dependency>
+      <dependency>
+          <groupId>md.varoinform</groupId>
+          <artifactId>enterprise</artifactId>
+          <version>0.1</version>
+      </dependency>
 
   </dependencies>
 </project>

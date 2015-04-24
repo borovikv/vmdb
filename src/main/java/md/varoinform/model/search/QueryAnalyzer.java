@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -47,7 +47,7 @@ public class QueryAnalyzer {
             return [varo@varo-inform.com, varo]
      */
     public List<String> getTokens() {
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
             Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("customanalyzer");
             QueryParser parser = new QueryParser(Version.LUCENE_35, "title", analyzer);

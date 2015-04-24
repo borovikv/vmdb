@@ -1,4 +1,4 @@
-package md.varoinform.model.util;
+package md.varoinform.model.utils;
 
 /**
  * Created with IntelliJ IDEA.

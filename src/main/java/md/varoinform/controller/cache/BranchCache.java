@@ -4,7 +4,7 @@ import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.dao.NodeDao;
 import md.varoinform.model.entities.Node;
 import md.varoinform.model.entities.NodeTitle;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +22,7 @@ public enum BranchCache {
     private Map<Long, Set<Long>> children = new HashMap<>();
     private Map<Long, Map<String, String>> branchTitles = new HashMap<>();
 
-    private BranchCache(){
+    BranchCache(){
         createBranchTitleCache();
         children.putAll(NodeDao.getArcs());
         branchCache.putAll(NodeDao.getNodeEnterpriseMap());
@@ -30,7 +30,7 @@ public enum BranchCache {
     }
 
     private void createBranchTitleCache() {
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             List<Node> nodes = NodeDao.getAll(session);
             for (Node node : nodes) {
                 Map<String, String> titles = new HashMap<>();

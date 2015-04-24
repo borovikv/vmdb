@@ -2,12 +2,13 @@ package md.varoinform.update;
 
 import md.varoinform.Settings;
 import md.varoinform.controller.cache.TagCache;
-import md.varoinform.model.Configurator;
 import md.varoinform.model.dao.DAOTag;
 import md.varoinform.model.dao.DatabaseDao;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.model.search.FullTextSearcher;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.Configurator;
+import md.varoinform.model.utils.SessionManager;
+import md.varoinform.sequrity.PasswordManager;
 import md.varoinform.sequrity.exception.UnregisteredDBExertion;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.util.Request;
@@ -128,7 +129,7 @@ public class Updater {
     private Configuration getConfiguration(File dbFile) {
         String absPath = dbFile.getAbsolutePath();
         String pathToDb = absPath.substring(0, absPath.lastIndexOf(".h2.db"));
-        return new Configurator(pathToDb).configureWithoutIndex();
+        return new Configurator(pathToDb, PasswordManager.getPassword()).configureWithoutIndex();
     }
 
 

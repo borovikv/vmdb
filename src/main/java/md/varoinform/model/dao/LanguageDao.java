@@ -1,7 +1,7 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Language;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class LanguageDao {
     public static Map<Long, String> getLanguageMap(){
-         try (ClosableSession session = new ClosableSession()) {
+         try (DefaultClosableSession session = new DefaultClosableSession()) {
              @SuppressWarnings("unchecked")
              List<Language> list = session.createCriteria(Language.class).setCacheable(false).list();
              Map<Long, String> map = new HashMap<>();

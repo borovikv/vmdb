@@ -2,7 +2,7 @@ package md.varoinform.model.search;
 
 import md.varoinform.controller.DefaultLanguages;
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import md.varoinform.util.ResourceBundleHelper;
 import org.hibernate.Query;
 
@@ -19,7 +19,7 @@ public class ForeingCapitalSearcher extends Searcher {
     @Override
     public List<Long> search(String q) {
         String hql = "Select distinct e.id from Enterprise e where e.foreignCapital = :hasForeingCapital";
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             boolean has = convertToBoolean(q);
             Query query = session.createQuery(hql).setBoolean("hasForeingCapital", has);
             //noinspection unchecked

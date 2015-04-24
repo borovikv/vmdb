@@ -4,7 +4,7 @@ import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.entities.EnterpriseTitle;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
@@ -22,7 +22,7 @@ public class EnterpriseDao  {
         return getEIDs(null, LanguageProxy.instance.getCurrentLanguage());
     }
     public static List<Long> getEIDs(Criterion criterion, Long langID) {
-        try(ClosableSession session = new ClosableSession()) {
+        try(DefaultClosableSession session = new DefaultClosableSession()) {
             Transaction transaction = session.beginTransaction();
             try {
                 Criteria criteria = session.createCriteria(EnterpriseTitle.class)
@@ -52,7 +52,7 @@ public class EnterpriseDao  {
 
     public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Long langID) {
         Map<Long, Map<String, Object>> enterprisesMap = new LinkedHashMap<>();
-        try(ClosableSession session = new ClosableSession()) {
+        try(DefaultClosableSession session = new DefaultClosableSession()) {
             Transaction transaction = session.beginTransaction();
             try {
                 Criteria criteria = session.createCriteria(Enterprise.class);
@@ -90,7 +90,7 @@ public class EnterpriseDao  {
     }
 
     public static Map<String, Object> enterpriseAsMap(Long eid, Long langID) {
-        try (ClosableSession session = new ClosableSession()){
+        try (DefaultClosableSession session = new DefaultClosableSession()){
             @SuppressWarnings("unchecked")
             List<Enterprise> entList = session.createCriteria(Enterprise.class).add(Restrictions.eq("id", eid)).list();
             if (entList.size() > 0) return enterpriseAsMap(entList.get(0), langID);
@@ -103,7 +103,7 @@ public class EnterpriseDao  {
     }
 
     public static Date getMaxCheckDate(Configuration cfg) {
-        try (ClosableSession session = new ClosableSession(cfg)) {
+        try (DefaultClosableSession session = new DefaultClosableSession(cfg)) {
             Transaction transaction = session.beginTransaction();
             try {
                 Criteria criteria = session
@@ -123,7 +123,7 @@ public class EnterpriseDao  {
     public static Long countWhereLastChangeGTE(Configuration cfg, Date date) {
         if (date == null) return 0L;
 
-        try (ClosableSession session = new ClosableSession(cfg)) {
+        try (DefaultClosableSession session = new DefaultClosableSession(cfg)) {
             try {
                 Transaction transaction = session.beginTransaction();
                 Criteria criteria = session
@@ -143,13 +143,13 @@ public class EnterpriseDao  {
     }
 
 
-    public static List<Enterprise> read(ClosableSession session, List<Long> ids) {
+    public static List<Enterprise> read(DefaultClosableSession session, List<Long> ids) {
         Criteria criteria = session.createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
         //noinspection unchecked
         return criteria.list();
     }
 
     public static  Map<String, Object> getEnterprisesMap(Long eid, Long langID) {
-        return getEnterprisesMap(Arrays.asList(eid), langID).get(eid);
+        return getEnterprisesMap(Collections.singletonList(eid), langID).get(eid);
     }
 }

@@ -1,7 +1,7 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.util.ClosableSession;
-import md.varoinform.model.util.Normalizer;
+import md.varoinform.model.utils.DefaultClosableSession;
+import md.varoinform.model.utils.Normalizer;
 import org.hibernate.Query;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ContactPersonSearcher extends Searcher {
     @Override
     public List<Long> search(String q) {
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             String field = "t.title";
             Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
             String hql = "Select distinct e.id from Enterprise e join e.contactPersons cp join cp.person p join p.titles t where "

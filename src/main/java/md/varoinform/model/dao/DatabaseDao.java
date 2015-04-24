@@ -1,7 +1,7 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.model.entities.Database;
-import md.varoinform.model.util.ClosableSession;
+import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Projections;
@@ -17,7 +17,7 @@ import java.util.List;
 public class DatabaseDao {
 
     public static String getUID() {
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             try {
                 Transaction transaction = session.beginTransaction();
                 @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class DatabaseDao {
     public static void setUID(String uid, Configuration cfg) {
         Database record = new Database();
         record.setUid(uid);
-        try (ClosableSession session = new ClosableSession(cfg)){
+        try (DefaultClosableSession session = new DefaultClosableSession(cfg)){
             try {
                 Transaction transaction = session.beginTransaction();
                 session.save(record);
@@ -56,7 +56,7 @@ public class DatabaseDao {
     }
 
     public static void clear() {
-        try (ClosableSession session = new ClosableSession()) {
+        try (DefaultClosableSession session = new DefaultClosableSession()) {
             try {
                 Transaction transaction = session.beginTransaction();
                 @SuppressWarnings("unchecked")

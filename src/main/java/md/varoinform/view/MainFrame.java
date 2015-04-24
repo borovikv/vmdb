@@ -7,7 +7,7 @@ import md.varoinform.controller.cache.BranchCache;
 import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.cache.Tag;
 import md.varoinform.model.search.FullTextSearcher;
-import md.varoinform.model.util.SessionManager;
+import md.varoinform.model.utils.SessionManager;
 import md.varoinform.util.ImageHelper;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.ObservableEvent;
@@ -148,11 +148,11 @@ public class MainFrame extends JFrame implements Observer {
                     @Override
                     protected Object doInBackground() throws Exception {
                         try {
-                            while (Holder.await()){
+                            while (Holder.await()) {
                                 Thread.sleep(500);
                             }
-                        } catch (Exception ignored){}
-                        finally {
+                        } catch (Exception ignored) {
+                        } finally {
                             SessionManager.instance.shutdownAll();
                         }
 
