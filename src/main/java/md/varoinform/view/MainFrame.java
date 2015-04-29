@@ -98,7 +98,7 @@ public class MainFrame extends JFrame implements Observer {
         });
         searchPanel.addSearchAction(new SearchListener() {
             @Override
-            public void perform(List<Long> enterprises) {
+            public void perform(List<Integer> enterprises) {
                 tagPanel.clearSelection();
                 branchPanel.clearSelection();
                 showResults(enterprises);
@@ -141,6 +141,8 @@ public class MainFrame extends JFrame implements Observer {
 
         updateDisplay();
         branchPanel.selectRoot();
+        demonstrator.showResults(Cache.instance.getAllEnterpriseIds());
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -296,8 +298,8 @@ public class MainFrame extends JFrame implements Observer {
     public void update(ObservableEvent event) {
         switch (event.getType()){
             case BRANCH_SELECTED:
-                Long node = branchPanel.getNode();
-                List<Long> enterpriseIds = BranchCache.instance.getEnterpriseIdByNode(node);
+                Integer node = branchPanel.getNode();
+                List<Integer> enterpriseIds = BranchCache.instance.getEnterpriseIdByNode(node);
                 showResults(enterpriseIds);
                 break;
 
@@ -320,7 +322,7 @@ public class MainFrame extends JFrame implements Observer {
             case DELETE:
                 if (enableDeleting && isTagSelected()) {
                     @SuppressWarnings("unchecked")
-                    List<Long> eids = (List<Long>) event.getValue();
+                    List<Integer> eids = (List<Integer>) event.getValue();
                     tagPanel.removeFromCurrentTag(eids);
                 }
                 break;
@@ -328,7 +330,7 @@ public class MainFrame extends JFrame implements Observer {
         }
     }
 
-    void showResults(List<Long> enterprises) {
+    void showResults(List<Integer> enterprises) {
         demonstrator.showResults(enterprises);
     }
 

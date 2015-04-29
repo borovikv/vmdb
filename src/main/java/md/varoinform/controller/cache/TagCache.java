@@ -33,7 +33,7 @@ public enum TagCache {
     }
 
 
-    public void addTag(String title, List<Long> enterpriseIds) {
+    public void addTag(String title, List<Integer> enterpriseIds) {
         Tag newTag = new Tag(title, enterpriseIds);
         if (tags.isEmpty()) {
             tags.add(newTag);

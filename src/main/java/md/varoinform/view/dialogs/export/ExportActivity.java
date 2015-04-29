@@ -22,10 +22,10 @@ import java.util.List;
 public class ExportActivity extends Activity {
     private final File file;
     private final List<String> selectedColumns;
-    private final List<Long> idEnterprises;
+    private final List<Integer> idEnterprises;
     private String format;
 
-    public ExportActivity(File file, List<String> selectedColumns, List<Long> idEnterprises) {
+    public ExportActivity(File file, List<String> selectedColumns, List<Integer> idEnterprises) {
         this.file = file;
         this.selectedColumns = selectedColumns;
         this.idEnterprises = idEnterprises;
@@ -55,7 +55,7 @@ public class ExportActivity extends Activity {
 
     private void writeLine(CSVWriter writer, List<String> selectedColumns, int row) {
         String[] entries = new String[selectedColumns.size()];
-        Long eid = idEnterprises.get(row);
+        Integer eid = idEnterprises.get(row);
         for (int i = 0; i < selectedColumns.size(); i++) {
             String field = selectedColumns.get(i);
             Object obj = Cache.instance.getRawValue(eid, field);

@@ -51,14 +51,14 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
 
     public void updateRoot(){
         needToProcess = false;
-        Long treeNodeId = getBranchFromSelected();
+        Integer treeNodeId = getBranchFromSelected();
         filter(text);
         select(treeNodeId);
         updateUI();
         needToProcess = true;
     }
 
-    private Long getBranchFromSelected() {
+    private Integer getBranchFromSelected() {
         BranchNode branchNode = ((BranchNode)getLastSelectedPathComponent());
         if(branchNode != null)
             return branchNode.getNode();
@@ -66,7 +66,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     }
 
 
-    private TreePath getTreePathForBranch(Long treeNode) {
+    private TreePath getTreePathForBranch(Integer treeNode) {
         DefaultTreeModel defaultTreeModel = ( DefaultTreeModel ) treeModel;
         BranchNode node = findNode(treeNode, root );
         javax.swing.tree.TreeNode[] nodes = defaultTreeModel.getPathToRoot( node );
@@ -74,7 +74,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     }
 
 
-    private BranchNode findNode(Long treeNode, BranchNode root) {
+    private BranchNode findNode(Integer treeNode, BranchNode root) {
         if (treeNode.equals(root.getNode())){
             return root;
         }
@@ -95,7 +95,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         if (object instanceof BranchNode){
             path = getTreePathForBranch(((BranchNode) object).getNode());
         } else if (object instanceof Number){
-            path = getTreePathForBranch((Long) object);
+            path = getTreePathForBranch((Integer) object);
         }
         else if (object instanceof TreePath){
             path = (TreePath) object;
@@ -128,7 +128,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     @Override
     public void filter(String text) {
         root.removeAllChildren();
-        List<Long> ids = BranchCache.instance.startWith(text);
+        List<Integer> ids = BranchCache.instance.startWith(text);
         createTree(ids, root);
 
         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) treeModel;
@@ -136,9 +136,9 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         this.text = text;
     }
 
-    private void createTree(List<Long> ids, BranchNode root) {
+    private void createTree(List<Integer> ids, BranchNode root) {
         if (ids.isEmpty()) return;
-        for (Long id : ids) {
+        for (Integer id : ids) {
             BranchNode branchNode = new BranchNode(id);
             root.add(branchNode);
             createTree(BranchCache.instance.getChildren(id), branchNode);

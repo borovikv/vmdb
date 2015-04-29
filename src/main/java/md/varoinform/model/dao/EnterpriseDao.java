@@ -2,8 +2,7 @@ package md.varoinform.model.dao;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.controller.entityproxy.EnterpriseProxy;
-import md.varoinform.model.entities.Enterprise;
-import md.varoinform.model.entities.EnterpriseTitle;
+import md.varoinform.model.entities.enterprise.*;
 import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
@@ -18,22 +17,21 @@ import java.util.*;
 public class EnterpriseDao  {
 
 
-    public static List<Long> getEIDs() {
+    public static List<Integer> getEIDs() {
         return getEIDs(null, LanguageProxy.instance.getCurrentLanguage());
     }
-    public static List<Long> getEIDs(Criterion criterion, Long langID) {
+    public static List<Integer> getEIDs(Criterion criterion, Integer langID) {
         try(DefaultClosableSession session = new DefaultClosableSession()) {
             Transaction transaction = session.beginTransaction();
             try {
                 Criteria criteria = session.createCriteria(EnterpriseTitle.class)
-                        .add(Restrictions.eq("language.id", langID))
                         .addOrder(Order.asc("title"))
-                        .setProjection(Projections.property("container.id"));
+                        .setProjection(Projections.property("enterprise.id"));
                 if (criterion != null){
                     criteria.add(criterion);
                 }
                 @SuppressWarnings("unchecked")
-                List<Long> list = criteria.list();
+                List<Integer> list = criteria.list();
                 transaction.commit();
                 return list;
 
@@ -46,12 +44,12 @@ public class EnterpriseDao  {
     }
 
 
-    public static Map<Long, Map<String, Object>> getEnterprisesMap(Long langID) {
-        return getEnterprisesMap((List<Long>)null, langID);
+    public static Map<Integer, Map<String, Object>> getEnterprisesMap(Integer langID) {
+        return getEnterprisesMap((List<Integer>)null, langID);
     }
 
-    public static Map<Long, Map<String, Object>> getEnterprisesMap(List<Long> idEnterprises, Long langID) {
-        Map<Long, Map<String, Object>> enterprisesMap = new LinkedHashMap<>();
+    public static Map<Integer, Map<String, Object>> getEnterprisesMap(List<Integer> idEnterprises, Integer langID) {
+        Map<Integer, Map<String, Object>> enterprisesMap = new LinkedHashMap<>();
         try(DefaultClosableSession session = new DefaultClosableSession()) {
             Transaction transaction = session.beginTransaction();
             try {
@@ -62,7 +60,7 @@ public class EnterpriseDao  {
                 //noinspection unchecked
                 List<Enterprise> enterprises = criteria.list();
                 for (Enterprise enterprise : enterprises) {
-                    Long id = enterprise.getId();
+                    Integer id = enterprise.getId();
                     Map<String, Object> cache = enterpriseAsMap(enterprise, langID);
                     enterprisesMap.put(id, cache);
                 }
@@ -76,10 +74,11 @@ public class EnterpriseDao  {
             e.printStackTrace();
 
         }
+        System.out.println(enterprisesMap);
         return enterprisesMap;
     }
 
-    private static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Long langID) {
+    private static Map<String, Object> enterpriseAsMap(Enterprise enterprise, Integer langID) {
         Map<String, Object> map = new HashMap<>();
         EnterpriseProxy proxy = new EnterpriseProxy(enterprise, langID);
         for (String field : EnterpriseProxy.getFields()) {
@@ -89,7 +88,7 @@ public class EnterpriseDao  {
         return map;
     }
 
-    public static Map<String, Object> enterpriseAsMap(Long eid, Long langID) {
+    public static Map<String, Object> enterpriseAsMap(Integer eid, Integer langID) {
         try (DefaultClosableSession session = new DefaultClosableSession()){
             @SuppressWarnings("unchecked")
             List<Enterprise> entList = session.createCriteria(Enterprise.class).add(Restrictions.eq("id", eid)).list();
@@ -120,8 +119,8 @@ public class EnterpriseDao  {
         return null;
     }
 
-    public static Long countWhereLastChangeGTE(Configuration cfg, Date date) {
-        if (date == null) return 0L;
+    public static Integer countWhereLastChangeGTE(Configuration cfg, Date date) {
+        if (date == null) return 0;
 
         try (DefaultClosableSession session = new DefaultClosableSession(cfg)) {
             try {
@@ -130,7 +129,7 @@ public class EnterpriseDao  {
                         .createCriteria(Enterprise.class)
                         .add(Restrictions.gt("lastChange", date))
                         .setProjection(Projections.rowCount());
-                Long result = (Long) criteria.uniqueResult();
+                Integer result = (Integer) criteria.uniqueResult();
                 transaction.commit();
                 return result;
 
@@ -139,17 +138,17 @@ public class EnterpriseDao  {
             }
         }
 
-        return 0L;
+        return 0;
     }
 
 
-    public static List<Enterprise> read(DefaultClosableSession session, List<Long> ids) {
+    public static List<Enterprise> read(DefaultClosableSession session, List<Integer> ids) {
         Criteria criteria = session.createCriteria(Enterprise.class).add(Restrictions.in("id", ids));
         //noinspection unchecked
         return criteria.list();
     }
 
-    public static  Map<String, Object> getEnterprisesMap(Long eid, Long langID) {
+    public static  Map<String, Object> getEnterprisesMap(Integer eid, Integer langID) {
         return getEnterprisesMap(Collections.singletonList(eid), langID).get(eid);
     }
 }

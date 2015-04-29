@@ -138,11 +138,11 @@ public class PrintDialog extends JDialog {
         Printable painter = null;
         int numPages = 0;
         if (mode == DATA_MODE){
-            painter = new Data(pageFormat, getEnterprises(), getSelectedFields(), (Long) languageCombo.getSelectedItem());
+            painter = new Data(pageFormat, getEnterprises(), getSelectedFields(), (Integer) languageCombo.getSelectedItem());
             numPages = ((Data)painter).getNumPages();
 
         } else if (mode == ADDRESS_MODE){
-            painter = new Address(getEnterprises(), (Long) languageCombo.getSelectedItem());
+            painter = new Address(getEnterprises(), (Integer) languageCombo.getSelectedItem());
             numPages = ((Address)painter).getNumPages(pageFormat);
         }
         if (painter != null)
@@ -150,8 +150,8 @@ public class PrintDialog extends JDialog {
         return book;
     }
 
-    private List<Long> getEnterprises() {
-        List<Long> enterpriseIds = new ArrayList<>();
+    private List<Integer> getEnterprises() {
+        List<Integer> enterpriseIds = new ArrayList<>();
         if (rowsChooser.getChoose() == RowsChoosePanel.ALL) {
             enterpriseIds = demonstrator.getALL();
 
@@ -197,7 +197,7 @@ public class PrintDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             mode = this.value;
-            Long lang = LanguageProxy.instance.getLanguage(ru);
+            Integer lang = LanguageProxy.instance.getLanguage(ru);
             if (mode == ADDRESS_MODE){
                 fieldChoosePanel.setEnabled(false);
                 languageCombo.setEnableItem(lang, false);

@@ -27,7 +27,7 @@ public enum DefaultLanguages {
         return getDefault();
     }
 
-    public static DefaultLanguages language(Long langID){
+    public static DefaultLanguages language(Integer langID){
         String title = LanguageProxy.instance.getTitle(langID);
         return getLanguageByTitle(title);
     }

@@ -49,7 +49,7 @@ public class BranchPanel extends JPanel implements Observable {
         branchTree.clearSelection();
     }
 
-    public Long getNode() {
+    public Integer getNode() {
         return ((BranchNode)branchTree.getLastSelectedPathComponent()).getNode();
     }
 }

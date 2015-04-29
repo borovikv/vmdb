@@ -60,11 +60,11 @@ public class StringWrapper {
 
             width = fm.stringWidth(before);
             int pos;
-            if (width > maxWidth) // Too long
+            if (width > maxWidth) // Too Integer
                 pos = findBreakBefore(line, guess);
             else { // Too short or possibly just right
                 pos = findBreakAfter(line, guess);
-                if (pos != -1) { // Make sure this doesn't make us too long
+                if (pos != -1) { // Make sure this doesn't make us too Integer
                     before = line.substring(0, pos).trim();
                     if (fm.stringWidth(before) > maxWidth)
                         pos = findBreakBefore(line, guess);

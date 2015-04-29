@@ -17,10 +17,10 @@ import java.util.List;
  */
 public class Data implements Printable {
     private final PagesActivity pagesActivity;
-    private final Long langID;
+    private final Integer langID;
 
 
-    public Data(PageFormat pageFormat, List<Long> eid, List<String> selectedFields, Long langID) {
+    public Data(PageFormat pageFormat, List<Integer> eid, List<String> selectedFields, Integer langID) {
         this.langID = langID;
         pagesActivity = new PagesActivity(eid, selectedFields, langID, pageFormat);
         ProgressDialog.start(pagesActivity, ResourceBundleHelper.getString("print_prepare_progress"));

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ForeingCapitalSearcher extends Searcher {
     @Override
-    public List<Long> search(String q) {
+    public List<Integer> search(String q) {
         String hql = "Select distinct e.id from Enterprise e where e.foreignCapital = :hasForeingCapital";
         try (DefaultClosableSession session = new DefaultClosableSession()) {
             boolean has = convertToBoolean(q);

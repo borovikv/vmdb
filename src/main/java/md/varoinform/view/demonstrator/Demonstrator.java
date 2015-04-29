@@ -10,9 +10,9 @@ import java.util.List;
  */
 public interface Demonstrator {
 
-    public void showResults(List<Long> enterprises);
+    void showResults(List<Integer> enterprises);
 
-    public List<Long> getSelected();
+    List<Integer> getSelected();
 
-    public List<Long> getALL();
+    List<Integer> getALL();
 }

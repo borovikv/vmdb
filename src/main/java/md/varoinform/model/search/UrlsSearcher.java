@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class UrlsSearcher extends Searcher {
     @Override
-    public List<Long> search(String q) {
+    public List<Integer> search(String q) {
         try (DefaultClosableSession session = new DefaultClosableSession()) {
             String hql = "Select distinct e.id from Enterprise e join e.contacts cs join cs.urls urls where lower(urls.url) like :pattern";
             Query query = session.createQuery(hql).setString("pattern", "%" + q.trim().toLowerCase() + "%");

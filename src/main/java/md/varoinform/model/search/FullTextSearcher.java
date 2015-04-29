@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.entities.enterprise.Enterprise;
 import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -36,7 +36,7 @@ public class FullTextSearcher extends Searcher {
     }
 
     @Override
-    public List<Long> search(String q) {
+    public List<Integer> search(String q) {
         try(DefaultClosableSession session = new DefaultClosableSession()) {
             FullTextSession fullTextSession = Search.getFullTextSession(session.getSession());
             QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Enterprise.class).get();
@@ -56,10 +56,10 @@ public class FullTextSearcher extends Searcher {
         }
     }
 
-    public List<Long> getIds(List list) {
-        List<Long> result = new ArrayList<>();
+    public List<Integer> getIds(List list) {
+        List<Integer> result = new ArrayList<>();
         for (Object obj : list) {
-            Long id = (Long) ((Object[])obj)[0];
+            Integer id = (Integer) ((Object[])obj)[0];
             result.add(id);
         }
         return result;

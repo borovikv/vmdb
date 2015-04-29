@@ -91,7 +91,7 @@ public class ResourceBundleHelper implements Serializable {
     get string by Language:language and key
     if key not found return default value
      */
-    public static String getString(Long langID, String key, String defaultValue) {
+    public static String getString(Integer langID, String key, String defaultValue) {
         return getString(DefaultLanguages.language(langID), key, defaultValue);
     }
 

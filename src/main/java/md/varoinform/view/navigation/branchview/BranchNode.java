@@ -13,11 +13,11 @@ import java.util.Collections;
  * Time: 5:08 PM
  */
 public class BranchNode extends DefaultMutableTreeNode implements Comparable {
-    private final Long id;
+    private final Integer id;
     private final String node;
-    private final static long ROOT_ID = 1L;
+    private final static Integer ROOT_ID = 1;
 
-    public BranchNode(Long id) {
+    public BranchNode(Integer id) {
         super(id);
         if (id != null) {
             this.id = id;
@@ -50,7 +50,7 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
         return node;
     }
 
-    public Long getNode() {
+    public Integer getNode() {
         return id;
     }
 }

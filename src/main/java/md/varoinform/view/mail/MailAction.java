@@ -22,11 +22,11 @@ public class MailAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        List<Long> enterprises = demonstrator.getSelected();
+        List<Integer> enterprises = demonstrator.getSelected();
         mail(enterprises);
     }
 
-    public void mail(List<Long> enterprises){
+    public void mail(List<Integer> enterprises){
         Desktop desktop;
 
         if (Desktop.isDesktopSupported() && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)){

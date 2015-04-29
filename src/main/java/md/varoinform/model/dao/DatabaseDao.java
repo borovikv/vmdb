@@ -1,6 +1,6 @@
 package md.varoinform.model.dao;
 
-import md.varoinform.model.entities.Database;
+import md.varoinform.model.entities.local.Database;
 import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;

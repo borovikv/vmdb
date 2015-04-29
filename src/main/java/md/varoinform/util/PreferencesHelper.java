@@ -102,12 +102,12 @@ public class PreferencesHelper implements Serializable {
     }
     //------------------------------------------------------------------------------------------------------------------
 
-    public Long getCurrentLanguage(){
-        return preferences.getLong(LANGUAGE_KEY, 1L);
+    public Integer getCurrentLanguage(){
+        return preferences.getInt(LANGUAGE_KEY, 1);
     }
 
-    public void setCurrentLanguage(Long id){
-        preferences.putLong(LANGUAGE_KEY, id);
+    public void setCurrentLanguage(Integer id){
+        preferences.putInt(LANGUAGE_KEY, id);
     }
 
     public boolean getShowTextInButton(){

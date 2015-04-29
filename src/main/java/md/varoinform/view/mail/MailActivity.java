@@ -20,9 +20,9 @@ public class MailActivity extends Activity {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final Desktop desktop;
-    private final List<Long> enterpriseIds;
+    private final List<Integer> enterpriseIds;
 
-    public MailActivity(Desktop desktop, List<Long> enterpriseIds) {
+    public MailActivity(Desktop desktop, List<Integer> enterpriseIds) {
         this.desktop = desktop;
         this.enterpriseIds = enterpriseIds;
     }
@@ -33,9 +33,10 @@ public class MailActivity extends Activity {
 
         String mailTo = "mailto:";
         StringBuilder builder = new StringBuilder(mailTo);
-        for (Long id : enterpriseIds) {
+        for (Integer id : enterpriseIds) {
 
             @SuppressWarnings("unchecked") Iterable<String> emails = (Iterable<String>) Cache.instance.getRawValue(id, "emails");
+            if (emails == null) return null;
             for (String email : emails) {
 
                 if (VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()){

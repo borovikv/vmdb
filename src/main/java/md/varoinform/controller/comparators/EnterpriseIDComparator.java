@@ -13,7 +13,7 @@ import java.util.Locale;
  * Date: 6/24/14
  * Time: 3:58 PM
  */
-public class EnterpriseIDComparator implements java.util.Comparator<Long> {
+public class EnterpriseIDComparator implements java.util.Comparator<Integer> {
     private final Collator collator;
 
     public EnterpriseIDComparator() {
@@ -22,7 +22,7 @@ public class EnterpriseIDComparator implements java.util.Comparator<Long> {
     }
 
     @Override
-    public int compare(Long o1, Long o2) {
+    public int compare(Integer o1, Integer o2) {
         if (o1 == null && o2 == null) return 0;
         if (o1 == null) return -1;
         if (o2 == null) return 1;

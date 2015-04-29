@@ -19,9 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public enum Cache implements md.varoinform.util.observer.Observer {
     instance;
-    private final List<Long> eiDs;
-    private Map<Long, Map<String, Object>> eCache = new ConcurrentHashMap<>();
-    private Long langID;
+    private final List<Integer> eiDs;
+    private Map<Integer, Map<String, Object>> eCache = new ConcurrentHashMap<>();
+    private Integer langID;
     private SwingWorker<Void, Void> worker;
 
     Cache() {
@@ -49,21 +49,21 @@ public enum Cache implements md.varoinform.util.observer.Observer {
 
     }
 
-    public List<Long> getAllEnterpriseIds(){
+    public List<Integer> getAllEnterpriseIds(){
         //return new ArrayList<>(eCache.keySet());
         return eiDs;
     }
 
 
-    public Object getValue(Long eid, Field f) {
+    public Object getValue(Integer eid, Field f) {
         return getValue(eid, f.toString());
     }
 
-    public Object getValue(Long eid, String field){
+    public Object getValue(Integer eid, String field){
         return StringUtils.objectOrString(getRawValue(eid, field));
     }
 
-    public Object getRawValue(Long eid, String field){
+    public Object getRawValue(Integer eid, String field){
         Map<String, Object> proxy = eCache.get(eid);
         if (proxy != null){
             return proxy.get(field);
@@ -78,11 +78,11 @@ public enum Cache implements md.varoinform.util.observer.Observer {
         return null;
     }
 
-    public Long getCachedLanguage() {
+    public Integer getCachedLanguage() {
         return langID;
     }
 
-    public Map<String, Object> getMap(Long eid) {
+    public Map<String, Object> getMap(Integer eid) {
         return eCache.get(eid);
     }
 

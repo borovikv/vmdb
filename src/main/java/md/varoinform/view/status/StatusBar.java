@@ -34,7 +34,7 @@ public enum StatusBar  implements Observable {
         languageCombo.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Long newLanguage = (Long)languageCombo.getSelectedItem();
+                Integer newLanguage = (Integer)languageCombo.getSelectedItem();
                 LanguageProxy.instance.setCurrentLanguage(newLanguage);
                 notifyObservers(new ObservableEvent(ObservableEvent.Type.LANGUAGE_CHANGED));
             }

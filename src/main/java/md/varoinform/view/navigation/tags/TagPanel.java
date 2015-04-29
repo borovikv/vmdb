@@ -159,7 +159,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
         }
     }
 
-    public void removeFromCurrentTag(List<Long> eids) {
+    public void removeFromCurrentTag(List<Integer> eids) {
         Tag tag = tagList.removeFromCurrentTag(eids);
         System.out.println(tag);
         notifyObservers(new ObservableEvent<>(ObservableEvent.Type.TAG_SELECTED, tag));
@@ -198,7 +198,7 @@ public class TagPanel extends JPanel implements Observer, Observable, FilteringN
         ((FilteringModel)tagList.getModel()).filter(text);
     }
 
-    public void addTag(List<Long> enterpriseIds) {
+    public void addTag(List<Integer> enterpriseIds) {
         tagList.addTag(-1, enterpriseIds);
     }
 }

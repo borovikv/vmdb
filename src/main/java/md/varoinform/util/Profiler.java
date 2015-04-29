@@ -8,7 +8,7 @@ package md.varoinform.util;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class Profiler {
-    private final long start;
+    private final Long start;
     private final String text;
 
     public Profiler(String text) {
@@ -17,7 +17,7 @@ public class Profiler {
     }
 
     public double end(){
-        long end = System.nanoTime();
+        Long end = System.nanoTime();
         double result = (end - start)/1000_000_000.0;
         System.out.println(text + " = " + result);
         return result;

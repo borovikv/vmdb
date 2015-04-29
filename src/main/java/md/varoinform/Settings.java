@@ -83,7 +83,7 @@ public class Settings {
     }
 
     public static Path pathToDB(){
-        Path path = Paths.get(Settings.getWorkFolder(), "database", "DB");
+        Path path = Paths.get(Settings.getWorkFolder(), "database", "db");
         if (Files.notExists(path.getParent())) throw new RuntimeException("file " + path.toAbsolutePath().toString() + " not found");
         return path;
     }

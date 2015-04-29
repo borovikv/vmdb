@@ -1,11 +1,9 @@
 package md.varoinform.controller.entityproxy;
 
-import md.varoinform.model.entities.*;
-import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.model.entities.enterprise.Contact;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,83 +25,16 @@ import java.util.*;
     private List<Url> urls = new ArrayList<>();
  */
 public class ContactProxy extends EntityProxy {
-    private Contact contact;
+    private Map<String, String> contactMap = new HashMap<>();
 
-    public ContactProxy(Contact contact, Long langID) {
+    public ContactProxy(Contact contact, Integer langID) {
         super(langID);
-        this.contact = contact;
+        contactMap.put("department", getTitle(contact.getDepartment()));
+        contactMap.put("phone", contact.getPhone().toString());
+        contactMap.put("position", getTitle(contact.getPosition()));
     }
 
-    public String getPostalCode(){
-        if (contact == null) return null;
-        String postalCode = contact.getPostalCode();
-        return postalCode.toUpperCase().startsWith("MD") ? postalCode : "MD-" + postalCode;
-    }
-
-    public String getHouseNumber(){
-
-        return contact == null ? null : contact.getHouseNumber();
-    }
-
-    public String getOfficeNumber(){
-        return contact == null ? null : contact.getOfficeNumber();
-    }
-
-    public String getStreet(){
-        return contact == null ? null : getTitle(contact.getStreet());
-    }
-
-    public String getSector(){
-        return contact == null ? null : getTitle(contact.getSector());
-    }
-
-    public String getTown(){
-        return contact == null ? null : getTitle(contact.getTown());
-    }
-
-    public String getRegion(){
-        return contact == null ? null : getTitle(contact.getRegion());
-    }
-
-
-
-    public String getCountry(){
-        return ResourceBundleHelper.getString(getLangID(), "moldova", "Republic Moldova");
-    }
-
-    public List<String> getEmail(){
-        return getStrings("getEmails");
-    }
-
-    public ArrayList<String> getStrings(String name) {
-        ArrayList<String> strings = new ArrayList<>();
-        if (contact != null) {
-            try {
-                Method method = Contact.class.getMethod(name);
-                List<?> objs = (List<?>) method.invoke(contact);
-                for (Object obj : objs) {
-                    strings.add(obj.toString());
-                }
-            } catch (InvocationTargetException|NoSuchMethodException|IllegalAccessException ignored){
-
-            }
-        }
-        return strings;
-    }
-
-    public List<String> getPhones(){
-        return getStrings("getPhones");
-    }
-
-    public List<String> getUrls(){
-        return getStrings("getUrls");
-    }
-
-    public List<String> getFax() {
-        return getStrings("getFax");
-    }
-
-    public List<String> getGSM(){
-        return getStrings("getGSM");
+    public Map<String, String> getContactMap() {
+        return contactMap;
     }
 }

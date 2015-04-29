@@ -15,14 +15,14 @@ import java.util.List;
  * Time: 4:47 PM
  */
 public class EnterpriseTableModel extends AbstractTableModel {
-    private List<Long> enterprises;
+    private List<Integer> enterprises;
     private final PreferencesHelper preferencesHelper = new PreferencesHelper();
 
     public EnterpriseTableModel() {
         enterprises = new ArrayList<>();
     }
 
-    public EnterpriseTableModel(List<Long> enterprises) {
+    public EnterpriseTableModel(List<Integer> enterprises) {
         this.enterprises = new ArrayList<>(enterprises);
     }
 
@@ -65,11 +65,11 @@ public class EnterpriseTableModel extends AbstractTableModel {
         return columnName;
     }
 
-    public List<Long> getEnterprises() {
+    public List<Integer> getEnterprises() {
         return enterprises;
     }
 
-    public Long getEnterpriseAt(int rowIndex) {
+    public Integer getEnterpriseAt(int rowIndex) {
         if ( 0 > rowIndex || rowIndex > enterprises.size() ) return null;
         return enterprises.get(rowIndex);
     }

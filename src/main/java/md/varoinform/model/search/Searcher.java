@@ -9,7 +9,7 @@ import java.util.List;
  * Time: 9:45 AM
  */
 public abstract class Searcher implements Comparable<Searcher>{
-    public abstract List<Long> search(String q);
+    public abstract List<Integer> search(String q);
 
     public String getName(){
         return this.getClass().getSimpleName().replace("Searcher", "").toLowerCase();

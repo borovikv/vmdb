@@ -1,7 +1,8 @@
 package md.varoinform.controller.entityproxy;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.TitleContainer;
+import md.varoinform.model.entities.base.TitleContainer;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Vladimir Borovic
@@ -10,13 +11,13 @@ import md.varoinform.model.entities.TitleContainer;
  */
 public class EntityProxy {
 
-    private final Long langID;
+    private final Integer langID;
 
     public EntityProxy() {
         langID = LanguageProxy.instance.getCurrentLanguage();
     }
 
-    public EntityProxy(Long langID) {
+    public EntityProxy(Integer langID) {
         this.langID = langID;
     }
 
@@ -25,7 +26,7 @@ public class EntityProxy {
         return container.title(LanguageProxy.instance.getTitle(langID));
     }
 
-    public Long getLangID() {
+    public Integer getLangID() {
         return langID;
     }
 }

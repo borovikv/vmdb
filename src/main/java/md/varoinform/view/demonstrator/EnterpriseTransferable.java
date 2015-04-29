@@ -13,10 +13,10 @@ import java.util.List;
  * Time: 5:18 PM
  */
 public class EnterpriseTransferable implements Transferable {
-    private final List<Long> enterprises;
+    private final List<Integer> enterprises;
     public final static DataFlavor ENTERPRISE_FLAVOR = new DataFlavor(Object.class, "Enterprise list");
 
-    public EnterpriseTransferable(List<Long> enterprises) {
+    public EnterpriseTransferable(List<Integer> enterprises) {
         this.enterprises = enterprises;
     }
 

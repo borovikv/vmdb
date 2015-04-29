@@ -68,7 +68,7 @@ public class CheckUpdateWorker extends SwingWorker<Boolean, Void> {
 
     private class UpdateWorker extends SwingWorker<Throwable, Object> {
 
-        private Long updated;
+        private Integer updated;
 
         @Override
         protected Throwable doInBackground() throws Exception {

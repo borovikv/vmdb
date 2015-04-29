@@ -2,8 +2,8 @@ package md.varoinform.controller.cache;
 
 import md.varoinform.controller.LanguageProxy;
 import md.varoinform.model.dao.NodeDao;
-import md.varoinform.model.entities.Node;
-import md.varoinform.model.entities.NodeTitle;
+import md.varoinform.model.entities.product.Node;
+import md.varoinform.model.entities.product.NodeTitle;
 import md.varoinform.model.utils.DefaultClosableSession;
 
 import java.util.*;
@@ -18,9 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum BranchCache {
     instance;
 
-    private Map<Long, List<Long>> branchCache = new ConcurrentHashMap<>();
-    private Map<Long, Set<Long>> children = new HashMap<>();
-    private Map<Long, Map<String, String>> branchTitles = new HashMap<>();
+    private Map<Integer, List<Integer>> branchCache = new ConcurrentHashMap<>();
+    private Map<Integer, Set<Integer>> children = new HashMap<>();
+    private Map<Integer, Map<String, String>> branchTitles = new HashMap<>();
 
     BranchCache(){
         createBranchTitleCache();
@@ -51,30 +51,31 @@ public enum BranchCache {
         createBranchTitleCache();
     }
 
-    public List<Long> getEnterpriseIdByNode(Long node){
+    public List<Integer> getEnterpriseIdByNode(Integer node){
         if  (node == 1L) {
             return Cache.instance.getAllEnterpriseIds();
         }
         return branchCache.get(node);
     }
 
-    public String getTitle(Long id){
+    public String getTitle(Integer id){
         Map<String, String> map = branchTitles.get(id);
         if (map == null) return "unnamed";
         return map.get(LanguageProxy.getCurrentLanguageTitle());
     }
 
-    public List<Long> getChildren(Long id){
-        Set<Long> children = this.children.get(id);
-        if (children != null)
+    public List<Integer> getChildren(Integer id){
+        Set<Integer> children = this.children.get(id);
+        if (children != null) {
             return new ArrayList<>(children);
+        }
         return new ArrayList<>();
     }
 
-    public List<Long> startWith(String text){
-        if (text == null || text.isEmpty()) return getChildren(1L);
-        List<Long> result = new ArrayList<>();
-        for (Long id : branchTitles.keySet()) {
+    public List<Integer> startWith(String text){
+        if (text == null || text.isEmpty()) return getChildren(1);
+        List<Integer> result = new ArrayList<>();
+        for (Integer id : branchTitles.keySet()) {
             Map<String, String> map = branchTitles.get(id);
             if (map != null){
                 String title = map.get(LanguageProxy.getCurrentLanguageTitle());

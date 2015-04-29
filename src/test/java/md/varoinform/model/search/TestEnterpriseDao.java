@@ -27,7 +27,7 @@ public class TestEnterpriseDao {
         Profiler p = new Profiler("count by date test");
         Path path = Paths.get("src", "test", "resources", "updateTest", "DB");
         Configurator configurator = new Configurator(path.toString(), PasswordManager.getPassword());
-        Configuration cfg = configurator.configure();
+        Configuration cfg = configurator.defaultConfiguration();
 
         //Tue Jul 22 00:00:00 EEST 2014
         Date checkDate = new Date(1405976400000L);
@@ -39,8 +39,8 @@ public class TestEnterpriseDao {
         calendar.setTime(date);
         calendar.add(Calendar.HOUR, -1);
         Date date1 = calendar.getTime();
-        Long amount = EnterpriseDao.countWhereLastChangeGTE(cfg, date1);
-        assertEquals(amount.longValue(), 1L);
+        Integer amount = EnterpriseDao.countWhereLastChangeGTE(cfg, date1);
+        assertEquals(amount.intValue(), 1);
         p.end();
     }
 }

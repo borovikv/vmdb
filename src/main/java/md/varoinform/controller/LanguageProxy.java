@@ -16,20 +16,20 @@ import java.util.Map;
 public enum  LanguageProxy {
     instance;
 
-    private final Map<Long, String> languageMap;
-    private Long currentLanguage;
+    private final Map<Integer, String> languageMap;
+    private Integer currentLanguage;
 
-    private LanguageProxy() {
+    LanguageProxy() {
         languageMap = LanguageDao.getLanguageMap();
         currentLanguage = new PreferencesHelper().getCurrentLanguage();
     }
 
 
-    public List<Long> getLanguages(){
+    public List<Integer> getLanguages(){
         return new ArrayList<>(languageMap.keySet());
     }
 
-    public Long getCurrentLanguage() {
+    public Integer getCurrentLanguage() {
         return currentLanguage;
     }
 
@@ -37,22 +37,22 @@ public enum  LanguageProxy {
         return instance.languageMap.get(instance.currentLanguage);
     }
 
-    public void setCurrentLanguage(Long currentLanguage) {
+    public void setCurrentLanguage(Integer currentLanguage) {
         this.currentLanguage = currentLanguage;
         PreferencesHelper preferences = new PreferencesHelper();
         preferences.setCurrentLanguage(currentLanguage);
     }
 
-    public Long getLanguage(String title) {
+    public Integer getLanguage(String title) {
         if (title == null) return null;
-        for (Long id : languageMap.keySet()) {
+        for (Integer id : languageMap.keySet()) {
             String t = languageMap.get(id);
             if (t != null && t.toLowerCase().startsWith(title.toLowerCase())) return id;
         }
         return null;
     }
 
-    public String getTitle(Long langID) {
+    public String getTitle(Integer langID) {
         return languageMap.get(langID);
     }
 

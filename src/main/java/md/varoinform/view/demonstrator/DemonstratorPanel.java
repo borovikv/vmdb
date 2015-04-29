@@ -42,7 +42,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    Long enterpriseId = demonstrator.getSelectedEnterprise();
+                    Integer enterpriseId = demonstrator.getSelectedEnterprise();
                     showEnterprise(enterpriseId);
                     StatusBar.instance.setRow(demonstrator.getSelectedRow() + 1);
                 }
@@ -67,17 +67,17 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
     }
 
     @Override
-    public void showResults(List<Long> enterprises){
+    public void showResults(List<Integer> enterprises){
         demonstrator.showResults(enterprises);
     }
 
     @Override
-    public List<Long> getSelected(){
+    public List<Integer> getSelected(){
         return demonstrator.getSelected();
     }
 
     @Override
-    public List<Long> getALL() {
+    public List<Integer> getALL() {
         return demonstrator.getALL();
     }
 
@@ -86,7 +86,7 @@ public class DemonstratorPanel extends JPanel implements Demonstrator, Observer,
         showEnterprise(demonstrator.getSelectedEnterprise());
     }
 
-    private void showEnterprise(Long enterprise) {
+    private void showEnterprise(Integer enterprise) {
         if ( enterprise != null ) {
             browser.setText(EnterpriseView.getView(enterprise));
         } else {

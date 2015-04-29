@@ -22,29 +22,29 @@ public class App {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-
-                Profiler pg = new Profiler("check");
-                Guardian guardian = new Guardian();
-                try {
-                    guardian.check();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null,
-                            ResourceBundleHelper.getString(DefaultLanguages.RU, "database_in_use_message", "Database already in use"));
-                    return;
-                }
-                pg.end();
-
-                PreferencesHelper preferences = new PreferencesHelper();
-                if(!preferences.getIsIndexed()) {
-                    if (FullTextSearcher.createIndex()) {
-                        preferences.setIsIndexed(true);
-                    }
-                }
-
-                Profiler p = new Profiler("create mainframe");
+//
+//                Profiler pg = new Profiler("check");
+//                Guardian guardian = new Guardian();
+//                try {
+//                    guardian.check();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    JOptionPane.showMessageDialog(null,
+//                            ResourceBundleHelper.getString(DefaultLanguages.RU, "database_in_use_message", "Database already in use"));
+//                    return;
+//                }
+//                pg.end();
+//
+//                PreferencesHelper preferences = new PreferencesHelper();
+//                if(!preferences.getIsIndexed()) {
+//                    if (FullTextSearcher.createIndex()) {
+//                        preferences.setIsIndexed(true);
+//                    }
+//                }
+//
+//                Profiler p = new Profiler("create mainframe");
                 MainFrame mainFrame = new MainFrame();
-                p.end();
+//                p.end();
                 mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 mainFrame.setVisible(true);
                 Runtime.getRuntime().addShutdownHook(new Thread() {

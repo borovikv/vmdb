@@ -38,7 +38,7 @@ public class EnterpriseView  {
         }
     }
 
-    public static String getView(Long id) {
+    public static String getView(Integer id) {
         if (template == null) return "";
 
         StringWriter sw = new StringWriter();
@@ -47,7 +47,7 @@ public class EnterpriseView  {
         return sw.toString();
     }
 
-    private static VelocityContext getContext(Long id) {
+    private static VelocityContext getContext(Integer id) {
         VelocityContext context = new VelocityContext();
         context.put("i18nHelper", ResourceBundleHelper.class);
         context.put("StringUtils", StringUtils.class);

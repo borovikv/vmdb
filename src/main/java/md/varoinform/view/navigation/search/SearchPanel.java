@@ -49,21 +49,21 @@ public class SearchPanel implements Observer {
     public void search(Searcher searcher, String text) {
         Component rootPane = SwingUtilities.getRoot(searchField);
         rootPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        List<Long> enterprises = searchText(searcher, text);
+        List<Integer> enterprises = searchText(searcher, text);
         rootPane.setCursor(Cursor.getDefaultCursor());
         fireSearchEnded(enterprises);
     }
 
-    public void fireSearchEnded(List<Long> enterprises) {
+    public void fireSearchEnded(List<Integer> enterprises) {
         for (SearchListener listener : listeners) {
             listener.perform(enterprises);
         }
     }
 
-    private List<Long> searchText(Searcher searcher, String text) {
+    private List<Integer> searchText(Searcher searcher, String text) {
         if (text == null) return null;
         HistoryEvent event = new HistoryEvent(searcher, text);
-        java.util.List<Long> enterprises;
+        java.util.List<Integer> enterprises;
         enterprises = searcher.search(text);
         History.instance.add(event);
         return enterprises;

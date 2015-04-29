@@ -16,14 +16,14 @@ import java.util.List;
 public abstract class PrintableBase implements Printable {
     protected final int inchToPTCoefficient = 72;
     protected int offset;
-    protected List<Long> enterprises;
-    protected Long langID;
+    protected List<Integer> enterprises;
+    protected Integer langID;
     protected int width;
     protected int height;
     protected Graphics2D graphics2D;
     //protected PageFormat pageFormat;
 
-    public PrintableBase(List<Long> enterprises, Long langID) {
+    public PrintableBase(List<Integer> enterprises, Integer langID) {
         this.enterprises = enterprises;
         this.langID = langID;
     }
@@ -37,7 +37,7 @@ public abstract class PrintableBase implements Printable {
         return PAGE_EXISTS;
     }
 
-    private List<Long> getEnterprisesForPage(List<Long> enterprises, int pageIndex, PageFormat pageFormat) {
+    private List<Integer> getEnterprisesForPage(List<Integer> enterprises, int pageIndex, PageFormat pageFormat) {
         int perPage = perPage(pageFormat);
         int fromIndex = pageIndex * perPage;
         int toIndex = (pageIndex + 1) * perPage;
@@ -46,7 +46,7 @@ public abstract class PrintableBase implements Printable {
         return enterprises.subList(fromIndex, toIndex);
     }
 
-    private void draw(Graphics2D graphics2D, PageFormat pageFormat, List<Long> enterprises){
+    private void draw(Graphics2D graphics2D, PageFormat pageFormat, List<Integer> enterprises){
         float y = (float) pageFormat.getImageableY();
         float x = (float) pageFormat.getImageableX();
         int columnsNumber = countCols(pageFormat);
@@ -65,7 +65,7 @@ public abstract class PrintableBase implements Printable {
     }
 
 
-    protected abstract void drawItem(float x, float y, Graphics2D g2, Long enterprise);
+    protected abstract void drawItem(float x, float y, Graphics2D g2, Integer enterprise);
 
     private int countCols(PageFormat pageFormat){
          return (int) (

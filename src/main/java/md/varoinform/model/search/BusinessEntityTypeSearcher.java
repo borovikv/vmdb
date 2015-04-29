@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class BusinessEntityTypeSearcher extends Searcher {
     @Override
-    public List<Long> search(String q) {
+    public List<Integer> search(String q) {
         try (DefaultClosableSession session = new DefaultClosableSession()) {
             String hql = "Select distinct e.id from Enterprise e join e.businessEntityType bet join bet.titles t where lower(t.title) = :pattern ";
             Query query = session.createQuery(hql).setString("pattern", q.trim().toLowerCase());

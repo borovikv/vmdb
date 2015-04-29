@@ -93,7 +93,7 @@ public class TableView extends JTable implements Demonstrator {
 
 
     @Override
-    public void showResults(List<Long> enterprises) {
+    public void showResults(List<Integer> enterprises) {
         if (enterprises == null) {
             enterprises = new ArrayList<>();
         }
@@ -140,8 +140,8 @@ public class TableView extends JTable implements Demonstrator {
     }
 
     @Override
-    public List<Long> getSelected() {
-        List<Long> enterprises = new ArrayList<>();
+    public List<Integer> getSelected() {
+        List<Integer> enterprises = new ArrayList<>();
 
         for (int index : getSelectedRows()) {
             int realIndex = convertRowIndexToModel(index);
@@ -158,7 +158,7 @@ public class TableView extends JTable implements Demonstrator {
         return 0 > selectedRow || selectedRow > getEnterpriseTableModel().getRowCount();
     }
 
-    private Long getEnterpriseAt(int rowIndex) {
+    private Integer getEnterpriseAt(int rowIndex) {
         return getEnterpriseTableModel().getEnterpriseAt(rowIndex);
     }
 
@@ -168,8 +168,8 @@ public class TableView extends JTable implements Demonstrator {
 
 
     @Override
-    public List<Long> getALL() {
-        List<Long> enterprises = new ArrayList<>();
+    public List<Integer> getALL() {
+        List<Integer> enterprises = new ArrayList<>();
         for (int i = 0; i < getRowCount(); i++) {
             int realIndex = convertRowIndexToModel(i);
 
@@ -182,7 +182,7 @@ public class TableView extends JTable implements Demonstrator {
     }
 
 
-    public Long getSelectedEnterprise() {
+    public Integer getSelectedEnterprise() {
         int rowIndex = getRowIndex();
         if (isIndexOutOfBound(rowIndex)) return null;
         return getEnterpriseAt(rowIndex);
@@ -244,7 +244,7 @@ public class TableView extends JTable implements Demonstrator {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TableRowSorter rowSorter = (TableRowSorter) getRowSorter();
         rowSorter.setSortable(column, true);
-        rowSorter.setSortKeys(Arrays.asList(new javax.swing.RowSorter.SortKey(column, order)));
+        rowSorter.setSortKeys(Collections.singletonList(new javax.swing.RowSorter.SortKey(column, order)));
         Map<Integer, SortOrder> sortedColumns = new HashMap<>();
         sortedColumns.put(column, order);
         getTableHeaderRenderer().setSortedColumns(sortedColumns);

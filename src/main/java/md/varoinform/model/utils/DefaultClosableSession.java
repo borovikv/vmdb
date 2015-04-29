@@ -12,7 +12,9 @@ public class DefaultClosableSession extends ClosableSession{
     private static final Configuration cfg;
     static {
 
-        cfg = new Configurator(Settings.pathToDB().toString(), PasswordManager.getPassword()).configure();
+        String pathToDb = Settings.pathToDB().toString();
+        System.out.println(pathToDb);
+        cfg = new Configurator(pathToDb, "admin", "test").configureWithoutIndex();
     }
 
     public DefaultClosableSession() {

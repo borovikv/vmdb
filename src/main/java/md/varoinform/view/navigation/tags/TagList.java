@@ -55,7 +55,7 @@ public class TagList extends JList<Tag> {
         return index;
     }
 
-    public boolean addTag(int index, List<Long> enterpriseIds) {
+    public boolean addTag(int index, List<Integer> enterpriseIds) {
         if (enterpriseIds.isEmpty()) return false;
         if (index >= 0) {
             Tag tag = getModel().getElementAt(index);
@@ -92,7 +92,7 @@ public class TagList extends JList<Tag> {
         }
     }
 
-    public Tag removeFromCurrentTag(List<Long> eids) {
+    public Tag removeFromCurrentTag(List<Integer> eids) {
         Tag selectedTag = getSelectedValue();
         boolean clearSelection = selectedTag.remove(eids);
         TagCache.instance.updateTag(selectedTag);

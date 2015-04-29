@@ -23,8 +23,8 @@ public class PagesActivity extends Activity {
     private final double canvasWidth;
     private final double canvasHeight;
     private List<Page> pages = new ArrayList<>();
-    private final List<Long> idEnterprises;
-    private final Long langID;
+    private final List<Integer> idEnterprises;
+    private final Integer langID;
     private static final Font DEFAULT_FONT = new Font("SanSerif", Font.PLAIN, 10);
     private List<String> fields;
     private static final int horizontalPadding = 15;
@@ -36,7 +36,7 @@ public class PagesActivity extends Activity {
     private String format;
 
 
-    public PagesActivity(List<Long> idEnterprises, List<String> fields, Long langID, PageFormat pageFormat) {
+    public PagesActivity(List<Integer> idEnterprises, List<String> fields, Integer langID, PageFormat pageFormat) {
         this.idEnterprises = idEnterprises;
         this.langID = langID;
         this.fields = fields;
@@ -62,7 +62,7 @@ public class PagesActivity extends Activity {
 
         int usedArea = 0;
         int size = idEnterprises.size();
-        Map<Long, Map<String, Object>> enterprisesMap = null;
+        Map<Integer, Map<String, Object>> enterprisesMap = null;
         if (!langID.equals(Cache.instance.getCachedLanguage())){
             //ToDo: create real change in progress bar
             setProgress(10);
@@ -70,7 +70,7 @@ public class PagesActivity extends Activity {
         }
 
         for (int i = 0; i < size; i++) {
-            Long eid = idEnterprises.get(i);
+            Integer eid = idEnterprises.get(i);
 
             Map<String, Object> map;
             if (enterprisesMap != null){
@@ -117,7 +117,7 @@ public class PagesActivity extends Activity {
         return (width + horizontalPadding) * 2 > canvasWidth ? canvasWidth : width;
     }
 
-    private Block getBlock(Map<String, Object> enterpriseMap, Long langID) {
+    private Block getBlock(Map<String, Object> enterpriseMap, Integer langID) {
         Block block = new Block();
 
 
@@ -153,7 +153,7 @@ public class PagesActivity extends Activity {
         return block;
     }
 
-    private String getAddress(List<String> fields, Map<String, Object> enterpriseMap, Long langID) {
+    private String getAddress(List<String> fields, Map<String, Object> enterpriseMap, Integer langID) {
         List<String> addressFields = EnterpriseProxy.getAddressFields();
         Set<Object> address = new LinkedHashSet<>();
         for (String field : addressFields) {
@@ -170,7 +170,7 @@ public class PagesActivity extends Activity {
         return getLine(langID, address, "address");
     }
 
-    private String getLine(Long langID, Object o, String field) {
+    private String getLine(Integer langID, Object o, String field) {
         String value = StringUtils.valueOf(o);
         if (value.isEmpty()) return "";
 

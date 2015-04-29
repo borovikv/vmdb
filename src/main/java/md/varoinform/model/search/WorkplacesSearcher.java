@@ -34,7 +34,7 @@ public class WorkplacesSearcher extends Searcher {
     }
 
     @Override
-    public List<Long> search(String q) {
+    public List<Integer> search(String q) {
         try (DefaultClosableSession session = new DefaultClosableSession()) {
             Integer amount = Integer.parseInt(q.trim());
             String hql = "Select distinct e.id from Enterprise e where e.workplaces " + type + " :amount";

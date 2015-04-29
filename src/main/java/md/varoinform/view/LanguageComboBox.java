@@ -13,10 +13,10 @@ import java.util.List;
  * Date: 12/3/13
  * Time: 3:20 PM
  */
-public class LanguageComboBox extends JComboBox<Long> {
-    private final List<Long> languages;
-    private List<Long> disabledLanguages = new ArrayList<>();
-    private List<Long> currentLanguages = new ArrayList<>();
+public class LanguageComboBox extends JComboBox<Integer> {
+    private final List<Integer> languages;
+    private List<Integer> disabledLanguages = new ArrayList<>();
+    private List<Integer> currentLanguages = new ArrayList<>();
 
     public LanguageComboBox() {
         languages = LanguageProxy.instance.getLanguages();
@@ -24,7 +24,7 @@ public class LanguageComboBox extends JComboBox<Long> {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                String langTitle = LanguageProxy.instance.getTitle((Long) value);
+                String langTitle = LanguageProxy.instance.getTitle((Integer) value);
                 label.setText(langTitle);
                 return label;
             }
@@ -35,12 +35,12 @@ public class LanguageComboBox extends JComboBox<Long> {
 
     public void setCurrentLanguages() {
         currentLanguages = new ArrayList<>(languages);
-        for (Long langID : disabledLanguages) {
+        for (Integer langID : disabledLanguages) {
             currentLanguages.remove(langID);
         }
 
-        DefaultComboBoxModel<Long> model = new DefaultComboBoxModel<>(currentLanguages.toArray(new Long[languages.size()]));
-        Long curLangID = LanguageProxy.instance.getCurrentLanguage();
+        DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<>(currentLanguages.toArray(new Integer[languages.size()]));
+        Integer curLangID = LanguageProxy.instance.getCurrentLanguage();
         if (currentLanguages.contains(curLangID)) {
             model.setSelectedItem(curLangID);
         }
@@ -48,7 +48,7 @@ public class LanguageComboBox extends JComboBox<Long> {
         setModel(model);
     }
 
-    public void setEnableItem(Long language, boolean enable){
+    public void setEnableItem(Integer language, boolean enable){
         if (language == null) return;
         if (languages.contains(language)){
             if (enable){

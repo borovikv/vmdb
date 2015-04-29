@@ -62,7 +62,7 @@ public class ExportDialog extends JDialog {
     }
 
 
-    private void save(List<String> fieldNames, List<Long> enterprises){
+    private void save(List<String> fieldNames, List<Integer> enterprises){
         JFileChooser saveDialog = new JFileChooser();
         FileFilter csvFileFilter = new FileFilter() {
             @Override
@@ -91,7 +91,7 @@ public class ExportDialog extends JDialog {
         }
     }
 
-    private List<Long> getEnterprises() {
+    private List<Integer> getEnterprises() {
         if (rowsChoosePanel.getChoose() == RowsChoosePanel.ALL){
             return demonstrator.getALL();
         }

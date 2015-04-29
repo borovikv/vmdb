@@ -21,14 +21,14 @@ import java.util.Map;
 public class Address extends PrintableBase {
     private final BasicStroke dashedStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f}, 0.0f);
 
-    public Address(List<Long> enterprises, Long langID) {
+    public Address(List<Integer> enterprises, Integer langID) {
         super(enterprises, langID);
         width = (int)(3.0 * inchToPTCoefficient);
         height = (int) (1.5 * inchToPTCoefficient);
     }
 
     @Override
-    protected void drawItem(float x, float y, Graphics2D g2, Long eid) {
+    protected void drawItem(float x, float y, Graphics2D g2, Integer eid) {
         Rectangle2D rectangle = new Rectangle2D.Double(x, y, width, height);
         g2.setStroke(dashedStroke);
         g2.draw(rectangle);
@@ -77,7 +77,7 @@ public class Address extends PrintableBase {
         return String.valueOf(country).toUpperCase();
     }
 
-    private String[] getAddressFromCache(Long eid) {
+    private String[] getAddressFromCache(Integer eid) {
         return new String[]{
                     String.valueOf(Cache.instance.getValue(eid, Field.title)),
                     StringUtils.valueOf(Arrays.asList(Cache.instance.getValue(eid, Field.street),

@@ -1,8 +1,16 @@
 package md.varoinform.controller.entityproxy;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.*;
-import md.varoinform.util.ResourceBundleHelper;
+import md.varoinform.entities.GoodEnterprise;
+import md.varoinform.entities.GoodType;
+import md.varoinform.model.dao.ProductTypeDAO;
+import md.varoinform.model.entities.address.AddressNode;
+import md.varoinform.model.entities.address.PostalCode;
+import md.varoinform.model.entities.base.Brand;
+import md.varoinform.model.entities.enterprise.*;
+import md.varoinform.model.entities.product.ProductType;
+import md.varoinform.model.utils.DefaultClosableSession;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -22,9 +30,9 @@ public class EnterpriseProxy extends EntityProxy {
     }
 
     private final Enterprise enterprise;
-    private final ContactProxy contactProxy;
+    private final List<Map<String, String>> contactProxy;
 
-    public EnterpriseProxy(Enterprise enterprise, Long langID) {
+    public EnterpriseProxy(Enterprise enterprise, Integer langID) {
         super(langID);
         this.enterprise = enterprise;
         contactProxy = getContactProxy();
@@ -34,15 +42,27 @@ public class EnterpriseProxy extends EntityProxy {
         this(enterprise, LanguageProxy.instance.getCurrentLanguage());
     }
 
-    private ContactProxy getContactProxy() {
+    private List<Map<String, String>> getContactProxy() {
+        List<Map<String, String>> result = new ArrayList<>();
         List<Contact> contacts = enterprise.getContacts();
-        if (contacts.isEmpty()) return new ContactProxy(null, getLangID());
-        return new ContactProxy(contacts.get(0), getLangID());
+        for (Contact contact : contacts) {
+            result.add(new ContactProxy(contact, getLangID()).getContactMap());
+        }
+        return result;
     }
 
     @Property(name = "Title")
     public String getTitle(){
-        return getTitle(enterprise);
+        List<EnterpriseTitle> titles = enterprise.getTitles();
+        String result = "";
+        String delimiter = "";
+        for (EnterpriseTitle title : titles) {
+            String language = LanguageProxy.instance.getTitle(getLangID());
+            String s = title.titleForLang(language);
+            result += delimiter + s;
+            delimiter = "/ ";
+        }
+        return result;
     }
 
     @Property(name = "IDNO")
@@ -52,64 +72,40 @@ public class EnterpriseProxy extends EntityProxy {
 
     @Property(name = "BusinessEntityType")
     public String getBusinessEntityType(){
-        return getTitle(enterprise.getBusinessEntityType());
+        return getTitle(enterprise.getEnterpriseType());
     }
 
     @Property(name = "CreationDate")
-    public Integer getCreationDate(){
-        return enterprise.getCreation();
-    }
-
-    @Property(name = "ForeingCapital")
-    public String getForeingCapital(){
-        Boolean foreingCapital = enterprise.getForeignCapital();
-        return ResourceBundleHelper.getString(getLangID(), String.valueOf(foreingCapital), String.valueOf(foreingCapital));
+    public Short getCreationDate(){
+        return enterprise.getCreationYear();
     }
 
     @Property(name = "Workplaces")
-    public Integer getWorkplaces(){
-        return enterprise.getWorkplaces();
-    }
-
-    public String getLogo(){
-        return enterprise.getLogo();
+    public Short getWorkplaces(){
+        return enterprise.getNumberOfJobs();
     }
 
     @Property(name = "CheckDate")
-    public Date getCheckDate(){
-        return enterprise.getCheckDate();
-    }
-
     public Date getLastChange(){
         return enterprise.getLastChange();
     }
 
-    public String getAdvertisement(){
-        StringBuilder result = new StringBuilder();
-        for (Advertisement advertisement : enterprise.getAdvertisements()) {
-            AdvertisementProxy proxy = new AdvertisementProxy(advertisement);
-            result.append(proxy.getAdvertisementTable());
-
-        }
-        return result.toString();
-    }
 
     @Property(name = "ContactPerson")
     public Map<String, Object> getContactPerson(){
-        List<ContactPerson> contactPersons = enterprise.getContactPersons();
-        ContactPerson contactPerson = contactPersons.size() > 0 ? contactPersons.get(0) : null;
+        List<md.varoinform.model.entities.enterprise.Person> persons = enterprise.getPersons();
+        Person contactPerson = persons.size() > 0 ? persons.get(0) : null;
         ContactPersonProxy proxy = new ContactPersonProxy(contactPerson, getLangID());
         return proxy.getPersonMap();
     }
 
     @Property(name = "PersonPhones")
-    public Collection<String> getContactPersonPhones(){
-        Object phones = getContactPerson().get("personPhones");
+    public String getContactPersonPhones(){
+        String phones = (String) getContactPerson().get("personPhones");
         if (phones == null){
-            return new ArrayList<>();
+            return "";
         }
-        //noinspection unchecked
-        return (Collection<String>) phones;
+        return  phones;
     }
 
     @Property(name = "Brands")
@@ -124,100 +120,122 @@ public class EnterpriseProxy extends EntityProxy {
     @Property(name = "Goods")
     public Map<String, Set<String>> getGoods(){
         Map<String, Set<String>> goods = new HashMap<>();
-        for (GoodEnterprise g : enterprise.getGoods()) {
-            GoodType type = g.getGoodType();
-            String t = getTitle(type);
-            Set<String> goodSet = goods.get(t);
-            if (goodSet == null){
-                goodSet = new TreeSet<>();
-                goods.put(t, goodSet);
+
+        for (EnterpriseProduct product : enterprise.getProducts()){
+            List<ProductType> productTypes = product.getProductType();
+            for (ProductType productType : productTypes) {
+                String t = productType.getTitle();
+                Set<String> goodSet = goods.get(t);
+                if (goodSet == null){
+                    goodSet = new TreeSet<>();
+                    goods.put(t, goodSet);
+                }
+                goodSet.add(getTitle(product.getProduct()));
             }
-            goodSet.add(getTitle(g.getGood()));
         }
         return goods;
 
     }
 
     @Property(name = "GoodTypes")
-    public Map<Long, String> getGoodTypes(){
-        Map<Long, String> types = new HashMap<>();
-        for (GoodEnterprise g : enterprise.getGoods()) {
-            GoodType type = g.getGoodType();
-            Long typeId = type.getId();
-            types.put(typeId, getTitle(type));
-        }
-        return types;
+    public Map<Integer, String> getGoodTypes(){
+        return ProductTypeDAO.getTypes();
     }
 
     @Property(name = "PostalCode")
-    public String getPostalCode(){
-        return contactProxy.getPostalCode();
+    public Short getPostalCode(){
+        List<Location> locations = enterprise.getLocations();
+        for (Location location : locations) {
+            PostalCode code = location.getAddressNode().getCode();
+            if (code != null)
+                return code.getCode();
+            return null;
+        }
+        return null;
     }
 
     @Property(name = "office")
     public String getOfficeNumber() {
-        return contactProxy.getOfficeNumber();
+        List<Location> locations = enterprise.getLocations();
+        for (Location location : locations) {
+            return location.getOffice();
+        }
+        return null;
     }
 
     @Property(name = "house")
     public String getHouseNumber() {
-        return contactProxy.getHouseNumber();
+        List<Location> locations = enterprise.getLocations();
+        for (Location location : locations) {
+            AddressNode addressNode = location.getAddressNode();
+            if (addressNode.getType().getTitle().equalsIgnoreCase("number")){
+                return addressNode.toString();
+            }
+        }
+        return null;
     }
 
     @Property(name = "street")
     public String getStreet() {
-        return contactProxy.getStreet();
-    }
-
-
-    @Property(name = "Sector")
-    public String getSector(){
-
-        return contactProxy.getSector();
+        List<Location> locations = enterprise.getLocations();
+        for (Location location : locations) {
+            AddressNode addressNode = location.getAddressNode();
+            if (addressNode.getType().getTitle().equalsIgnoreCase("number")){
+                return addressNode.getParent().toString();
+            } else if (addressNode.getType().getTitle().equalsIgnoreCase("street")){
+                return addressNode.toString();
+            }
+        }
+        return null;
     }
 
     @Property(name = "Town")
     public String getTown(){
+        List<Location> locations = enterprise.getLocations();
+        for (Location location : locations) {
+            AddressNode addressNode = location.getAddressNode();
+            if (addressNode.getType().getTitle().equalsIgnoreCase("number")){
+                return addressNode.getParent().getParent().toString();
+            } else if (addressNode.getType().getTitle().equalsIgnoreCase("street")){
+                return addressNode.getParent().toString();
+            } else if (addressNode.getType().getTitle().equalsIgnoreCase("street")){
+                return addressNode.toString();
+            }
+        }
+        return null;
 
-        return contactProxy.getTown();
-    }
-
-    @Property(name = "Region")
-    public String getRegion(){
-        return contactProxy.getRegion();
-    }
-
-    //@Property(name = "Country")
-    public String getCountry(){
-        return contactProxy.getCountry();
     }
 
     @Property(name = "Emails")
     public List<String> getEmails(){
+        List<String> result = new ArrayList<>();
 
-        return contactProxy.getEmail();
+        List<Email> emails = enterprise.getEmails();
+        for (Email email : emails) {
+            result.add(email.getEmail());
+        }
+        return result;
     }
 
     @Property(name = "Phones")
     public List<String> getPhones(){
+        List<String> result = new ArrayList<>();
 
-        return contactProxy.getPhones();
+        for (Map<String, String> map : contactProxy) {
+            result.add(map.get("phone"));
+        }
+        return result;
     }
 
     @Property(name = "Urls")
     public List<String> getUrls(){
+        List<String> result = new ArrayList<>();
 
-        return contactProxy.getUrls();
-    }
-
-    @Property(name = "Faxes")
-    public List<String> getFaxes() {
-        return contactProxy.getFax();
-    }
-
-    @Property(name = "GSM")
-    public List<String> getGSM(){
-        return contactProxy.getGSM();
+        List<WWW> urls = enterprise.getUrls();
+        for (WWW url : urls) {
+            result.add(url.getUrl());
+        }
+        return result;
     }
 
 

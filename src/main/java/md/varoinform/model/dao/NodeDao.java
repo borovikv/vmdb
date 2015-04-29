@@ -1,7 +1,7 @@
 package md.varoinform.model.dao;
 
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.model.entities.Node;
+import md.varoinform.model.entities.product.Node;
 import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.Query;
 import org.hibernate.Transaction;
@@ -15,26 +15,26 @@ import java.util.*;
  * Time: 5:33 PM
  */
 public class NodeDao {
-    public static Map<Long, List<Long>> getNodeEnterpriseMap(){
+    public static Map<Integer, List<Integer>> getNodeEnterpriseMap(){
         Transaction tx = null;
         try (DefaultClosableSession session = new DefaultClosableSession()) {
             tx = session.beginTransaction();
             String hql2 = "Select distinct new list(n.id, e.id, t.title) " +
                     "from Node n join n.enterprises e join e.titles t " +
                     "where t.language.id = :langID and n.id <> 1 order by t.title";
-            Query query1 = session.createQuery(hql2).setLong("langID", LanguageProxy.instance.getCurrentLanguage());
+            Query query1 = session.createQuery(hql2).setInteger("langID", LanguageProxy.instance.getCurrentLanguage());
             @SuppressWarnings("unchecked")
             List<List<Object>> list1 = query1.list();
 
-            Map<Long, List<Long>> m = new HashMap<>();
+            Map<Integer, List<Integer>> m = new HashMap<>();
             for (List<Object> l : list1) {
-                Long i = (Long) l.get(0);
-                List<Long> longs = m.get(i);
-                if (longs == null){
-                    longs = new ArrayList<>();
-                    m.put(i, longs);
+                Integer i = (Integer) l.get(0);
+                List<Integer> Integers = m.get(i);
+                if (Integers == null){
+                    Integers = new ArrayList<>();
+                    m.put(i, Integers);
                 }
-                longs.add((Long) l.get(1));
+                Integers.add((Integer) l.get(1));
             }
 
             tx.commit();
@@ -62,22 +62,22 @@ public class NodeDao {
         }
     }
 
-    public static Map<Long, Set<Long>> getArcs(){
-        Map<Long, Set<Long>> m = new HashMap<>();
+    public static Map<Integer, Set<Integer>> getArcs(){
+        Map<Integer, Set<Integer>> m = new HashMap<>();
         try (DefaultClosableSession session = new DefaultClosableSession()){
             session.beginTransaction();
             try {
-                String hql = "Select arc.tail.id, arc.head.id from Arc arc";
+                String hql = "Select arc.fromNode.id, arc.toNode.id from Arc arc";
                 List list = session.createQuery(hql).list();
                 for (Object objects : list) {
                     Object[] ids = (Object[]) objects;
-                    Long id = (Long) ids[0];
-                    Set<Long> longs = m.get(id);
-                    if (longs == null){
-                        longs = new HashSet<>();
-                        m.put(id, longs);
+                    Integer id = (Integer) ids[0];
+                    Set<Integer> Integers = m.get(id);
+                    if (Integers == null){
+                        Integers = new HashSet<>();
+                        m.put(id, Integers);
                     }
-                    longs.add((Long) ids[1]);
+                    Integers.add((Integer) ids[1]);
                 }
                 session.getTransaction().commit();
             } catch (RuntimeException ignored){

@@ -87,7 +87,7 @@ public class Updater {
         }
     }
 
-    public Long update() throws IOException {
+    public Integer update() throws IOException {
         File zipFile = download();
         File dbFile = getDBFile(Zip.unzip(zipFile));
         try {
@@ -97,7 +97,7 @@ public class Updater {
 
         Configuration cfg = getConfiguration(dbFile);
 
-        Long updated = getUpdatedEnterprises(cfg);
+        Integer updated = getUpdatedEnterprises(cfg);
         copyUserData(cfg);
         replaceDB(dbFile);
 
@@ -133,7 +133,7 @@ public class Updater {
     }
 
 
-    private Long getUpdatedEnterprises(Configuration cfg) {
+    private Integer getUpdatedEnterprises(Configuration cfg) {
         Date maxDate = EnterpriseDao.getMaxCheckDate();
         return EnterpriseDao.countWhereLastChangeGTE(cfg, maxDate);
     }

@@ -9,5 +9,5 @@ import java.util.List;
  * Time: 11:57 AM
  */
 public interface SearchListener {
-    public void perform(List<Long> enterprises);
+    void perform(List<Integer> enterprises);
 }

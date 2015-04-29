@@ -26,7 +26,7 @@ public class TitleSearcher extends Searcher {
     }
 
     @Override
-    public List<Long> search(String q) {
+    public List<Integer> search(String q) {
         try (DefaultClosableSession session = new DefaultClosableSession()) {
             String field = "titles.title";
             Normalizer normalizer = new Normalizer(field, q, Normalizer.RO);
