@@ -1,7 +1,7 @@
 package md.varoinform.view.demonstrator;
 
-import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.model.dao.EnterpriseDao;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
 
 import javax.swing.table.AbstractTableModel;
@@ -23,6 +23,7 @@ public class EnterpriseTableModel extends AbstractTableModel {
     }
 
     public EnterpriseTableModel(List<Integer> enterprises) {
+        System.out.println(enterprises);
         this.enterprises = new ArrayList<>(enterprises);
     }
 
@@ -52,7 +53,8 @@ public class EnterpriseTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         String name = getColumnName(columnIndex);
-        return Cache.instance.getValue(enterprises.get(rowIndex), name);
+        Enterprise e = EnterpriseDao.getEnterprise(enterprises.get(rowIndex));
+        return e.getValue(name);
     }
 
     @Override
@@ -77,6 +79,6 @@ public class EnterpriseTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         String name = getColumnName(columnIndex);
-        return EnterpriseProxy.getType(name);
+        return Enterprise.getColumnType(name);
     }
 }

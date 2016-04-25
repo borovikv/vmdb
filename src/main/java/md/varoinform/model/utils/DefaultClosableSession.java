@@ -1,7 +1,6 @@
 package md.varoinform.model.utils;
 
 import md.varoinform.Settings;
-import md.varoinform.sequrity.PasswordManager;
 import org.hibernate.cfg.Configuration;
 
 /**
@@ -13,8 +12,7 @@ public class DefaultClosableSession extends ClosableSession{
     static {
 
         String pathToDb = Settings.pathToDB().toString();
-        System.out.println(pathToDb);
-        cfg = new Configurator(pathToDb, "admin", "test").configureWithoutIndex();
+        cfg = new Configurator(pathToDb, "test", "test").configureWithoutIndex();
     }
 
     public DefaultClosableSession() {

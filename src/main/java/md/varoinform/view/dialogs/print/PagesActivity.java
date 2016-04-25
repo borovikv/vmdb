@@ -1,7 +1,5 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
@@ -10,8 +8,9 @@ import md.varoinform.view.dialogs.progress.Activity;
 
 import java.awt.*;
 import java.awt.print.PageFormat;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Vladimir Borovic
@@ -63,11 +62,9 @@ public class PagesActivity extends Activity {
         int usedArea = 0;
         int size = idEnterprises.size();
         Map<Integer, Map<String, Object>> enterprisesMap = null;
-        if (!langID.equals(Cache.instance.getCachedLanguage())){
             //ToDo: create real change in progress bar
             setProgress(10);
-            enterprisesMap = EnterpriseDao.getEnterprisesMap(idEnterprises, langID);
-        }
+//            enterprisesMap = EnterpriseDao.getEnterprisesMap(idEnterprises, langID);
 
         for (int i = 0; i < size; i++) {
             Integer eid = idEnterprises.get(i);
@@ -76,7 +73,8 @@ public class PagesActivity extends Activity {
             if (enterprisesMap != null){
                 map = enterprisesMap.get(eid);
             } else {
-                map = Cache.instance.getMap(eid);
+                //map = Cache.instance.getMap(eid);
+                map = null;
             }
             if (map == null) continue;
 
@@ -121,29 +119,29 @@ public class PagesActivity extends Activity {
         Block block = new Block();
 
 
-        for (String field : fields) {
-            if (EnterpriseProxy.isAddress(field)) continue;
-
-            String str = getLine(langID, enterpriseMap.get(field), field);
-            if (str.isEmpty()) continue;
-
-            FontMetrics fm;
-            if (EnterpriseProxy.isTitle(field)) {
-                str = counter + ". " + str;
-                counter++;
-                fm = titleFM;
-            } else {
-                fm = defaultFM;
-            }
-
-            List<String> wrapLines = StringWrapper.wrap(str, fm, (int) blockWidth);
-
-            if (EnterpriseProxy.isTitle(field)) {
-                block.addLines(field, wrapLines, TITLE_FONT);
-            } else {
-                block.addLines(field, wrapLines, DEFAULT_FONT);
-            }
-        }
+//        for (String field : fields) {
+//            if (EnterpriseProxy.isAddress(field)) continue;
+//
+//            String str = getLine(langID, enterpriseMap.get(field), field);
+//            if (str.isEmpty()) continue;
+//
+//            FontMetrics fm;
+//            if (EnterpriseProxy.isTitle(field)) {
+//                str = counter + ". " + str;
+//                counter++;
+//                fm = titleFM;
+//            } else {
+//                fm = defaultFM;
+//            }
+//
+//            List<String> wrapLines = StringWrapper.wrap(str, fm, (int) blockWidth);
+//
+//            if (EnterpriseProxy.isTitle(field)) {
+//                block.addLines(field, wrapLines, TITLE_FONT);
+//            } else {
+//                block.addLines(field, wrapLines, DEFAULT_FONT);
+//            }
+//        }
 
         String address = getAddress(fields, enterpriseMap, langID);
         if (address.isEmpty()) return block;
@@ -154,27 +152,28 @@ public class PagesActivity extends Activity {
     }
 
     private String getAddress(List<String> fields, Map<String, Object> enterpriseMap, Integer langID) {
-        List<String> addressFields = EnterpriseProxy.getAddressFields();
-        Set<Object> address = new LinkedHashSet<>();
-        for (String field : addressFields) {
-            if (fields.contains(field)){
-                Object o = enterpriseMap.get(field);
-                if (o instanceof Collection){
-                    address.addAll((Collection<?>) o);
-                } else {
-                    address.add(o);
-                }
-            }
-        }
+//        List<String> addressFields = EnterpriseProxy.getAddressFields();
+//        Set<Object> address = new LinkedHashSet<>();
+//        for (String field : addressFields) {
+//            if (fields.contains(field)){
+//                Object o = enterpriseMap.get(field);
+//                if (o instanceof Collection){
+//                    address.addAll((Collection<?>) o);
+//                } else {
+//                    address.add(o);
+//                }
+//            }
+//        }
 
-        return getLine(langID, address, "address");
+//        return getLine(langID, address, "address");
+        return null;
     }
 
     private String getLine(Integer langID, Object o, String field) {
         String value = StringUtils.valueOf(o);
         if (value.isEmpty()) return "";
 
-        if (EnterpriseProxy.isTitle(field)) return value;
+//        if (EnterpriseProxy.isTitle(field)) return value;
 
         String label = ResourceBundleHelper.getString(langID, field, field);
         return label + ": " + value;

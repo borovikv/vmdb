@@ -1,8 +1,8 @@
 package md.varoinform.view.navigation.branchview;
 
-import md.varoinform.controller.cache.BranchCache;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
+import md.varoinform.model.dao.ProductDao;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
 import md.varoinform.util.observer.ObservableIml;
@@ -128,7 +128,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
     @Override
     public void filter(String text) {
         root.removeAllChildren();
-        List<Integer> ids = BranchCache.instance.startWith(text);
+        List<Integer> ids = ProductDao.startWith(text);
         createTree(ids, root);
 
         DefaultTreeModel defaultTreeModel = (DefaultTreeModel) treeModel;
@@ -141,7 +141,7 @@ public class BranchTree extends JTree implements Observable, Observer, Filtering
         for (Integer id : ids) {
             BranchNode branchNode = new BranchNode(id);
             root.add(branchNode);
-            createTree(BranchCache.instance.getChildren(id), branchNode);
+            createTree(ProductDao.getChildren(id), branchNode);
         }
     }
 

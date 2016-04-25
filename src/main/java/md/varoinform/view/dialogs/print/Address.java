@@ -1,14 +1,11 @@
 package md.varoinform.view.dialogs.print;
 
-import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.cache.Field;
 import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,13 +41,10 @@ public class Address extends PrintableBase {
 
 
         String[] strings;
-        if (langID.equals(Cache.instance.getCachedLanguage())) {
-            strings = getAddressFromCache(eid);
-        } else {
-            Map<String, Object> map = EnterpriseDao.enterpriseAsMap(eid, langID);
-            strings = getAddressFromMap(map);
 
-        }
+        Map<String, Object> map = EnterpriseDao.enterprisesAsMap(eid, langID);
+        strings = getAddressFromMap(map);
+
         for (String string : strings) {
             lineHeight = drawString(y, g2, fontHeight, xoff, lineHeight, maxWriteAreaWidth, string);
         }
@@ -59,16 +53,17 @@ public class Address extends PrintableBase {
     }
 
     private String[] getAddressFromMap(Map<String, Object> map) {
-        return new String[]{
-                String.valueOf(map.get(Field.title.toString())),
-                StringUtils.valueOf(
-                        Arrays.asList(
-                                map.get(Field.street.toString()),
-                                map.get(Field.house.toString()),
-                                map.get(Field.office.toString()))),
-                map.get(Field.postalcode.toString()) + " " + map.get(Field.town.toString()),
-                getCountry(map.get(Field.country.toString()))
-        };
+//        return new String[]{
+//                String.valueOf(map.get(Field.title.toString())),
+//                StringUtils.valueOf(
+//                        Arrays.asList(
+//                                map.get(Field.street.toString()),
+//                                map.get(Field.house.toString()),
+//                                map.get(Field.office.toString()))),
+//                map.get(Field.postalcode.toString()) + " " + map.get(Field.town.toString()),
+//                getCountry(map.get(Field.country.toString()))
+//        };
+        return null;
     }
 
     private String getCountry(Object country) {
@@ -77,16 +72,7 @@ public class Address extends PrintableBase {
         return String.valueOf(country).toUpperCase();
     }
 
-    private String[] getAddressFromCache(Integer eid) {
-        return new String[]{
-                    String.valueOf(Cache.instance.getValue(eid, Field.title)),
-                    StringUtils.valueOf(Arrays.asList(Cache.instance.getValue(eid, Field.street),
-                                                      Cache.instance.getValue(eid, Field.house),
-                                                      Cache.instance.getValue(eid, Field.office))),
-                    Cache.instance.getValue(eid, Field.postalcode) + " " + Cache.instance.getValue(eid, Field.town),
-                    getCountry(Cache.instance.getValue(eid, Field.country))
-            };
-    }
+
 
     private int drawString(float y, Graphics2D g2, int fontHeight, float xoff, int lineHeight, int maxWriteAreaWidth, String value) {
         List<String> wrapLines = StringUtils.wrap(value, g2.getFontMetrics(), maxWriteAreaWidth);

@@ -1,6 +1,6 @@
 package md.varoinform.view.navigation.branchview;
 
-import md.varoinform.controller.cache.BranchCache;
+import md.varoinform.model.dao.ProductDao;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
@@ -21,7 +21,7 @@ public class BranchNode extends DefaultMutableTreeNode implements Comparable {
         super(id);
         if (id != null) {
             this.id = id;
-            this.node = BranchCache.instance.getTitle(id);
+            this.node = ProductDao.getTitle(id);
         } else {
             this.id = ROOT_ID;
             node = "root";

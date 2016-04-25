@@ -1,7 +1,6 @@
 package md.varoinform.view.navigation.tags;
 
-import md.varoinform.controller.cache.Tag;
-import md.varoinform.controller.cache.TagCache;
+import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.dialogs.TagDialog;
 
@@ -9,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,10 +21,10 @@ public class TagList extends JList<Tag> {
     private String currentTagTitle;
 
     public TagList() {
-        FilteringModel<Tag> model = new FilteringModel<>(TagCache.instance.getTags());
+        FilteringModel<Tag> model = new FilteringModel<>(new ArrayList<Tag>());
         setModel(model);
 
-        setCellRenderer(new TagListCellRenderer());
+//        setCellRenderer(new TagListCellRenderer());
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -59,12 +59,10 @@ public class TagList extends JList<Tag> {
         if (enterpriseIds.isEmpty()) return false;
         if (index >= 0) {
             Tag tag = getModel().getElementAt(index);
-            tag.add(enterpriseIds);
-            TagCache.instance.updateTag(tag);
+//            tag.add(enterpriseIds);
             setSelectedIndex(index);
         } else {
             String title = TagDialog.getTag();
-            TagCache.instance.addTag(title, enterpriseIds);
             updateModel();
         }
         return true;
@@ -78,7 +76,6 @@ public class TagList extends JList<Tag> {
         if (newName == null || newName.isEmpty() || newName.equals(tag.getTitle())) return;
 
         tag.setTitle(newName);
-        TagCache.instance.updateTag(tag);
         ((FilteringModel<Tag>)getModel()).updateModel();
     }
 
@@ -88,14 +85,12 @@ public class TagList extends JList<Tag> {
         String message = ResourceBundleHelper.getString("delete_tag", "Delete") + ": " + tag.getTitle() + "?";
         if (JOptionPane.showConfirmDialog(null, message) == JOptionPane.OK_OPTION) {
             ((FilteringModel<Tag>)getModel()).removeElement(tag);
-            TagCache.instance.delete(tag);
         }
     }
 
     public Tag removeFromCurrentTag(List<Integer> eids) {
         Tag selectedTag = getSelectedValue();
-        boolean clearSelection = selectedTag.remove(eids);
-        TagCache.instance.updateTag(selectedTag);
+        boolean clearSelection = true;//selectedTag.remove(eids);
         updateModel();
         if (clearSelection){
             clearSelection();
@@ -108,6 +103,5 @@ public class TagList extends JList<Tag> {
     public void updateModel(){
         FilteringModel<Tag> model = (FilteringModel<Tag>) getModel();
         model.clear();
-        model.addAll(TagCache.instance.getTags());
     }
 }

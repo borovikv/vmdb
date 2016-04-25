@@ -1,8 +1,8 @@
 package md.varoinform.view.demonstrator;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.model.dao.EnterpriseDao;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import org.apache.velocity.Template;
@@ -52,8 +52,8 @@ public class EnterpriseView  {
         context.put("i18nHelper", ResourceBundleHelper.class);
         context.put("StringUtils", StringUtils.class);
 
-        for (String field : EnterpriseProxy.getFields()) {
-            Object value = Cache.instance.getRawValue(id, field);
+        for (String field : Enterprise.getFields()) {
+            Object value = EnterpriseDao.getEnterprise(id).getValue(field);
             context.put(field, value);
         }
         return context;

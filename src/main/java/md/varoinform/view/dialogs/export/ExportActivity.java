@@ -1,8 +1,8 @@
 package md.varoinform.view.dialogs.export;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import md.varoinform.controller.cache.Cache;
 import md.varoinform.controller.comparators.ColumnPriorityComparator;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.StringUtils;
 import md.varoinform.view.dialogs.progress.Activity;
@@ -58,7 +58,7 @@ public class ExportActivity extends Activity {
         Integer eid = idEnterprises.get(row);
         for (int i = 0; i < selectedColumns.size(); i++) {
             String field = selectedColumns.get(i);
-            Object obj = Cache.instance.getRawValue(eid, field);
+            Object obj = EnterpriseDao.getEnterprise(eid).getValue(field);
             entries[i] = StringUtils.valueOf(obj);
         }
         writer.writeNext(entries);

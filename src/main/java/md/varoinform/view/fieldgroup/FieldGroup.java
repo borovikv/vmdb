@@ -1,7 +1,7 @@
 package md.varoinform.view.fieldgroup;
 
 import md.varoinform.controller.comparators.TranslateComparator;
-import md.varoinform.controller.entityproxy.EnterpriseProxy;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.util.PreferencesHelper;
 import md.varoinform.view.I18nCheckBox;
 
@@ -23,7 +23,7 @@ public class FieldGroup {
 
     public FieldGroup() {
         List<String> userFields = new PreferencesHelper().getUserFields();
-        for (String field : EnterpriseProxy.getFields()) {
+        for (String field : Enterprise.getFields()) {
             boolean selected = userFields.contains(field);
 
             I18nCheckBox checkBox = createCheckBox(field, selected);

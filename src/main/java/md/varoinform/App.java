@@ -1,13 +1,10 @@
 package md.varoinform;
 
 
-import md.varoinform.controller.DefaultLanguages;
-import md.varoinform.model.search.FullTextSearcher;
+import md.varoinform.model.entities.Enterprise;
+import md.varoinform.model.utils.Configurator;
+import md.varoinform.model.utils.DefaultClosableSession;
 import md.varoinform.model.utils.SessionManager;
-import md.varoinform.sequrity.Guardian;
-import md.varoinform.util.PreferencesHelper;
-import md.varoinform.util.Profiler;
-import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.view.MainFrame;
 
 import javax.swing.*;
@@ -43,6 +40,7 @@ public class App {
 //                }
 //
 //                Profiler p = new Profiler("create mainframe");
+
                 MainFrame mainFrame = new MainFrame();
 //                p.end();
                 mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

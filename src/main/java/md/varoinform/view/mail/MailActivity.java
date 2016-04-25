@@ -1,6 +1,6 @@
 package md.varoinform.view.mail;
 
-import md.varoinform.controller.cache.Cache;
+import md.varoinform.model.dao.EnterpriseDao;
 import md.varoinform.view.dialogs.progress.Activity;
 
 import java.awt.*;
@@ -35,7 +35,7 @@ public class MailActivity extends Activity {
         StringBuilder builder = new StringBuilder(mailTo);
         for (Integer id : enterpriseIds) {
 
-            @SuppressWarnings("unchecked") Iterable<String> emails = (Iterable<String>) Cache.instance.getRawValue(id, "emails");
+            @SuppressWarnings("unchecked") Iterable<String> emails = (Iterable<String>) EnterpriseDao.getEnterprise(id).getValue("emails");
             if (emails == null) return null;
             for (String email : emails) {
 

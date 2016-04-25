@@ -1,9 +1,9 @@
 package md.varoinform.controller;
 
-import md.varoinform.model.dao.LanguageDao;
 import md.varoinform.util.PreferencesHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +16,10 @@ import java.util.Map;
 public enum  LanguageProxy {
     instance;
 
-    private final Map<Integer, String> languageMap;
+    private final Map<Integer, String> languageMap = new HashMap<>();
     private Integer currentLanguage;
 
     LanguageProxy() {
-        languageMap = LanguageDao.getLanguageMap();
         currentLanguage = new PreferencesHelper().getCurrentLanguage();
     }
 
@@ -34,7 +33,7 @@ public enum  LanguageProxy {
     }
 
     public static String getCurrentLanguageTitle() {
-        return instance.languageMap.get(instance.currentLanguage);
+        return "ru";//instance.languageMap.get(instance.currentLanguage);
     }
 
     public void setCurrentLanguage(Integer currentLanguage) {

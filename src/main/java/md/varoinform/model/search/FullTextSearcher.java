@@ -1,6 +1,6 @@
 package md.varoinform.model.search;
 
-import md.varoinform.model.entities.enterprise.Enterprise;
+import md.varoinform.model.entities.Enterprise;
 import md.varoinform.model.utils.DefaultClosableSession;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;

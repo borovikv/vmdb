@@ -3,9 +3,9 @@ package md.varoinform.view;
 import md.varoinform.Settings;
 import md.varoinform.controller.Holder;
 import md.varoinform.controller.LanguageProxy;
-import md.varoinform.controller.cache.BranchCache;
-import md.varoinform.controller.cache.Cache;
-import md.varoinform.controller.cache.Tag;
+import md.varoinform.model.dao.EnterpriseDao;
+import md.varoinform.model.dao.ProductDao;
+import md.varoinform.model.entities.Tag;
 import md.varoinform.model.search.FullTextSearcher;
 import md.varoinform.model.utils.SessionManager;
 import md.varoinform.util.ImageHelper;
@@ -113,7 +113,6 @@ public class MainFrame extends JFrame implements Observer {
         tagPanel.addObserver(this);
         // LANGUAGE_CHANGED
         StatusBar.instance.addObserver(this);
-        StatusBar.instance.addObserver(Cache.instance);
 
         setTitle(ResourceBundleHelper.getString("main_frame_title", "VMDB"));
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -141,7 +140,7 @@ public class MainFrame extends JFrame implements Observer {
 
         updateDisplay();
         branchPanel.selectRoot();
-        demonstrator.showResults(Cache.instance.getAllEnterpriseIds());
+        demonstrator.showResults(EnterpriseDao.getAllEnterpriseIds());
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -299,7 +298,7 @@ public class MainFrame extends JFrame implements Observer {
         switch (event.getType()){
             case BRANCH_SELECTED:
                 Integer node = branchPanel.getNode();
-                List<Integer> enterpriseIds = BranchCache.instance.getEnterpriseIdByNode(node);
+                List<Integer> enterpriseIds = ProductDao.getEnterprises(node);
                 showResults(enterpriseIds);
                 break;
 
@@ -312,7 +311,7 @@ public class MainFrame extends JFrame implements Observer {
                 Tag tag = (Tag) event.getValue();
                 if (tag != null) {
                     enableDeleting = true;
-                    showResults(tag.getEnterprises());
+//                    showResults(tag.getEnterprises());
                 } else {
                     showResults(null);
                     enableDeleting = false;

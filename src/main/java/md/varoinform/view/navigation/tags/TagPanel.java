@@ -1,9 +1,9 @@
 package md.varoinform.view.navigation.tags;
 
 import md.varoinform.Settings;
-import md.varoinform.controller.cache.Tag;
 import md.varoinform.controller.history.History;
 import md.varoinform.controller.history.HistoryEvent;
+import md.varoinform.model.entities.Tag;
 import md.varoinform.util.ResourceBundleHelper;
 import md.varoinform.util.observer.Observable;
 import md.varoinform.util.observer.ObservableEvent;
